@@ -1,0 +1,10 @@
+[gate]
+    name = virtualization-sdk
+    shortname = sdk
+    slack-color = 1AD6F5 
+    slack-notify = virt-sdk-pushes
+    approvers = gatekeepers-virtualization-sdk
+
+ [branch "master"]
+    gate-release-check = skip
+    gate-allowed-issuetypes = 1,3,4,5,10000,10400
