@@ -8,4 +8,4 @@
 
  [branch "master"]
     gate-release-check = skip
-    gate-allowed-issuetypes = 1,3,4,5,10000,10400
+    gate-allowed-issuetypes = 1,3,4,5,10001,10302
