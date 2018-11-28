@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2018 by Delphix. All rights reserved.
+ */
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.delphix.virtualization;
+
+message RemoteConnection {
+  RemoteEnvironment environment = 1;
+  RemoteUser user = 2;
+}
+
+message RemoteEnvironment {
+  string name = 1;
+  string reference = 2;
+  RemoteHost host = 3;
+}
+
+message RemoteHost {
+  string name = 1;
+  string reference = 2;
+  string binaryPath = 3;
+  string scratchPath = 4;
+}
+
+message RemoteUser {
+  string name = 1;
+  string reference = 2;
+}
+
+message LinkedSource {
+  string guid = 1;
+  PluginDefinedObject parameters = 2;
+}
+
+message DirectSource {
+  RemoteConnection connection = 1;
+  LinkedSource linkedSource = 2;
+}
+
+message StagedSource {
+  LinkedSource linkedSource = 1;
+  RemoteConnection sourceConnection = 2;
+  SingleMount stagedMount = 3;
+}
+
+message SingleMount {
+  RemoteEnvironment remoteEnvironment = 1;
+  string mountPath = 2;
+  string sharedPath = 3; // not supported on Windows
+}
+
+message VirtualSource {
+  string guid = 1;
+  SingleMount primaryMount = 2;
+  repeated SingleMount additionalMountList = 3;
+  PluginDefinedObject parameters = 4;
+}
+
+message SourceConfig {
+  string name = 1;
+  PluginDefinedObject parameters = 2;
+}
+
+message Repository {
+  string name = 1;
+  PluginDefinedObject parameters = 2;
+}
+
+message Snapshot {
+  string name = 1;
+  PluginDefinedObject parameters = 2;
+}
+
+message PluginDefinedObject {
+  string json = 1;
+}
+
+message OwnershipSpec {
+  int32 uid = 1;
+  int32 gid = 2;
+}
