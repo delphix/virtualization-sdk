@@ -11,7 +11,7 @@ option java_multiple_files = true;
 package com.delphix.virtualization.libs;
 
 message RunBashInput {
-  RemoteConnection remoteConnection = 1;
+  com.delphix.virtualization.common.RemoteConnection remoteConnection = 1;
   string command = 2;
   map<string, string> variables = 3;
 }
@@ -23,7 +23,7 @@ message RunBashOutput {
 }
 
 message RunPowerShellInput {
-  RemoteConnection remoteConnection = 1;
+  com.delphix.virtualization.common.RemoteConnection remoteConnection = 1;
   string command = 2;
   map<string, string> variables = 3;
 }
@@ -35,13 +35,13 @@ message RunPowerShellOutput {
 }
 
 message RunSync {
-  RemoteConnection remoteConnection = 1;
+  com.delphix.virtualization.common.RemoteConnection remoteConnection = 1;
   string sourceDirectory = 2;
   string rsyncUser = 3;
 }
 
 message RunExpectInput {
-  RemoteConnection remoteConnection = 1;
+  com.delphix.virtualization.common.RemoteConnection remoteConnection = 1;
   string command = 2;
   map<string, string> variables = 3;
 }

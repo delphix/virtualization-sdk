@@ -6,7 +6,7 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 
-package com.delphix.virtualization;
+package com.delphix.virtualization.common;
 
 message RemoteConnection {
   RemoteEnvironment environment = 1;
