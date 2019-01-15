@@ -1,0 +1,80 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
+import click
+
+
+def validate_option_exists(ctx, param, value):
+    """
+    A callback to be used to validate a Click option. Raises a
+    click.BadParameter exception if the value is not setself.
+
+    This should be used when we want a required optional, but do not want an
+    argument. Arguments are ordered and do not come with flags making them
+    unwieldy at times, particularly when there is a default. If there are two
+    argument, bar and foo in that order, and bar has a default the default
+    is useless since if only one parameter is specified Click will fail with
+    too few arguments. There is no way with Click arguments to have a flag to
+    indicate that the value passed in is meant for foo and not bar. If we want
+    this sort of functionality then we are stuck with Click optionals which are
+    always optional out of the box.
+    """
+    if not value:
+        print('inside')
+        # Let the user know if there is an environment variable for this param
+        if param.envvar:
+            raise click.BadParameter(
+                ('Option is required and must be specified via '
+                 'the command line or using the environment variable "{}".'.
+                 format(param.envvar)))
+        else:
+            raise click.BadParameter(('Option is required and must be '
+                                      'specified via the command line.'))
+    return value
+
+
+class MutuallyExclusiveOption(click.Option):
+    """
+    A Click Option type that is mutually exclusive with another option. Click
+    does not support mutally exclusive options out of the box.
+
+    Example usage:
+
+    @click.command()
+    @click.option(
+        '-a',
+        cls=click_util.MutuallyExclusiveOption,
+        is_flag=True,
+        mutually_exclusive=['b'])
+    @click.option(
+        '-b',
+        cls=click_util.MutuallyExclusiveOption,
+        default='123',
+        mutually_exclusive=['a'])
+    def command(a, b):
+        # do stuff
+
+    All other default Click options can still be specified.
+
+    Two examples of when this would be useful:
+    1) Providing quiet and verbose flags. Neither or one, but not both can be
+    specified.
+    2) From the Dephix SDK's upload command: the commands provides a --plugin
+    option that points to an already built artifact. It also provides a -b flag
+    to build the plugin before it is uploaded as a convenience. These two
+    should not be specified together.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.mutually_exclusive = set(kwargs.pop('mutually_exclusive', []))
+        super(MutuallyExclusiveOption, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        if self.mutually_exclusive.intersection(opts) and self.name in opts:
+            raise click.UsageError(
+                '"{}" is mutually exclusive with argument(s) "{}".'.format(
+                    self.name, ', '.join(self.mutually_exclusive)))
+
+        return super(MutuallyExclusiveOption, self).handle_parse_result(
+            ctx, opts, args)

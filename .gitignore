@@ -1,0 +1,20 @@
+# Non-build Gradle files
+.gradle/
+
+# IntelliJ config files
+.idea/
+
+# Python egg details. These are outputs of building a Python distribution
+*egg-info/
+
+# All build directories
+build/
+
+# Compiled Python files
+*.pyc
+
+# Activate scripts for virtual environments
+activate*
+
+# Python coverage module's metadata
+.coverage

@@ -1,0 +1,184 @@
+/**
+ * Copyright (c) 2019 by Delphix. All rights reserved.
+ */
+
+plugins {
+    id 'base'
+    id 'com.jetbrains.python.envs' version '0.0.25'
+}
+
+/*
+ * Development only dependencies are specified here and will be automatically
+ * installed into the virtual environment.
+ *
+ * Production dependencies should never be specified here. This could lead to
+ * functional code in our development environments that will break when shipped.
+ * Prod dependenicies should be specified in the setup.py file. They should not
+ * be installed directly but installed indirectly by installing the tools
+ * package itself.
+ */
+def devDependencies = [
+    'pytest==4.0.1',
+    'pytest-cov==2.6.0',
+    'coverage==4.5.2',
+    'flake8==3.6.0',
+    'yapf==0.25.0',
+    'isort==4.3.4'
+]
+
+def py2DevDependencies = devDependencies + [
+  'mock==2.0.0'
+]
+
+def pythonBootstrapName = 'python27'
+
+// The directory used to create the binaries (Python, virtualenv, etc.) for a virtual environment.
+def bootstrapDir = new File(buildDir, 'bootstrap')
+def bootstrapPythonDir = new File(bootstrapDir, pythonBootstrapName)
+def bootstrapBinDir = new File(bootstrapPythonDir, 'bin')
+def bootstrapVEnvBinary = new File(bootstrapBinDir, 'virtualenv')
+
+def venvDir = new File(buildDir, 'envs')
+def devVenvName = 'dev27'
+def devVenvDir = new File(venvDir, devVenvName)
+def devBinDir = new File(devVenvDir, 'bin')
+def devPythonBinary = new File(devBinDir, 'python')
+
+def devActivateSymlink = "${projectDir}/activate-${devVenvName}"
+
+envs {
+    bootstrapDirectory = bootstrapDir
+    envsDirectory = venvDir
+
+    // Pull packages from artifactory.
+    pipInstallOptions = '--trusted-host artifactory.delphix.com --index-url https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/'
+
+    // Setup a Python executable. This is where we could create a Jython executable as well.
+    python pythonBootstrapName, '2.7.15'
+
+    // Setup the virtual environment for development.
+    virtualenv devVenvName, 'python27', py2DevDependencies
+}
+
+/*
+ * DEVELOPMENT TASKS
+ */
+
+ // A convenience task that does everything needed to get started developing.
+ task dev {
+   dependsOn 'build_envs'
+   dependsOn 'symlinkDevActivate'
+   dependsOn 'installProject'
+ }
+
+ /*
+  * A convience task that needs to pass for code to be checked in. 'coverage'
+  * runs the tests so it's not necessary to call 'test'.
+  */
+ task precommit {
+     dependsOn 'lint'
+     dependsOn 'coverage'
+     dependsOn 'format'
+ }
+
+ // A convience task that formats both source and test code.
+ task format() {
+   dependsOn 'formatSrc'
+   dependsOn 'formatTest'
+   dependsOn 'sortSrcImports'
+   dependsOn 'sortTestImports'
+ }
+
+ task coverage(type: Exec) {
+   commandLine devPythonBinary, '-m', 'pytest', '--cov=src/virtualization', "${projectDir}/test"
+ }
+
+ task test(type: Exec) {
+   commandLine devPythonBinary, '-m', 'pytest', "${projectDir}/test"
+ }
+
+ task lint() {
+   dependsOn 'lintSrc'
+   dependsOn 'lintTest'
+ }
+
+ task installDevDependencies(type: Exec) {
+   def argList = [devPythonBinary, '-m', 'pip', "install"] + py2DevDependencies
+   commandLine argList.toArray()
+ }
+
+ task clearVEnv(type: Exec) {
+   println(bootstrapVEnvBinary)
+   commandLine 'virtualenv', devVenvDir, '--clear'
+ }
+
+/*
+ * BUILD TASKS
+ */
+
+ // A wrapper that builds the Python distribution.
+ task sdist(type: Exec) {
+   commandLine devPythonBinary, "${projectDir}/setup.py", 'sdist', '-d', "${buildDir}/dist"
+ }
+
+ task deleteDevActivateSymlink(type: Delete) {
+   delete devActivateSymlink
+ }
+
+ clean.dependsOn {
+   deleteDevActivateSymlink
+ }
+
+ // Point the build task at the 'sdist' task.
+ build.dependsOn {
+   sdist
+ }
+
+/*
+ * HELPER TASKS
+ *
+ * This are just wrappers around Python commands and need to be moved into
+ * a plugin.
+ */
+
+ /*
+  * Install the tools project into the development virtual environment.
+  *
+  * Ths is done with the '-e' flag for editable. This means that edits to this
+  * project will automatically be seen in the runtime without a need to reinstall.
+  */
+ task installProject(dependsOn: 'build_envs', type: Exec) {
+   commandLine devPythonBinary, '-m', 'pip', 'install',  '-e', "${projectDir}"
+ }
+
+/*
+ * Link the development activate script to the root of the project to make
+ * activating the virtual environment easier.
+ */
+task symlinkDevActivate(dependsOn: 'build_envs', type: Exec) {
+  commandLine 'ln', '-s', "${devBinDir}/activate", devActivateSymlink
+}
+
+task formatSrc(type: Exec) {
+  commandLine devPythonBinary, '-m', 'yapf', '--recursive', '--in-place', "${projectDir}/src"
+}
+
+task formatTest(type: Exec) {
+  commandLine devPythonBinary, '-m', 'yapf', '--recursive', '--in-place', "${projectDir}/test"
+}
+
+task sortSrcImports(type: Exec) {
+  commandLine devPythonBinary, '-m', 'isort', '-rc', "${projectDir}/src"
+}
+
+task sortTestImports(type: Exec) {
+  commandLine devPythonBinary, '-m', 'isort', '-rc', "${projectDir}/test"
+}
+
+task lintSrc(type: Exec) {
+  commandLine devPythonBinary, '-m', 'flake8', "${projectDir}/src"
+}
+
+task lintTest(type: Exec) {
+  commandLine devPythonBinary, '-m', 'flake8', "${projectDir}/test"
+}
