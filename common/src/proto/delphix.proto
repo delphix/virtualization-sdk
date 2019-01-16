@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Delphix. All rights reserved.
+ * Copyright (c) 2018, 2019 by Delphix. All rights reserved.
  */
 
 syntax = "proto3";
@@ -22,8 +22,8 @@ message RemoteEnvironment {
 message RemoteHost {
   string name = 1;
   string reference = 2;
-  string binaryPath = 3;
-  string scratchPath = 4;
+  string binary_path = 3;
+  string scratch_path = 4;
 }
 
 message RemoteUser {
@@ -38,26 +38,27 @@ message LinkedSource {
 
 message DirectSource {
   RemoteConnection connection = 1;
-  LinkedSource linkedSource = 2;
+  LinkedSource linked_source = 2;
 }
 
 message StagedSource {
-  LinkedSource linkedSource = 1;
-  RemoteConnection sourceConnection = 2;
-  SingleMount stagedMount = 3;
+  LinkedSource linked_source = 1;
+  RemoteConnection connection = 3;
+  SingleMount staged_mount = 4;
 }
 
 message SingleMount {
-  RemoteEnvironment remoteEnvironment = 1;
-  string mountPath = 2;
-  string sharedPath = 3; // not supported on Windows
+  RemoteEnvironment remote_environment = 1;
+  string mount_path = 2;
+  string shared_path = 3; // not supported on Windows
 }
 
 message VirtualSource {
   string guid = 1;
-  SingleMount primaryMount = 2;
-  repeated SingleMount additionalMountList = 3;
-  PluginDefinedObject parameters = 4;
+  RemoteConnection connection = 2;
+  SingleMount primary_mount = 3;
+  repeated SingleMount additional_mounts = 4;
+  PluginDefinedObject parameters = 5;
 }
 
 message SourceConfig {

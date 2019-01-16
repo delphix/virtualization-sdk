@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2018 by Delphix. All rights reserved.
+ * Copyright (c) 2018, 2019 by Delphix. All rights reserved.
  */
 
 syntax = "proto3";
 
-import "delphix.proto";
+import "common.proto";
 
 option java_multiple_files = true;
 
@@ -12,76 +12,82 @@ package com.delphix.virtualization.platform;
 
 /* DISCOVERY */
 
-message RepositoryDiscoveryInput {
-  com.delphix.virtualization.common.RemoteConnection sourceConnection = 1;
+message RepositoryDiscoveryRequest {
+  com.delphix.virtualization.common.RemoteConnection source_connection = 1;
 }
 
-message RepositoryDiscoveryOutput {
-  repeated com.delphix.virtualization.common.PluginDefinedObject repositoryList = 1;
+message RepositoryDiscoveryResponse {
+  repeated com.delphix.virtualization.common.PluginDefinedObject repositories = 1;
 }
 
-message SourceConfigDiscoveryInput {
-  com.delphix.virtualization.common.RemoteConnection sourceConnection = 1;
+message SourceConfigDiscoveryRequest {
+  com.delphix.virtualization.common.RemoteConnection source_connection = 1;
   com.delphix.virtualization.common.Repository repository = 2;
 }
 
-message SourceConfigDiscoveryOutput {
-  repeated com.delphix.virtualization.common.PluginDefinedObject sourceConfigList = 1;
+message SourceConfigDiscoveryResponse {
+  repeated com.delphix.virtualization.common.PluginDefinedObject source_configs = 1;
 }
 
 /* DIRECT LINKING */
 
-message DirectPreSnapshotInput {
-  com.delphix.virtualization.common.DirectSource directSource = 1;
+message DirectPreSnapshotRequest {
+  com.delphix.virtualization.common.DirectSource direct_source = 1;
   com.delphix.virtualization.common.Repository repository = 2;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 3;
 }
 
-message DirectPostSnapshotInput {
-  com.delphix.virtualization.common.DirectSource directSource = 1;
+message DirectPostSnapshotRequest {
+  com.delphix.virtualization.common.DirectSource direct_source = 1;
   com.delphix.virtualization.common.Repository repository = 2;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 3;
 }
 
 /* STAGED LINKING */
 
-message StagedPreSnapshotInput {
+message StagedPreSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedPostSnapshotInput {
+message StagedPostSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedResyncInput {
+message StagedResyncRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StartStagingInput {
+message StartStagingRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StopStagingInput {
+message StopStagingRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedStatusInput {
+message StagedStatusRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedStatusOutput {
+message StagedStatusResponse {
   enum Status {
     ACTIVE = 0;
     INACTIVE = 1;
@@ -89,86 +95,88 @@ message StagedStatusOutput {
   Status status = 1;
 }
 
-message StagedWorkerInput {
+message StagedWorkerRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.StagedSource stagedSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 3;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedMountSpecInput {
+message StagedMountSpecRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.StagedSource stagedSource = 2;
+  com.delphix.virtualization.common.StagedSource staged_source = 2;
+  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedMountSpecOutput {
+message StagedMountSpecResponse {
   string mountPath = 1;
-  com.delphix.virtualization.common.OwnershipSpec ownershipSpec = 2;
+  com.delphix.virtualization.common.OwnershipSpec ownership_spec = 2;
 }
 
 /* PROVISIONING */
 
-message ConfigureInput {
+message ConfigureRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.Snapshot snapshot = 2;
   com.delphix.virtualization.common.VirtualSource source = 3;
 }
 
-message ConfigureOutput {
-  com.delphix.virtualization.common.PluginDefinedObject sourceConfig = 1;
+message ConfigureResponse {
+  com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
 }
 
-message UnconfigureInput {
+message UnconfigureRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
   bool deleteFlag = 4;
 }
 
-message ReconfigureInput {
+message ReconfigureRequest {
   com.delphix.virtualization.common.Snapshot snapshot = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message ReconfigureOutput {
-  com.delphix.virtualization.common.PluginDefinedObject sourceConfig = 1;
+message ReconfigureResponse {
+  com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
 }
 
-message StartInput {
+message StartRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message StopInput {
+message StopRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualPreSnapshotInput {
+message VirtualPreSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualPostSnapshotInput {
+message VirtualPostSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualPostSnapshotOutput {
+message VirtualPostSnapshotResponse {
   com.delphix.virtualization.common.PluginDefinedObject snapshot = 1;
 }
 
-message VirtualStatusInput {
+message VirtualStatusRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualStatusOutput {
+message VirtualStatusResponse {
   enum Status {
     ACTIVE = 0;
     INACTIVE = 1;
@@ -176,37 +184,37 @@ message VirtualStatusOutput {
   Status status = 1;
 }
 
-message InitializeInput {
+message InitializeRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 2;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 3;
+  com.delphix.virtualization.common.SourceConfig source_config = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualMountSpecInput {
+message VirtualMountSpecRequest {
   com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.VirtualSource virtualSource = 2;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 2;
 }
 
-message VirtualMountSpecOutput {
-  com.delphix.virtualization.common.SingleMount primaryMount = 1;
-  repeated com.delphix.virtualization.common.SingleMount additionalMountList = 2;
-  repeated com.delphix.virtualization.common.OwnershipSpec ownershipSpecList = 3;
+message VirtualMountSpecResponse {
+  com.delphix.virtualization.common.SingleMount primary_mount = 1;
+  repeated com.delphix.virtualization.common.SingleMount additional_mounts = 2;
+  repeated com.delphix.virtualization.common.OwnershipSpec ownership_specs = 3;
 }
 
 /* UPGRADE */
 
-message UpgradeLinkedSourceInput {
-  com.delphix.virtualization.common.LinkedSource linkedSource = 1;
+message UpgradeLinkedSourceRequest {
+  com.delphix.virtualization.common.LinkedSource linked_source = 1;
 }
 
-message UpgradeVirtualSourceInput {
-  com.delphix.virtualization.common.VirtualSource virtualSource = 1;
+message UpgradeVirtualSourceRequest {
+  com.delphix.virtualization.common.VirtualSource virtual_source = 1;
 }
 
-message UpgradeSourceConfig {
-  com.delphix.virtualization.common.SourceConfig sourceConfig = 1;
+message UpgradeSourceConfigRequest {
+  com.delphix.virtualization.common.SourceConfig source_config = 1;
 }
 
-message UpgradeSnapshot {
+message UpgradeSnapshotRequest {
   com.delphix.virtualization.common.Snapshot snapshot = 1;
 }
