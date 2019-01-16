@@ -34,9 +34,9 @@ echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java
 
 rsync -av --progress ./../platform/src/python/virtualization/platform/ . --exclude __init__.py
+rm -r bin
 
 echo "Creating a Virtualization SDK jar..."
 JAR_FILE_NAME=sdk-\<version\>.jar
 jar cvf ${JAR_FILE_NAME} .
 mv ${JAR_FILE_NAME} ./../
-rm -r bin
