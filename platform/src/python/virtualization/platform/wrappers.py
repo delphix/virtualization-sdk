@@ -47,12 +47,13 @@ def configure_wrapper(configure_request):
       configure_request (ConfigureRequest): Configure operation arguments.
 
   Returns:
-      ConfigureResponse: The return value of configure operation.
+      ConfigureResponse: A response contiaining the return value of the
+      configure operation, as a ConfigureResult.
   """
     config = configure(
         source=configure_request.source,
         repository=configure_request.repository,
         snapshot=configure_request.snapshot)
     configure_response = platform_pb2.ConfigureResponse()
-    configure_response.source_config.json = config.to_json()
+    configure_response.return_value.source_config.json = config.to_json()
     return configure_response

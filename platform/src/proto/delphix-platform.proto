@@ -10,13 +10,32 @@ option java_multiple_files = true;
 
 package com.delphix.virtualization.platform;
 
+/* ERROR REPORTING */
+
+/*
+ * This indicates that a plugin elected not to handle an error raised by a callback.
+ *  - error_id can be used to look up the original exception from the callback worker.
+ *  - call_stack gives the location in Python code where the erroring callback was executed.
+ */
+message UnhandledCallbackError {
+  uint32 error_id = 1;
+  string call_stack = 2;
+}
+
+/* More error types will get inserted here in future */
+message PluginErrorResult {
+  oneof error {
+    UnhandledCallbackError unhandled_callback_error = 1;
+  }
+}
+
 /* DISCOVERY */
 
 message RepositoryDiscoveryRequest {
   com.delphix.virtualization.common.RemoteConnection source_connection = 1;
 }
 
-message RepositoryDiscoveryResponse {
+message RepositoryDiscoveryResult {
   repeated com.delphix.virtualization.common.PluginDefinedObject repositories = 1;
 }
 
@@ -25,7 +44,7 @@ message SourceConfigDiscoveryRequest {
   com.delphix.virtualization.common.Repository repository = 2;
 }
 
-message SourceConfigDiscoveryResponse {
+message SourceConfigDiscoveryResult {
   repeated com.delphix.virtualization.common.PluginDefinedObject source_configs = 1;
 }
 
@@ -87,7 +106,7 @@ message StagedStatusRequest {
   com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedStatusResponse {
+message StagedStatusResult {
   enum Status {
     ACTIVE = 0;
     INACTIVE = 1;
@@ -108,7 +127,7 @@ message StagedMountSpecRequest {
   com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedMountSpecResponse {
+message StagedMountSpecResult {
   string mountPath = 1;
   com.delphix.virtualization.common.OwnershipSpec ownership_spec = 2;
 }
@@ -121,8 +140,15 @@ message ConfigureRequest {
   com.delphix.virtualization.common.VirtualSource source = 3;
 }
 
-message ConfigureResponse {
+message ConfigureResult {
   com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
+}
+
+message ConfigureResponse {
+  oneof result {
+    ConfigureResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message UnconfigureRequest {
@@ -138,7 +164,7 @@ message ReconfigureRequest {
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message ReconfigureResponse {
+message ReconfigureResult {
   com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
 }
 
@@ -166,7 +192,7 @@ message VirtualPostSnapshotRequest {
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualPostSnapshotResponse {
+message VirtualPostSnapshotResult {
   com.delphix.virtualization.common.PluginDefinedObject snapshot = 1;
 }
 
@@ -176,7 +202,7 @@ message VirtualStatusRequest {
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
-message VirtualStatusResponse {
+message VirtualStatusResult {
   enum Status {
     ACTIVE = 0;
     INACTIVE = 1;
@@ -195,7 +221,7 @@ message VirtualMountSpecRequest {
   com.delphix.virtualization.common.VirtualSource virtual_source = 2;
 }
 
-message VirtualMountSpecResponse {
+message VirtualMountSpecResult {
   com.delphix.virtualization.common.SingleMount primary_mount = 1;
   repeated com.delphix.virtualization.common.SingleMount additional_mounts = 2;
   repeated com.delphix.virtualization.common.OwnershipSpec ownership_specs = 3;
