@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2019 by Delphix. All rights reserved.
+ */
+
+plugins {
+  id "java"
+  id "com.google.protobuf"
+  id "delphix.python"
+}
+
+repositories {
+  mavenCentral()
+}
+
+artifacts {
+  python sdist.distFile
+}
+
+dependencies {
+  // Necessary to compile generated java protocol buffer libraries.
+  compile project(":common")
+  // Necessary to compile generated python protocol buffer libraries.
+  python project(path: ":common", configuration: "python")
+}
+
+protobuf {
+
+  protoc {
+    artifact = "com.google.protobuf:protoc:3.6.1"
+  }
+
+  // This activates other protoc language targets.
+  // https://github.com/google/protobuf-gradle-plugin#default-outputs
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        python {
+        }
+      }
+    }
+  }
+  generatedFilesBaseDir = "$projectDir/src"
+}
+
+dlpxPython {
+  packages {
+    protobuf {
+      version = ">=3"
+    }
+  }
+
+  devPackages {
+    common {
+      // This specifies the first artifact dependency in the python
+      // configuration. This is the python source dists from other gradle
+      // projects.
+      path = configurations.getByName("python")[0]
+    }
+  }
+
+  supportedPythons {
+    "python2.7" {}
+  }
+}
+
+// sdist and the python tests depend on the generated python libraries
+// from the protoc plugin. Must manually specify as plugins are not aware
+// of each other.
+project.afterEvaluate {
+  tasks["sdist"].dependsOn tasks["generateProto"]
+  tasks["test_python2.7"].dependsOn tasks["generateProto"]
+}

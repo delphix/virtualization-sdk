@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2018, 2019 by Delphix. All rights reserved.
+ */
+
+syntax = "proto3";
+
+import "dlpx/virtualization/common.proto";
+
+option java_multiple_files = true;
+
+package com.delphix.virtualization.libs;
+
+message RunBashRequest {
+  com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
+  string command = 2;
+  map<string, string> variables = 3;
+}
+
+message RunBashResponse {
+  int32 exit_code = 1;
+  string stdout = 2;
+  string stderr = 3;
+}
+
+message RunPowerShellRequest {
+  com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
+  string command = 2;
+  map<string, string> variables = 3;
+}
+
+message RunPowerShellResponse {
+  int32 exit_code = 1;
+  string stdout = 2;
+  string stderr = 3;
+}
+
+message RunSyncRequest {
+  com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
+  string source_directory = 2;
+  string rsync_user = 3;
+}
+
+message RunExpectRequest {
+  com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
+  string command = 2;
+  map<string, string> variables = 3;
+}

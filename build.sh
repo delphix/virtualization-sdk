@@ -20,20 +20,20 @@ mkdir -p ${JAR_DIRECTORY}/dlpx/virtualization/
 touch ${JAR_DIRECTORY}/dlpx/__init__.py
 touch ${JAR_DIRECTORY}/dlpx/virtualization/__init__.py
 
-cp common/src/proto/delphix.proto ${JAR_DIRECTORY}/dlpx/virtualization/common.proto
-cp platform/src/proto/delphix-platform.proto ${JAR_DIRECTORY}/dlpx/virtualization/platform.proto
-cp libs/src/proto/delphix-libs.proto ${JAR_DIRECTORY}/dlpx/virtualization/libs.proto
+cp common/src/main/proto/dlpx/virtualization/common.proto ${JAR_DIRECTORY}/dlpx/virtualization/common.proto
+cp platform/src/main/proto/dlpx/virtualization/delphix-platform.proto ${JAR_DIRECTORY}/dlpx/virtualization/platform.proto
+cp libs/src/main/proto/dlpx/virtualization/delphix-libs.proto ${JAR_DIRECTORY}/dlpx/virtualization/libs.proto
 
 cd ${JAR_DIRECTORY}
 cp -r ./../bin .
 
 echo "Compiling protobuf definitions to Java and Python classes..."
-bin/protoc-3.6.1-osx-x86_64/bin/protoc -I=dlpx/virtualization --java_out=. --python_out=dlpx/virtualization dlpx/virtualization/common.proto dlpx/virtualization/platform.proto dlpx/virtualization/libs.proto
+bin/protoc-3.6.1-osx-x86_64/bin/protoc -I=. --java_out=. --python_out=. dlpx/virtualization/common.proto dlpx/virtualization/platform.proto dlpx/virtualization/libs.proto
 
 echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java
 
-rsync -av --progress ./../platform/src/python/virtualization/platform/ . --exclude __init__.py
+rsync -av --progress ./../platform/src/main/python/dlpx/virtualization/platform/ . --exclude __init__.py
 rm -r bin
 
 echo "Creating a Virtualization SDK jar..."

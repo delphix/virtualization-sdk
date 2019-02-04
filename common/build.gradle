@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2019 by Delphix. All rights reserved.
+ */
+
+plugins {
+  id "java"
+  id "com.google.protobuf"
+  id "delphix.python"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  // Necessary to compile generated java protocol buffer libraries.
+  compile 'com.google.protobuf:protobuf-java:3.6.1'
+}
+
+protobuf {
+
+  protoc {
+    artifact = 'com.google.protobuf:protoc:3.6.1'
+  }
+
+  // This activates other protoc language targets.
+  // https://github.com/google/protobuf-gradle-plugin#default-outputs
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        python {
+        }
+      }
+    }
+  }
+  generatedFilesBaseDir = "$projectDir/src"
+}
+
+dlpxPython {
+  dist {
+    name = "dlpx-virtualization-common"
+  }
+
+  packages {
+    protobuf {
+      version = ">=3"
+    }
+  }
+
+  devPackages {
+  }
+
+  supportedPythons {
+    "python2.7" {}
+  }
+}
+
+project.afterEvaluate {
+  tasks["sdist"].dependsOn tasks["generateProto"]
+  tasks["test_python2.7"].dependsOn tasks["generateProto"]
+}
+
+artifacts {
+  python sdist.distFile
+}

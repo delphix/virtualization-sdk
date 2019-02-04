@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
 # Non-build Gradle files
 .gradle/
 
@@ -18,3 +22,19 @@ activate*
 
 # Python coverage module's metadata
 .coverage
+
+# Pipenv virtual env directory
+.venv/
+
+# Pytest cache
+.pytest_cache/
+
+# Python cache
+__pycache__
+
+# Generated protobuf files
+*_pb2.py
+
+# Generated python build files
+Pipfile
+setup.py

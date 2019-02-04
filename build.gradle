@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2019 by Delphix. All rights reserved.
+ */
+
+plugins {
+  id "com.google.protobuf" version "0.8.7" apply false
+  id "delphix.python" version "0.0.3" apply false
+}
+
+subprojects {
+  version = "0.2.0-internal-002"
+}
