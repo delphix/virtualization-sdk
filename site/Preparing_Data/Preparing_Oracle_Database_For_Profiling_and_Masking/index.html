@@ -1,0 +1,1456 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Preparing Oracle Database for Profiling/Masking - Delphix Masking 5.3.2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#preparing-oracle-database-for-profilingmasking" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Masking 5.3.2" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Masking 5.3.2
+              </span>
+              <span class="md-header-nav__topic">
+                Preparing Oracle Database for Profiling/Masking
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Masking 5.3.2
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction to Delphix Masking" class="md-nav__link">
+      Introduction to Delphix Masking
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../What's New for Masking/" title="What's New for Masking Engines" class="md-nav__link">
+      What's New for Masking Engines
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Prerequisites/" title="Prerequisites" class="md-nav__link">
+      Prerequisites
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Data_Source_Support/" title="Data Source Support" class="md-nav__link">
+      Data Source Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Installation_First_Time_Setup/" title="Installation/First Time Setup" class="md-nav__link">
+      Installation/First Time Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Configuring_Virtualization_Service_for_Masked_Provisioning/" title="Configuring Virtualization Service for Masked Provisioning" class="md-nav__link">
+      Configuring Virtualization Service for Masked Provisioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Users_Roles/" title="Users and Roles" class="md-nav__link">
+      Users and Roles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Definitions_-_Terms_and_Meanings/" title="Delphix Masking Terminology" class="md-nav__link">
+      Delphix Masking Terminology
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Kerberos_Configuration/" title="Kerberos Configuration" class="md-nav__link">
+      Kerberos Configuration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Audit_Logs/" title="Audit Logs" class="md-nav__link">
+      Audit Logs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/PDF Versions of Masking Documentation/" title="PDF Versions of Masking Documentation" class="md-nav__link">
+      PDF Versions of Masking Documentation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Preparing Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Preparing Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Preparing Oracle Database for Profiling/Masking
+      </label>
+    
+    <a href="./" title="Preparing Oracle Database for Profiling/Masking" class="md-nav__link md-nav__link--active">
+      Preparing Oracle Database for Profiling/Masking
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#archive-logging" title="Archive Logging" class="md-nav__link">
+    Archive Logging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dbvdb-memory-allocation" title="DB/VDB Memory Allocation" class="md-nav__link">
+    DB/VDB Memory Allocation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#undo-tablespace-size-and-undo-retention-time" title="Undo Tablespace Size And Undo Retention Time:" class="md-nav__link">
+    Undo Tablespace Size And Undo Retention Time:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redo-logs-are-optimally-sized" title="Redo Logs Are Optimally Sized" class="md-nav__link">
+    Redo Logs Are Optimally Sized
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-pctfree-to-40-50" title="Change PCTFREE to 40-50:" class="md-nav__link">
+    Change PCTFREE to 40-50:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-primary-key-to-rowid" title="Change Primary Key To ROWID:" class="md-nav__link">
+    Change Primary Key To ROWID:
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Preparing_SQL_Server_Database_For_Profiling_and_Masking/" title="Preparing SQL Server Database For Profiling and Masking" class="md-nav__link">
+      Preparing SQL Server Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Preparing_Sybase_Database_For_Profiling_and_Masking/" title="Preparing Sybase Database For Profiling and Masking" class="md-nav__link">
+      Preparing Sybase Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Connecting Data to Masking Service
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Connecting Data to Masking Service
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Environments/" title="Managing Environments" class="md-nav__link">
+      Managing Environments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Connectors/" title="Managing Connectors" class="md-nav__link">
+      Managing Connectors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Rule_Sets/" title="Managing Rule Sets" class="md-nav__link">
+      Managing Rule Sets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_File_Formats/" title="Managing File Formats" class="md-nav__link">
+      Managing File Formats
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Inventories/" title="Managing Inventories" class="md-nav__link">
+      Managing Inventories
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Identifying Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Identifying Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Discovering_Your_Sensitive_Data_-_Intro/" title="Discovering Your Sensitive Data" class="md-nav__link">
+      Discovering Your Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Out_of_the_Box_Profiling_Settings/" title="Out of the Box Profiling Settings" class="md-nav__link">
+      Out of the Box Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Managing_Domains/" title="Managing Domains" class="md-nav__link">
+      Managing Domains
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Configuring_Profiling_Settings/" title="Configuring Profiling Settings" class="md-nav__link">
+      Configuring Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Creating_A_Profiling_Job/" title="Creating A Profiling Job" class="md-nav__link">
+      Creating A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Running_A_Profiling_Job/" title="Running A Profiling Job" class="md-nav__link">
+      Running A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Reporting_Profiling_Results/" title="Reporting Profiling Results" class="md-nav__link">
+      Reporting Profiling Results
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Securing Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Securing Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Out_Of_The_Box_Algorithm_Frameworks/" title="Out Of The Box Algorithm Frameworks" class="md-nav__link">
+      Out Of The Box Algorithm Frameworks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Configuring_Your_Own_Algorithms/" title="Configuring Your Own Algorithms" class="md-nav__link">
+      Configuring Your Own Algorithms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Creating_Masking_Job/" title="Creating Masking Job" class="md-nav__link">
+      Creating Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Provision_Masked_VDBs/" title="Provision Masked VDBs" class="md-nav__link">
+      Provision Masked VDBs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Monitoring_Masking_Job/" title="Monitoring Masking Job" class="md-nav__link">
+      Monitoring Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Masking_Job_Wizard/" title="Masking Job Wizard" class="md-nav__link">
+      Masking Job Wizard
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Managing Multiple Engines for Masking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Managing Multiple Engines for Masking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Working_with_Multiple_Masking_Engines/" title="Working with Multiple Masking Engines" class="md-nav__link">
+      Working with Multiple Masking Engines
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Masking_API_Call_Concepts/" title="Masking API Call Concepts" class="md-nav__link">
+      Masking API Call Concepts
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Endpoints/" title="Endpoints" class="md-nav__link">
+      Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Key_Management/" title="Key Management" class="md-nav__link">
+      Key Management
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Algorithm_Syncability/" title="Algorithm Syncability" class="md-nav__link">
+      Algorithm Syncability
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Changes_from_Version_1/" title="Changes from Version 1" class="md-nav__link">
+      Changes from Version 1
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Example_User_Workflow/" title="Example User Workflow" class="md-nav__link">
+      Example User Workflow
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Delphix Masking APIs
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Delphix Masking APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-1" type="checkbox" id="nav-9-1">
+    
+    <label class="md-nav__link" for="nav-9-1">
+      Masking Client
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-1">
+        Masking Client
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Masking_API_Client/" title="Masking API Client" class="md-nav__link">
+      Masking API Client
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_an_Inventory/" title="API Calls for Creating an Inventory" class="md-nav__link">
+      API Calls for Creating an Inventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_and_Running_Masking_Jobs/" title="API Calls for Creating and Running Masking Jobs" class="md-nav__link">
+      API Calls for Creating and Running Masking Jobs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_Involving_File_Upload_and_Download/" title="API Calls Involving File Upload and Download" class="md-nav__link">
+      API Calls Involving File Upload and Download
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Backwards_Compatibility_API_Usage/" title="Backwards Compatibility API Usage" class="md-nav__link">
+      Backwards Compatibility API Usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Incubating_API_Endpoints/" title="Incubating API Endpoints" class="md-nav__link">
+      Incubating API Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Algorithm_Extensions/" title="Algorithm Extensions" class="md-nav__link">
+      Algorithm Extensions
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-2" type="checkbox" id="nav-9-2">
+    
+    <label class="md-nav__link" for="nav-9-2">
+      API Examples
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-2">
+        API Examples
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/loginCredentials/" title="loginCredentials" class="md-nav__link">
+      loginCredentials
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/helpers/" title="helpers" class="md-nav__link">
+      helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/apiHostInfo/" title="apiHostInfo" class="md-nav__link">
+      apiHostInfo
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createApplication/" title="createApplication" class="md-nav__link">
+      createApplication
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createEnvironment/" title="createEnvironment" class="md-nav__link">
+      createEnvironment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createInventory/" title="createInventory" class="md-nav__link">
+      createInventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseConnector/" title="create DatabaseConnector" class="md-nav__link">
+      create DatabaseConnector
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseRuleset/" title="create DatabaseRuleset" class="md-nav__link">
+      create DatabaseRuleset
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getAuditLogs/" title="getAuditLogs" class="md-nav__link">
+      getAuditLogs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjects/" title="getSyncableObjects" class="md-nav__link">
+      getSyncableObjects
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjectsExport/" title="getSyncableObjectsExport" class="md-nav__link">
+      getSyncableObjectsExport
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+  <hr />
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    Previous Releases
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs51/delphix-masking/masking-engine" title="Delphix Masking 5.1" target="_blank" class="md-nav__link">
+        Masking 5.1
+      </a>
+    </li>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs525/delphix-masking/delphix-masking-engine" title="Delphix Masking 5.2" target="_blank" class="md-nav__link">
+        Masking 5.2
+      </a>
+    </li>
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#archive-logging" title="Archive Logging" class="md-nav__link">
+    Archive Logging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dbvdb-memory-allocation" title="DB/VDB Memory Allocation" class="md-nav__link">
+    DB/VDB Memory Allocation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#undo-tablespace-size-and-undo-retention-time" title="Undo Tablespace Size And Undo Retention Time:" class="md-nav__link">
+    Undo Tablespace Size And Undo Retention Time:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redo-logs-are-optimally-sized" title="Redo Logs Are Optimally Sized" class="md-nav__link">
+    Redo Logs Are Optimally Sized
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-pctfree-to-40-50" title="Change PCTFREE to 40-50:" class="md-nav__link">
+    Change PCTFREE to 40-50:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-primary-key-to-rowid" title="Change Primary Key To ROWID:" class="md-nav__link">
+    Change Primary Key To ROWID:
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="preparing-oracle-database-for-profilingmasking">Preparing Oracle Database for Profiling/Masking<a class="headerlink" href="#preparing-oracle-database-for-profilingmasking" title="Permanent link">&para;</a></h1>
+<p>Before masking your data, it is important to prepare your database. This 
+section explains the required changes, reasons for the changes, and instructions
+on how to make the changes.</p>
+<h2 id="archive-logging">Archive Logging<a class="headerlink" href="#archive-logging" title="Permanent link">&para;</a></h2>
+<p><strong>What is Archive Logging?</strong> </p>
+<p>Oracle Database lets you save filled groups of redo log files to one or more
+offline destinations, known collectively as the archived redo log, or more
+simply the archive log. The process of turning redo log files into archived redo
+log files is called archiving. This process is only possible if the database is
+running in ARCHIVELOG mode. You can choose automatic or manual archiving.</p>
+<p><strong>Why is it important to make this change?</strong> </p>
+<p>Archive logging will slow down masking processes and absorb CPU resources that
+could be used by the masking process.  Furthermore, since masking will change
+every row in every table being masked logs are only needed for short term
+recovery and transaction backout.  </p>
+<p>The choice of whether to enable the archiving of filled groups of redo log files
+depends on the availability and reliability requirements of the application
+running on the database. If you cannot afford to lose any data in your database
+in the event of a disk failure, use ARCHIVELOG mode. The archiving of filled
+redo log files can require you to perform extra administrative operations.</p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong> </p>
+<p><code>ALTER DATABASE NOARCHIVELOG;</code></p>
+<h2 id="dbvdb-memory-allocation">DB/VDB Memory Allocation<a class="headerlink" href="#dbvdb-memory-allocation" title="Permanent link">&para;</a></h2>
+<p><strong>What is SGA?</strong> 
+A system global area (SGA) is a group of shared memory structures that contain
+data and control information for one Oracle database instance. If multiple users
+are concurrently connected to the same instance, then the data in the instance's
+SGA is shared among the users. Consequently, the SGA is sometimes called the
+shared global area.</p>
+<p>An SGA and Oracle processes constitute an Oracle instance. Oracle automatically
+allocates memory for an SGA when you start an instance, and the operating system
+reclaims the memory when you shut down the instance. Each instance has its own
+SGA.</p>
+<p>The SGA is read/write. All users connected to a multiple-process database
+instance can read information contained within the instance's SGA, and severa
+l processes write to the SGA during execution of Oracle.
+When automatic SGA memory management is enabled, the sizes of the different SGA
+components are flexible and can adapt to the needs of a workload without
+requiring any additional configuration. The database automatically distributes
+the available memory among the various components as required, allowing the
+system to maximize the use of all available SGA memory. Make sure the DB/VDB
+memory allocation is sufficient for the workload. Delphix’s best practices for
+sizing a VDB will handle most masking requirements.  If you plan to run many
+concurrent masking jobs a small memory allocation will negatively impact
+performance of the masking jobs.  </p>
+<p><strong>Why is it important to make this change?</strong></p>
+<p>To assure that masking jobs will perform at an optimum level.  </p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong> 
+Set automatic SGA memory management to enabled. If not allowed set the SGA based
+on the diagnosis from the AWR report generated during a masking job. The DBA is 
+best suited to make the appropriate tuning changes to the SGA parameters for the
+version of oracle being masked.</p>
+<h2 id="undo-tablespace-size-and-undo-retention-time">Undo Tablespace Size And Undo Retention Time:<a class="headerlink" href="#undo-tablespace-size-and-undo-retention-time" title="Permanent link">&para;</a></h2>
+<p><strong>What is tablespace?</strong> 
+Every Oracle Database must have a method of maintaining information that is used
+to roll back, or undo, changes to the database. Such information consists of 
+records of the actions of transactions, primarily before they are committed. 
+These records are collectively referred to as undo.</p>
+<p>Undo records are used to:
+ - Roll back transactions when a ROLLBACK statement is issued
+ - Recover the database
+ - Provide read consistency
+ - Analyze data as of an earlier point in time by using Oracle Flashback Query
+ - Recover from logical corruptions using Oracle Flashback features</p>
+<p>When a ROLLBACK statement is issued, undo records are used to undo changes that
+were made to the database by the uncommitted transaction. During database
+recovery, undo records are used to undo any uncommitted changes applied from the
+redo log to the datafiles. Undo records provide read consistency by maintaining
+the before image of the data for users who are accessing the data at the same
+time that another user is changing it.</p>
+<p><strong>Why is it important to make this change?</strong> </p>
+<p>The masking Engine updates or inserts masked data in batches. In the case of an
+insert it only requires the current transaction size for the commit of each table
+being masked. The default per table stream is 10k rows. However, with an update
+the transaction is not complete until the entire table is masked. So, the more
+tables and more rows and the wider (size) each row is in each table, the more
+undo space is needed to complete the transaction. Large tables, such as DW
+tables or history and Audit tables, most often need an increase to the Undo
+space and undo Retention time for updates. If the space or time is exceeded then
+the masking job may fail with an ORA-01555, Snapshot too old error.</p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong> </p>
+<p>It is highly recommended to increase the Undo space and undo Retention time when
+running in-place jobs on large tables. A general rule of thumb is 2 or 3 times
+the size of the larges table(s), or if there are multiple tables running at the
+same time, then all tables combined. A DBA is best suited to make the necessary
+UDNO Space and the UNDO Retention changes.</p>
+<h2 id="redo-logs-are-optimally-sized">Redo Logs Are Optimally Sized<a class="headerlink" href="#redo-logs-are-optimally-sized" title="Permanent link">&para;</a></h2>
+<p><strong>What is Redo Logs?</strong> </p>
+<p>The most crucial structure for recovery operations is the redo log, which
+consists of two or more preallocated files that store all changes made to the
+database as they occur. Every instance of an Oracle Database has an associated
+redo log to protect the database in case of an instance failure.</p>
+<p><strong>Why is it important to make this change?</strong> </p>
+<p>The most important reason to make this change is to keep performance optimal.
+If redo logs are too small, then the log switching will occur too often, using
+up valuable Oracle resource.</p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong> </p>
+<p>A DBA is best suited to make these changes appropriately.</p>
+<h2 id="change-pctfree-to-40-50">Change PCTFREE to 40-50:<a class="headerlink" href="#change-pctfree-to-40-50" title="Permanent link">&para;</a></h2>
+<p><strong>What is PCTFREE?</strong> </p>
+<p>PCTFREE and PCTUSED are used together, but PCTFREE is critical for updates.
+The larger the PCTFREE value the more updates can be done.</p>
+<p><strong>Why is it important to make this change?</strong> </p>
+<p>PCTFREE aids in performance increases for updating Oracle during masking. The
+Masking Engine does many updates at the same time in batch mode. The more that 
+can be done without DB overhead the faster the masking jobs run.</p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong></p>
+<p>A DBA is best suited to make these changes.</p>
+<h2 id="change-primary-key-to-rowid">Change Primary Key To ROWID:<a class="headerlink" href="#change-primary-key-to-rowid" title="Permanent link">&para;</a></h2>
+<p><strong>What is ROWID?</strong> </p>
+<p>For each row in the database, the ROWID pseudocolumn returns the address of the
+row. Oracle Database rowid values contain information necessary to locate a row.</p>
+<p><strong>Why is it important to make this change?</strong></p>
+<p>This is especially important in masking for performance. IF ROWID is used then
+Oracle will manage the updates for the rows it tracks using ROWID. This makes
+updates much faster. On occasion there may be a key (PK/FK/UK) or ID column with
+an index that is faster, but generally ROWID is the fastest.</p>
+<p><strong>How exactly do I make this change? (exact commands, etc).</strong></p>
+<p>Add ROWID as the logical key on each table in the ruleset using the Masking
+Engine GUI. Also, in a script you should drop foreign keys, and if possible
+indices and disable triggers and recreate them after the masking job has been
+run for any of these types of columns being masked. </p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../../Getting_Started/PDF Versions of Masking Documentation/" title="PDF Versions of Masking Documentation" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                PDF Versions of Masking Documentation
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Preparing_SQL_Server_Database_For_Profiling_and_Masking/" title="Preparing SQL Server Database For Profiling and Masking" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Preparing SQL Server Database For Profiling and Masking
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2018 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

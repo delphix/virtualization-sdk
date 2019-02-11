@@ -1,0 +1,1485 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Managing File Formats - Delphix Masking 5.3.2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#managing-file-formats" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Masking 5.3.2" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Masking 5.3.2
+              </span>
+              <span class="md-header-nav__topic">
+                Managing File Formats
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Masking 5.3.2
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction to Delphix Masking" class="md-nav__link">
+      Introduction to Delphix Masking
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../What's New for Masking/" title="What's New for Masking Engines" class="md-nav__link">
+      What's New for Masking Engines
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Prerequisites/" title="Prerequisites" class="md-nav__link">
+      Prerequisites
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Data_Source_Support/" title="Data Source Support" class="md-nav__link">
+      Data Source Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Installation_First_Time_Setup/" title="Installation/First Time Setup" class="md-nav__link">
+      Installation/First Time Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Configuring_Virtualization_Service_for_Masked_Provisioning/" title="Configuring Virtualization Service for Masked Provisioning" class="md-nav__link">
+      Configuring Virtualization Service for Masked Provisioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Users_Roles/" title="Users and Roles" class="md-nav__link">
+      Users and Roles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Definitions_-_Terms_and_Meanings/" title="Delphix Masking Terminology" class="md-nav__link">
+      Delphix Masking Terminology
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Kerberos_Configuration/" title="Kerberos Configuration" class="md-nav__link">
+      Kerberos Configuration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Audit_Logs/" title="Audit Logs" class="md-nav__link">
+      Audit Logs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/PDF Versions of Masking Documentation/" title="PDF Versions of Masking Documentation" class="md-nav__link">
+      PDF Versions of Masking Documentation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Preparing Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Preparing Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_Oracle_Database_For_Profiling_and_Masking/" title="Preparing Oracle Database for Profiling/Masking" class="md-nav__link">
+      Preparing Oracle Database for Profiling/Masking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_SQL_Server_Database_For_Profiling_and_Masking/" title="Preparing SQL Server Database For Profiling and Masking" class="md-nav__link">
+      Preparing SQL Server Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_Sybase_Database_For_Profiling_and_Masking/" title="Preparing Sybase Database For Profiling and Masking" class="md-nav__link">
+      Preparing Sybase Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      Connecting Data to Masking Service
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Connecting Data to Masking Service
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Managing_Environments/" title="Managing Environments" class="md-nav__link">
+      Managing Environments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Managing_Connectors/" title="Managing Connectors" class="md-nav__link">
+      Managing Connectors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Managing_Rule_Sets/" title="Managing Rule Sets" class="md-nav__link">
+      Managing Rule Sets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Managing File Formats
+      </label>
+    
+    <a href="./" title="Managing File Formats" class="md-nav__link md-nav__link--active">
+      Managing File Formats
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-formats" title="File formats" class="md-nav__link">
+    File formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mainframe-and-xml-files" title="Mainframe and XML files" class="md-nav__link">
+    Mainframe and XML files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#delimited-excel-fixed-files" title="Delimited, Excel, Fixed files" class="md-nav__link">
+    Delimited, Excel, Fixed files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-import-a-new-file-format" title="To Import a New File Format" class="md-nav__link">
+    To Import a New File Format
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-a-format-type-of-copybook-or-xml" title="For a Format Type of Copybook or XML" class="md-nav__link">
+    For a Format Type of Copybook or XML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-a-format-type-of-delimited-file-excel-sheet-or-fixed-width-file" title="For a Format Type of Delimited File, Excel sheet, or Fixed Width File" class="md-nav__link">
+    For a Format Type of Delimited File, Excel sheet, or Fixed Width File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-a-selected-file" title="Removing a Selected File" class="md-nav__link">
+    Removing a Selected File
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#samples" title="Samples" class="md-nav__link">
+    Samples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-delete-a-file-format" title="To Delete a File Format" class="md-nav__link">
+    To Delete a File Format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assigning-a-file-format-to-a-files" title="Assigning a File Format to a files" class="md-nav__link">
+    Assigning a File Format to a files
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Managing_Inventories/" title="Managing Inventories" class="md-nav__link">
+      Managing Inventories
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Identifying Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Identifying Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Discovering_Your_Sensitive_Data_-_Intro/" title="Discovering Your Sensitive Data" class="md-nav__link">
+      Discovering Your Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Out_of_the_Box_Profiling_Settings/" title="Out of the Box Profiling Settings" class="md-nav__link">
+      Out of the Box Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Managing_Domains/" title="Managing Domains" class="md-nav__link">
+      Managing Domains
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Configuring_Profiling_Settings/" title="Configuring Profiling Settings" class="md-nav__link">
+      Configuring Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Creating_A_Profiling_Job/" title="Creating A Profiling Job" class="md-nav__link">
+      Creating A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Running_A_Profiling_Job/" title="Running A Profiling Job" class="md-nav__link">
+      Running A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Reporting_Profiling_Results/" title="Reporting Profiling Results" class="md-nav__link">
+      Reporting Profiling Results
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Securing Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Securing Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Out_Of_The_Box_Algorithm_Frameworks/" title="Out Of The Box Algorithm Frameworks" class="md-nav__link">
+      Out Of The Box Algorithm Frameworks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Configuring_Your_Own_Algorithms/" title="Configuring Your Own Algorithms" class="md-nav__link">
+      Configuring Your Own Algorithms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Creating_Masking_Job/" title="Creating Masking Job" class="md-nav__link">
+      Creating Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Provision_Masked_VDBs/" title="Provision Masked VDBs" class="md-nav__link">
+      Provision Masked VDBs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Monitoring_Masking_Job/" title="Monitoring Masking Job" class="md-nav__link">
+      Monitoring Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Securing_Sensitive_Data/Masking_Job_Wizard/" title="Masking Job Wizard" class="md-nav__link">
+      Masking Job Wizard
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Managing Multiple Engines for Masking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Managing Multiple Engines for Masking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Working_with_Multiple_Masking_Engines/" title="Working with Multiple Masking Engines" class="md-nav__link">
+      Working with Multiple Masking Engines
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Masking_API_Call_Concepts/" title="Masking API Call Concepts" class="md-nav__link">
+      Masking API Call Concepts
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Endpoints/" title="Endpoints" class="md-nav__link">
+      Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Key_Management/" title="Key Management" class="md-nav__link">
+      Key Management
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Algorithm_Syncability/" title="Algorithm Syncability" class="md-nav__link">
+      Algorithm Syncability
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Changes_from_Version_1/" title="Changes from Version 1" class="md-nav__link">
+      Changes from Version 1
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Example_User_Workflow/" title="Example User Workflow" class="md-nav__link">
+      Example User Workflow
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Delphix Masking APIs
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Delphix Masking APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-1" type="checkbox" id="nav-9-1">
+    
+    <label class="md-nav__link" for="nav-9-1">
+      Masking Client
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-1">
+        Masking Client
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Masking_API_Client/" title="Masking API Client" class="md-nav__link">
+      Masking API Client
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_an_Inventory/" title="API Calls for Creating an Inventory" class="md-nav__link">
+      API Calls for Creating an Inventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_and_Running_Masking_Jobs/" title="API Calls for Creating and Running Masking Jobs" class="md-nav__link">
+      API Calls for Creating and Running Masking Jobs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_Involving_File_Upload_and_Download/" title="API Calls Involving File Upload and Download" class="md-nav__link">
+      API Calls Involving File Upload and Download
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Backwards_Compatibility_API_Usage/" title="Backwards Compatibility API Usage" class="md-nav__link">
+      Backwards Compatibility API Usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Incubating_API_Endpoints/" title="Incubating API Endpoints" class="md-nav__link">
+      Incubating API Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Algorithm_Extensions/" title="Algorithm Extensions" class="md-nav__link">
+      Algorithm Extensions
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-2" type="checkbox" id="nav-9-2">
+    
+    <label class="md-nav__link" for="nav-9-2">
+      API Examples
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-2">
+        API Examples
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/loginCredentials/" title="loginCredentials" class="md-nav__link">
+      loginCredentials
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/helpers/" title="helpers" class="md-nav__link">
+      helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/apiHostInfo/" title="apiHostInfo" class="md-nav__link">
+      apiHostInfo
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createApplication/" title="createApplication" class="md-nav__link">
+      createApplication
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createEnvironment/" title="createEnvironment" class="md-nav__link">
+      createEnvironment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createInventory/" title="createInventory" class="md-nav__link">
+      createInventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseConnector/" title="create DatabaseConnector" class="md-nav__link">
+      create DatabaseConnector
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseRuleset/" title="create DatabaseRuleset" class="md-nav__link">
+      create DatabaseRuleset
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getAuditLogs/" title="getAuditLogs" class="md-nav__link">
+      getAuditLogs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjects/" title="getSyncableObjects" class="md-nav__link">
+      getSyncableObjects
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjectsExport/" title="getSyncableObjectsExport" class="md-nav__link">
+      getSyncableObjectsExport
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+  <hr />
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    Previous Releases
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs51/delphix-masking/masking-engine" title="Delphix Masking 5.1" target="_blank" class="md-nav__link">
+        Masking 5.1
+      </a>
+    </li>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs525/delphix-masking/delphix-masking-engine" title="Delphix Masking 5.2" target="_blank" class="md-nav__link">
+        Masking 5.2
+      </a>
+    </li>
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-formats" title="File formats" class="md-nav__link">
+    File formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mainframe-and-xml-files" title="Mainframe and XML files" class="md-nav__link">
+    Mainframe and XML files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#delimited-excel-fixed-files" title="Delimited, Excel, Fixed files" class="md-nav__link">
+    Delimited, Excel, Fixed files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-import-a-new-file-format" title="To Import a New File Format" class="md-nav__link">
+    To Import a New File Format
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-a-format-type-of-copybook-or-xml" title="For a Format Type of Copybook or XML" class="md-nav__link">
+    For a Format Type of Copybook or XML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-a-format-type-of-delimited-file-excel-sheet-or-fixed-width-file" title="For a Format Type of Delimited File, Excel sheet, or Fixed Width File" class="md-nav__link">
+    For a Format Type of Delimited File, Excel sheet, or Fixed Width File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-a-selected-file" title="Removing a Selected File" class="md-nav__link">
+    Removing a Selected File
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#samples" title="Samples" class="md-nav__link">
+    Samples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-delete-a-file-format" title="To Delete a File Format" class="md-nav__link">
+    To Delete a File Format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assigning-a-file-format-to-a-files" title="Assigning a File Format to a files" class="md-nav__link">
+    Assigning a File Format to a files
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="managing-file-formats">Managing File Formats<a class="headerlink" href="#managing-file-formats" title="Permanent link">&para;</a></h1>
+<h2 id="file-formats">File formats<a class="headerlink" href="#file-formats" title="Permanent link">&para;</a></h2>
+<p>Unlike databases files for the most part do not have built in metadata to describe the format of the fields in the file. You must provide this to Delphix so it can update the file appropriately. This is done through the settings tab where you will see a menu item on the left for File Format. Select File Format and you will see options to create a file format or input a file format. This will depend on the type of file and how you want to let Delphix know the format of the file.</p>
+<h2 id="mainframe-and-xml-files">Mainframe and XML files<a class="headerlink" href="#mainframe-and-xml-files" title="Permanent link">&para;</a></h2>
+<p>For Mainframe data sets, you can specify the file format via Input Format option which will import the copybook directly into Delphix. You can input this file from SFTP or FTP. Please select Copybook as the Import Format Type.
+For XML files you can also input the file format with the input format option. You can use the file you want to mask as the format. Delphix will input the format of the file directly. You can input this file from SFTP or FTP. Please select XML as the Import Format Type.</p>
+<h2 id="delimited-excel-fixed-files">Delimited, Excel, Fixed files<a class="headerlink" href="#delimited-excel-fixed-files" title="Permanent link">&para;</a></h2>
+<p>For Delimited, Excel, and Fixed files you can either manually create the format of the file yourself, or you can input a text file which describes the structure of the file to Delphix. To input the file format for delimited or Excel files create a text document with the column names each on its own line. For example:</p>
+<ul>
+<li>Name</li>
+<li>Address</li>
+<li>City</li>
+<li>State</li>
+</ul>
+<p>To input the file format for fixed files create a text document with the column names and the length of each column on its own line. For example:</p>
+<ul>
+<li>Name,25</li>
+<li>Address,40</li>
+<li>City,20</li>
+<li>State,2</li>
+</ul>
+<p>Then input this file as the file format. The name of the text file will be the name of the file format. To create a format manually, you can just click the create format button and give the format a name. We will input the details of the format a little later in this document.</p>
+<p><img alt="" src="../media/new_connector.png" /></p>
+<ol>
+<li>Click <strong>Create Format</strong> in the upper right. The Create File Format window appears.</li>
+<li>Enter a <strong>File Format Name</strong>.</li>
+<li>
+<p>Choose a <strong>File Format Type</strong>:</p>
+<ul>
+<li>Delimited File</li>
+<li>Excel Sheet</li>
+<li>Fixed Width File</li>
+</ul>
+<p><strong>Note</strong>:
+ Creating a Copybook or XML file format is not supported. These formats must be imported instead.</p>
+</li>
+<li>
+<p>Optionally, enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Submit</strong>.</p>
+<p><img alt="" src="../media/fileformat.png" /></p>
+</li>
+</ol>
+<h2 id="to-import-a-new-file-format">To Import a New File Format<a class="headerlink" href="#to-import-a-new-file-format" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Click <strong>Import Format</strong> at the upper right. The Import File Format window appears.</li>
+<li>Select an <strong>Import File Type</strong>.</li>
+</ol>
+<h3 id="for-a-format-type-of-copybook-or-xml">For a Format Type of Copybook or XML<a class="headerlink" href="#for-a-format-type-of-copybook-or-xml" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Select a <strong>Connection Mode</strong>.</li>
+<li>Fill out the required fields of the selected <strong>Connection Mode</strong>.</li>
+<li>Click <strong>Browse</strong>.</li>
+<li>Click the <strong>Select</strong> button to the right of the desired import file format.</li>
+<li>Enter a <strong>Logical Name</strong>.</li>
+<li>Click <strong>Submit</strong>.</li>
+</ol>
+<h3 id="for-a-format-type-of-delimited-file-excel-sheet-or-fixed-width-file">For a Format Type of Delimited File, Excel sheet, or Fixed Width File<a class="headerlink" href="#for-a-format-type-of-delimited-file-excel-sheet-or-fixed-width-file" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Click <strong>Select</strong>.</li>
+<li>Browse for the file from which to import fields.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<p><strong>Note:</strong>
+     - The file must have NO header.
+     - Make sure there are no spaces or returns at the end of the last line in the file.
+     - To be masked, the field names must be in the same order as they are in the file.</p>
+<h3 id="removing-a-selected-file">Removing a Selected File<a class="headerlink" href="#removing-a-selected-file" title="Permanent link">&para;</a></h3>
+<p><img alt="" src="../media/importformat.png" /></p>
+<p>If you accidentally selected an incorrect file, simply click Remove button to the right of the file and repeat selection steps above.</p>
+<h2 id="samples">Samples<a class="headerlink" href="#samples" title="Permanent link">&para;</a></h2>
+<p>The following is sample file content for Delimited or Excel file formats. With these formats just the field name is provided. Notice there is no header and only a list of values.</p>
+<p><img alt="" src="../media/sample1.png" /></p>
+<p>The following is sample file content for Fixed Width format. In this format the field name is followed by the length of the field, separated by a comma. Notice there is no header and only a list of values.</p>
+<p><img alt="" src="../media/sample2.png" /></p>
+<h2 id="to-delete-a-file-format">To Delete a File Format<a class="headerlink" href="#to-delete-a-file-format" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Click the <strong>Delete</strong> icon to the right of the File Format name.</li>
+<li>File inventory is based on file format. Therefore, if you make a change to a file inventory, that change applies to <em>all</em> files that use that format.</li>
+<li>You can only add or delete a file format; you cannot edit one.</li>
+</ol>
+<h2 id="assigning-a-file-format-to-a-files">Assigning a File Format to a files<a class="headerlink" href="#assigning-a-file-format-to-a-files" title="Permanent link">&para;</a></h2>
+<p>Once you create a ruleset with a file or set of files, you will need to assign those files to their appropriate file format. This is accomplished by editing the ruleset. When you click on the edit button for the file a popup screen called edit file will appear with the file name. There will be a dropdown for the format so you can select the proper format for the file. If the file is a Mainframe data sets file with a copybook you will see a checkbox to signify if the file is variable length. For all other file types, select the end-of-record to let Delphix know whether the file is in windows/dos format (CR+LF) or Linux format (LF). If the file is a delimited file you will have a space to put in the delimiter. If there are multiple files in the ruleset you will have to edit each one individually and assign it to the appropriate file format.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Managing_Rule_Sets/" title="Managing Rule Sets" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Managing Rule Sets
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Managing_Inventories/" title="Managing Inventories" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Managing Inventories
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2018 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

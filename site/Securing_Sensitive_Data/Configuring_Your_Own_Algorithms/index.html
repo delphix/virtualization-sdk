@@ -1,0 +1,2110 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Configuring Your Own Algorithms - Delphix Masking 5.3.2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#configuring-your-own-algorithms" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Masking 5.3.2" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Masking 5.3.2
+              </span>
+              <span class="md-header-nav__topic">
+                Configuring Your Own Algorithms
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Masking 5.3.2
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction to Delphix Masking" class="md-nav__link">
+      Introduction to Delphix Masking
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../What's New for Masking/" title="What's New for Masking Engines" class="md-nav__link">
+      What's New for Masking Engines
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Prerequisites/" title="Prerequisites" class="md-nav__link">
+      Prerequisites
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Data_Source_Support/" title="Data Source Support" class="md-nav__link">
+      Data Source Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Installation_First_Time_Setup/" title="Installation/First Time Setup" class="md-nav__link">
+      Installation/First Time Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Configuring_Virtualization_Service_for_Masked_Provisioning/" title="Configuring Virtualization Service for Masked Provisioning" class="md-nav__link">
+      Configuring Virtualization Service for Masked Provisioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Users_Roles/" title="Users and Roles" class="md-nav__link">
+      Users and Roles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Definitions_-_Terms_and_Meanings/" title="Delphix Masking Terminology" class="md-nav__link">
+      Delphix Masking Terminology
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Kerberos_Configuration/" title="Kerberos Configuration" class="md-nav__link">
+      Kerberos Configuration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/Audit_Logs/" title="Audit Logs" class="md-nav__link">
+      Audit Logs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/PDF Versions of Masking Documentation/" title="PDF Versions of Masking Documentation" class="md-nav__link">
+      PDF Versions of Masking Documentation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Preparing Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Preparing Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_Oracle_Database_For_Profiling_and_Masking/" title="Preparing Oracle Database for Profiling/Masking" class="md-nav__link">
+      Preparing Oracle Database for Profiling/Masking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_SQL_Server_Database_For_Profiling_and_Masking/" title="Preparing SQL Server Database For Profiling and Masking" class="md-nav__link">
+      Preparing SQL Server Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Preparing_Data/Preparing_Sybase_Database_For_Profiling_and_Masking/" title="Preparing Sybase Database For Profiling and Masking" class="md-nav__link">
+      Preparing Sybase Database For Profiling and Masking
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Connecting Data to Masking Service
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Connecting Data to Masking Service
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Environments/" title="Managing Environments" class="md-nav__link">
+      Managing Environments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Connectors/" title="Managing Connectors" class="md-nav__link">
+      Managing Connectors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Rule_Sets/" title="Managing Rule Sets" class="md-nav__link">
+      Managing Rule Sets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_File_Formats/" title="Managing File Formats" class="md-nav__link">
+      Managing File Formats
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Connecting_Data_to_Masking_Service/Managing_Inventories/" title="Managing Inventories" class="md-nav__link">
+      Managing Inventories
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Identifying Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Identifying Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Discovering_Your_Sensitive_Data_-_Intro/" title="Discovering Your Sensitive Data" class="md-nav__link">
+      Discovering Your Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Out_of_the_Box_Profiling_Settings/" title="Out of the Box Profiling Settings" class="md-nav__link">
+      Out of the Box Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Managing_Domains/" title="Managing Domains" class="md-nav__link">
+      Managing Domains
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Configuring_Profiling_Settings/" title="Configuring Profiling Settings" class="md-nav__link">
+      Configuring Profiling Settings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Creating_A_Profiling_Job/" title="Creating A Profiling Job" class="md-nav__link">
+      Creating A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Running_A_Profiling_Job/" title="Running A Profiling Job" class="md-nav__link">
+      Running A Profiling Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Identifying_Sensitive_Data/Reporting_Profiling_Results/" title="Reporting Profiling Results" class="md-nav__link">
+      Reporting Profiling Results
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Securing Sensitive Data
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Securing Sensitive Data
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Out_Of_The_Box_Algorithm_Frameworks/" title="Out Of The Box Algorithm Frameworks" class="md-nav__link">
+      Out Of The Box Algorithm Frameworks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Configuring Your Own Algorithms
+      </label>
+    
+    <a href="./" title="Configuring Your Own Algorithms" class="md-nav__link md-nav__link--active">
+      Configuring Your Own Algorithms
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm-settings" title="Algorithm Settings" class="md-nav__link">
+    Algorithm Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-new-algorithms" title="Creating New Algorithms" class="md-nav__link">
+    Creating New Algorithms
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-an-algorithm-framework" title="Choosing an Algorithm Framework" class="md-nav__link">
+    Choosing an Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secure-lookup-algorithm-framework" title="Secure Lookup Algorithm Framework" class="md-nav__link">
+    Secure Lookup Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segmented-mapping-algorithm-framework" title="Segmented Mapping Algorithm Framework" class="md-nav__link">
+    Segmented Mapping Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#specifying-range-values" title="Specifying Range Values" class="md-nav__link">
+    Specifying Range Values
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numeric-segment-type" title="Numeric segment type" class="md-nav__link">
+    Numeric segment type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alphanumeric-segment-type" title="Alphanumeric segment type" class="md-nav__link">
+    Alphanumeric segment type
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-algorithm-framework" title="Mapping Algorithm Framework" class="md-nav__link">
+    Mapping Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#masking-binary-lookup-algorithm-framework" title="Masking Binary Lookup Algorithm Framework" class="md-nav__link">
+    Masking Binary Lookup Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenization-algorithm-framework" title="Tokenization Algorithm Framework" class="md-nav__link">
+    Tokenization Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min-max-algorithm-framework" title="MIN Max Algorithm Framework" class="md-nav__link">
+    MIN Max Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-cleansing-algorithm-framework" title="Data Cleansing Algorithm Framework" class="md-nav__link">
+    Data Cleansing Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#free-text-algorithm-framework" title="Free Text Algorithm Framework" class="md-nav__link">
+    Free Text Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-text-redaction-example" title="Free Text Redaction Example" class="md-nav__link">
+    Free Text Redaction Example
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-an-algorithm" title="Create an Algorithm" class="md-nav__link">
+    Create an Algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-rule-set" title="Create Rule Set" class="md-nav__link">
+    Create Rule Set
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-masking-job" title="Create Masking Job" class="md-nav__link">
+    Create Masking Job
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Creating_Masking_Job/" title="Creating Masking Job" class="md-nav__link">
+      Creating Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Provision_Masked_VDBs/" title="Provision Masked VDBs" class="md-nav__link">
+      Provision Masked VDBs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Monitoring_Masking_Job/" title="Monitoring Masking Job" class="md-nav__link">
+      Monitoring Masking Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Masking_Job_Wizard/" title="Masking Job Wizard" class="md-nav__link">
+      Masking Job Wizard
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Managing Multiple Engines for Masking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Managing Multiple Engines for Masking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Working_with_Multiple_Masking_Engines/" title="Working with Multiple Masking Engines" class="md-nav__link">
+      Working with Multiple Masking Engines
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Masking_API_Call_Concepts/" title="Masking API Call Concepts" class="md-nav__link">
+      Masking API Call Concepts
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Endpoints/" title="Endpoints" class="md-nav__link">
+      Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Key_Management/" title="Key Management" class="md-nav__link">
+      Key Management
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Algorithm_Syncability/" title="Algorithm Syncability" class="md-nav__link">
+      Algorithm Syncability
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Changes_from_Version_1/" title="Changes from Version 1" class="md-nav__link">
+      Changes from Version 1
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Managing_Multiple_Engines_for_Masking/Example_User_Workflow/" title="Example User Workflow" class="md-nav__link">
+      Example User Workflow
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Delphix Masking APIs
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Delphix Masking APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-1" type="checkbox" id="nav-9-1">
+    
+    <label class="md-nav__link" for="nav-9-1">
+      Masking Client
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-1">
+        Masking Client
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Masking_API_Client/" title="Masking API Client" class="md-nav__link">
+      Masking API Client
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_an_Inventory/" title="API Calls for Creating an Inventory" class="md-nav__link">
+      API Calls for Creating an Inventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_for_Creating_and_Running_Masking_Jobs/" title="API Calls for Creating and Running Masking Jobs" class="md-nav__link">
+      API Calls for Creating and Running Masking Jobs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/API_Calls_Involving_File_Upload_and_Download/" title="API Calls Involving File Upload and Download" class="md-nav__link">
+      API Calls Involving File Upload and Download
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Backwards_Compatibility_API_Usage/" title="Backwards Compatibility API Usage" class="md-nav__link">
+      Backwards Compatibility API Usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Incubating_API_Endpoints/" title="Incubating API Endpoints" class="md-nav__link">
+      Incubating API Endpoints
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/Masking_Client/Algorithm_Extensions/" title="Algorithm Extensions" class="md-nav__link">
+      Algorithm Extensions
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-2" type="checkbox" id="nav-9-2">
+    
+    <label class="md-nav__link" for="nav-9-2">
+      API Examples
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-2">
+        API Examples
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/loginCredentials/" title="loginCredentials" class="md-nav__link">
+      loginCredentials
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/helpers/" title="helpers" class="md-nav__link">
+      helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/apiHostInfo/" title="apiHostInfo" class="md-nav__link">
+      apiHostInfo
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createApplication/" title="createApplication" class="md-nav__link">
+      createApplication
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createEnvironment/" title="createEnvironment" class="md-nav__link">
+      createEnvironment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/createInventory/" title="createInventory" class="md-nav__link">
+      createInventory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseConnector/" title="create DatabaseConnector" class="md-nav__link">
+      create DatabaseConnector
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/create_DatabaseRuleset/" title="create DatabaseRuleset" class="md-nav__link">
+      create DatabaseRuleset
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getAuditLogs/" title="getAuditLogs" class="md-nav__link">
+      getAuditLogs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjects/" title="getSyncableObjects" class="md-nav__link">
+      getSyncableObjects
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Delphix_Masking_APIs/API_Examples/getSyncableObjectsExport/" title="getSyncableObjectsExport" class="md-nav__link">
+      getSyncableObjectsExport
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+  <hr />
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    Previous Releases
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs51/delphix-masking/masking-engine" title="Delphix Masking 5.1" target="_blank" class="md-nav__link">
+        Masking 5.1
+      </a>
+    </li>
+    <li class="md-nav__item">
+      <a href="https://docs.delphix.com/docs525/delphix-masking/delphix-masking-engine" title="Delphix Masking 5.2" target="_blank" class="md-nav__link">
+        Masking 5.2
+      </a>
+    </li>
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm-settings" title="Algorithm Settings" class="md-nav__link">
+    Algorithm Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-new-algorithms" title="Creating New Algorithms" class="md-nav__link">
+    Creating New Algorithms
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-an-algorithm-framework" title="Choosing an Algorithm Framework" class="md-nav__link">
+    Choosing an Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secure-lookup-algorithm-framework" title="Secure Lookup Algorithm Framework" class="md-nav__link">
+    Secure Lookup Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segmented-mapping-algorithm-framework" title="Segmented Mapping Algorithm Framework" class="md-nav__link">
+    Segmented Mapping Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#specifying-range-values" title="Specifying Range Values" class="md-nav__link">
+    Specifying Range Values
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numeric-segment-type" title="Numeric segment type" class="md-nav__link">
+    Numeric segment type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alphanumeric-segment-type" title="Alphanumeric segment type" class="md-nav__link">
+    Alphanumeric segment type
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-algorithm-framework" title="Mapping Algorithm Framework" class="md-nav__link">
+    Mapping Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#masking-binary-lookup-algorithm-framework" title="Masking Binary Lookup Algorithm Framework" class="md-nav__link">
+    Masking Binary Lookup Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenization-algorithm-framework" title="Tokenization Algorithm Framework" class="md-nav__link">
+    Tokenization Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min-max-algorithm-framework" title="MIN Max Algorithm Framework" class="md-nav__link">
+    MIN Max Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-cleansing-algorithm-framework" title="Data Cleansing Algorithm Framework" class="md-nav__link">
+    Data Cleansing Algorithm Framework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#free-text-algorithm-framework" title="Free Text Algorithm Framework" class="md-nav__link">
+    Free Text Algorithm Framework
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-text-redaction-example" title="Free Text Redaction Example" class="md-nav__link">
+    Free Text Redaction Example
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-an-algorithm" title="Create an Algorithm" class="md-nav__link">
+    Create an Algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-rule-set" title="Create Rule Set" class="md-nav__link">
+    Create Rule Set
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-masking-job" title="Create Masking Job" class="md-nav__link">
+    Create Masking Job
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="configuring-your-own-algorithms">Configuring Your Own Algorithms<a class="headerlink" href="#configuring-your-own-algorithms" title="Permanent link">&para;</a></h1>
+<p>This section describes how users can configure their own algorithms
+using Delphix’s built in algorithm frameworks.</p>
+<h2 id="algorithm-settings">Algorithm Settings<a class="headerlink" href="#algorithm-settings" title="Permanent link">&para;</a></h2>
+<p>The <strong>Algorithm</strong> tab displays algorithm Names along with Type and
+Description. This is where you add (or create) new algorithms. The
+default algorithms and any algorithms you have defined appear on this tab.
+All algorithm values are stored encrypted. These values are only
+decrypted during the masking process.</p>
+<p><img alt="" src="../media/image25.png" /></p>
+<h2 id="creating-new-algorithms">Creating New Algorithms<a class="headerlink" href="#creating-new-algorithms" title="Permanent link">&para;</a></h2>
+<p>If none of the default algorithms meet your needs, you might want to
+create a new algorithm.</p>
+<p>Algorithm Frameworks give you the ability to quickly and easily define the
+algorithms you want, directly on the Settings page. Then, you can immediately
+propagate them. Anyone in your organization who has the Delphix Masking Engine
+can then access the information.</p>
+<p>Administrators can update <strong>system</strong>-defined algorithms. User-defined
+algorithms can be accessed by all users and updated by the owner/user
+who created the algorithm.</p>
+<p>To add an algorithm:</p>
+<ol>
+<li>
+<p>In the upper right-hand corner of the <strong>Algorithm</strong> settings tab,
+    click <strong>Add Algorithm</strong>.</p>
+<p><img alt="" src="../media/image20.png" /></p>
+</li>
+<li>
+<p>Select an algorithm type.</p>
+</li>
+<li>
+<p>Complete the form to the right to name and describe your new
+algorithm.</p>
+</li>
+<li>
+<p>Click <strong>Save.</strong></p>
+</li>
+</ol>
+<h2 id="choosing-an-algorithm-framework">Choosing an Algorithm Framework<a class="headerlink" href="#choosing-an-algorithm-framework" title="Permanent link">&para;</a></h2>
+<p>See Out Of The Box Secure Methods/Algorithms for detailed description on each
+Algorithm Framework. The algorithm framework you choose will depend on the
+format of the data &amp; your internal data security guidelines.</p>
+<h3 id="secure-lookup-algorithm-framework">Secure Lookup Algorithm Framework<a class="headerlink" href="#secure-lookup-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p>To add a secure lookup algorithm:</p>
+<ol>
+<li>
+<p>In the upper right-hand corner of the <strong>Algorithm</strong> tab, click
+    <strong>Add Algorithm</strong>.</p>
+</li>
+<li>
+<p>Choose <strong>Secure Lookup Algorithm</strong>. The Create SL Algorithm pane
+    appears.</p>
+<p><img alt="" src="../media/image30.png" /></p>
+</li>
+<li>
+<p>Enter a <strong>Algorithm Name</strong>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This MUST be unique.</p>
+</div>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Specify a <strong>Lookup File</strong>.</p>
+<p>This file is a single list of values. It does not require a header.
+Make sure there are no spaces or returns at the end of the last line
+in the file. The following is sample file content:</p>
+<div class="codehilite"><pre><span></span>Smallville
+Clarkville
+Farmville
+Townville
+Cityname
+Citytown
+Towneaster
+</pre></div>
+
+
+</li>
+<li>
+<p>When you are finished, click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Before you can use the algorithm in a profiling job, you must add it to a domain.</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The masking engine supports lookup files saved in ASCII or UTF-8 format only. If the lookup file contains foreign alphabet characters, the file must be saved in UTF-8 format with no BOM (Byte Order Marker) for Masking Engine to read the Unicode text correctly. Some applications, e.g. Notepad on Windows, write a BOM (Byte Order Marker) at the beginning of Unicode files which irritates the masking engine and will lead to SQL update or insert errors when trying to run a masking job that applies a Secure Lookup algorithm that has been created based on a UTF-8 file that included a BOM.</p>
+</div>
+<h3 id="segmented-mapping-algorithm-framework">Segmented Mapping Algorithm Framework<a class="headerlink" href="#segmented-mapping-algorithm-framework" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>In the upper right-hand region of the <strong>Algorithm</strong> tab, click
+    <strong>Add Algorithm</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Segment Mapping Algorithm</strong>. The Create Segment Mapping
+    Algorithm pane appears.</p>
+<p><img alt="" src="../media/image19.png" /></p>
+</li>
+<li>
+<p>Enter a <strong>Rule Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description.</strong></p>
+</li>
+<li>
+<p>From the <strong>No. of Segment</strong> drop-down menu, select how many
+    segments you want to mask.</p>
+<div class="admonition note">
+<p class="admonition-title">NOTE</p>
+<p>This number does NOT include the values you want to preserve.</p>
+</div>
+<p>The minimum number of segments is 2; the maximum is 9. A box appears
+for each segment.</p>
+</li>
+<li>
+<p>For each segment, choose the <strong>Type</strong> of segment from the
+    dropdown: <strong>Numeric</strong> or
+<strong>Alphanumeric</strong>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><strong>Numeric</strong> segments are masked as whole segments. <strong>Alphanumeric</strong> segments are masked by individual character.</p>
+</div>
+</li>
+<li>
+<p>For each segment, select its <strong>Length</strong> (number of characters)
+    from the drop-down menu. The maximum is 4.</p>
+</li>
+<li>
+<p>Optionally, for each segment, specify range values. You might need
+    to specify range values to satisfy particular application
+    requirements, for example. See details below.</p>
+</li>
+<li>
+<p><strong>Preserve Original Values</strong> by entering <strong>Starting position</strong> and
+    <strong>length</strong> values. (Position starts at 1.) For example, to
+    preserve the second, third, and fourth values, enter Starting
+    position <strong>2</strong> and length <strong>3</strong>.</p>
+<p>If you need additional value fields, click <strong>Add</strong>.</p>
+</li>
+<li>
+<p>When you are finished, click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Before you can use the algorithm in a profiling job,
+    you must add it to a domain. If you are not using
+    the Masking Engine Profiler to create your inventory, you do not
+    need to associate the algorithm with a domain.</p>
+</li>
+</ol>
+<h4 id="specifying-range-values">Specifying Range Values<a class="headerlink" href="#specifying-range-values" title="Permanent link">&para;</a></h4>
+<p>You can specify ranges for <strong>Real Values</strong> and <strong>Mask Values</strong>. With
+Real Values ranges, you can specify all the possible real values to map
+to the ranges of masked values. Any values NOT listed in the Real Values
+ranges would then mask to themselves.</p>
+<p>Specifying range values is optional. If you need unique values (for
+example, masking a unique key column), you MUST leave the range values
+blank. If you plan to certify your data, you must specify range values.</p>
+<p>When determining a numeric or alphanumeric range, remember that a narrow
+range will likely generate duplicate values, which will cause your job
+to fail.</p>
+<ol>
+<li>
+<p>To ignore specific characters, enter one or more characters in the
+    <strong>Ignore Character List</strong> box. Separate values with a comma.</p>
+</li>
+<li>
+<p>To ignore the comma character (,), select the <strong>Ignore comma (,)</strong>
+    check box.</p>
+</li>
+<li>
+<p>To ignore control characters, select <strong>Add Control Characters</strong>.
+    The <strong>Add Control Characters</strong> window appears.</p>
+<p><img alt="" src="../media/image9.png" /></p>
+</li>
+<li>
+<p>Select the individual control characters that you would like to
+    ignore, or choose <strong>Select All</strong> or <strong>Select None</strong>.</p>
+</li>
+<li>
+<p>When you are finished, click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>You are returned to the Segment Mapping pane.</p>
+</li>
+</ol>
+<h4 id="numeric-segment-type">Numeric segment type<a class="headerlink" href="#numeric-segment-type" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>Min#</strong> — A number; the first value in the range. Value can be 1
+    digit or up to the length of the segment. For example, for a
+    3-digit segment, you can specify 1, 2, or 3 digits. Acceptable
+    characters: 0-9.</p>
+</li>
+<li>
+<p><strong>Max#</strong> — A number; the last value in the range. Value should be
+    the same length as the segment. For example, for a 3-digit
+    segment, you should specify 3 digits. Acceptable characters: 0-9.</p>
+</li>
+<li>
+<p><strong>Range#</strong> — A range of numbers; separate values in this field
+    with a comma (,). Value should be the same length as the segment.
+    For example, for a 3-digit segment, you should specify 3 digits.
+    Acceptable characters:
+0-9.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>If you do not specify a range, the Masking Engine uses the full range. For example, for a 4-digit segment, the Masking Engine uses 0-9999.</p>
+</div>
+<h4 id="alphanumeric-segment-type">Alphanumeric segment type<a class="headerlink" href="#alphanumeric-segment-type" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>Min#</strong> — A number from 0 to 9; the first value in the range.</p>
+</li>
+<li>
+<p><strong>Max#</strong> — A number from 0 to 9; the last value in the range.</p>
+</li>
+<li>
+<p><strong>MinChar</strong> — A letter from A to Z; the first value in the range.</p>
+</li>
+<li>
+<p><strong>MaxChar</strong> — A letter from A to Z; the last value in the range.</p>
+</li>
+<li>
+<p><strong>Range#</strong> — A range of alphanumeric characters; separate values
+    in this field with a comma (,). Individual values can be a number
+    from 0 to 9 or an uppercase letter from A to Z. (For example,
+    B,C,J,K,Y,Z or AB,DE.)</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>If you do not specify a range, the Masking Engine uses the full range (A-Z, 0-9). If you do not know the format of the input, leave the range fields empty. If you know the format of the input (for example, always alphanumeric followed by numeric), you can enter range values such as A2 and S9.</p>
+</div>
+<h3 id="mapping-algorithm-framework">Mapping Algorithm Framework<a class="headerlink" href="#mapping-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p><strong>To add a mapping algorithm:</strong></p>
+<ol>
+<li>
+<p>In the upper right-hand corner of the <strong>Algorithm</strong> tab, click
+    <strong>Add Algorithm</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Mapping Algorithm</strong>.</p>
+</li>
+<li>
+<p>The <strong>Create Mapping Algorithm</strong> pane appears.</p>
+<p><img alt="" src="../media/image18.png" /></p>
+</li>
+<li>
+<p>Enter a <strong>Rule Name</strong>. This name MUST be unique.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Specify a <strong>Lookup File</strong>.</p>
+</li>
+<li>
+<p>The value file must have NO header. Make sure there are no spaces
+    or returns at the end of the last line in the file. The following
+    is sample file content. Notice that there is no header and only a
+    list of values.</p>
+<div class="codehilite"><pre><span></span>Smallville
+Clarkville
+Farmville
+Townville
+Cityname
+Citytown
+Towneaster
+</pre></div>
+
+
+</li>
+<li>
+<p>To ignore specific characters, enter one or more characters in the
+    <strong>Ignore Character List</strong> box. Separate values with a comma.</p>
+</li>
+<li>
+<p>To ignore the comma character (,), select the <strong>Ignore comma (,)</strong>
+    check box.</p>
+</li>
+<li>
+<p>When you are finished, click <strong>Save</strong>.</p>
+</li>
+</ol>
+<p>Before you can use the algorithm by specifying it in a profiling
+job, you must add it to a domain. If you are not using the
+Masking Engine Profiler to create your inventory, you do not need to
+associate the algorithm with a domain.</p>
+<h3 id="masking-binary-lookup-algorithm-framework">Masking Binary Lookup Algorithm Framework<a class="headerlink" href="#masking-binary-lookup-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p><strong>To add a binary lookup algorithm:</strong></p>
+<ol>
+<li>
+<p>At the top right of the <strong>Algorithm</strong> tab, click <strong>Add
+    Algorithm</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Binary Lookup Algorithm</strong>. The Binary SL Rule pane
+    appears.</p>
+<p><img alt="" src="../media/image29.png" /></p>
+</li>
+<li>
+<p>Enter a <strong>Rule Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Select a <strong>Binary Lookup File</strong> on your filesystem.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h3 id="tokenization-algorithm-framework">Tokenization Algorithm Framework<a class="headerlink" href="#tokenization-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p>To add a Tokenization algorithm:</p>
+<ol>
+<li>
+<p>Enter algorithm <strong>Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<p>Once you have created an algorithm, you will need to associate it with a
+domain.</p>
+<ol>
+<li>
+<p>Navigate to the <strong>Home>Settings>Domains</strong> page and click <strong>Add
+    Domain</strong>.</p>
+</li>
+<li>
+<p>Enter a domain name.</p>
+</li>
+<li>
+<p>From the <strong>Tokenization Algorithm Name</strong> drop-down menu, select
+    your algorithm.</p>
+</li>
+</ol>
+<p>Next, create a Tokenization Environment:</p>
+<ol>
+<li>
+<p>On the home page, click <strong>Environments</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add Environment</strong>.</p>
+<p><img alt="" src="../media/image23.png" /></p>
+</li>
+<li>
+<p>For <strong>Purpose</strong>, select <strong>Tokenize/Re-Identify</strong>.</p>
+</li>
+<li>
+<p>Click
+<strong>Save</strong>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This environment will be used to re-identify your data when required.</p>
+</div>
+</li>
+<li>
+<p>Set up a Tokenize job using tokenization method. Execute the job.</p>
+<p><img alt="" src="../media/image16.png" /></p>
+</li>
+</ol>
+<p>Here is a snapshot of the data before and after Tokenization to give you
+an idea of what the it will look like.</p>
+<p><strong>Before Tokenization</strong></p>
+<p><img alt="" src="../media/image17.png" /></p>
+<p><strong>After Tokenization</strong></p>
+<p><img alt="" src="../media/image24.png" /></p>
+<h3 id="min-max-algorithm-framework">MIN Max Algorithm Framework<a class="headerlink" href="#min-max-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p>The Delphix Masking Engine provides a "Min Max Algorithm" to normalize
+data within a range – for example, 10 to 400. Values that are extremely
+high or low in certain categories allow viewers to infer someone’s
+identity, even if their name has been masked. For example, a salary of
+$1 suggests a company’s CEO, and some age ranges suggest higher
+insurance risk. You can use a min max algorithm to move all values of
+this kind into the midrange. This algorithm allows you to make sure that
+all the values in the database are within a specified range.</p>
+<p>If the <strong>Out of range Replacement Values</strong> checkbox is selected, a
+default value is used when the input cannot be evaluated.</p>
+<p><img alt="" src="../media/image27.png" /></p>
+<ol>
+<li>
+<p>Enter the <strong>Algorithm Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Enter <strong>Min Value</strong> and <strong>Max Value</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Out of range Replacement Values</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<p>Example: Age less than 18 years - enter Min Value 0 and Max Value 18.</p>
+<h3 id="data-cleansing-algorithm-framework">Data Cleansing Algorithm Framework<a class="headerlink" href="#data-cleansing-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p>A data cleansing algorithm does not perform any masking. Instead, it
+standardizes varied spellings, misspellings, and abbreviations for the
+same name. For example, “Ariz,” “Az,” and “Arizona” can all be cleansed
+to “AZ.” Use this algorithm if the target data needs to be in a standard
+format prior to masking.</p>
+<p><img alt="" src="../media/image26.png" /></p>
+<ol>
+<li>
+<p>Enter an <strong>Algorithm Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Lookup File</strong> location.</p>
+</li>
+<li>
+<p>Specify a <strong>Delimiter</strong> (key and value separator). The default delimiter is =. You can
+    change this to match the lookup file.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<p>Below is an example of a lookup input file. It does not require a
+header. Make sure there are no spaces or returns at the end of the last
+line in the file. The following is sample file content:</p>
+<div class="codehilite"><pre><span></span>NYC=NY
+NY City=NY
+New York=NY
+Manhattan=NY
+</pre></div>
+
+
+<h3 id="free-text-algorithm-framework">Free Text Algorithm Framework<a class="headerlink" href="#free-text-algorithm-framework" title="Permanent link">&para;</a></h3>
+<p>To add a free text redaction algorith:</p>
+<p><img alt="" src="../media/image28.png" /></p>
+<ol>
+<li>
+<p>Enter an <strong>Algorithm Name</strong>.</p>
+</li>
+<li>
+<p>Enter a <strong>Description</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>Black List</strong> or <strong>White List</strong> radio button.</p>
+</li>
+<li>
+<p>Select <strong>Lookup File</strong> and enter <strong>Redaction Value</strong> OR/AND</p>
+</li>
+<li>
+<p>Select <strong>Profiler Sets</strong> from the drop-down menu and enter
+    <strong>Redaction Value</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h4 id="free-text-redaction-example">Free Text Redaction Example<a class="headerlink" href="#free-text-redaction-example" title="Permanent link">&para;</a></h4>
+<ol>
+<li>
+<p>Create Input File.</p>
+</li>
+<li>
+<p>Create input file using notepad. Enter the following text:</p>
+<div class="codehilite"><pre><span></span>The customer Bob Jones is satisfied with the terms of the sales
+agreement. Please call to confirm at 718-223-7896.
+</pre></div>
+
+
+</li>
+<li>
+<p>Save file as txt.</p>
+</li>
+<li>
+<p>Create lookup file.</p>
+<ol>
+<li>
+<p>Create a lookup file.</p>
+</li>
+<li>
+<p>Use notepad to create a txt file and save the file as a TXT.
+    Be sure to hit return after each field. The lookup flat file
+    contains the following data:</p>
+<div class="codehilite"><pre><span></span>Bob
+Jones
+Agreement
+</pre></div>
+
+
+</li>
+</ol>
+</li>
+</ol>
+<h5 id="create-an-algorithm">Create an Algorithm<a class="headerlink" href="#create-an-algorithm" title="Permanent link">&para;</a></h5>
+<p>You will be prompted for the following information:</p>
+<ol>
+<li>
+<p>For <strong>Algorithm Name</strong>, enter <strong>Blacklist_Test1</strong>.</p>
+</li>
+<li>
+<p>For <strong>Description</strong>, enter <strong>Blacklist Test</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>Black List</strong> radio button.</p>
+</li>
+<li>
+<p>Select <strong>LookUp File</strong>.</p>
+</li>
+<li>
+<p>Enter redaction value <strong>XXXX</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h5 id="create-rule-set">Create Rule Set<a class="headerlink" href="#create-rule-set" title="Permanent link">&para;</a></h5>
+<ol>
+<li>
+<p>From the job page go to Rule Set and Click <strong>Create Rule Set</strong>.</p>
+<p><img alt="" src="../media/image21.png" /></p>
+</li>
+<li>
+<p>For <strong>Rule Set Name</strong>, enter <strong>Free_ Text_RS</strong>.</p>
+</li>
+<li>
+<p>From the <strong>Connector</strong> drop-down menu, select <strong>Free Text</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>Input File</strong> by clicking the box next to your input
+    file</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h5 id="create-masking-job">Create Masking Job<a class="headerlink" href="#create-masking-job" title="Permanent link">&para;</a></h5>
+<ol>
+<li>
+<p>Use Free_Text Rule Set</p>
+</li>
+<li>
+<p>Execute Masking job.</p>
+</li>
+</ol>
+<p>The results of the masking job will show the following:</p>
+<div class="codehilite"><pre><span></span>The customer xxxx xxxx is satisfied with the terms
+of the sales xxxx. Please call to confirm at 718-223-7896.
+</pre></div>
+
+
+<p>"Bob," "Jones," and "agreement" are redacted.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Out_Of_The_Box_Algorithm_Frameworks/" title="Out Of The Box Algorithm Frameworks" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Out Of The Box Algorithm Frameworks
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Creating_Masking_Job/" title="Creating Masking Job" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Creating Masking Job
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2018 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>
