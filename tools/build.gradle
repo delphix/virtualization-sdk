@@ -15,6 +15,16 @@ def bootstrapVEnvBinary = project.layout.buildDirectory.file("pipsi/bin/virtuale
 
 def devPythonBinary = "${buildDir}/test-venvs/python2.7/bin/python"
 
+def htmlReportDir = "${buildDir}/html-coverage"
+def htmlReportFiles = fileTree(dir: htmlReportDir,
+        includes: [
+                "**/*.html",
+                "**/*.js",
+                "**/*.png",
+                "**/*.json",
+                "**/*.css",
+        ])
+
 /*
 * A convience task that needs to pass for code to be checked in. 'coverage'
 * runs the tests so it's not necessary to call 'test'.
@@ -41,6 +51,15 @@ task coverage(type: Exec) {
   ])
 
   dependsOn "sync_python2.7"
+
+  outputs.file("$buildDir/.coverage")
+}
+
+task runHtmlReport(type: Exec, dependsOn: 'coverage') {
+  commandLine devPythonBinary, '-m', 'coverage', 'html', '--dir', "${buildDir}/html-coverage",
+          '--include', "*/${project.name}/src/main/python/*"
+
+  outputs.files(htmlReportFiles)
 }
 
 task lint() {
@@ -111,6 +130,10 @@ dlpxPython {
     protobuf {
       version = ">= 3"
     }
+
+    requests {
+      version = ">= 2.21.0"
+    }
   }
 
   devPackages {
@@ -120,6 +143,10 @@ dlpxPython {
 
     flake8 {
       version = ">= 3.6"
+    }
+
+    httpretty {
+      version = ">= 0.9.6"
     }
 
     isort {

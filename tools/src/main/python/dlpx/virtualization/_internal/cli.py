@@ -2,12 +2,14 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import logging
 import os
+import traceback
 
 import click
 
-from dlpx.virtualization._internal import (click_util, logging_util,
-                                           package_util)
+from dlpx.virtualization._internal import (click_util, exceptions,
+                                           logging_util, package_util)
 from dlpx.virtualization._internal.commands import initialize
 from dlpx.virtualization._internal.commands import upload as upload_internal
 
@@ -18,7 +20,7 @@ from dlpx.virtualization._internal.commands import upload as upload_internal
 # function is called.
 #
 logging_util.setup_logger()
-
+logger = logging.getLogger(__name__)
 __version__ = package_util.get_version()
 
 # This is needed to add -h as an option for the help menu.
@@ -91,7 +93,8 @@ def init(type, root):
     'engine',
     envvar='DELPHIX_ENGINE',
     callback=click_util.validate_option_exists,
-    help='Upload plugin to the provided engine.')
+    help='Upload plugin to the provided engine.'
+    ' This should be either the hostname or IP address.')
 @click.option(
     '-u',
     '--user',
@@ -99,26 +102,33 @@ def init(type, root):
     callback=click_util.validate_option_exists,
     help='Authenticate to the Delphix Engine with the provided user.')
 @click.option(
-    '-p',
-    '--plugin',
-    cls=click_util.MutuallyExclusiveOption,
-    type=click.Path(dir_okay=False),
+    '-a',
+    '--upload-artifact',
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True),
     callback=click_util.validate_option_exists,
-    mutually_exclusive=['build'])
-@click.option(
-    '-b',
-    '--build',
-    cls=click_util.MutuallyExclusiveOption,
-    is_flag=True,
-    mutually_exclusive=['plugin'],
-    help='Build the plugin prior to uploading.')
+    help='Path to the upload artifact that was generated through build.')
 @click.password_option(
     confirmation_prompt=False,
     envvar='DELPHIX_ADMIN_PASSWORD',
     help='Authenticate using the provided password.')
-def upload(engine, user, password, plugin, build):
-    """Upload a plugin to a Delphix Engine."""
-    upload_internal.upload(engine, user, plugin, build, password)
+def upload(engine, user, upload_artifact, password):
+    """
+    Upload the generated upload artifact (the plugin JSON file) that was built
+    to a target Delphix Engine.
+    Note that the upload artifact should be the file created after running
+    the build command and will fail if it's not readable or valid.
+    """
+    try:
+        upload_internal.upload(engine, user, upload_artifact, password)
+    except exceptions.UserError as err:
+        logger.error(err.message)
+        logger.debug(traceback.format_exc())
+        exit(1)
 
 
 def get_console_logging_level(verbose, quiet):
