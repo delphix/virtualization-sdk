@@ -1,4 +1,5 @@
 .Python
+docs/.DS_Store
 bin/
 include/
 lib/

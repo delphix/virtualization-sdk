@@ -23,7 +23,7 @@ Delphix needs to know the format of this information. How many pieces of informa
 
 For our first plugin, we don't need a lot of information here, but see (link to advanced example) for a more complicated example. We use no special information about our repositories (except some way for the user to identify them). For source configs, we just need to know the path to the directory from which we will be ingesting data.
 
-The plugin needs to describe all of this to the Delphix Engine, and it does it using [schemas]((/References/Glossary/#schema).  To create the necessary schemas for our first plugin, (TODO: describe here where exactly these schemas go, when that is finalized… e.g. "create a new file called 'repositorySchema.json' and add the following content)
+The plugin needs to describe all of this to the Delphix Engine, and it does it using [schemas](/References/Glossary/#schema).  To create the necessary schemas for our first plugin, (TODO: describe here where exactly these schemas go, when that is finalized… e.g. "create a new file called 'repositorySchema.json' and add the following content)
 
 ```javascript
 {
@@ -90,7 +90,8 @@ def do_discovery_for_repositories(environment):
     return [ the_repo ]
 ```
 
-**GOTCHA: Be careful to always use consistent indentation in Python code!**
+!!! note "Gotcha"
+    Be careful to always use consistent indentation in Python code!
 
 Taking this line-by-line, here's what's happening in our new method:
 
@@ -147,4 +148,5 @@ Because you've specified that manual discovery of source configs is allowed, you
 
 (TODO: animated GIF here showing manual discovery?)
 
-**GOTCHA: Once you've manually created a source config, you will not be allowed to modify your plugin's source config schema. We'll cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's source config schema, you'll have to first delete any source configs you've manually added.**
+!!! note "Gotcha"
+    Once you've manually created a source config, you will not be allowed to modify your plugin's source config schema. We'll cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's source config schema, you'll have to first delete any source configs you've manually added.

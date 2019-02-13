@@ -4,6 +4,9 @@
 ## Automatic Discovery
 [Discovery](#discovery) which is done by the Delphix Engine (with help from a plugin) itself, with no need for the end user to provide any information.
 
+## Callback
+A Python function that is provided by the Delphix Engine. Plugins use callbacks to request that the Delphix Engine do some task on behalf of the plugin. For example, running a Bash command on an environment, or making an log entry.
+
 ## Decorator
 A Python construct which is used by plugins to "tag" certain functions, so that the Delphix Engine knows which function corresponds to which plugin operation.
 
@@ -24,6 +27,9 @@ The process by which the Delphix Engine connects a new [dsource](#dsource) to a 
 
 ## Manual Discovery
 [Discovery](#discovery) which the end user does by manually entering the necessary information into the Delphix Engine.
+
+## Password Properties
+In [schemas](#schema), any string property can be tagged with `"format": "password"`. This will let the Delphix Engine know that the property contains sensitive information. Any such values will only be stored in encrypted format, and the UI will not display the values on screen.
 
 ## Plugin
 A tool that customizes the Delphix Engine so it knows how to interact with a particular kind of dataset.

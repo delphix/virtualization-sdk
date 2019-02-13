@@ -53,6 +53,7 @@ Different plugins will have vastly different needs for what information is requi
 
 ## Prerequisites
 In order to complete the following tutorial, you'll need to make sure you have the following set up and ready to go:
+
 - You should have a SDK already downloaded and working, as described here (link)
 - You should have a Delphix Engine, version x.y.z or above.
 - You should have at least one, but preferably three, Unix hosts that can be added to the Delphix Engine as remote environments.
