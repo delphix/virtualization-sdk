@@ -158,7 +158,7 @@ class DelphixClient:
         # Issue post request that was passed in, if data is a dict then convert
         # it to a json string.
         #
-        if data is not None and not isinstance(data, (str, bytes)):
+        if data is not None and not isinstance(data, (str, bytes, unicode)):
             data = json.dumps(data)
         try:
             response = requests.post(url=url, data=data, headers=headers)
