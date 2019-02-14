@@ -36,7 +36,14 @@ message RepositoryDiscoveryRequest {
 }
 
 message RepositoryDiscoveryResult {
-  repeated com.delphix.virtualization.common.PluginDefinedObject repositories = 1;
+  repeated com.delphix.virtualization.common.Repository repositories = 1;
+}
+
+message RepositoryDiscoveryResponse {
+  oneof result {
+    RepositoryDiscoveryResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message SourceConfigDiscoveryRequest {
@@ -45,7 +52,14 @@ message SourceConfigDiscoveryRequest {
 }
 
 message SourceConfigDiscoveryResult {
-  repeated com.delphix.virtualization.common.PluginDefinedObject source_configs = 1;
+  repeated com.delphix.virtualization.common.SourceConfig source_configs = 1;
+}
+
+message SourceConfigDiscoveryResponse {
+  oneof result {
+    SourceConfigDiscoveryResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 /* DIRECT LINKING */
@@ -141,7 +155,7 @@ message ConfigureRequest {
 }
 
 message ConfigureResult {
-  com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
+  com.delphix.virtualization.common.SourceConfig source_config = 1;
 }
 
 message ConfigureResponse {
@@ -165,7 +179,7 @@ message ReconfigureRequest {
 }
 
 message ReconfigureResult {
-  com.delphix.virtualization.common.PluginDefinedObject source_config = 1;
+  com.delphix.virtualization.common.SourceConfig source_config = 1;
 }
 
 message StartRequest {
@@ -193,7 +207,7 @@ message VirtualPostSnapshotRequest {
 }
 
 message VirtualPostSnapshotResult {
-  com.delphix.virtualization.common.PluginDefinedObject snapshot = 1;
+  com.delphix.virtualization.common.Snapshot snapshot = 1;
 }
 
 message VirtualStatusRequest {
