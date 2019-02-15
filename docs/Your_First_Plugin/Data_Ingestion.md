@@ -134,7 +134,7 @@ You should already have a respository and source config set up from the previous
 
 Next, you should set up a separate staging environment. (TODO: add instructions here)
 
-Go to "Manage/Environments", select your **source** environment, and then go to the "Databases" tab. Find your "Directory Tree" respository, and your source config underneath it.
+Go to "Manage/Environments", select your **source** environment, and then go to the "Databases" tab. Find your "Directory Tree" repository, and your source config underneath it.
 
 Click "Add dSource" on your source config. This will begin the linking process.
 

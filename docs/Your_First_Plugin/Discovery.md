@@ -52,6 +52,7 @@ For detailed information about exactly how repository schemas works, see (link t
     }
     "path": {
       "type": "string",
+      "format": "unixpath",
       "prettyName": "Path",
       "description": "Full path to data location on the remote environment"
     }
@@ -63,7 +64,9 @@ For detailed information about exactly how repository schemas works, see (link t
 }
 ```
 
-Because we are going to be asking the user to fill in these fields, we've added some extra information in our schemas. Our values for "prettyName" and "description" will be show to the user in the UI. In addition, we've used the "additionalFields" flag to stop the user from (accidentally?) providing extra information that we don't need. Please see (link to reference) for full details about what you can do in these schemas.
+Because we are going to be asking the user to fill in these fields, we've added some extra information in our schemas. Our values for "prettyName" and "description" will be show to the user in the UI. In addition, we've used the "additionalFields" flag to stop the user from (accidentally?) providing extra information that we don't need. Finally, note that we're using the special `unixpath` format specifier, which will allow the UI to enforce that a valid Unix path is entered by the user.
+
+Please see (link to reference) for full details about what you can do in these schemas.
 
 ## Implementing Discovery in Your Plugin
 
