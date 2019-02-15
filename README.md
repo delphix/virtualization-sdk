@@ -70,7 +70,7 @@ repositories {
     }
 }
 ```
-Then, go to the gradle build file for the module you want to use the SDK JAR (e.g. `appliance/server/appdata/build.gradle`), and add the following line:
+Then, go to the gradle build file for the module you want to use the SDK JAR (e.g. `appliance/server/appdata/build.gradle`, `appliance/server/workflow/build.gradle`), and add the following line:
 ```
 compile name: "sdk-<version>"
 ```

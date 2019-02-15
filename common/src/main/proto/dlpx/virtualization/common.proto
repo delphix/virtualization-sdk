@@ -72,8 +72,7 @@ message Repository {
 }
 
 message Snapshot {
-  string name = 1;
-  PluginDefinedObject parameters = 2;
+  PluginDefinedObject parameters = 1;
 }
 
 message PluginDefinedObject {

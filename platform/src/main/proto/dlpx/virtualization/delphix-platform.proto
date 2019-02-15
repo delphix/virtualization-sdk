@@ -70,10 +70,35 @@ message DirectPreSnapshotRequest {
   com.delphix.virtualization.common.SourceConfig source_config = 3;
 }
 
+/*
+ * Currently, pre snapshot does not expect a return value. However, defining
+ * a valid return type as a placeholder and still return empty message helps
+ * if something needs to be added as part of the result in future.
+ */
+message DirectPreSnapshotResult { }
+
+message DirectPreSnapshotResponse {
+  oneof result {
+    DirectPreSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message DirectPostSnapshotRequest {
   com.delphix.virtualization.common.DirectSource direct_source = 1;
   com.delphix.virtualization.common.Repository repository = 2;
   com.delphix.virtualization.common.SourceConfig source_config = 3;
+}
+
+message DirectPostSnapshotResult {
+  com.delphix.virtualization.common.Snapshot snapshot = 1;
+}
+
+message DirectPostSnapshotResponse {
+  oneof result {
+    DirectPostSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 /* STAGED LINKING */
