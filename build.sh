@@ -38,7 +38,8 @@ java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m py_compile dlp
 echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java
 
-rsync -av --progress ./../platform/src/main/python/dlpx/virtualization/platform/ . --exclude __init__.py
+rsync -av --progress ./../platform/src/main/python/dlpx/virtualization/platform/ dlpx/virtualization/ --exclude __init__.py
+rsync -av --progress ./../libs/src/main/python/dlpx/virtualization/libs/ dlpx/virtualization/ --exclude __init__.py
 rm -r bin
 
 echo "Creating a Virtualization SDK jar..."

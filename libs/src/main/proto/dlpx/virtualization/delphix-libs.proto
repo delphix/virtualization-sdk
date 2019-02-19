@@ -14,6 +14,7 @@ message RunBashRequest {
   com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
   string command = 2;
   map<string, string> variables = 3;
+  bool use_login_shell = 4;
 }
 
 message RunBashResponse {
