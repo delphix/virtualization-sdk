@@ -58,7 +58,7 @@ def build(root, outfile):
     # read manifest into JSON object to start off
     logger.info('Reading main.json')
     toolkit_dir = root
-    manifest = None
+    manifest = {}
     try:
         with open(os.path.join(toolkit_dir, 'main.json'), 'r') as f:
             try:
@@ -74,7 +74,7 @@ def build(root, outfile):
                                            err.errno, 'unknown err')))
 
     logger.info('Generating plugin json file at %s', outfile)
-
+    manifest['language'] = 'PYTHON27'
     # read resources
     logger.info('Reading resources ...')
     read_resources(manifest, toolkit_dir)
