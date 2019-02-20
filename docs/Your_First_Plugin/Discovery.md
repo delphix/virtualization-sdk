@@ -7,12 +7,12 @@ title: Virtualization SDK
 ## What is Discovery?
 In order to ingest data from a source environment, the Delphix Engine first needs to learn information about that data: Where does it live? How can it be accessed? What is it called?
 
-[Discovery](/References/Glossary/#discovery) is the process by which the Delphix Engine learns about remote data. Discovery can be either [automatic](/References/Glossary/#automatic-discovery) (where the plugin finds the remote data on its own), or [manual](/References/Glossary/#manual-discovery) (where the user tells us about the remote data). For our first toolkit, we'll be using a mix of these two techniques.
+[Discovery](/References/Glossary/#discovery) is the process by which the Delphix Engine learns about remote data. Discovery can be either [automatic](/References/Glossary/#automatic-discovery) (where the plugin finds the remote data on its own), or [manual](/References/Glossary/#manual-discovery) (where the user tells us about the remote data). For our first plugin, we'll be using a mix of these two techniques.
 
 ## Source Configs and Repositories
 
 ### What are Source Configs and Repositories?
-A [source config](/References/Glossary/#source-config) is a collection of information that Delphix uses to represent a dataset. Different toolkits will have different ideas about what a "dataset" is (an entire database? a set of config files? an application?), but for our first plugin, it is simply a directory tree on the filesystem of the remote environment.
+A [source config](/References/Glossary/#source-config) is a collection of information that Delphix uses to represent a dataset. Different plugins will have different ideas about what a "dataset" is (an entire database? a set of config files? an application?), but for our first plugin, it is simply a directory tree on the filesystem of the remote environment.
 
 A [repository](/References/Glossary/#repository) represents what you might call "data dependencies" -- anything installed on the remote host that the dataset depends on. For example, if you're working with a Postgres database, then your repository will represent an installation of a particular version of the Postgres DBMS. In this plugin, we don't have any special dependencies, except for the simple existence of the unix system on which the directory lives.
 

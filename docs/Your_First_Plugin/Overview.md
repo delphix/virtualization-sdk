@@ -17,7 +17,7 @@ The first step is that Delphix needs to ingest data. Essentially, this means cop
 
 There are two basic strategies a plugin can use to do this copying, called "direct linking" and "staged linking". Our plugin will use the staged linking strategy, but see (link to reference) for more information about direct linking.
 
-With staged linking, Delphix will mount an NFS share onto a "staging environment" . This environment can be the same as the source environment, but it could also be different. We'll write our toolkit to handle both cases.
+With staged linking, Delphix will mount an NFS share onto a "staging environment" . This environment can be the same as the source environment, but it could also be different. We'll write our plugin to handle both cases.
 
 Once Delphix mounts the NFS share onto the staging environment, the plugin needs to arrange for the relevant data to be copied from the source environment onto the NFS share, which is backed by Delphix Engine storage.
 

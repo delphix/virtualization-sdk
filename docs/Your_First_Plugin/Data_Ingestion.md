@@ -29,7 +29,7 @@ For more details about deciding between using a direct or a staging strategy, pl
 
 ### Our Syncing Strategy
 
-For our purposes here in this intro toolkit, we'll use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We'll do this by running `scp` from our staging environment, and use user-provided credentials to connect to the source environment.
+For our purposes here in this intro plugin, we'll use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We'll do this by running `scp` from our staging environment, and use user-provided credentials to connect to the source environment.
 
 For simplicity's sake, we will not bother handling the case mentioned above where the staging environment is the same as the source environment
 

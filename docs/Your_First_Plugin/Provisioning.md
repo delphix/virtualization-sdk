@@ -53,7 +53,7 @@ Because this data is entered by the user, again we are being careful to disallow
 
 There are numerous ways for a plugin to customize the provisioning process. For full details see (link to reference).
 
-For our simple toolkit, we just need to do two things:
+For our simple plugin, we just need to do two things:
 
 1. Tell Delphix where to mount the virtual dataset
 2. Create a `sourceConfig` to represent each newly-provisioned virtual dataset.
