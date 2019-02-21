@@ -16,7 +16,7 @@ from dlpx.virtualization import platform
 plugin = platform.plugin()
 
 @plugin.virtual_source.start()
-def start(source, repository, source_config):
+def start(virtual_source, repository, source_config):
   print "running start" 
 ```
 
