@@ -53,10 +53,7 @@ Defines properties used to identify a [Source Config](Glossary.md#source-config)
 
 ### SourceConfigDefinition Schema
 
-The plugin must also decide on a **name** field and a set of **identityFields** to display and uniquely identify the data set that this represents.
-
-!!! note
-    Be careful in your choice of identity fields! Imagine a situation in which either the **port** or **name** of a running Delphix DB instance is modified. The modified database instance will still represent the same data as it did prior to being updated. If the Delphix Engine ever reruns discovery, the currently tracked source config should simply be updated such that its **path** reflects the update. Therefore, we would not want to include these fields in the set of identity fields.
+The plugin must also decide on a [**name**](Schemas.md#namefield) field and a set of [**identityFields**](Schemas.md#identityfields) to display and uniquely identify the [source config](Glossary.md#source-configs).
 
 ```json
 {
@@ -95,7 +92,7 @@ source_config.path = "/some/path"
 
 ## LinkedSourceDefinition
 
-Defines properties used to [linked sources](#Glossary.md#linked-source).
+Defines properties used to identify [linked sources](#Glossary.md#linked-source).
 
 ### LinkedSourceDefinition Schema
 
@@ -134,7 +131,7 @@ port = source.port
 
 ## VirtualSourceDefinition
 
-Defines properties used to [virtual sources](#Glossary.md#virtual-source).
+Defines properties used to identify [virtual sources](#Glossary.md#virtual-source).
 
 ### VirtualSourceDefinition Schema
 
