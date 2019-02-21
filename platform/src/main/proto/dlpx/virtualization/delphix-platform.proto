@@ -22,10 +22,19 @@ message UnhandledCallbackError {
   string call_stack = 2;
 }
 
+/*
+ * This indicates that a generic problem has been detected.
+ * These include syntax errors and any other kind of errors.
+ */
+message GenericPluginError {
+  string message = 1;
+}
+
 /* More error types will get inserted here in future */
 message PluginErrorResult {
   oneof error {
     UnhandledCallbackError unhandled_callback_error = 1;
+    GenericPluginError generic_plugin_error = 2;
   }
 }
 
