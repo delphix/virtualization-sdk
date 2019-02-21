@@ -124,6 +124,10 @@ task lintTest(type: Exec) {
 }
 
 dlpxPython {
+  dist {
+    name = "dlpx-virtualization-tools"
+  }
+
   packages {
     click {}
 

@@ -49,6 +49,10 @@ dlpxPython {
     }
   }
 
+  dist {
+    name = "dlpx-virtualization-libs"
+  }
+
   devPackages {
     common {
       // This specifies the first artifact dependency in the python
