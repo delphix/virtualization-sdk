@@ -41,7 +41,7 @@ In order to be able to successfully do the copying required, plugins might need 
 Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that will let them provide all the information our schema specifies.
 
 (TODO: describe where to put this schema)
-```javascript
+```json
 {
     "type": "object",
     "additionalProperties": false,

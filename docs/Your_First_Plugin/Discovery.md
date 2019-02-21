@@ -25,7 +25,7 @@ For our first plugin, we don't need a lot of information here, but see (link to 
 
 The plugin needs to describe all of this to the Delphix Engine, and it does it using [schemas](/References/Glossary/#schema).  To create the necessary schemas for our first plugin, (TODO: describe here where exactly these schemas go, when that is finalized… e.g. "create a new file called 'repositorySchema.json' and add the following content)
 
-```javascript
+```json
 {
   "type": "object",
   "properties": {
@@ -41,7 +41,7 @@ The plugin needs to describe all of this to the Delphix Engine, and it does it u
 
 For detailed information about exactly how repository schemas works, see (link to reference). In essence, we are here defining only a single string property which will serve to uniquely identify the repository and will serve as a user-visible name.
 
-```javascript
+```json
 {
   "type": "object",
   "properties": {

@@ -19,7 +19,7 @@ We've already seen three custom data formats: for repositories, source configs, 
 ### Snapshots
 First, let's consider snapshots. Plugins can store whatever information they want alongside each snapshot. This information can then be used later on when the user provisions a new virtual dataset from this snapshot. In our case, though, we have no need for any snapshot-specific information. So, our schema will be as simple as possible:
 
-```javascript
+```json
 {
     "type": "object"
 }
@@ -31,7 +31,7 @@ Note that, because we plan to store no snapshot-specific data, we have defined n
 
 For our [virtual source](/References/Glossary/#virtual-source), the only piece of data we really need is "Where should this dataset live on the target environment?". So, we can use a schema like this:
 
-```javascript
+```json
 {
     "type": "object",
     "required": "mountPath",
@@ -82,7 +82,7 @@ Just like we saw earlier with [linked datasets](/References/Glossary/#linked-dat
 
 As a reminder, here is what our schema looks like for source configs:
 
-```javascript
+```json
 {
   "type": "object",
   "properties": {
