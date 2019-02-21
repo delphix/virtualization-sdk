@@ -1,0 +1,96 @@
+# Dealing With Sensitive Data
+
+Often, a plugin will need to handle sensitive user-provided data. The most common example of this is a database password.
+
+Plugins must be careful to handle such sensitive data appropriately. Three tips for handling such data are:
+
+1. Tell the Delphix Engine which parts of your data are sensitive.
+2. When passing sensitive data to remote callbacks (such as `RunBash`), use environment variables.
+3. Avoid logging, or otherwise writing out the sensitive data.
+
+Each of these tips are explained below.
+
+# Marking Your Data As Sensitive
+
+Because the Delphix Engine mangages the storing and retreiving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](/References/Glossary/#schema), by using the special [`password`](/References/Schemas/#password) keyword.
+
+Here is an example of a schema that defines an object with three properties, one of which is sensitive and tagged with the `password` keyword:
+
+```json
+{
+    "type": "object",
+    "properties": {
+        "db_connectionPort": {"type": "string"},
+        "db_username": {"type": "string"},
+        "db_password": {"type": "string", "format": "password"}
+    }
+}
+```
+
+This tells the Delphix Engine to take special precautions with this password property, as follows:
+
+1. The Delphix Engine will encrypt the password before storing it, and decrypt it only as necessary to pass pack to the plugin.
+2. The Delphix Engine will not write this password anywhere (for example, it will not appear in any system logs)
+3. The Delphix Engine's UI and CLI will not display the password.
+4. No clients of the Delphix Engine's public API will be able to access the password.
+
+# Using Environment Variables For Remote Data Passing
+
+Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary/#staging-environment), and that database command will need to use a password.
+
+## Example
+Let's take a look at a very simple example. Let's suppose we need to shutdown a database called "inventory" on a target environment. Further, suppose that the command to do so is `db_cmd shutdown inventory`. Finally, suppose that command will ask for a password on `stdin`, and that our password is "hunter2".
+
+If we were running this command by hand, it might look like this:
+```bash
+$ db_cmd shutdown inventory
+Connecting to database instance...
+Please enter database password:
+```
+
+At this point, we'd type in "hunter2", and the command would proceed to shut down the database.
+
+Since a plugin cannot type in the password by hand, it will have to do something like this instead:
+
+```bash
+$ echo "hunter2" | db_cmd shutdown inventory
+```
+
+## Don't Do This
+
+First, let's take a look at how **not** to do this! Here is a bit of plugin python code that will run the above command.
+
+```python
+# THIS IS INSECURE! DO NOT DO THIS!
+full_command = "echo {} | db_cmd shutdown {}".format(password, db_name)
+dlpx.run_bash(env = target_env, cmd = full_command, user = target_user)
+```
+
+This will construct a Python string containing exactly the desired command from above. However, this is not recommended.
+
+The problem here is that there is a cleartext password in the Python string. But, this Python string is not treated as sensitive by the Delphix Engine. For example, suppose the Delphix Engine cannot make a connection to the target environment. In that case, it will raise an error containing the Python string, so that people will know what command failed. But, in our example, that would result in the password being part of the cleartext error message!
+
+## Using Environment Variables
+
+The Delphix Engine provides a better way to pass sensitive data to remote bash (or powershell) calls: environment variables. Let's look at a different way to run the same command as above.
+
+```python
+# Use environment variables to pass sensitive data to remote commands
+environment_vars = {
+  "DATABASE_PASSWORD" : password
+}
+full_command = "echo $DATABASE_PASSWORD | db_cmd shutdown {}".format(db_name)
+dlpx.run_bash(env = target_env, cmd = full_command, user = target_user, vars=environment_vars)
+```
+
+Note that we are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Delphix Engine to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
+
+Once the command runs on the target environment, Bash will substitute in the password, and the database shutdown will run as expected.
+
+Unlike with the command string, the Delphix Engine **does** treat environment variables as sensitive information, and will not include them in error messages or internal logs, etc.
+
+# Don't Write Out Sensitive Data
+
+Plugin writers are strongly advised to never write out unencrypted sensitive data. This is common-sense general advice that applies to all areas of programming, not just for plugins. However, there is one special concerns for plugins.
+
+The Delphix Engine provides logging capabilities to plugins. The generated logs are unencrypted and not treated as sensitive. Therefore, it is important for plugins to **never log sensitive data**.
