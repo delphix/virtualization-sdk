@@ -91,6 +91,8 @@ Unlike with the command string, the Delphix Engine **does** treat environment va
 
 # Don't Write Out Sensitive Data
 
-Plugin writers are strongly advised to never write out unencrypted sensitive data. This is common-sense general advice that applies to all areas of programming, not just for plugins. However, there is one special concerns for plugins.
+Plugin writers are strongly advised to never write out unencrypted sensitive data. This is common-sense general advice that applies to all areas of programming, not just for plugins. However, there are a couple of special concerns for plugins.
 
 The Delphix Engine provides logging capabilities to plugins. The generated logs are unencrypted and not treated as sensitive. Therefore, it is important for plugins to **never log sensitive data**.
+
+In addition, remember that your plugin itself is not treated as sensitive by the Delphix Engine. Plugin code is distributed unencrypted, and is viewable in cleartext by users of the Delphix Engine. So, you should not hard-code anything sensitive, like passwords, in your plugin code.

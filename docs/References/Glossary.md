@@ -80,8 +80,14 @@ The process by which the Delphix Engine ingests data from a dataset on a [source
 ## Target Environment
 An [environment](#environment) on which Delphix-provided virtualized datasets can be used.
 
+## Upgrade Operation
+A special plugin operation that takes data produced by an older version of a plugin, and transforms it into the format expected by the new version of the plugin.
+
 ## VDB
 See [Virtual Dataset](#virtual-dataset)
+
+## Version
+A string identifier that is unique for every public release of a plugin.
 
 ## Virtual Dataset
 A dataset that has been cloned from a snapshot, and whose data is stored on the Delphix Engine. A virtual dataset is made available for use by mounting it to a [target environment](#target-environment). A virtual dataset is often called a "VDB".
