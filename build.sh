@@ -21,8 +21,8 @@ touch ${JAR_DIRECTORY}/dlpx/__init__.py
 touch ${JAR_DIRECTORY}/dlpx/virtualization/__init__.py
 
 cp common/src/main/proto/dlpx/virtualization/common.proto ${JAR_DIRECTORY}/dlpx/virtualization/common.proto
-cp platform/src/main/proto/dlpx/virtualization/delphix-platform.proto ${JAR_DIRECTORY}/dlpx/virtualization/platform.proto
-cp libs/src/main/proto/dlpx/virtualization/delphix-libs.proto ${JAR_DIRECTORY}/dlpx/virtualization/libs.proto
+cp platform/src/main/proto/dlpx/virtualization/platform.proto ${JAR_DIRECTORY}/dlpx/virtualization/platform.proto
+cp libs/src/main/proto/dlpx/virtualization/libs.proto ${JAR_DIRECTORY}/dlpx/virtualization/libs.proto
 
 cd ${JAR_DIRECTORY}
 cp -r ./../bin .

@@ -6,7 +6,7 @@
 """Virtualization Platform API wrappers.
 
 This module contains all Virtualization Platform API wrappers (for details on
-the API definition, see platform/src/proto/delphix-platform.proto).
+the API definition, see platform/src/proto/platform.proto).
 
 The wrappers are the implementation of the Virtualization Platform API. They
 take <OperationName>Request protobuf message as input and return

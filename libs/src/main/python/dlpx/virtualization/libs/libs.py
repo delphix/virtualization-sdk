@@ -5,7 +5,7 @@
 """Virtualization Libs API wrappers.
 
 This module contains all Virtualization Libs API wrappers (for details on
-the API definition, see libs/src/proto/delphix-libs.proto).
+the API definition, see libs/src/proto/libs.proto).
 
 The wrappers are the implementation of the Virtualization Libs API. They take a
 number of arguments for a certain operation, construct a <OperationName>Request
@@ -15,7 +15,7 @@ code and their role is to pack input arguments into a *Request protobuf message,
 and invoke a Delphix Engine method that has implementation for the requested
 libs operation. The wrappers assume that the Python runtime will have a
 virtulization libs interface (a client stub) injected into the namespace such
-that one can invoke delphix_libs.run_bash(run_bash_request). In Jython, that
+that one can invoke libs.run_bash(run_bash_request). In Jython, that
 object will in fact be a Java object that will delegate to a Java implementation
 of a lib operation.
 

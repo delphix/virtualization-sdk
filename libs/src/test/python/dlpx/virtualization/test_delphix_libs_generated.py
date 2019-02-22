@@ -11,5 +11,5 @@ def test_import_common():
 
 
 def test_import_libs():
-    from dlpx.virtualization import delphix_libs_pb2
-    assert issubclass(delphix_libs_pb2.RunSyncRequest, message.Message)
+    from dlpx.virtualization import libs_pb2
+    assert issubclass(libs_pb2.RunSyncRequest, message.Message)
