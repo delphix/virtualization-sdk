@@ -122,6 +122,15 @@ Add the following entry to `dlpx-app-gate/.classpath`:
 ```
 
 
+## Platform wrappers unit testing
+
+If you added any wrappers to `platform_wrappers.py`, you can add corresponding unit tests to `test_platform_wrappers.py`.
+
+To run the platform wrappers unit test, run the following command from your terminal in the virtualization-sdk/platform/ directory:
+```
+../gradlew :platform:test_python2.7
+```
+
 ## SDK Review and Provisional Appgate review
 
 Once you're finished with local development and testing, you can publish your final SDK review to reviewboard.
