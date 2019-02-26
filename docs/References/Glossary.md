@@ -31,6 +31,9 @@ An object on the Delphix Engine that holds information related to a [linked data
 ## Linking
 The process by which the Delphix Engine connects a new [dSource](#dsource) to a pre-existing dataset on a source environment.
 
+## Logging
+Logging is when a plugin writes out some human-readable information to a log file. The log file can then be examined, typically in order to debug a problem with the plugin.
+
 ## Manual Discovery
 [Discovery](#discovery) which the end user does by manually entering the necessary information into the Delphix Engine.
 
