@@ -29,15 +29,15 @@ Plugin Operation | Decorator
 ---------------- |  --------
 [SourceConfig Discovey](Plugin_Operations.md#sourceconfig-discovery) | `@plugin.discovery.source_config()`
 [Repository Discovey](Plugin_Operations.md#repository-discovery) | `@plugin.discovery.repository()`
-[Direct Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.direct.pre_snapshot()`
-[Direct Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.direct.post_snapshot()`
-[Staged Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.staged.pre_snapshot()`
-[Staged Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.staged.post_snapshot()`
-[Staged Start-Staging](Plugin_Operations.md#linkedsource-start-staging) | `@plugin.staged.start_staging()`
-[Staged Stop-Staging](Plugin_Operations.md#linkedsource-stop-staging) | `@plugin.staged.stop_staging()`
-[Staged Status](Plugin_Operations.md#linkedsource-status) | `@plugin.staged.status()`
-[Staged Worker](Plugin_Operations.md#linkedsource-worker) | `@plugin.staged.worker()`
-[Staged MountSpecification](Plugin_Operations.md#linkedsource-mount-specification) | `@plugin.staged.mount_specification()`
+[Direct Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.linked.pre_snapshot()`
+[Direct Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
+[Staged Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.linked.pre_snapshot()`
+[Staged Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
+[Staged Start-Staging](Plugin_Operations.md#linkedsource-start-staging) | `@plugin.linked.start_staging()`
+[Staged Stop-Staging](Plugin_Operations.md#linkedsource-stop-staging) | `@plugin.linked.stop_staging()`
+[Staged Status](Plugin_Operations.md#linkedsource-status) | `@plugin.linked.status()`
+[Staged Worker](Plugin_Operations.md#linkedsource-worker) | `@plugin.linked.worker()`
+[Staged MountSpecification](Plugin_Operations.md#linkedsource-mount-specification) | `@plugin.linked.mount_specification()`
 [VirtualSource Configure](Plugin_Operations.md#virtualsource-configure) | `@plugin.virtual.configure()`
 [VirtualSource Unconfigure](Plugin_Operations.md#virtualsource-unconfigure) | `@plugin.virtual.unconfigure()`
 [VirtualSource Reconfigure](Plugin_Operations.md#virtualsource-reconfigure) | `@plugin.virtual.reconfigure()`
