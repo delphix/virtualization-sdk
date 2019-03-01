@@ -10,14 +10,14 @@ A Python function that is provided by the Delphix Engine. Plugins use callbacks 
 ## Decorator
 A Python construct which is used by plugins to "tag" certain functions, so that the Delphix Engine knows which function corresponds to which plugin operation.
 
-## Direct Linking/Syncing
+## Direct Linking
 A strategy that involves data being ingested directly from the source environment onto the Delphix Engine, without the assistance of a staging environment.
 
 ## Discovery
 The process by which the Delphix Engine learns about how a particular environment can be used for ingesting or virtualizing datasets.
 
 ## dSource
-See [Linked Dataset] (#linked-dataset)
+See [Linked Dataset](#linked-dataset)
 
 ## Environment
 A remote system that the Delphix Engine can interact with. An environment can be used as a [source](#source-environment), [staging](#staging-environment) or [target](#target-environment) environment (or any combination of those).  For example, a Linux machine that the Delphix Engine can connect to is an environment.
@@ -71,7 +71,7 @@ A collection of information that the Delphix Engine needs to interact with a dat
 ## Source Environment
 An environment containing data that is ingested by the Delphix Engine.
 
-## Staged Linking/Syncing
+## Staged Linking
 A strategy where a [staging environment](#staging-environment) is used to coordinate the ingestion of data into a [dsource](#dsource).
 
 ## Staging Environment
