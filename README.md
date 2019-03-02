@@ -166,6 +166,45 @@ Next, we need to point to our newly-deployed version:
 1. Modify `appliance/gradle.properties` and change `virtualizationSdkVer` to refer to your new version number.
 2. Modify `ivy-eclipse.deps.xml` and change the `com.delphix.virtualization` line to refer to your new version number.
 
+
+## Publishing Python packages to internal pypi for nightly Blackbox testing
+For Blackbox testing we need to make sure the SDK tool version matches to the
+SDK build of the engine. For this we will need to use the SDK python packages generated as part of the
+gradle build process. Specifically to test build and upload we need the tools package which contains the
+cli. After pushing an appgate side change which will modify the SDK version you will need
+to update the SDK version in this repo, rebuild the packages and upload then to our internal pypi repo so that
+Blackbox can make use of them in regression.  Once we have the final SDK packaging settled that will
+replace this solution.
+
+You will need to have credentials to upload to our internal delphix-virtual-pypi. You can contact devops for this.
+
+Create a .pypirc file in your home directory so you do not have to retype credentials every time.
+EX:
+```bash
+[~] cat ~/.pypirc
+[distutils]
+index-servers =
+    delphix
+
+[delphix]
+repository: https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi
+username: user
+password: pass
+```
+
+Install twine as other publishing methods are deprecated: `pip install twine`
+
+Run `./gradlew build` to generate the packages. Make sure the version is set correctly in `build.gradle`
+
+Run the following to upload the packages from the virtualization-sdk root directory
+```bash
+twine upload -r delphix tools/build/python-dist/*
+twine upload -r delphix libs/build/python-dist/*
+twine upload -r delphix platform/build/python-dist/*
+twine upload -r delphix common/build/python-dist/*
+
+```
+
 ## Finalizing Appgate Review
 
 Once you've got the above changes completed, tested, and checked into git, you can update your appgate review. Now, your review will be ready for final ship-its.
