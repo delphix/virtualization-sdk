@@ -1,3 +1,4 @@
 -i https://pypi.org/simple
+enum34==1.1.6 ; python_version < '3.4'
 protobuf==3.6.1
 six==1.12.0

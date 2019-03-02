@@ -15,6 +15,7 @@ mkdir -p ${JAR_DIRECTORY}
 
 cp bin/six.py ${JAR_DIRECTORY}
 cp -r bin/google ${JAR_DIRECTORY}
+cp -r bin/enum ${JAR_DIRECTORY}
 
 mkdir -p ${JAR_DIRECTORY}/dlpx/virtualization/
 touch ${JAR_DIRECTORY}/dlpx/__init__.py
