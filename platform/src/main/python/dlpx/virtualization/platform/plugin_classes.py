@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
 import enum
 
 """Classes used for Plugin Operations
