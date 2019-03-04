@@ -165,7 +165,7 @@ class DelphixClient:
         except requests.exceptions.RequestException as err:
             raise exceptions.UserError(
                 'Upload failed due to a http request failure.'
-                '\n{}'.format(err.message))
+                '\n{}'.format(err))
 
         #
         # Save cookie if one was received because the next time a request
