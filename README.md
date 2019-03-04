@@ -1,6 +1,4 @@
-#
 # Copyright (c) 2019 by Delphix. All rights reserved.
-#
 
 # Delphix Virtualization SDK
 
@@ -124,7 +122,7 @@ Add the following entry to `dlpx-app-gate/.classpath`:
 
 ## Platform wrappers unit testing
 
-If you added any wrappers to `platform_wrappers.py`, you can add corresponding unit tests to `test_platform_wrappers.py`.
+If you added any wrappers to `plugin.py`, you can add corresponding unit tests to `test_plugin.py`.
 
 To run the platform wrappers unit test, run the following command from your terminal in the virtualization-sdk/platform/ directory:
 ```
@@ -149,7 +147,7 @@ To deploy, run the following command from your terminal:
 ```
 curl -H 'X-JFrog-Art-Api: <Artifactory-API-key>' -T /path/to/virtualization-sdk/sdk-<version>.jar "http://artifactory.delphix.com/artifactory/virtualization-sdk/com/delphix/virtualization/sdk/<version>/sdk-<version>.jar"
 ```
-You can retrieve your API key by navigating to [http://artifactory.delphix.com/artifactory/webapp/#/profile][] (make sure you're logged in).
+You can retrieve your API key by navigating to http://artifactory.delphix.com/artifactory/webapp/#/profile (make sure you're logged in).
 
 
 ## Using Newly-Deployed SDK Build

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "cb80e71a7615b899eeb38b2343cd6a1747c843961c510c8edab99fe56bff7414"
+            "sha256": "1aaac19cffd8f4622ba21a51895bc177b2c2e21e142099eaf5b3e884f82996b8"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -60,7 +60,7 @@
             "version": "==18.2.0"
         },
         "common": {
-            "path": "../common/build/python-dist/dlpx-virtualization-common-0.2.0-internal-006.tar.gz",
+            "path": "../common/build/python-dist/dlpx-virtualization-common-0.2.0-internal-007.tar.gz",
             "version": "*"
         },
         "funcsigs": {
