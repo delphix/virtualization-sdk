@@ -48,6 +48,18 @@ def get_version():
     return _get_settings().get('General', 'package_version')
 
 
+def get_build_api_version():
+    """Returns the sdk build version in the format build command expects"""
+    major, minor, micro = (int(n) for n in get_version().split('.'))
+    build_api_version = {
+        'type': 'APIVersion',
+        'major': major,
+        'minor': minor,
+        'micro': micro
+    }
+    return build_api_version
+
+
 @_run_once
 def get_internal_package_root():
     """Returns the root directory of the virtualization._internal package."""

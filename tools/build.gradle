@@ -135,6 +135,10 @@ dlpxPython {
       version = "== 3.6.1"
     }
 
+    pyyaml {
+      version = ">= 3"
+    }
+
     requests {
       version = ">= 2.21.0"
     }
