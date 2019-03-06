@@ -6,7 +6,7 @@ title: Virtualization SDK
 
 ## Legend
 
-![Screenshot](images/legend.png)
+![Screenshot](images/Legend.png)
 
 ## Environment Discovery / Refresh
 
