@@ -105,7 +105,7 @@ class TestLibs:
                                                   expected_rsync_user, expected_exclude_paths,
                                                   expected_sym_links_to_follow)
 
-          assert actual_runsync_response
+          assert actual_runsync_response is None
 
   @staticmethod
   def test_run_expect():
