@@ -129,6 +129,15 @@ To run the platform wrappers unit test, run the following command from your term
 ../gradlew :platform:test_python2.7
 ```
 
+## libs wrappers unit testing
+
+If you added any wrappers to `libs.py`, you can add corresponding unit tests to `test_libs.py`.
+
+To run the libs unit test, run the following command from your terminal in the virtualization-sdk/libs/ directory:
+```
+../gradlew test
+
+
 ## SDK Review and Provisional Appgate review
 
 Once you're finished with local development and testing, you can publish your final SDK review to reviewboard.

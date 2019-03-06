@@ -39,10 +39,17 @@ message RunSyncRequest {
   com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
   string source_directory = 2;
   string rsync_user = 3;
+  repeated string exclude_paths = 4;
+  repeated string sym_links_to_follow = 5;
+
 }
+
+message RunSyncResponse { }
 
 message RunExpectRequest {
   com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
   string command = 2;
   map<string, string> variables = 3;
 }
+
+message RunExpectResponse { }

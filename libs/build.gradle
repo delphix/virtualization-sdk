@@ -60,6 +60,9 @@ dlpxPython {
       // projects.
       path = configurations.getByName("python")[0]
     }
+    mock {
+      version = ">=2.0"
+    }
   }
 
   supportedPythons {
