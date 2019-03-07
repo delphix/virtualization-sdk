@@ -129,13 +129,14 @@ To run the platform wrappers unit test, run the following command from your term
 ../gradlew :platform:test_python2.7
 ```
 
-## libs wrappers unit testing
+## Libs wrappers unit testing
 
 If you added any wrappers to `libs.py`, you can add corresponding unit tests to `test_libs.py`.
 
 To run the libs unit test, run the following command from your terminal in the virtualization-sdk/libs/ directory:
 ```
 ../gradlew test
+```
 
 
 ## SDK Review and Provisional Appgate review
@@ -183,7 +184,7 @@ to update the SDK version in this repo, rebuild the packages and upload then to 
 Blackbox can make use of them in regression.  Once we have the final SDK packaging settled that will
 replace this solution.
 
-You will need to have credentials to upload to our internal delphix-virtual-pypi. You can contact devops for this.
+You will need to have credentials to upload to our internal pypi repo, delphix-local. You can contact devops for this.
 
 Create a .pypirc file in your home directory so you do not have to retype credentials every time.
 EX:
@@ -191,10 +192,10 @@ EX:
 [~] cat ~/.pypirc
 [distutils]
 index-servers =
-    delphix
+    local
 
-[delphix]
-repository: https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi
+[local]
+repository: http://artifactory.delphix.com/artifactory/api/pypi/delphix-local
 username: user
 password: pass
 ```
