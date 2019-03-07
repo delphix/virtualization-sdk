@@ -21,6 +21,35 @@ class UserError(Exception):
         super(UserError, self).__init__(message)
 
 
+class PathNotAbsoluteError(UserError):
+    """
+    PathNotAbsoluteError gets raised when a path that should be absolute is
+    not.
+    """
+
+    def __init__(self, path):
+        self.path = path
+        message = ('The path {!r} found in the plugin config file was not'
+                   ' absolute. Change the path to be absolute and run the'
+                   ' command again.'.format(self.path))
+        super(PathNotAbsoluteError, self).__init__(message)
+
+
+class SchemaMissingRequiredFieldError(UserError):
+    """
+    SchemaMissingRequiredFieldError gets raised when a specific schema is
+    missing required fields.
+    """
+
+    def __init__(self, definition_type, missing_fields):
+        self.definition_type = definition_type
+        self.missing_fields = missing_fields
+        message = ('The provided schema for {} is missing required fields.'
+                   ' Verify that the field(s) {} are there.'.format(
+                       self.definition_type, self.missing_fields))
+        super(SchemaMissingRequiredFieldError, self).__init__(message)
+
+
 class InvalidArtifactError(UserError):
     """
     InvalidArtifactError gets raised when the parsed engineApi is not

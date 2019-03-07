@@ -5,12 +5,14 @@
 import logging
 import os
 import traceback
+from contextlib import contextmanager
 
 import click
 
 from dlpx.virtualization._internal import (click_util, exceptions,
                                            logging_util, package_util)
 from dlpx.virtualization._internal.commands import build as build_internal
+from dlpx.virtualization._internal.commands import compile as compile_internal
 from dlpx.virtualization._internal.commands import initialize
 from dlpx.virtualization._internal.commands import \
     newbuild as newbuild_internal
@@ -29,6 +31,16 @@ __version__ = package_util.get_version()
 
 # This is needed to add -h as an option for the help menu.
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
+@contextmanager
+def command_error_handler():
+    try:
+        yield
+    except exceptions.UserError as err:
+        logger.error(err.message)
+        logger.debug(traceback.format_exc())
+        exit(1)
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -88,6 +100,44 @@ def delphix_sdk(verbose, quiet):
 def init(type, root):
     """Create the skeleton of a Delphix plugin."""
     initialize.init(type, root)
+
+
+@delphix_sdk.command()
+@click.option(
+    '-c',
+    '--plugin-config',
+    'plugin_config',
+    default='plugin_config.yml',
+    show_default=True,
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        resolve_path=True),
+    envvar='DX_PLUGIN_CONFIG',
+    callback=click_util.validate_option_exists,
+    help='Set the path to plugin config file.'
+    ' This file contains the configuration required to compile the plugin.')
+def compile(plugin_config):
+    """
+    Compiles the plugin schema and generates the schemas into python objects.
+
+    The plugin_config.yml file should include: \n
+    name            the plugin name \n
+    prettyName      the plugin's displayed name \n
+    version         the plugin version \n
+    hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS) \n
+    entryPoint      the entry point of the plugin defined by the decorator \n
+    srcDir          the directory that the source code is writen in \n
+    schemaFile:     the file containing defined schemas in the plugin \n
+    manualDiscovery whether or not manual discovery is supported \n
+    pluginType      whether the plugin is DIRECT or STAGED \n
+    language        language of the source code (ex: PYTHON27 for python2.7) \n
+    """
+
+    with command_error_handler():
+        compile_internal.compile(plugin_config)
 
 
 @delphix_sdk.command()
@@ -167,18 +217,15 @@ def build(root, outfile):
          these scripts are functional before building a plugin.
 
     """
-    try:
+
+    with command_error_handler():
         build_internal.build(root, outfile)
-    except exceptions.UserError as err:
-        logger.error(err.message)
-        logger.debug(traceback.format_exc())
-        exit(1)
 
 
 @delphix_sdk.command()
 @click.option(
     '-c',
-    '--plugin_config',
+    '--plugin-config',
     'plugin_config',
     default='plugin_config.yml',
     show_default=True,
@@ -191,11 +238,11 @@ def build(root, outfile):
     envvar='DX_PLUGIN_CONFIG',
     callback=click_util.validate_option_exists,
     help='Set the path to plugin config file.'
-    'This file contains the configuration required to build plugin.')
+    'This file contains the configuration required to build the plugin.')
 @click.option(
     '-a',
-    '--upload_artifact',
-    default='plugin.json',
+    '--upload-artifact',
+    default='artifact.json',
     show_default=True,
     type=click.Path(
         file_okay=True, dir_okay=False, writable=True, resolve_path=True),
@@ -208,8 +255,7 @@ def newbuild(plugin_config, upload_artifact):
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
 
-    The
-    plugin_config.yml file should include: \n
+    The plugin_config.yml file should include: \n
     name            the plugin name \n
     prettyName      the plugin's displayed name \n
     version         the plugin version \n
@@ -221,17 +267,13 @@ def newbuild(plugin_config, upload_artifact):
     pluginType      whether the plugin is DIRECT or STAGED \n
     language        language of the source code (ex: PYTHON27 for python2.7) \n
 
-    Notes:
+    Notes: \n
         This script will not check the syntax of your scripts so ensure
-         these scripts are functional before building a plugin.
+        these scripts are functional before building a plugin.
 
     """
-    try:
+    with command_error_handler():
         newbuild_internal.build(plugin_config, upload_artifact)
-    except exceptions.UserError as err:
-        logger.error(err.message)
-        logger.debug(traceback.format_exc())
-        exit(1)
 
 
 @delphix_sdk.command()
@@ -271,12 +313,8 @@ def upload(engine, user, upload_artifact, password):
     Note that the upload artifact should be the file created after running
     the build command and will fail if it's not readable or valid.
     """
-    try:
+    with command_error_handler():
         upload_internal.upload(engine, user, upload_artifact, password)
-    except exceptions.UserError as err:
-        logger.error(err.message)
-        logger.debug(traceback.format_exc())
-        exit(1)
 
 
 def get_console_logging_level(verbose, quiet):

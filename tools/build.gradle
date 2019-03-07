@@ -142,6 +142,10 @@ dlpxPython {
     requests {
       version = ">= 2.21.0"
     }
+
+    typing {
+      markers = "python_version < '3.5'"
+    }
   }
 
   devPackages {

@@ -2,4 +2,5 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+include src/main/python/dlpx/virtualization/_internal/codegen/swagger-codegen-cli-2.3.1.jar
 recursive-include src/main/python *.cfg

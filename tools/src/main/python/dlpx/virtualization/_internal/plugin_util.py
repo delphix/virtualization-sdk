@@ -40,7 +40,7 @@ def read_plugin_config_file(plugin_config):
                             plugin_config, mark.line + 1, mark.column + 1))
     except IOError as err:
         raise exceptions.UserError(
-            'Unable to read config file {!r}'
+            'Unable to read plugin config file {!r}'
             '\nError code: {}. Error message: {}'.format(
                 plugin_config, err.errno, os.strerror(err.errno)))
 
@@ -53,8 +53,7 @@ def read_schema_file(schema_file):
             except ValueError as exc:
                 raise exceptions.UserError(
                     'Failed to load schemas because {!r} is not a '
-                    'valid json file. Error is : {}'.format(
-                        schema_file, str(exc)))
+                    'valid json file. Error: {}'.format(schema_file, str(exc)))
     except IOError as err:
         raise exceptions.UserError(
             'Unable to load schemas from {!r} Error code: {}. '
@@ -63,6 +62,7 @@ def read_schema_file(schema_file):
 
 
 def validate_plugin_config_content(plugin_config_content):
+    # First validate that all the expected keys are in the plugin config.
     if not all(name in plugin_config_content
                for name in EXPECTED_KEYS_IN_PLUGIN_CONFIG):
         missing_fields = [
@@ -72,6 +72,8 @@ def validate_plugin_config_content(plugin_config_content):
         raise exceptions.UserError(
             'The plugin config file provided is missing some required fields.'
             ' Missing fields are {}'.format(missing_fields))
+
+    # Then validate that the language was set to the right language
     if plugin_config_content['language'] != LANGUAGE_DEFAULT:
         raise exceptions.UserError(
             'Invalid language {} found in plugin config file. '
@@ -79,8 +81,19 @@ def validate_plugin_config_content(plugin_config_content):
             ' as it is the only supported option now.'.format(
                 plugin_config_content['language'], LANGUAGE_DEFAULT))
 
+    #
+    # Lastly validate that both the srcDir and schemaFile values are absolute
+    # paths.
+    #
+    if not os.path.isabs(plugin_config_content['srcDir']):
+        raise exceptions.PathNotAbsoluteError(plugin_config_content['srcDir'])
+    if not os.path.isabs(plugin_config_content['schemaFile']):
+        raise exceptions.PathNotAbsoluteError(
+            plugin_config_content['schemaFile'])
+
 
 def validate_schemas(schemas):
+    # First validate that all schemas needed are there.
     if not all(schema in schemas for schema in EXPECTED_SCHEMAS):
         missing_fields = [
             key for key in EXPECTED_SCHEMAS if key not in schemas
@@ -89,16 +102,15 @@ def validate_schemas(schemas):
             'The schemas file provided is missing some required schemas. '
             'Missing schema definitions are {}'.format(missing_fields))
 
+    # Then validate that the expected fields are in the definitions.
     if not all(field in schemas['sourceConfigDefinition']
                for field in EXPECTED_FIELDS):
         missing_fields = [
             key for key in EXPECTED_FIELDS
             if key not in schemas['sourceConfigDefinition']
         ]
-        raise exceptions.UserError(
-            'The schemas file provided is missing some required fields'
-            ' in sourceConfigDefinition schema. Verify that {} are in the'
-            ' sourceConfigDefinition'.format(missing_fields))
+        raise exceptions.SchemaMissingRequiredFieldError(
+            'sourceConfigDefinition', missing_fields)
 
     if not all(field in schemas['repositoryDefinition']
                for field in EXPECTED_FIELDS):
@@ -106,7 +118,5 @@ def validate_schemas(schemas):
             key for key in EXPECTED_FIELDS
             if key not in schemas['repositoryDefinition']
         ]
-        raise exceptions.UserError(
-            'The schemas file provided is missing some required fields'
-            ' in repositoryDefinition schema. Verify that {} are in the'
-            ' repositoryDefinition'.format(missing_fields))
+        raise exceptions.SchemaMissingRequiredFieldError(
+            'repositoryDefinition', missing_fields)

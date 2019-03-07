@@ -7,6 +7,7 @@ import os
 import click.testing as click_testing
 import mock
 import pytest
+import yaml
 
 from dlpx.virtualization._internal import cli, exceptions
 
@@ -118,35 +119,108 @@ class TestCli:
             cli.get_console_logging_level(1, 1)
 
 
-class TestUploadCli:
+class TestCompileCli:
     @staticmethod
-    @pytest.fixture
-    def upload_artifact(tmpdir):
-        # Need this to be an actual file
-        f = tmpdir.join('upload_artifact.json')
-        f.write('artifact')
-        return f.strpath
+    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
+    def test_compile_default_plugin_file(mock_compile, plugin_config_filename,
+                                         plugin_config_content):
+
+        runner = click_testing.CliRunner()
+        # Change the runner's working dir to test the default works
+        with runner.isolated_filesystem():
+            with open(plugin_config_filename, 'w') as f:
+                f.write(
+                    yaml.dump(plugin_config_content, default_flow_style=False))
+
+            plugin_config_file = os.path.realpath(f.name)
+            result = runner.invoke(cli.delphix_sdk, ['compile'])
+
+            assert result.exit_code == 0, 'Output: {}'.format(result.output)
+            mock_compile.assert_called_once_with(plugin_config_file)
 
     @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
+    def test_compile_valid_params(mock_compile, plugin_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['compile', '-c', plugin_config_file])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_compile.assert_called_once_with(plugin_config_file)
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
+    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
+    def test_compile_valid_params_new_name(mock_compile, plugin_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['compile', '-c', plugin_config_file])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_compile.assert_called_once_with(plugin_config_file)
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_file',
+                             ['/not/a/real/file/plugin_config.yml'])
+    def test_compile_file_not_exist(plugin_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['compile', '-c', plugin_config_file])
+
+        assert result.exit_code == 2
+        assert result.output == (u'Usage: delphix-sdk compile [OPTIONS]'
+                                 u'\nTry "delphix-sdk compile -h" for help.'
+                                 u'\n'
+                                 u'\nError: Invalid value for "-c" /'
+                                 u' "--plugin-config": File'
+                                 u' "/not/a/real/file/plugin_config.yml"'
+                                 u' does not exist.'
+                                 u'\n')
+
+
+class TestBuildCli:
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.newbuild.build')
+    def test_build_default_plugin_file(mock_build, plugin_config_filename,
+                                       plugin_config_content, artifact_file):
+
+        runner = click_testing.CliRunner()
+        # Change the runner's working dir to test the default works
+        with runner.isolated_filesystem():
+            with open(plugin_config_filename, 'w') as f:
+                f.write(
+                    yaml.dump(plugin_config_content, default_flow_style=False))
+
+            plugin_config_file = os.path.realpath(f.name)
+            result = runner.invoke(cli.delphix_sdk,
+                                   ['newbuild', '-a', artifact_file])
+
+            assert result.exit_code == 0, 'Output: {}'.format(result.output)
+            mock_build.assert_called_once_with(plugin_config_file,
+                                               artifact_file)
+
+
+class TestUploadCli:
+    @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    def test_upload_valid_params(mock_upload, upload_artifact):
+    def test_upload_valid_params(mock_upload, artifact_file):
         engine = 'engine'
         user = 'admin'
         password = 'password'
 
         runner = click_testing.CliRunner()
         result = runner.invoke(cli.delphix_sdk, [
-            'upload', '-e', engine, '-u', user, '-a', upload_artifact,
+            'upload', '-e', engine, '-u', user, '-a', artifact_file,
             '--password', password
         ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_upload.assert_called_once_with(engine, user, upload_artifact,
+        mock_upload.assert_called_once_with(engine, user, artifact_file,
                                             password)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    def test_upload_bad_password(mock_upload, upload_artifact):
+    def test_upload_bad_password(mock_upload, artifact_file):
         engine = 'engine'
         user = 'admin'
         password = 'delphix2'
@@ -160,7 +234,7 @@ class TestUploadCli:
 
         runner = click_testing.CliRunner()
         result = runner.invoke(cli.delphix_sdk, [
-            'upload', '-e', engine, '-u', user, '-a', upload_artifact,
+            'upload', '-e', engine, '-u', user, '-a', artifact_file,
             '--password', password
         ])
 
@@ -170,13 +244,13 @@ class TestUploadCli:
             '\nDetails: Invalid username or password.'
             '\nAction: Try with a different set of credentials.'
             '\n')
-        mock_upload.assert_called_once_with(engine, user, upload_artifact,
+        mock_upload.assert_called_once_with(engine, user, artifact_file,
                                             password)
 
     @staticmethod
-    @pytest.mark.parametrize('upload_artifact',
-                             ['/not/a/real/file/upload_artifact.json'])
-    def test_upload_file_not_exist(upload_artifact):
+    @pytest.mark.parametrize('artifact_file',
+                             ['/not/a/real/file/artifact.json'])
+    def test_upload_file_not_exist(artifact_file):
         # No mock is needed because we should never call the upload function.
         engine = 'engine'
         user = 'admin'
@@ -184,7 +258,7 @@ class TestUploadCli:
 
         runner = click_testing.CliRunner()
         result = runner.invoke(cli.delphix_sdk, [
-            'upload', '-e', engine, '-u', user, '-a', upload_artifact,
+            'upload', '-e', engine, '-u', user, '-a', artifact_file,
             '--password', password
         ])
 
@@ -194,6 +268,6 @@ class TestUploadCli:
                                  u'\n'
                                  u'\nError: Invalid value for "-a" /'
                                  u' "--upload-artifact": File'
-                                 u' "/not/a/real/file/upload_artifact.json"'
+                                 u' "/not/a/real/file/artifact.json"'
                                  u' does not exist.'
                                  u'\n')

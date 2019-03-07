@@ -11,7 +11,9 @@ import os
 import StringIO
 import zipfile
 
-from dlpx.virtualization._internal import exceptions, package_util, plugin_util
+from dlpx.virtualization._internal import (codegen, exceptions, package_util,
+                                           plugin_util)
+from dlpx.virtualization._internal.commands import compile as compile_internal
 
 logger = logging.getLogger(__name__)
 # This is hard-coded to the delphix web service api version
@@ -52,20 +54,35 @@ def build(plugin_config, upload_artifact):
     schemas = plugin_util.read_schema_file(plugin_config_content['schemaFile'])
     logger.debug('schemas found: %s', schemas)
     plugin_util.validate_schemas(schemas)
-    # Prepare the output artifact and
+
+    #
+    # Call directly into codegen to generate the python classes and make sure
+    # the ones we zip up are up to date with the schemas.
+    #
+    codegen.generate_python(plugin_config_content['prettyName'],
+                            plugin_config_content['srcDir'],
+                            os.path.dirname(plugin_config), schemas,
+                            compile_internal.GENERATED_MODULE)
+
+    # Prepare the output artifact.
     plugin_output = prepare_upload_artifact(plugin_config_content, schemas)
+
+    #
     # Add empty strings for plugin operations for now as API expects them.
     # This can be removed when Delphix API changes in future.
+    #
     add_empty_plugin_operations_to_plugin_output(plugin_output,
                                                  plugin_config_content)
-    # write it to upload_artifact as json
+    # Write it to upload_artifact as json.
     generate_upload_artifact(upload_artifact, plugin_output)
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
 
 def prepare_upload_artifact(plugin_config_content, schemas):
+    #
     # This is the output dictionary that will be written
     # to the upload_artifact.
+    #
     return {
         # Hard code the type to a set default.
         'type':
@@ -129,8 +146,11 @@ def prepare_discovery_definition(config_content, schemas):
     corresponding definitions, so we will need to remove them using
     pop function before using the corresponding schemas provided in schemaFile
     """
-    # copy repositoryDefinition and sourceConfigDefinition into new dicts for
+
+    #
+    # Copy repositoryDefinition and sourceConfigDefinition into new dicts for
     # required manipulation
+    #
     schema_repo_def = copy.deepcopy(schemas['repositoryDefinition'])
     schema_source_config_def = copy.deepcopy(schemas['sourceConfigDefinition'])
 
@@ -147,8 +167,10 @@ def prepare_discovery_definition(config_content, schemas):
         schema_repo_def.pop('nameField', None),
         'repositorySchema':
         schema_repo_def,
-        # transform identityFields and nameField into appropriate fields
-        # expected in output artifact
+        #
+        # Transform identityFields and nameField into appropriate fields
+        # expected in output artifact.
+        #
         'sourceConfigIdentityFields':
         schema_source_config_def.pop('identityFields', None),
         'sourceConfigNameField':
@@ -215,8 +237,11 @@ def zip_and_encode_source_files(source_code_dir):
     Jython creates a class loader to import .py files which the
     security manager prohibits.
     """
+
+    #
     # The contents of the zip should have relative and not absolute paths or
     # else the imports won't work as expected.
+    #
     cwd = os.getcwd()
     try:
         os.chdir(source_code_dir)

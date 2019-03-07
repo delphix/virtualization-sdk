@@ -90,7 +90,7 @@ class TestUpload:
         upload_plugin.
         """
 
-        def create_client(engine):
+        def create_client(_):
             return fake_client
 
         #
@@ -100,53 +100,47 @@ class TestUpload:
         monkeypatch.setattr(upload, 'DelphixClient', create_client)
 
     @staticmethod
-    def test_upload_success(tmpdir, artifact_config, fake_client):
+    def test_upload_success(artifact_file, artifact_content, fake_client):
 
         user = 'admin'
         password = 'delphix'
 
-        # Use tmpdir fixture from pytest to create a tmp file.
-        f = tmpdir.join('upload_artifact.json')
-        f.write(json.dumps(artifact_config, indent=2))
-        upload_artifact = f.strpath
-
-        upload.upload(fake_client.engine, user, upload_artifact, password)
+        upload.upload(fake_client.engine, user, artifact_file, password)
 
         # Make sure that the fake client was passed in the correct contents.
-        assert (fake_client.uploaded_files['upload_artifact.json'] ==
-                artifact_config)
+        assert (
+            fake_client.uploaded_files['artifact.json'] == artifact_content)
 
     @staticmethod
-    def test_upload_no_file(fake_client):
+    @pytest.mark.parametrize('artifact_file',
+                             ['/not/a/real/file/upload_artifact.json'])
+    def test_upload_no_file(fake_client, artifact_file):
 
         user = 'admin'
-        upload_artifact = '/file/does/not/exist/upload_artifact.json'
         password = 'delphix'
 
         with pytest.raises(exceptions.UserError) as err_info:
-            upload.upload(fake_client.engine, user, upload_artifact, password)
+            upload.upload(fake_client.engine, user, artifact_file, password)
 
         message = err_info.value.message
         assert message == ("Unable to read upload artifact file"
-                           " '/file/does/not/exist/upload_artifact.json'"
+                           " '/not/a/real/file/upload_artifact.json'"
                            "\nError code: 2. Error message: ENOENT")
 
         # Make sure the file was not uploaded to the client.
         assert ('upload_artifact.json' not in fake_client.uploaded_files)
 
     @staticmethod
-    def test_upload_file_not_json(tmpdir, artifact_config, fake_client):
+    @pytest.mark.parametrize(
+        'artifact_content',
+        ['{}\nNOT JSON'.format(json.dumps({'random': 'json'}))])
+    def test_upload_file_not_json(artifact_file, fake_client):
 
         user = 'admin'
         password = 'delphix'
 
-        # Use tmpdir fixture from pytest to create a tmp file.
-        f = tmpdir.join('upload_artifact.json')
-        f.write('{}\nNOT JSON'.format(json.dumps(artifact_config, indent=2)))
-        upload_artifact = f.strpath
-
         with pytest.raises(exceptions.UserError) as err_info:
-            upload.upload(fake_client.engine, user, upload_artifact, password)
+            upload.upload(fake_client.engine, user, artifact_file, password)
 
         message = err_info.value.message
         assert message == (
@@ -164,18 +158,13 @@ class TestUpload:
         'minor': 11,
         'micro': 0
     }])
-    def test_upload_api_incorrect(tmpdir, artifact_config, fake_client):
+    def test_upload_api_incorrect(artifact_file, fake_client):
 
         user = 'admin'
         password = 'delphix'
 
-        # Use tmpdir fixture from pytest to create a tmp file.
-        f = tmpdir.join('upload_artifact.json')
-        f.write(json.dumps(artifact_config, indent=2))
-        upload_artifact = f.strpath
-
         with pytest.raises(exceptions.HttpPostError) as err_info:
-            upload.upload(fake_client.engine, user, upload_artifact, password)
+            upload.upload(fake_client.engine, user, artifact_file, password)
 
         error = err_info.value.error
         message = err_info.value.message
@@ -199,18 +188,14 @@ class TestUpload:
         assert ('upload_artifact.json' not in fake_client.uploaded_files)
 
     @staticmethod
-    def test_upload_password_incorrect(tmpdir, artifact_config, fake_client):
+    def test_upload_password_incorrect(artifact_file, artifact_content,
+                                       fake_client):
 
         user = 'admin'
         password = 'delphix2'
 
-        # Use tmpdir fixture from pytest to create a tmp file.
-        f = tmpdir.join('upload_artifact.json')
-        f.write(json.dumps(artifact_config, indent=2))
-        upload_artifact = f.strpath
-
         with pytest.raises(exceptions.HttpPostError) as err_info:
-            upload.upload(fake_client.engine, user, upload_artifact, password)
+            upload.upload(fake_client.engine, user, artifact_file, password)
 
         error = err_info.value.error
         message = err_info.value.message
@@ -228,18 +213,14 @@ class TestUpload:
 
     @staticmethod
     @pytest.mark.parametrize('discovery_definition', [None])
-    def test_upload_plugin_failed(tmpdir, artifact_config, fake_client):
+    def test_upload_plugin_failed(artifact_file, artifact_content,
+                                  fake_client):
 
         user = 'admin'
         password = 'delphix'
 
-        # Use tmpdir fixture from pytest to create a tmp file.
-        f = tmpdir.join('upload_artifact.json')
-        f.write(json.dumps(artifact_config, indent=2))
-        upload_artifact = f.strpath
-
         with pytest.raises(exceptions.HttpPostError) as err_info:
-            upload.upload(fake_client.engine, user, upload_artifact, password)
+            upload.upload(fake_client.engine, user, artifact_file, password)
 
         error = err_info.value.error
         message = err_info.value.message
@@ -267,8 +248,8 @@ class TestUpload:
 
 class TestEngineApi:
     @staticmethod
-    def test_get(engine_api, artifact_config):
-        assert upload.get_engine_api(artifact_config) == engine_api
+    def test_get(engine_api, artifact_content):
+        assert upload.get_engine_api(artifact_content) == engine_api
 
     @staticmethod
     @pytest.mark.parametrize('engine_api', [
@@ -280,9 +261,9 @@ class TestEngineApi:
             'micro': 0
         }
     ])
-    def test_validate_fail(artifact_config):
+    def test_validate_fail(artifact_content):
         with pytest.raises(exceptions.InvalidArtifactError) as err_info:
-            upload.get_engine_api(artifact_config)
+            upload.get_engine_api(artifact_content)
 
         message = err_info.value.message
         assert message == (
@@ -508,7 +489,7 @@ class TestDelphixClient:
         })
 
     @staticmethod
-    def test_delphix_client_success(engine_api, artifact_config):
+    def test_delphix_client_success(engine_api, artifact_content):
         session_body, session_header = TestDelphixClient.SES_RESP_SUCCESS
         httpretty.register_uri(
             httpretty.POST,
@@ -539,7 +520,7 @@ class TestDelphixClient:
 
         dc = upload.DelphixClient('test-engine.com')
         dc.login(engine_api, 'admin', 'delphix')
-        dc.upload_plugin('plugin name', artifact_config)
+        dc.upload_plugin('plugin name', artifact_content)
 
         history = httpretty.HTTPretty.latest_requests
         assert history[-1].path == u'/resources/json/delphix/data/upload'
@@ -715,7 +696,7 @@ class TestDelphixClient:
         assert history[-2].path == u'/resources/json/delphix/session'
 
     @staticmethod
-    def test_delphix_client_get_token_fail(engine_api, artifact_config):
+    def test_delphix_client_get_token_fail(engine_api, artifact_content):
         session_body, session_header = TestDelphixClient.SES_RESP_SUCCESS
         httpretty.register_uri(
             httpretty.POST,
@@ -742,7 +723,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
 
         with pytest.raises(exceptions.UnexpectedError) as err_info:
-            dc.upload_plugin('plugin name', artifact_config)
+            dc.upload_plugin('plugin name', artifact_content)
 
         assert err_info.value.status_code == 403
         assert err_info.value.response == token_body
@@ -757,7 +738,7 @@ class TestDelphixClient:
         assert history[-3].path == u'/resources/json/delphix/session'
 
     @staticmethod
-    def test_delphix_client_upload_fail(engine_api, artifact_config):
+    def test_delphix_client_upload_fail(engine_api, artifact_content):
         session_body, session_header = TestDelphixClient.SES_RESP_SUCCESS
         httpretty.register_uri(
             httpretty.POST,
@@ -790,7 +771,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
 
         with pytest.raises(exceptions.HttpPostError) as err_info:
-            dc.upload_plugin('plugin name', artifact_config)
+            dc.upload_plugin('plugin name', artifact_content)
         error = err_info.value.error
         message = err_info.value.message
         assert err_info.value.status_code == 200
