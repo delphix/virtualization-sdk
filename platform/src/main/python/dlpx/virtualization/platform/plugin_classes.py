@@ -21,8 +21,8 @@ __all__ = [
     "RemoteConnection",
     "Status",
     "Mount",
-    "OwnershipSpecification",
-    "MountSpecification"]
+    "OwnershipSpec",
+    "MountSpec"]
 
 class VirtualSource(object):
 
@@ -116,53 +116,53 @@ class RemoteConnection(object):
 
 
 class Status(enum.Enum):
-    ACTIVE = 1
-    INACTIVE = 2
+    ACTIVE = 0
+    INACTIVE = 1
 
 
 class Mount(object):
-    def __init__(self, environment, path):
-        self._environment = environment
-        self._path = path
+    def __init__(self, remote_environment, mount_path):
+        self._remote_environment = remote_environment
+        self._mount_path = mount_path
 
     @property
-    def environment(self):
+    def remote_environment(self):
         """RemoteEnvironment: The RemoteEnvironment for this Mount."""
-        return self._environment
+        return self._remote_environment
 
     @property
-    def path(self):
+    def mount_path(self):
         """str: The path on the environment to mount to for this Mount."""
-        return self._path
+        return self._mount_path
 
 
-class OwnershipSpecification(object):
+class OwnershipSpec(object):
     def __init__(self, uid, gid):
         self._uid = uid
         self._gid = gid
 
     @property
     def uid(self):
-        """int: The user id for this OwnershipSpecification."""
+        """int: The user id for this OwnershipSpec."""
         return self._uid
 
     @property
     def gid(self):
-        """int: The group id for this OwnershipSpecification."""
+        """int: The group id for this OwnershipSpec."""
         return self._gid
 
 
-class MountSpecification(object):
-    def __init__(self, mounts, ownership_specification):
+class MountSpec(object):
+    def __init__(self, mounts, ownership_spec):
         self._mounts = mounts
-        self._ownership_specification = ownership_specification
+        self._ownership_spec = ownership_spec
 
     @property
     def mounts(self):
-        """list of Mount: List of mounts for this MountSpecification"""
+        """list of Mount: List of mounts for this MountSpec"""
         return self._mounts
 
     @property
-    def ownership_specification(self):
-        """OwnershipSpecification: The OwnershipSpecification for this MountSpecification."""
-        return self._ownership_specification
+    def ownership_spec(self):
+        """OwnershipSpec: The OwnershipSpec for this MountSpec."""
+        return self._ownership_spec

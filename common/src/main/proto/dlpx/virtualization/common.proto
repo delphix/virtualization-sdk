@@ -41,23 +41,30 @@ message DirectSource {
   LinkedSource linked_source = 2;
 }
 
-message StagedSource {
-  LinkedSource linked_source = 1;
-  RemoteConnection connection = 3;
-  SingleMount staged_mount = 4;
+// Stuff that always mounts the entire ZFS filesystem
+message SingleEntireMount {
+  RemoteEnvironment remote_environment = 1;
+  string mount_path = 2;
 }
 
-message SingleMount {
+// Stuff that can optionally mount only a subset of the ZFS filesystem
+message SingleSubsetMount {
   RemoteEnvironment remote_environment = 1;
   string mount_path = 2;
   string shared_path = 3; // not supported on Windows
 }
 
+message StagedSource {
+  LinkedSource linked_source = 1;
+  RemoteConnection connection = 3;
+  SingleEntireMount staged_mount = 4;
+}
+
 message VirtualSource {
   string guid = 1;
   RemoteConnection connection = 2;
-  SingleMount primary_mount = 3;
-  repeated SingleMount additional_mounts = 4;
+  SingleSubsetMount primary_mount = 3;
+  repeated SingleSubsetMount additional_mounts = 4;
   PluginDefinedObject parameters = 5;
 }
 

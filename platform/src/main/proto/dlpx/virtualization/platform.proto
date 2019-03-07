@@ -10,6 +10,15 @@ option java_multiple_files = true;
 
 package com.delphix.virtualization.platform;
 
+/*
+ * NOTE:
+ * Currently, there are some operations that do not expect a return value -
+ * e.g - pre-snapshot (direct and staged), start staging, stop staging etc.
+ * So this file contains empty result types for all such operations as a placeholder.
+ * Defining a valid return type as a placeholder and still return empty message helps
+ * if something needs to be added as part of the result in future.
+ */
+
 /* ERROR REPORTING */
 
 /*
@@ -79,11 +88,6 @@ message DirectPreSnapshotRequest {
   com.delphix.virtualization.common.SourceConfig source_config = 3;
 }
 
-/*
- * Currently, pre snapshot does not expect a return value. However, defining
- * a valid return type as a placeholder and still return empty message helps
- * if something needs to be added as part of the result in future.
- */
 message DirectPreSnapshotResult { }
 
 message DirectPreSnapshotResponse {
@@ -116,42 +120,68 @@ message StagedPreSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
+}
+
+message StagedPreSnapshotResult { }
+
+message StagedPreSnapshotResponse {
+  oneof result {
+    StagedPreSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StagedPostSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
-message StagedResyncRequest {
-  com.delphix.virtualization.common.Repository repository = 1;
-  com.delphix.virtualization.common.SourceConfig source_config = 2;
-  com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
+message StagedPostSnapshotResult {
+  com.delphix.virtualization.common.Snapshot snapshot = 1;
+}
+
+message StagedPostSnapshotResponse {
+  oneof result {
+    StagedPostSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StartStagingRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
+}
+
+message StartStagingResult { }
+
+message StartStagingResponse {
+  oneof result {
+    StartStagingResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StopStagingRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
+}
+
+message StopStagingResult { }
+
+message StopStagingResponse {
+  oneof result {
+    StopStagingResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StagedStatusRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
 message StagedStatusResult {
@@ -162,22 +192,43 @@ message StagedStatusResult {
   Status status = 1;
 }
 
+message StagedStatusResponse {
+  oneof result {
+    StagedStatusResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message StagedWorkerRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.StagedSource staged_source = 3;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
+}
+
+message StagedWorkerResult { }
+
+message StagedWorkerResponse {
+  oneof result {
+    StagedWorkerResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StagedMountSpecRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.StagedSource staged_source = 2;
-  com.delphix.virtualization.common.RemoteConnection source_connection = 4;
 }
 
 message StagedMountSpecResult {
-  string mountPath = 1;
+  com.delphix.virtualization.common.SingleEntireMount staged_mount = 1;
   com.delphix.virtualization.common.OwnershipSpec ownership_spec = 2;
+}
+
+message StagedMountSpecResponse {
+  oneof result {
+    StagedMountSpecResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 /* PROVISIONING */
@@ -270,9 +321,8 @@ message VirtualMountSpecRequest {
 }
 
 message VirtualMountSpecResult {
-  com.delphix.virtualization.common.SingleMount primary_mount = 1;
-  repeated com.delphix.virtualization.common.SingleMount additional_mounts = 2;
-  repeated com.delphix.virtualization.common.OwnershipSpec ownership_specs = 3;
+  com.delphix.virtualization.common.OwnershipSpec ownership_spec = 1;
+  repeated com.delphix.virtualization.common.SingleSubsetMount mounts = 2;
 }
 
 /* UPGRADE */

@@ -64,6 +64,7 @@ method that has logic for the virtualization operation itself (such as configure
 a response object.
 """
 
+import json
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization import platform_pb2
 
@@ -123,7 +124,7 @@ class VirtualOperations(object):
             repository=configure_request.repository,
             snapshot=configure_request.snapshot)
         configure_response = platform_pb2.ConfigureResponse()
-        configure_response.return_value.source_config.parameters.json = config.to_json()
+        configure_response.return_value.source_config.parameters.json = json.dumps(config.to_dict())
         return configure_response
 
 class Plugin(object):
@@ -166,7 +167,7 @@ def repository_discovery_wrapper(repository_discovery_request):
   """
     def to_protobuf(repository):
         parameters = common_pb2.PluginDefinedObject()
-        parameters.json = repository.to_json()
+        parameters.json = json.dumps(repository.to_dict())
         repository_protobuf = common_pb2.Repository()
         repository_protobuf.parameters.CopyFrom(parameters)
         return repository_protobuf
@@ -199,7 +200,7 @@ def source_config_discovery_wrapper(source_config_discovery_request):
     """
     def to_protobuf(source_config):
         parameters = common_pb2.PluginDefinedObject()
-        parameters.json = source_config.to_json()
+        parameters.json = json.dumps(source_config.to_dict())
         source_config_protobuf = common_pb2.SourceConfig()
         source_config_protobuf.parameters.CopyFrom(parameters)
         return source_config_protobuf
@@ -230,9 +231,9 @@ def direct_pre_snapshot_wrapper(direct_pre_snapshot_request):
        if successful or PluginErrorResult in case of an error.
     """
     direct_pre_snapshot(
-        source=direct_pre_snapshot_request.direct_source,
+        direct_source=direct_pre_snapshot_request.direct_source,
         repository=direct_pre_snapshot_request.repository,
-        config=direct_pre_snapshot_request.source_config)
+        source_config=direct_pre_snapshot_request.source_config)
 
     direct_pre_snapshot_response = platform_pb2.DirectPreSnapshotResponse()
     direct_pre_snapshot_response.return_value.CopyFrom(platform_pb2.DirectPreSnapshotResult())
@@ -259,17 +260,253 @@ def direct_post_snapshot_wrapper(direct_post_snapshot_request):
     """
     def to_protobuf(snapshot):
         parameters = common_pb2.PluginDefinedObject()
-        parameters.json = snapshot.to_json()
+        parameters.json = json.dumps(snapshot.to_dict())
         snapshot_protobuf = common_pb2.Snapshot()
         snapshot_protobuf.parameters.CopyFrom(parameters)
         return snapshot_protobuf
 
     snapshot = direct_post_snapshot(
-        source=direct_post_snapshot_request.direct_source,
+        direct_source=direct_post_snapshot_request.direct_source,
         repository=direct_post_snapshot_request.repository,
-        config=direct_post_snapshot_request.source_config)
+        source_config=direct_post_snapshot_request.source_config)
 
     direct_post_snapshot_response = platform_pb2.DirectPostSnapshotResponse()
     direct_post_snapshot_response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
 
     return direct_post_snapshot_response
+
+def staged_pre_snapshot_wrapper(staged_pre_snapshot_request):
+    """Pre Snapshot Wrapper for staged plugins.
+
+    Executed before creating a snapshot. This plugin
+    operation is run prior to creating a snapshot for a staged source.
+
+    Run pre-snapshot operation for a staged source.
+
+    Args:
+       staged_pre_snapshot_request (StagedPreSnapshotRequest):
+       Pre Snapshot arguments.
+
+    Returns:
+       StagedPreSnapshotResponse: A response containing StagedPreSnapshotResult
+       if successful or PluginErrorResult in case of an error.
+    """
+
+    staged_pre_snapshot(
+        staged_source=staged_pre_snapshot_request.staged_source,
+        repository=staged_pre_snapshot_request.repository,
+        source_config=staged_pre_snapshot_request.source_config)
+
+    staged_pre_snapshot_response = platform_pb2.StagedPreSnapshotResponse()
+    staged_pre_snapshot_response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
+
+    return staged_pre_snapshot_response
+
+
+def staged_post_snapshot_wrapper(staged_post_snapshot_request):
+    """Post Snapshot Wrapper for staged plugins.
+
+    Executed after creating a snapshot. This plugin
+    operation is run after creating a snapshot for a staged source.
+
+    Run post-snapshot operation for a staged source.
+
+    Args:
+       staged_post_snapshot_request (StagedPostSnapshotRequest):
+       Post Snapshot arguments.
+
+    Returns:
+       StagedPostSnapshotResponse: A response containing the return value -
+       StagedPostSnapshotResult which has the snapshot metadata on success. In
+       case of errors, response object will contain PluginErrorResult.
+    """
+
+    def to_protobuf(snapshot):
+        parameters = common_pb2.PluginDefinedObject()
+        parameters.json = json.dumps(snapshot.to_dict())
+        snapshot_protobuf = common_pb2.Snapshot()
+        snapshot_protobuf.parameters.CopyFrom(parameters)
+        return snapshot_protobuf
+
+    snapshot = staged_post_snapshot(
+        staged_source=staged_post_snapshot_request.staged_source,
+        repository=staged_post_snapshot_request.repository,
+        source_config=staged_post_snapshot_request.source_config)
+
+    staged_post_snapshot_response = platform_pb2.StagedPostSnapshotResponse()
+    staged_post_snapshot_response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
+
+    return staged_post_snapshot_response
+
+
+def start_staging_wrapper(start_staging_request):
+    """Start staging Wrapper for staged plugins.
+
+    Executed when enabling the staging source. This plugin
+    operation is run to start the staging source as part
+    of the enable operation.
+
+    Run start operation for a staged source.
+
+    Args:
+       start_staging_request (StartStagingRequest):
+       Start arguments.
+
+    Returns:
+       StartStagingResponse: A response containing StartStagingResult
+       if successful or PluginErrorResult in case of an error.
+    """
+
+    start_staging(
+        staged_source=start_staging_request.staged_source,
+        repository=start_staging_request.repository,
+        source_config=start_staging_request.source_config)
+
+    start_staging_response = platform_pb2.StartStagingResponse()
+    start_staging_response.return_value.CopyFrom(platform_pb2.StartStagingResult())
+
+    return start_staging_response
+
+
+def stop_staging_wrapper(stop_staging_request):
+    """Stop staging Wrapper for staged plugins.
+
+    Executed when disabling the staging source. This plugin
+    operation is run to stop the staging source as part
+    of the disable operation.
+
+    Run stop operation for a staged source.
+
+    Args:
+       stop_staging_request (StopStagingRequest):
+       Stop arguments.
+
+    Returns:
+       StopStagingResponse: A response containing StopStagingResult
+       if successful or PluginErrorResult in case of an error.
+    """
+
+    stop_staging(
+        staged_source=stop_staging_request.staged_source,
+        repository=stop_staging_request.repository,
+        source_config=stop_staging_request.source_config)
+
+    stop_staging_response = platform_pb2.StopStagingResponse()
+    stop_staging_response.return_value.CopyFrom(platform_pb2.StopStagingResult())
+
+    return stop_staging_response
+
+
+def staged_status_wrapper(staged_status_request):
+    """Staged Status Wrapper for staged plugins.
+
+    Executed as part of several operations to get the status
+    of a staged source - active or inactive.
+
+    Run status operation for a staged source.
+
+    Args:
+       staged_status_request (StagedStatusRequest):
+       Post Snapshot arguments.
+
+    Returns:
+       StagedStatusResponse: A response containing the return value -
+       StagedStatusResult which has active or inactive status. In
+       case of errors, response object will contain PluginErrorResult.
+    """
+
+    status = staged_status(
+        staged_source=staged_status_request.staged_source,
+        repository=staged_status_request.repository,
+        source_config=staged_status_request.source_config)
+
+    staged_status_response = platform_pb2.StagedStatusResponse()
+    staged_status_response.return_value.status = status.value
+
+    return staged_status_response
+
+
+def staged_worker_wrapper(staged_worker_request):
+    """Staged Worker Wrapper for staged plugins.
+
+    Executed as part of validated sync. This plugin
+    operation is run to sync staging source as part
+    of the validated sync operation.
+
+    Run worker operation for a staged source.
+
+    Args:
+       staged_worker_request (StagedWorkerRequest):
+       Worker arguments.
+
+    Returns:
+       StagedWorkerResponse: A response containing StagedWorkerResult
+       if successful or PluginErrorResult in case of an error.
+    """
+
+    staged_worker(
+        staged_source=staged_worker_request.staged_source,
+        repository=staged_worker_request.repository,
+        source_config=staged_worker_request.source_config)
+
+    staged_worker_response = platform_pb2.StagedWorkerResponse()
+    staged_worker_response.return_value.CopyFrom(platform_pb2.StagedWorkerResult())
+
+    return staged_worker_response
+
+
+def staged_mount_spec_wrapper(staged_mount_spec_request):
+    """Staged Mount/Ownership Spec Wrapper for staged plugins.
+
+    Executed before creating a snapshot during sync or before enable/disable.
+    This plugin operation is run before mounting datasets on staging to set
+    the mount path and/or ownership.
+
+    Run mount/ownership spec operation for a staged source.
+
+    Args:
+       staged_mount_spec_request (StagedMountSpecRequest):
+       Mount Spec arguments.
+
+    Returns:
+       StagedMountSpecResponse: A response containing the return value -
+       StagedMountSpecResult which has the mount/ownership metadata on success.
+       In case of errors, response object will contain PluginErrorResult.
+    """
+
+    def to_protobuf_single_mount(single_mount):
+        single_mount_protobuf = common_pb2.SingleEntireMount()
+
+        host_protobuf = common_pb2.RemoteHost()
+        host_protobuf.name = single_mount.remote_environment.host.name
+        host_protobuf.reference = single_mount.remote_environment.host.reference
+        host_protobuf.binary_path = single_mount.remote_environment.host.binary_path
+        host_protobuf.scratch_path = single_mount.remote_environment.host.scratch_path
+
+        environment_protobuf = common_pb2.RemoteEnvironment()
+        environment_protobuf.name = single_mount.remote_environment.name
+        environment_protobuf.reference = single_mount.remote_environment.reference
+        environment_protobuf.host.CopyFrom(host_protobuf)
+
+        single_mount_protobuf.remote_environment.CopyFrom(environment_protobuf)
+        single_mount_protobuf.mount_path = single_mount.mount_path
+
+        return single_mount_protobuf
+
+    def to_protobuf_ownership_spec(ownership_spec):
+        ownership_spec_protobuf = common_pb2.OwnershipSpec()
+        ownership_spec_protobuf.uid = ownership_spec.uid
+        ownership_spec_protobuf.gid = ownership_spec.gid
+        return ownership_spec_protobuf
+
+    mount_spec = staged_mount_spec(
+        staged_source=staged_mount_spec_request.staged_source,
+        repository=staged_mount_spec_request.repository)
+
+    staged_mount_spec_response = platform_pb2.StagedMountSpecResponse()
+    staged_mount = to_protobuf_single_mount(mount_spec.mounts[0])
+    staged_mount_spec_response.return_value.staged_mount.CopyFrom(staged_mount)
+    ownership_spec = to_protobuf_ownership_spec(mount_spec.ownership_spec)
+    staged_mount_spec_response.return_value.ownership_spec.CopyFrom(ownership_spec)
+
+    return staged_mount_spec_response
