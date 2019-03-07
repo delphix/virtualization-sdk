@@ -206,10 +206,10 @@ Run `./gradlew build` to generate the packages. Make sure the version is set cor
 
 Run the following to upload the packages from the virtualization-sdk root directory
 ```bash
-twine upload -r delphix tools/build/python-dist/*
-twine upload -r delphix libs/build/python-dist/*
-twine upload -r delphix platform/build/python-dist/*
-twine upload -r delphix common/build/python-dist/*
+twine upload -r local tools/build/python-dist/*
+twine upload -r local libs/build/python-dist/*
+twine upload -r local platform/build/python-dist/*
+twine upload -r local common/build/python-dist/*
 
 ```
 
