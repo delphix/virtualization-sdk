@@ -257,6 +257,15 @@ message UnconfigureRequest {
   bool deleteFlag = 4;
 }
 
+message UnconfigureResult { }
+
+message UnconfigureResponse {
+  oneof result {
+    UnconfigureResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message ReconfigureRequest {
   com.delphix.virtualization.common.Snapshot snapshot = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
@@ -267,10 +276,26 @@ message ReconfigureResult {
   com.delphix.virtualization.common.SourceConfig source_config = 1;
 }
 
+message ReconfigureResponse {
+  oneof result {
+    ReconfigureResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message StartRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
+}
+
+message StartResult { }
+
+message StartResponse {
+  oneof result {
+    StartResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message StopRequest {
@@ -279,10 +304,28 @@ message StopRequest {
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
+message StopResult { }
+
+message StopResponse {
+  oneof result {
+    StopResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message VirtualPreSnapshotRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
+}
+
+message VirtualPreSnapshotResult { }
+
+message VirtualPreSnapshotResponse {
+  oneof result {
+    VirtualPreSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message VirtualPostSnapshotRequest {
@@ -293,6 +336,13 @@ message VirtualPostSnapshotRequest {
 
 message VirtualPostSnapshotResult {
   com.delphix.virtualization.common.Snapshot snapshot = 1;
+}
+
+message VirtualPostSnapshotResponse {
+  oneof result {
+    VirtualPostSnapshotResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message VirtualStatusRequest {
@@ -309,10 +359,26 @@ message VirtualStatusResult {
   Status status = 1;
 }
 
+message VirtualStatusResponse {
+  oneof result {
+    VirtualStatusResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
+}
+
 message InitializeRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
+}
+
+message InitializeResult { }
+
+message InitializeResponse {
+  oneof result {
+    InitializeResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 message VirtualMountSpecRequest {
@@ -323,6 +389,13 @@ message VirtualMountSpecRequest {
 message VirtualMountSpecResult {
   com.delphix.virtualization.common.OwnershipSpec ownership_spec = 1;
   repeated com.delphix.virtualization.common.SingleSubsetMount mounts = 2;
+}
+
+message VirtualMountSpecResponse {
+  oneof result {
+    VirtualMountSpecResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
 
 /* UPGRADE */

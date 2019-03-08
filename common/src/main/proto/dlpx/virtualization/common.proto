@@ -56,16 +56,15 @@ message SingleSubsetMount {
 
 message StagedSource {
   LinkedSource linked_source = 1;
-  RemoteConnection connection = 3;
-  SingleEntireMount staged_mount = 4;
+  RemoteConnection connection = 2;
+  SingleEntireMount staged_mount = 3;
 }
 
 message VirtualSource {
   string guid = 1;
   RemoteConnection connection = 2;
-  SingleSubsetMount primary_mount = 3;
-  repeated SingleSubsetMount additional_mounts = 4;
-  PluginDefinedObject parameters = 5;
+  repeated SingleSubsetMount mounts = 3;
+  PluginDefinedObject parameters = 4;
 }
 
 message SourceConfig {

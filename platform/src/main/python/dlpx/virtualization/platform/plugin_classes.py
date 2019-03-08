@@ -121,9 +121,10 @@ class Status(enum.Enum):
 
 
 class Mount(object):
-    def __init__(self, remote_environment, mount_path):
+    def __init__(self, remote_environment, mount_path, shared_path):
         self._remote_environment = remote_environment
         self._mount_path = mount_path
+        self._shared_path = shared_path
 
     @property
     def remote_environment(self):
@@ -134,6 +135,11 @@ class Mount(object):
     def mount_path(self):
         """str: The path on the environment to mount to for this Mount."""
         return self._mount_path
+
+    @property
+    def shared_path(self):
+        """str: The subset of the ZFS filesystem to mount on the mount_path."""
+        return self._shared_path
 
 
 class OwnershipSpec(object):
