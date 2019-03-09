@@ -23,6 +23,9 @@ EXPECTED_FIELDS = frozenset({'identityFields', 'nameField'})
 
 LANGUAGE_DEFAULT = 'PYTHON27'
 
+STAGED_TYPE = 'STAGED'
+DIRECT_TYPE = 'DIRECT'
+
 
 def read_plugin_config_file(plugin_config):
     try:
@@ -62,6 +65,28 @@ def read_schema_file(schema_file):
 
 
 def validate_plugin_config_content(plugin_config_content):
+    """
+    Validates the given plugin configuration is valid.
+
+    The plugin configuration should include:
+    name            the plugin name
+    prettyName      the plugin's displayed name
+    version         the plugin version
+    hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS)
+    entryPoint      the entry point of the plugin defined by the decorator
+    srcDir          the directory that the source code is writen in
+    schemaFile:     the file containing defined schemas in the plugin
+    manualDiscovery whether or not manual discovery is supported
+    pluginType      whether the plugin is DIRECT or STAGED
+    language        language of the source code (ex: PYTHON27 for python2.7)
+
+    Args:
+        plugin_config_content (dict): A dictionary representing a plugin
+          configuration file.
+    Raises:
+        UserError: If the configuration is not valid.
+        PathNotAbsoluteError: If the src and schema paths are not absolute.
+    """
     # First validate that all the expected keys are in the plugin config.
     if not all(name in plugin_config_content
                for name in EXPECTED_KEYS_IN_PLUGIN_CONFIG):

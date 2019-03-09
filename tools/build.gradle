@@ -53,6 +53,7 @@ task coverage(type: Exec) {
   dependsOn "sync_python2.7"
 
   outputs.file("$buildDir/.coverage")
+  outputs.upToDateWhen {false}
 }
 
 task runHtmlReport(type: Exec, dependsOn: 'coverage') {

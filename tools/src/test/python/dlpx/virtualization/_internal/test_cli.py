@@ -9,7 +9,7 @@ import mock
 import pytest
 import yaml
 
-from dlpx.virtualization._internal import cli, exceptions
+from dlpx.virtualization._internal import cli, exceptions, plugin_util
 
 
 class TestCli:
@@ -81,29 +81,6 @@ class TestCli:
 
         # A proxy to test the help message was actually printed
         assert 'Usage:' in result.output, 'Output: {}'.format(result.output)
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
-    def test_init_default_params(mock_init):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk, ['init'])
-
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
-
-        # 'staged' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with('staged', os.getcwd())
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
-    def test_init_non_default_params(mock_init):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk,
-                               ['init', '-t', 'direct', '-r', '.'])
-
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with('direct', os.getcwd())
 
     @staticmethod
     @pytest.mark.parametrize('verbose,quiet,expected', [(0, 0, 30), (1, 0, 20),
@@ -271,3 +248,52 @@ class TestUploadCli:
                                  u' "/not/a/real/file/artifact.json"'
                                  u' does not exist.'
                                  u'\n')
+
+
+class TestInitCli:
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_init_default_params(mock_init, plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, ['init', '-n', plugin_name])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+
+        # 'DIRECT' and os.getcwd() are the expected defaults
+        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
+                                          plugin_util.DIRECT_TYPE, None)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_init_non_default_params(mock_init, plugin_name,
+                                     plugin_pretty_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, [
+            'init', '-s', plugin_util.STAGED_TYPE, '-r', '.', '-n',
+            plugin_name, '--pretty-name', plugin_pretty_name
+        ])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
+                                          plugin_util.STAGED_TYPE,
+                                          plugin_pretty_name)
+
+    @staticmethod
+    def test_init_invalid_ingestion_strategy(plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-s', 'FAKE_STRATEGY'])
+
+        assert result.exit_code != 0
+
+    @staticmethod
+    def test_init_name_required():
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, ['init'])
+
+        assert result.exit_code != 0

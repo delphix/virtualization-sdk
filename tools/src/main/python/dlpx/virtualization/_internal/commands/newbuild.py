@@ -203,7 +203,7 @@ def add_empty_plugin_operations_to_plugin_output(plugin_output,
         'repositoryDiscovery': ''
     }
     linked_source_plugin_operations = {'preSnapshot': '', 'postSnapshot': ''}
-    if 'STAGED' == plugin_config_content['pluginType'].upper():
+    if plugin_util.STAGED_TYPE == plugin_config_content['pluginType'].upper():
         linked_source_plugin_operations.update({
             'resync': '',
             'startStaging': '',

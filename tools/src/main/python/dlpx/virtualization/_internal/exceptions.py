@@ -118,3 +118,10 @@ class UnexpectedError(UserError):
                    '\nDumping full response:\n{}'.format(
                        str(self.status_code), self.response))
         super(UnexpectedError, self).__init__(message)
+
+
+class PathExistsError(UserError):
+    def __init__(self, path):
+        self.__path = path
+        message = 'The path {!r} already exists.'.format(path)
+        super(PathExistsError, self).__init__(message)

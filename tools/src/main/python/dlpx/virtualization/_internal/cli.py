@@ -10,7 +10,8 @@ from contextlib import contextmanager
 import click
 
 from dlpx.virtualization._internal import (click_util, exceptions,
-                                           logging_util, package_util)
+                                           logging_util, package_util,
+                                           plugin_util)
 from dlpx.virtualization._internal.commands import build as build_internal
 from dlpx.virtualization._internal.commands import compile as compile_internal
 from dlpx.virtualization._internal.commands import initialize
@@ -78,13 +79,6 @@ def delphix_sdk(verbose, quiet):
 
 @delphix_sdk.command()
 @click.option(
-    '-t',
-    '--type',
-    default='staged',
-    show_default=True,
-    type=click.Choice(['direct', 'staged'], case_sensitive=False),
-    help='Set the type of plugin.')
-@click.option(
     '-r',
     '--root-dir',
     'root',
@@ -96,10 +90,34 @@ def delphix_sdk(verbose, quiet):
         dir_okay=True,
         writable=True,
         resolve_path=True),
+    callback=click_util.validate_option_exists,
     help='Set the plugin root directory.')
-def init(type, root):
-    """Create the skeleton of a Delphix plugin."""
-    initialize.init(type, root)
+@click.option(
+    '-n',
+    '--plugin-name',
+    'name',
+    callback=click_util.validate_option_exists,
+    help='Set the name of the plugin that will be used to identify it.')
+@click.option(
+    '-s',
+    '--ingestion-strategy',
+    default=plugin_util.DIRECT_TYPE,
+    show_default=True,
+    type=click.Choice([plugin_util.DIRECT_TYPE, plugin_util.STAGED_TYPE],
+                      case_sensitive=False),
+    help=('Set the ingestion strategy of the plugin. A "direct" plugin '
+          'ingests without a staging server while a "staged" plugin '
+          'requires a staging server.'))
+@click.option(
+    '--pretty-name',
+    help='Set the pretty name of the plugin that will be displayed.')
+def init(root, name, ingestion_strategy, pretty_name):
+    """
+    Create a plugin in the root directory. The plugin will be valid
+    but have no functionality.
+    """
+    with command_error_handler():
+        initialize.init(root, name, ingestion_strategy, pretty_name)
 
 
 @delphix_sdk.command()
@@ -115,25 +133,12 @@ def init(type, root):
         dir_okay=False,
         writable=False,
         resolve_path=True),
-    envvar='DX_PLUGIN_CONFIG',
     callback=click_util.validate_option_exists,
     help='Set the path to plugin config file.'
     ' This file contains the configuration required to compile the plugin.')
 def compile(plugin_config):
     """
     Compiles the plugin schema and generates the schemas into python objects.
-
-    The plugin_config.yml file should include: \n
-    name            the plugin name \n
-    prettyName      the plugin's displayed name \n
-    version         the plugin version \n
-    hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS) \n
-    entryPoint      the entry point of the plugin defined by the decorator \n
-    srcDir          the directory that the source code is writen in \n
-    schemaFile:     the file containing defined schemas in the plugin \n
-    manualDiscovery whether or not manual discovery is supported \n
-    pluginType      whether the plugin is DIRECT or STAGED \n
-    language        language of the source code (ex: PYTHON27 for python2.7) \n
     """
 
     with command_error_handler():
@@ -151,7 +156,6 @@ def compile(plugin_config):
         dir_okay=True,
         writable=True,
         resolve_path=True),
-    envvar='PLUGIN_ROOT_DIR',
     callback=click_util.validate_option_exists,
     help='Set the plugin root directory.'
     'This directory contains main.json and all the plugin code to be built.')
@@ -235,7 +239,6 @@ def build(root, outfile):
         dir_okay=False,
         writable=False,
         resolve_path=True),
-    envvar='DX_PLUGIN_CONFIG',
     callback=click_util.validate_option_exists,
     help='Set the path to plugin config file.'
     'This file contains the configuration required to build the plugin.')
@@ -254,23 +257,6 @@ def newbuild(plugin_config, upload_artifact):
     """
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
-
-    The plugin_config.yml file should include: \n
-    name            the plugin name \n
-    prettyName      the plugin's displayed name \n
-    version         the plugin version \n
-    hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS) \n
-    entryPoint      the entry point of the plugin defined by the decorator \n
-    srcDir          the directory that the source code is writen in \n
-    schemaFile:     the file containing defined schemas in the plugin \n
-    manualDiscovery whether or not manual discovery is supported \n
-    pluginType      whether the plugin is DIRECT or STAGED \n
-    language        language of the source code (ex: PYTHON27 for python2.7) \n
-
-    Notes: \n
-        This script will not check the syntax of your scripts so ensure
-        these scripts are functional before building a plugin.
-
     """
     with command_error_handler():
         newbuild_internal.build(plugin_config, upload_artifact)
@@ -281,14 +267,12 @@ def newbuild(plugin_config, upload_artifact):
     '-e',
     '--delphix-engine',
     'engine',
-    envvar='DELPHIX_ENGINE',
     callback=click_util.validate_option_exists,
     help='Upload plugin to the provided engine.'
     ' This should be either the hostname or IP address.')
 @click.option(
     '-u',
     '--user',
-    envvar='DELPHIX_ADMIN_USER',
     callback=click_util.validate_option_exists,
     help='Authenticate to the Delphix Engine with the provided user.')
 @click.option(
@@ -304,7 +288,6 @@ def newbuild(plugin_config, upload_artifact):
     help='Path to the upload artifact that was generated through build.')
 @click.password_option(
     confirmation_prompt=False,
-    envvar='DELPHIX_ADMIN_PASSWORD',
     help='Authenticate using the provided password.')
 def upload(engine, user, upload_artifact, password):
     """
