@@ -50,7 +50,7 @@ dlpxPython {
   }
 
   dist {
-    name = "dlpx-virtualization-libs"
+    name = "dvp-libs"
   }
 
   devPackages {

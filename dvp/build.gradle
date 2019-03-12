@@ -1,0 +1,67 @@
+/**
+ * Copyright (c) 2019 by Delphix. All rights reserved.
+ */
+
+plugins {
+    id "delphix.python"
+}
+
+/*
+ * This module is dependent on sibling modules. Those sibling modules
+ * will most likely not be in a place that pipenv knows about. In
+ * most cases, they will not have been uploaded to Artifactory.
+ *
+ * We should probably set it up so pipenv will look into the sibling
+ * build/python-dist folders to pull the dependencies in. We can then
+ * do real post installation tests.
+ *
+ * In the meantime though, disable the below tasks so they don't fail
+ * and cause issues.
+ */
+def DISABLED_TASKS = [
+        "check",
+        "testInstallation_python2.7",
+        "lock",
+        "lockDev",
+        "test_python2.7",
+        "sync_python2.7"
+]
+
+// Disable every task in DISABLED_TASKS.
+afterEvaluate {
+    tasks.each {task ->
+        if(DISABLED_TASKS.contains(task.name)) {
+            task.enabled = false
+        }
+    }
+}
+
+
+
+dlpxPython {
+    dist {
+        name = "dvp"
+    }
+
+    packages {
+        "dvp-common" {
+            version = "== $project.version"
+        }
+
+        "dvp-platform" {
+            version = "== $project.version"
+        }
+
+        "dvp-libs" {
+            version = "== $project.version"
+        }
+
+        "dvp-tools" {
+            version = "== $project.version"
+        }
+    }
+
+    supportedPythons {
+        "python2.7" {}
+    }
+}

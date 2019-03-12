@@ -44,7 +44,7 @@ protobuf {
 
 dlpxPython {
   dist {
-    name = "dlpx-virtualization-platform"
+    name = "dvp-platform"
   }
 
   packages {

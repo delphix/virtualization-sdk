@@ -210,7 +210,7 @@ twine upload -r local tools/build/python-dist/*
 twine upload -r local libs/build/python-dist/*
 twine upload -r local platform/build/python-dist/*
 twine upload -r local common/build/python-dist/*
-
+twine upload -r local dvp/build/python-dist/*
 ```
 
 ## Finalizing Appgate Review

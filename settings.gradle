@@ -17,6 +17,7 @@ include ":common"
 include ":libs"
 include ":platform"
 include ":tools"
+include ":dvp"
 
 rootProject.name = 'virtualization-sdk'
 
