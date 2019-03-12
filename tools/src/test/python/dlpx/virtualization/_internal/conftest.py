@@ -9,6 +9,8 @@ import os
 import pytest
 import yaml
 
+from dlpx.virtualization._internal import package_util
+
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
 # automatically get discovered in the test class if the figure name is used
@@ -68,7 +70,7 @@ def schema_file(tmpdir, schema_filename, schema_content):
     otherwise if it is just a string we'll write that directly.
     """
     if isinstance(schema_content, dict):
-        schema_content = json.dumps(schema_content, indent=2)
+        schema_content = json.dumps(schema_content, indent=4)
 
     f = tmpdir.join(schema_filename)
     f.write(schema_content)
@@ -81,24 +83,36 @@ def schema_filename():
 
 
 @pytest.fixture
-def artifact_file(tmpdir, artifact_content):
+def artifact_file(tmpdir, artifact_content, artifact_filename,
+                  artifact_file_created):
     """
-    This fixture creates a tempdir and writes the upload_artifact.json file
+    This fixture creates a tempdir and writes the artifact_filename file
     with the artifact_content passed in via the fixture. Then it returns the
     path of the file. If artifact_content is a dict it will do a json dump,
     otherwise if it is just a string we'll write that directly.
     """
-    if isinstance(artifact_content, dict):
-        artifact_content = json.dumps(artifact_content, indent=2)
-
-    f = tmpdir.join('artifact.json')
-    f.write(artifact_content)
+    f = tmpdir.join(artifact_filename)
+    if artifact_file_created:
+        # Only write the artifact if we want to actually create it.
+        if isinstance(artifact_content, dict):
+            artifact_content = json.dumps(artifact_content, indent=4)
+        f.write(artifact_content)
     return f.strpath
 
 
 @pytest.fixture
+def artifact_filename():
+    return 'artifact.json'
+
+
+@pytest.fixture
+def artifact_file_created():
+    return True
+
+
+@pytest.fixture
 def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
-                          schema_file, language):
+                          schema_file, language, manual_discovery):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer most provide for the build and compile commands.
@@ -107,7 +121,6 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
         'version': '2.0.0',
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
-        'manualDiscovery': True,
         'pluginType': 'DIRECT',
     }
 
@@ -126,6 +139,9 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
     if language:
         config['language'] = language
 
+    if manual_discovery:
+        config['manualDiscovery'] = manual_discovery
+
     return config
 
 
@@ -142,6 +158,11 @@ def plugin_pretty_name():
 @pytest.fixture
 def language():
     return 'PYTHON27'
+
+
+@pytest.fixture
+def manual_discovery():
+    return True
 
 
 @pytest.fixture
@@ -252,13 +273,9 @@ def artifact_content(engine_api, virtual_source_definition,
         'language': 'PYTHON27',
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
-        'buildApi': {
-            'type': 'APIVersion',
-            'major': 1,
-            'minor': 11,
-            'micro': 0
-        },
-        'sources': 'zipped encoded python source code',
+        'buildApi': package_util.get_build_api_version(),
+        'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
+        'resources': {}
     }
 
     if engine_api:
@@ -268,12 +285,22 @@ def artifact_content(engine_api, virtual_source_definition,
         artifact['virtualSourceDefinition'] = {
             'type': 'ToolkitVirtualSource',
             'parameters': virtual_source_definition,
+            'configure': '',
+            'unconfigure': '',
+            'reconfigure': '',
+            'initialize': '',
+            'start': '',
+            'stop': '',
+            'preSnapshot': '',
+            'postSnapshot': ''
         }
 
     if linked_source_definition:
         artifact['linkedSourceDefinition'] = {
             'type': 'ToolkitLinkedDirectSource',
             'parameters': linked_source_definition,
+            'preSnapshot': '',
+            'postSnapshot': '',
         }
 
     if discovery_definition:
@@ -291,27 +318,37 @@ def engine_api():
 
 
 @pytest.fixture
-def discovery_definition(repository_definition, source_config_definition):
+def discovery_definition(repository_definition, source_config_definition,
+                         manual_discovery):
     discovery_definition = {
         'type': 'ToolkitDiscoveryDefinition',
+        'sourceConfigDiscovery': '',
+        'repositoryDiscovery': ''
     }
+
+    if manual_discovery:
+        discovery_definition['manualSourceConfigDiscovery'] = manual_discovery
 
     if repository_definition:
         old_repository_def = copy.deepcopy(repository_definition)
-        repo_id_fields = old_repository_def.pop('identityFields')
-        repo_name_field = old_repository_def.pop('nameField')
+        repo_id_fields = old_repository_def.pop('identityFields', None)
+        repo_name_field = old_repository_def.pop('nameField', None)
 
-        discovery_definition['repositoryIdentityFields'] = repo_id_fields
-        discovery_definition['repositoryNameField'] = repo_name_field
+        if repo_id_fields:
+            discovery_definition['repositoryIdentityFields'] = repo_id_fields
+        if repo_name_field:
+            discovery_definition['repositoryNameField'] = repo_name_field
         discovery_definition['repositorySchema'] = old_repository_def
 
     if source_config_definition:
         old_source_config_def = copy.deepcopy(source_config_definition)
-        src_cnf_id_fields = old_source_config_def.pop('identityFields')
-        src_cnf_name_field = old_source_config_def.pop('nameField')
+        scf_id_fields = old_source_config_def.pop('identityFields', None)
+        scf_name_field = old_source_config_def.pop('nameField', None)
 
-        discovery_definition['sourceConfigIdentityFields'] = src_cnf_id_fields
-        discovery_definition['sourceConfigNameField'] = src_cnf_name_field
+        if scf_id_fields:
+            discovery_definition['sourceConfigIdentityFields'] = scf_id_fields
+        if scf_name_field:
+            discovery_definition['sourceConfigNameField'] = scf_name_field
         discovery_definition['sourceConfigSchema'] = old_source_config_def
 
     return discovery_definition

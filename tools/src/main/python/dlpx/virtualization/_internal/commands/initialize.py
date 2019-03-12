@@ -89,8 +89,18 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         os.mkdir(src_dir_path)
 
         #
+        # Copy the schema file template into the root directory. The schema
+        # file is static and doesn't depend on any input so it can just be
+        # copied. By copying we can also avoid dealing with ordering issues.
+        #
+        logger.info('Writing schema file at %r.', schema_file_path)
+        shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
+
+        #
         # Create the plugin config file. The config file relies on input from
-        # the user, so it's easier to deal with a dictionary than a file.
+        # the user, so it's easier to deal with a dictionary than a file. This
+        # must be done only after both the schema file and src dir have been
+        # created since the paths need to exist.
         #
         logger.info('Writing config file at %r.', config_file_path)
         with open(config_file_path, 'w+') as f:
@@ -98,14 +108,6 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
                 plugin_name, ingestion_strategy, pretty_name,
                 DEFAULT_ENTRY_POINT, src_dir_path, schema_file_path)
             yaml.dump(config, f, default_flow_style=False)
-
-        #
-        # Copy the schema file template into the root directory. The schema
-        # file is static and doesn't depend on any input so it can just be
-        # copied. By copying we can also avoid dealing with ordering issues.
-        #
-        logger.info('Writing schema file at %r.', schema_file_path)
-        shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
         #
         # Copy the entry point template into the root directory. The entry
@@ -119,8 +121,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         file_util.delete_paths(DEFAULT_PLUGIN_CONFIG_FILE, DEFAULT_SCHEMA_FILE,
                                DEFAULT_SRC_DIRECTORY)
         raise exceptions.UserError(
-            'Failed to initialize plugin directory {!r}: {}.'.format(
-                root, e.message))
+            'Failed to initialize plugin directory {!r}: {}.'.format(root, e))
 
 
 def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,

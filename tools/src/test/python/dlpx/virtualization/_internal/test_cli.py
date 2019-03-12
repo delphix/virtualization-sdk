@@ -96,70 +96,68 @@ class TestCli:
             cli.get_console_logging_level(1, 1)
 
 
-class TestCompileCli:
+class TestInitCli:
     @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
-    def test_compile_default_plugin_file(mock_compile, plugin_config_filename,
-                                         plugin_config_content):
-
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_default_params(mock_init, plugin_name):
         runner = click_testing.CliRunner()
-        # Change the runner's working dir to test the default works
-        with runner.isolated_filesystem():
-            with open(plugin_config_filename, 'w') as f:
-                f.write(
-                    yaml.dump(plugin_config_content, default_flow_style=False))
 
-            plugin_config_file = os.path.realpath(f.name)
-            result = runner.invoke(cli.delphix_sdk, ['compile'])
-
-            assert result.exit_code == 0, 'Output: {}'.format(result.output)
-            mock_compile.assert_called_once_with(plugin_config_file)
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
-    def test_compile_valid_params(mock_compile, plugin_config_file):
-        runner = click_testing.CliRunner()
-        result = runner.invoke(cli.delphix_sdk,
-                               ['compile', '-c', plugin_config_file])
+        result = runner.invoke(cli.delphix_sdk, ['init', '-n', plugin_name])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_compile.assert_called_once_with(plugin_config_file)
+
+        # 'DIRECT' and os.getcwd() are the expected defaults
+        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
+                                          plugin_util.DIRECT_TYPE, None)
 
     @staticmethod
-    @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
-    @mock.patch('dlpx.virtualization._internal.commands.compile.compile')
-    def test_compile_valid_params_new_name(mock_compile, plugin_config_file):
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_non_default_params(mock_init, plugin_name, plugin_pretty_name):
         runner = click_testing.CliRunner()
-        result = runner.invoke(cli.delphix_sdk,
-                               ['compile', '-c', plugin_config_file])
+
+        result = runner.invoke(cli.delphix_sdk, [
+            'init', '-s', plugin_util.STAGED_TYPE, '-r', '.', '-n',
+            plugin_name, '--pretty-name', plugin_pretty_name
+        ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_compile.assert_called_once_with(plugin_config_file)
+        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
+                                          plugin_util.STAGED_TYPE,
+                                          plugin_pretty_name)
 
     @staticmethod
-    @pytest.mark.parametrize('plugin_config_file',
-                             ['/not/a/real/file/plugin_config.yml'])
-    def test_compile_file_not_exist(plugin_config_file):
+    def test_invalid_ingestion_strategy(plugin_name):
         runner = click_testing.CliRunner()
-        result = runner.invoke(cli.delphix_sdk,
-                               ['compile', '-c', plugin_config_file])
 
-        assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk compile [OPTIONS]'
-                                 u'\nTry "delphix-sdk compile -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-c" /'
-                                 u' "--plugin-config": File'
-                                 u' "/not/a/real/file/plugin_config.yml"'
-                                 u' does not exist.'
-                                 u'\n')
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-s', 'FAKE_STRATEGY'])
+
+        assert result.exit_code != 0
+
+    @staticmethod
+    def test_name_required():
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, ['init'])
+
+        assert result.exit_code != 0
 
 
 class TestBuildCli:
     @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.newbuild.build')
-    def test_build_default_plugin_file(mock_build, plugin_config_filename,
-                                       plugin_config_content, artifact_file):
+    @pytest.fixture
+    def artifact_file_created():
+        #
+        # For all build tests since we're creating the file, it should not be
+        # created via the fixtures.
+        #
+        return False
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_default_plugin_file_success(mock_build, plugin_config_filename,
+                                         plugin_config_content, artifact_file):
 
         runner = click_testing.CliRunner()
         # Change the runner's working dir to test the default works
@@ -170,17 +168,105 @@ class TestBuildCli:
 
             plugin_config_file = os.path.realpath(f.name)
             result = runner.invoke(cli.delphix_sdk,
-                                   ['newbuild', '-a', artifact_file])
+                                   ['build', '-a', artifact_file])
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
             mock_build.assert_called_once_with(plugin_config_file,
-                                               artifact_file)
+                                               artifact_file, False)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_generate_only_success(mock_build, plugin_config_filename,
+                                   plugin_config_content):
+
+        runner = click_testing.CliRunner()
+        # Change the runner's working dir to test the default works
+        with runner.isolated_filesystem():
+            with open(plugin_config_filename, 'w') as f:
+                f.write(
+                    yaml.dump(plugin_config_content, default_flow_style=False))
+
+            plugin_config_file = os.path.realpath(f.name)
+            result = runner.invoke(cli.delphix_sdk, ['build', '-g'])
+
+            assert result.exit_code == 0, 'Output: {}'.format(result.output)
+            mock_build.assert_called_once_with(plugin_config_file, None, True)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_valid_params(mock_build, plugin_config_file, artifact_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
+                                           False)
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_valid_params_new_name(mock_build, plugin_config_file,
+                                   artifact_filename):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['build', '-c', plugin_config_file])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_build.assert_called_once_with(
+            plugin_config_file, os.path.join(os.getcwd(), artifact_filename),
+            False)
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_file',
+                             ['/not/a/real/file/plugin_config.yml'])
+    def test_file_not_exist(plugin_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['build', '-c', plugin_config_file])
+
+        assert result.exit_code == 2
+        assert result.output == (u'Usage: delphix-sdk build [OPTIONS]'
+                                 u'\nTry "delphix-sdk build -h" for help.'
+                                 u'\n'
+                                 u'\nError: Invalid value for "-c" /'
+                                 u' "--plugin-config": File'
+                                 u' "/not/a/real/file/plugin_config.yml"'
+                                 u' does not exist.'
+                                 u'\n')
+
+    @staticmethod
+    def test_option_a_and_g_set(plugin_config_file, artifact_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file, '-g'])
+
+        assert result.exit_code == 2
+        assert result.output == (u'Error: "upload_artifact" is'
+                                 u' mutually exclusive with argument(s)'
+                                 u' "generate_only".'
+                                 u'\n')
+
+    @staticmethod
+    def test_option_g_and_a_set(plugin_config_file, artifact_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-g', '-a', artifact_file])
+
+        assert result.exit_code == 2
+        assert result.output == (u'Error: "generate_only" is'
+                                 u' mutually exclusive with argument(s)'
+                                 u' "upload_artifact".'
+                                 u'\n')
 
 
 class TestUploadCli:
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    def test_upload_valid_params(mock_upload, artifact_file):
+    def test_valid_params(mock_upload, artifact_file):
         engine = 'engine'
         user = 'admin'
         password = 'password'
@@ -197,7 +283,7 @@ class TestUploadCli:
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    def test_upload_bad_password(mock_upload, artifact_file):
+    def test_bad_password(mock_upload, artifact_file):
         engine = 'engine'
         user = 'admin'
         password = 'delphix2'
@@ -227,7 +313,7 @@ class TestUploadCli:
     @staticmethod
     @pytest.mark.parametrize('artifact_file',
                              ['/not/a/real/file/artifact.json'])
-    def test_upload_file_not_exist(artifact_file):
+    def test_file_not_exist(artifact_file):
         # No mock is needed because we should never call the upload function.
         engine = 'engine'
         user = 'admin'
@@ -248,52 +334,3 @@ class TestUploadCli:
                                  u' "/not/a/real/file/artifact.json"'
                                  u' does not exist.'
                                  u'\n')
-
-
-class TestInitCli:
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
-    def test_init_default_params(mock_init, plugin_name):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk, ['init', '-n', plugin_name])
-
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
-
-        # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
-                                          plugin_util.DIRECT_TYPE, None)
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
-    def test_init_non_default_params(mock_init, plugin_name,
-                                     plugin_pretty_name):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk, [
-            'init', '-s', plugin_util.STAGED_TYPE, '-r', '.', '-n',
-            plugin_name, '--pretty-name', plugin_pretty_name
-        ])
-
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
-                                          plugin_util.STAGED_TYPE,
-                                          plugin_pretty_name)
-
-    @staticmethod
-    def test_init_invalid_ingestion_strategy(plugin_name):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(
-            cli.delphix_sdk,
-            ['init', '-n', plugin_name, '-s', 'FAKE_STRATEGY'])
-
-        assert result.exit_code != 0
-
-    @staticmethod
-    def test_init_name_required():
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk, ['init'])
-
-        assert result.exit_code != 0

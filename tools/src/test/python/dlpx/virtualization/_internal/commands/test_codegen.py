@@ -2,13 +2,14 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import errno
+import json
 import os
 import subprocess
 
 import pytest
 
-from dlpx.virtualization._internal import codegen
-from dlpx.virtualization._internal.commands import compile
+from dlpx.virtualization._internal import codegen, exceptions
 
 
 class TestCodegen:
@@ -16,7 +17,7 @@ class TestCodegen:
 
     @staticmethod
     @pytest.fixture
-    def popen_helper(monkeypatch, plugin_config_file, codegen_gen_py_inputs):
+    def popen_helper(monkeypatch, plugin_config_file):
         class FakePopen:
             def __init__(self, return_code, stdout, stderr):
                 self.return_code = return_code
@@ -37,11 +38,14 @@ class TestCodegen:
 
             def __init__(self):
                 self.fake_popen_output = None
+                self.jar = None
                 self.swagger_file = None
-                self.final_dirname = None
+                self.package_name = None
+                self.module_name = None
                 self.output_dir = None
                 self.stdout_input = None
                 self.stderr_input = None
+                self.fake_popen_err = None
 
             def set_popen_output(self, return_code, stdout=None, stderr=None):
                 if not self.fake_popen_output:
@@ -50,49 +54,66 @@ class TestCodegen:
                 else:
                     assert False, 'Popen output should be set only once.'
 
-            def set_popen_input(self, args, stdout=None, stderr=None):
-                if not self.fake_popen_output:
-                    assert False, 'Popen output object was not set'
+            def set_popen_err(self, err):
+                self.fake_popen_err = err
 
-                (_, _, _, _, _, self.swagger_file, _, self.final_dirname, _, _,
-                 _, _, self.output_dir) = args
+            def set_popen_input(self, args, stdout=None, stderr=None):
+                if not (self.fake_popen_err or self.fake_popen_output):
+                    assert False, 'Fake Popen output or err must be set.'
+
+                (_, _, self.jar, _, _, _, self.swagger_file, _, _, _,
+                 codegen_config_file, _, self.module_name, _,
+                 self.output_dir) = args
+
+                with open(codegen_config_file, 'r') as f:
+                    self.package_name = json.load(f)['packageName']
 
                 self.stdout_input = stdout
                 self.stderr_input = stderr
 
-                # The files expected from the jar run are created here.
-                PopenHelper.create_codegen_jar_files()
+                if self.fake_popen_err:
+                    raise self.fake_popen_err
 
+                #
+                # The files expected from the jar run are created if process
+                # has a success exit code.
+                #
+                if not self.fake_popen_output.return_code:
+                    self.create_codegen_jar_files(
+                        self.output_dir, self.package_name, self.module_name)
                 return self.fake_popen_output
 
             @staticmethod
-            def create_codegen_jar_files():
-                gen_py = codegen_gen_py_inputs
+            def create_codegen_jar_files(output_dir, package_name,
+                                         module_name):
                 #
                 # To create a fake of this run, create a dir at the output dir
-                # with
-                # the swagger_server name. Inside it created another folder
-                # 'generated'
+                # with the final_package name. Inside it created another folder
+                # with the final module name.
                 #
-                swagger_server_path = os.path.join(
-                    gen_py.plugin_content_dir, codegen.OUTPUT_DIR_NAME,
-                    codegen.SWAGGER_SERVER_MODULE)
-                os.mkdir(swagger_server_path)
-                util_file = os.path.join(swagger_server_path, 'util.py')
+                package_path = os.path.join(output_dir, package_name)
+                os.mkdir(package_path)
+                #
+                # Need to create a util.py and __init__.py because this the
+                # two files expected in the package.
+                #
+                util_file = os.path.join(package_path, 'util.py')
                 with open(util_file, 'w') as f:
-                    f.write('# This is the util.py class.')
-                # Need to create a util.py
-                generated_path = os.path.join(swagger_server_path,
-                                              compile.GENERATED_MODULE)
-                os.mkdir(generated_path)
+                    f.write('# This is the util.py module.')
 
-                test_gen_file = os.path.join(generated_path,
+                init_file = os.path.join(package_path, '__init__.py')
+                with open(init_file, 'w') as f:
+                    f.write('# This is the __init__.py module.')
+
+                module_path = os.path.join(package_path, module_name)
+                os.mkdir(module_path)
+
+                test_gen_file = os.path.join(module_path,
                                              TestCodegen.TEST_GEN_FILE)
                 with open(test_gen_file, 'w') as f:
                     f.write('from {0}.{1}.base_model_ import Model'
                             '\nfrom {0} import util'.format(
-                                codegen.SWAGGER_SERVER_MODULE,
-                                compile.GENERATED_MODULE))
+                                package_name, module_name))
 
         helper = PopenHelper()
         monkeypatch.setattr(subprocess, 'Popen', helper.set_popen_input)
@@ -110,33 +131,244 @@ class TestCodegen:
         popen_helper.set_popen_output(0, stderr=stderr_ret)
 
         codegen.generate_python(gen_py.name, gen_py.source_dir,
-                                gen_py.plugin_content_dir, gen_py.schema_dict,
-                                compile.GENERATED_MODULE)
+                                gen_py.plugin_content_dir, gen_py.schema_dict)
 
         assert popen_helper.stdout_input == subprocess.PIPE
         assert popen_helper.stderr_input == subprocess.PIPE
         assert os.path.exists(popen_helper.swagger_file)
-        assert popen_helper.final_dirname == compile.GENERATED_MODULE
+        assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
+        assert popen_helper.module_name == codegen.CODEGEN_MODULE
         expected_output_dir = os.path.join(gen_py.plugin_content_dir,
                                            codegen.OUTPUT_DIR_NAME)
         assert popen_helper.output_dir == expected_output_dir
 
         # Validate that the "generated" file were copied.
-        util_file = os.path.join(gen_py.source_dir, compile.GENERATED_MODULE,
+        util_file = os.path.join(gen_py.source_dir, codegen.CODEGEN_PACKAGE,
                                  'util.py')
+        init_file = os.path.join(gen_py.source_dir, codegen.CODEGEN_PACKAGE,
+                                 '__init__.py')
 
-        gen_file = os.path.join(gen_py.source_dir, compile.GENERATED_MODULE,
+        gen_file = os.path.join(gen_py.source_dir, codegen.CODEGEN_PACKAGE,
+                                codegen.CODEGEN_MODULE,
                                 TestCodegen.TEST_GEN_FILE)
 
         assert os.path.exists(util_file)
+        assert os.path.exists(init_file)
         assert os.path.exists(gen_file)
 
-        # Also validate that the expected content was changed as expected.
-        expected_content = (
-            'from {0}.base_model_ import Model\nfrom {0} import util'.format(
-                compile.GENERATED_MODULE))
+    @staticmethod
+    def test_make_dir_success(tmpdir):
+        testdir = os.path.join(tmpdir.strpath, 'test_dir')
+        codegen._make_dir(testdir)
+        assert os.path.exists(testdir)
+        assert os.path.isdir(testdir)
 
-        with open(gen_file, 'rb') as f:
-            content = f.read()
+    @staticmethod
+    def test_make_dir_fail():
+        testdir = '/dir/that/does/not/exist/test_dir'
+        with pytest.raises(exceptions.UserError) as err_info:
+            codegen._make_dir(testdir)
 
-        assert content == expected_content
+        message = err_info.value.message
+        assert message == ("Unable to create new directory"
+                           " '/dir/that/does/not/exist/test_dir'"
+                           "\nError code: 2."
+                           " Error message: No such file or directory")
+
+    @staticmethod
+    def test_write_swagger_file(tmpdir, schema_content):
+        name = 'test'
+        expected_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+        assert os.path.exists(expected_file)
+        assert os.path.isfile(expected_file)
+
+        with open(expected_file, 'rb') as f:
+            content = json.load(f)
+
+        assert content['definitions'] == schema_content
+        assert content['info']['title'] == name
+
+    @staticmethod
+    def test_execute_swagger_codegen_success(tmpdir, schema_content,
+                                             popen_helper):
+        name = 'test'
+        swagger_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+
+        stderr_ret = (
+            '[main] INFO io.swagger.parser.Swagger20Parser - reading from'
+            ' swagger.json'
+            '[main] INFO io.swagger.codegen.AbstractGenerator - writing file'
+            ' .delphix-compile/swagger_server/generated/test_gen_file.py')
+        popen_helper.set_popen_output(0, stderr=stderr_ret)
+        codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
+
+        assert popen_helper.stdout_input == subprocess.PIPE
+        assert popen_helper.stderr_input == subprocess.PIPE
+        assert os.path.exists(popen_helper.swagger_file)
+        assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
+        assert popen_helper.module_name == codegen.CODEGEN_MODULE
+        assert popen_helper.output_dir == tmpdir.strpath
+
+        # Validate that the "generated" file were created in the right dir.
+        util_file = tmpdir.join(codegen.CODEGEN_PACKAGE, 'util.py').strpath
+        init_file = tmpdir.join(codegen.CODEGEN_PACKAGE, '__init__.py').strpath
+        gen_file = tmpdir.join(codegen.CODEGEN_PACKAGE, codegen.CODEGEN_MODULE,
+                               TestCodegen.TEST_GEN_FILE).strpath
+
+        assert os.path.exists(util_file)
+        assert os.path.exists(init_file)
+        assert os.path.exists(gen_file)
+
+    @staticmethod
+    def test_execute_swagger_codegen_java_missing(tmpdir, schema_content,
+                                                  popen_helper):
+        name = 'test'
+        swagger_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+
+        oserr = OSError(errno.ENOENT, 'No such file or directory')
+        popen_helper.set_popen_err(oserr)
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
+
+        message = err_info.value.message
+        assert message == ('Swagger python code generation failed.'
+                           ' Make sure java is on the PATH.')
+
+        assert popen_helper.stdout_input == subprocess.PIPE
+        assert popen_helper.stderr_input == subprocess.PIPE
+        assert os.path.exists(popen_helper.swagger_file)
+        assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
+        assert popen_helper.module_name == codegen.CODEGEN_MODULE
+        assert popen_helper.output_dir == tmpdir.strpath
+
+        # Validate that the "generated" file were not created.
+        util_file = tmpdir.join(codegen.CODEGEN_PACKAGE, 'util.py').strpath
+        init_file = tmpdir.join(codegen.CODEGEN_PACKAGE, '__init__.py').strpath
+        gen_file = tmpdir.join(codegen.CODEGEN_PACKAGE, codegen.CODEGEN_MODULE,
+                               TestCodegen.TEST_GEN_FILE).strpath
+
+        assert not os.path.exists(util_file)
+        assert not os.path.exists(init_file)
+        assert not os.path.exists(gen_file)
+
+    @staticmethod
+    def test_execute_swagger_codegen_jar_issue(tmpdir, schema_content,
+                                               popen_helper):
+        name = 'test'
+        swagger_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+
+        oserr = OSError(errno.ENFILE, 'Too many open files in system')
+        popen_helper.set_popen_err(oserr)
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
+
+        message = err_info.value.message
+        assert message == ('Unable to run {!r} to generate python code.'
+                           '\nError code: 23. Error message: Too many open'
+                           ' files in system'.format(popen_helper.jar))
+
+        assert popen_helper.stdout_input == subprocess.PIPE
+        assert popen_helper.stderr_input == subprocess.PIPE
+        assert os.path.exists(popen_helper.swagger_file)
+        assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
+        assert popen_helper.module_name == codegen.CODEGEN_MODULE
+        assert popen_helper.output_dir == tmpdir.strpath
+
+        # Validate that the "generated" file were not created.
+        util_file = tmpdir.join(codegen.CODEGEN_PACKAGE, 'util.py').strpath
+        init_file = tmpdir.join(codegen.CODEGEN_PACKAGE, '__init__.py').strpath
+        gen_file = tmpdir.join(codegen.CODEGEN_PACKAGE, codegen.CODEGEN_MODULE,
+                               TestCodegen.TEST_GEN_FILE).strpath
+
+        assert not os.path.exists(util_file)
+        assert not os.path.exists(init_file)
+        assert not os.path.exists(gen_file)
+
+    @staticmethod
+    def test_execute_swagger_codegen_proccess_fail(tmpdir, schema_content,
+                                                   popen_helper):
+        name = 'test'
+        swagger_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+
+        popen_helper.set_popen_output(1)
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
+
+        message = err_info.value.message
+        assert message == ('Swagger python code generation failed.'
+                           'See logs for more information.')
+
+        assert popen_helper.stdout_input == subprocess.PIPE
+        assert popen_helper.stderr_input == subprocess.PIPE
+        assert os.path.exists(popen_helper.swagger_file)
+        assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
+        assert popen_helper.module_name == codegen.CODEGEN_MODULE
+        assert popen_helper.output_dir == tmpdir.strpath
+
+        # Validate that the "generated" file were not created.
+        util_file = tmpdir.join(codegen.CODEGEN_PACKAGE, 'util.py').strpath
+        init_file = tmpdir.join(codegen.CODEGEN_PACKAGE, '__init__.py').strpath
+        gen_file = tmpdir.join(codegen.CODEGEN_PACKAGE, codegen.CODEGEN_MODULE,
+                               TestCodegen.TEST_GEN_FILE).strpath
+
+        assert not os.path.exists(util_file)
+        assert not os.path.exists(init_file)
+        assert not os.path.exists(gen_file)
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_file', [None])
+    def test_copy_generated_to_dir_success(tmpdir, popen_helper):
+        #
+        # Setting plugin_config_file fixture to none so no uneeded files get
+        # created for popen_helper.
+        #
+        src_dir = tmpdir.join('src').strpath
+        os.mkdir(src_dir)
+        dst_dir = tmpdir.join('dst').strpath
+        os.mkdir(dst_dir)
+
+        # Using the helper create the files.
+        popen_helper.create_codegen_jar_files(src_dir, codegen.CODEGEN_PACKAGE,
+                                              codegen.CODEGEN_MODULE)
+
+        # Call the copy function
+        codegen._copy_generated_to_dir(src_dir, dst_dir)
+
+        # Validate that the "generated" file were copied.
+        util_relpath = os.path.join(codegen.CODEGEN_PACKAGE, 'util.py')
+        init_relpath = os.path.join(codegen.CODEGEN_PACKAGE, '__init__.py')
+        gen_relpath = os.path.join(codegen.CODEGEN_PACKAGE,
+                                   codegen.CODEGEN_MODULE,
+                                   TestCodegen.TEST_GEN_FILE)
+
+        assert os.path.exists(os.path.join(dst_dir, util_relpath))
+        assert os.path.exists(os.path.join(dst_dir, init_relpath))
+        assert os.path.exists(os.path.join(dst_dir, gen_relpath))
+
+        #
+        # Also assert that the files were copied not moved so should still
+        # exist in the src_dir.
+        #
+        assert os.path.exists(os.path.join(src_dir, util_relpath))
+        assert os.path.exists(os.path.join(src_dir, init_relpath))
+        assert os.path.exists(os.path.join(src_dir, gen_relpath))
+
+    @staticmethod
+    def test_copy_generated_to_dir_fail(tmpdir):
+        src_dir = '/not/a/real/dir'
+        # dst_dir needs to be real so that making the dir inside it works.
+        dst_dir = tmpdir.strpath
+
+        with pytest.raises(OSError) as err_info:
+            codegen._copy_generated_to_dir(src_dir, dst_dir)
+
+        assert err_info.value.strerror == 'No such file or directory'
+        assert err_info.value.filename.startswith('/not/a/real/dir')

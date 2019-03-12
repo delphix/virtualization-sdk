@@ -7,7 +7,6 @@ import errno
 import json
 import logging
 import os
-import re
 import shutil
 import subprocess
 
@@ -29,12 +28,14 @@ SWAGGER_JSON_FORMAT = {
 
 SWAGGER_FILE_NAME = 'swagger.json'
 OUTPUT_DIR_NAME = '.delphix-compile'
-SWAGGER_SERVER_MODULE = 'swagger_server'
+CODEGEN_PACKAGE = 'generated'
+CODEGEN_MODULE = 'definitions'
 SWAGGER_JAR = 'codegen/swagger-codegen-cli-2.3.1.jar'
+CODEGEN_CONFIG = 'codegen/codegen-config.json'
+CODEGEN_COPY_FILES = ['__init__.py', 'util.py', CODEGEN_MODULE]
 
 
-def generate_python(name, source_dir, plugin_config_dir, schema_content,
-                    final_dirname):
+def generate_python(name, source_dir, plugin_config_dir, schema_content):
     """Uses Swagger Codegen to generate the python code from the schema dict.
 
 
@@ -60,7 +61,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content,
     # recreated.
     #
     output_dir = os.path.join(plugin_config_dir, OUTPUT_DIR_NAME)
-    logger.info('Creating new directory {!r}'.format(output_dir))
+    logger.info('Creating new output directory: {!r}'.format(output_dir))
     _make_dir(output_dir)
 
     #
@@ -77,7 +78,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content,
     #
     logger.info('Executing swagger codegen generate with'
                 ' swagger file {!r}'.format(swagger_file))
-    _execute_swagger_codegen(swagger_file, output_dir, final_dirname)
+    _execute_swagger_codegen(swagger_file, output_dir)
 
     #
     # Copy the python model classes to the src directory passed in. While doing
@@ -85,22 +86,12 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content,
     # `from swagger_client.generate` etc... If this works than the python
     # classes were generated properly.
     #
-    logger.info('Moving generated python files to'
+    logger.info('Copying generated python files to'
                 ' source directory {!r}'.format(source_dir))
-    _copy_generated_to_dir(source_dir, output_dir, final_dirname)
+    _copy_generated_to_dir(output_dir, source_dir)
 
 
 def _make_dir(path):
-    """Make a dir given the path.
-
-    Takes in a path and makes a directory there. The assumption is that the
-    parent dir that it is in already exists. For example if the path passed in
-    is `/this/is/a/test/path` the folder `/this/is/a/test` should already
-    exist.
-
-    Args:
-        path (str): The path to the directory that is being created.
-    """
 
     #
     # Delete the folder if it is there to clear the location. Ignore errors in
@@ -123,25 +114,29 @@ def _write_swagger_file(name, schema_dict, output_dir):
     swagger_json['info']['title'] = name
     swagger_json['definitions'] = schema_dict
 
-    outfile = os.path.join(output_dir, SWAGGER_FILE_NAME)
+    swagger_file = os.path.join(output_dir, SWAGGER_FILE_NAME)
+    logger.info('Writing swagger file to {!r}'.format(swagger_file))
+    #
     # Dump JSON into swagger json file. This should work since we just created
     # the dir `output_dir`. If this fails just let the full failure go through
-    with open(outfile, 'w') as f:
+    #
+    with open(swagger_file, 'w') as f:
         # swagger_json is a dict json.dumps will be successful.
         f.write(json.dumps(swagger_json, indent=2))
 
-    return outfile
+    return swagger_file
 
 
-def _execute_swagger_codegen(swagger_file, output_dir, final_dirname):
+def _execute_swagger_codegen(swagger_file, output_dir):
     jar = os.path.join(os.path.dirname(__file__), SWAGGER_JAR)
+    codegen_config = os.path.join(os.path.dirname(__file__), CODEGEN_CONFIG)
 
     # Create the process that runs the jar putting stdout / stderr into pipes.
     try:
         process_inputs = [
-            'java', '-jar', jar, 'generate', '-i', swagger_file,
-            '--model-package', final_dirname, '-l', 'python-flask',
-            '-DsupportPython2=true', '-o', output_dir
+            'java', '-jar', jar, 'generate', '-DsupportPython2=true', '-i',
+            swagger_file, '-l', 'python-flask', '-c', codegen_config,
+            '--model-package', CODEGEN_MODULE, '-o', output_dir
         ]
 
         logger.info('Running process with arguments: {!r}'.format(
@@ -153,7 +148,7 @@ def _execute_swagger_codegen(swagger_file, output_dir, final_dirname):
             raise exceptions.UserError('Swagger python code generation failed.'
                                        ' Make sure java is on the PATH.')
         raise exceptions.UserError(
-            'Unable to generate  {!r}'
+            'Unable to run {!r} to generate python code.'
             '\nError code: {}. Error message: {}'.format(
                 jar, err.errno, os.strerror(err.errno)))
 
@@ -175,45 +170,46 @@ def _execute_swagger_codegen(swagger_file, output_dir, final_dirname):
     logger.info('stderr: {}'.format(stderr))
 
 
-def _copy_generated_to_dir(source_dir, output_dir, final_dirname):
-    _make_dir(os.path.join(source_dir, final_dirname))
-    swagger_server_dir = os.path.join(output_dir, SWAGGER_SERVER_MODULE)
-    generated_dir = os.path.join(swagger_server_dir, final_dirname)
-    generated_files = os.listdir(generated_dir)
+def _copy_generated_to_dir(src_location, dst_location):
+    """Copies the expected files from the src_location to the dst_location.
+
+    Args:
+        src_location (str): Location that the files/dirs will be found at.
+        dst_location (str): Location that the files/dirs will be copied to.
+    """
     #
-    # Go through all the files generated and modify them to have the right
-    # imports if there are any internal objects.
+    # output_dir is the dir that codegen had originally outputted to and
+    # therefore is actually the location of the files being copied are where
+    # as source_dir is actually the target destination for the copied files.
     #
-    for file_name in generated_files:
-        full_path = os.path.join(generated_dir, file_name)
-        if os.path.isfile(full_path):
-            _copy_file_with_correct_imports(file_name, full_path, source_dir,
-                                            final_dirname)
+    source_dir = os.path.join(src_location, CODEGEN_PACKAGE)
+    destination_dir = os.path.join(dst_location, CODEGEN_PACKAGE)
+    _make_dir(destination_dir)
 
-    # Also must copy the util.py file and move it to the the generated folder
-    util_file_name = 'util.py'
-    util_full_path = os.path.join(swagger_server_dir, util_file_name)
-    _copy_file_with_correct_imports(util_file_name, util_full_path, source_dir,
-                                    final_dirname)
+    logger.info('Copying generated files {} from {!r} to {!r}.'.format(
+        CODEGEN_COPY_FILES, source_dir, destination_dir))
 
-
-def _copy_file_with_correct_imports(file_name, full_path, source_dir,
-                                    final_dirname):
-    final_dir = os.path.join(source_dir, final_dirname)
-    with open(full_path, 'r') as f:
-        content = f.read()
-
-    # First change 'from swagger_server.generated.<>' to  'from generated.<>'
-    orig_regex = r'from {}.{}.(\S)'.format(SWAGGER_SERVER_MODULE,
-                                           final_dirname)
-    new_regex = r'from {}.\1'.format(final_dirname)
-    content_mid = re.sub(orig_regex, new_regex, content)
-
-    # Next change 'from swagger_server import <>' to 'from generated import <>'
-    orig_regex = r'from {} import'.format(SWAGGER_SERVER_MODULE)
-    new_regex = r'from {} import'.format(final_dirname)
-    content_new = re.sub(orig_regex, new_regex, content_mid)
-
-    final_path = os.path.join(final_dir, file_name)
-    with open(final_path, 'w') as f:
-        f.write(content_new)
+    for name in CODEGEN_COPY_FILES:
+        src = os.path.join(source_dir, name)
+        try:
+            #
+            # Try copying as a directory first, if it's a dir then the dst
+            # must include the name of of the dir for it to be copied there.
+            #
+            shutil.copytree(src, os.path.join(destination_dir, name))
+            logger.info('Successfully copied directory {!r}.'.format(name))
+        except OSError as err:
+            if err.errno == errno.ENOTDIR:
+                #
+                # In the case that it's not a dir, this error would have been
+                # caught. Try copying it as a file. The dst should not have the
+                # name in it this time.
+                #
+                shutil.copy(src, destination_dir)
+                logger.info('Successfully copied file {!r}.'.format(name))
+            else:
+                #
+                # Since we're not expecting any other errors raise anything
+                # that does exist.
+                #
+                raise

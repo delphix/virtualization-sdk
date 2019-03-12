@@ -32,9 +32,9 @@ def read_plugin_config_file(plugin_config):
         with open(plugin_config, 'rb') as f:
             try:
                 return yaml.load(f)
-            except yaml.YAMLError, exc:
-                if hasattr(exc, 'problem_mark'):
-                    mark = exc.problem_mark
+            except yaml.YAMLError as err:
+                if hasattr(err, 'problem_mark'):
+                    mark = err.problem_mark
                     raise exceptions.UserError(
                         'Command failed because the plugin config file '
                         'provided as input {!r} was not valid yaml. '
@@ -53,15 +53,15 @@ def read_schema_file(schema_file):
         with open(schema_file, 'r') as f:
             try:
                 return json.load(f)
-            except ValueError as exc:
+            except ValueError as err:
                 raise exceptions.UserError(
                     'Failed to load schemas because {!r} is not a '
-                    'valid json file. Error: {}'.format(schema_file, str(exc)))
+                    'valid json file. Error: {}'.format(schema_file, str(err)))
     except IOError as err:
         raise exceptions.UserError(
-            'Unable to load schemas from {!r} Error code: {}. '
-            'Error message: {}'.format(schema_file, err.errno,
-                                       os.strerror(err.errno)))
+            'Unable to load schemas from {!r}'
+            '\nError code: {}. Error message: {}'.format(
+                schema_file, err.errno, os.strerror(err.errno)))
 
 
 def validate_plugin_config_content(plugin_config_content):
@@ -107,14 +107,27 @@ def validate_plugin_config_content(plugin_config_content):
                 plugin_config_content['language'], LANGUAGE_DEFAULT))
 
     #
-    # Lastly validate that both the srcDir and schemaFile values are absolute
-    # paths.
+    # Lastly, validate that both the srcDir and schemaFile values are absolute
+    # paths and they are the correct type (file vs dir) and that they actually
+    # exist.
     #
-    if not os.path.isabs(plugin_config_content['srcDir']):
-        raise exceptions.PathNotAbsoluteError(plugin_config_content['srcDir'])
-    if not os.path.isabs(plugin_config_content['schemaFile']):
-        raise exceptions.PathNotAbsoluteError(
-            plugin_config_content['schemaFile'])
+    src_dir = plugin_config_content['srcDir']
+    schema_file = plugin_config_content['schemaFile']
+
+    if not os.path.isabs(src_dir):
+        raise exceptions.PathNotAbsoluteError(src_dir)
+    if not os.path.isabs(schema_file):
+        raise exceptions.PathNotAbsoluteError(schema_file)
+
+    if not os.path.exists(src_dir):
+        raise exceptions.PathDoesNotExistError(src_dir)
+    if not os.path.exists(schema_file):
+        raise exceptions.PathDoesNotExistError(schema_file)
+
+    if not os.path.isdir(src_dir):
+        raise exceptions.PathTypeError(src_dir, 'directory')
+    if not os.path.isfile(schema_file):
+        raise exceptions.PathTypeError(schema_file, 'file')
 
 
 def validate_schemas(schemas):

@@ -2,615 +2,275 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import errno
+import base64
+import compileall
+import copy
 import json
 import logging
 import os
-import re
+import StringIO
+import zipfile
 
-from dlpx.virtualization._internal import exceptions, package_util
+from dlpx.virtualization._internal import (codegen, exceptions, package_util,
+                                           plugin_util)
 
 logger = logging.getLogger(__name__)
+# This is hard-coded to the delphix web service api version
+# against which the plugin is built. This enables backwards compatibility
+# of plugins to work for future versions of delphix engine.
+ENGINE_API = {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 0}
 
-ENGINE_API_VERSION = {
-    'type': 'APIVersion',
-    'major': 1,
-    'minor': 11,
-    'micro': 0
-}
-
-# A locale filename is "<locale>.txt", such as "en-us.txt" or "fr.txt"
-LOCALE_REGEX = re.compile(r'^\w[\w-]*\.txt$')
-
-# A message identifier must be a Python identifier.
-# So, a letter optionally followed by letters/numerals/underscores.
-IDENTIFIER_REGEX = re.compile(r'^[A-Za-z]\w*$')
-
-# Upgrade scripts should be tagged with a major/minor version string
-UPGRADE_VERSION_REGEX = re.compile(r'^([0-9]+)\\.([0-9]+)$')
-
-# Swap files will end with either swp or swa.
-# Also matches hidden files which are not swap files
-SWAP_AND_HIDDEN_FILE_REGEX = re.compile(r'^\..*[\.sw[ap]]?')
-
-# Directories under which we look for source code.
-SOURCE_CODE_DIRS = ['direct', 'staged', 'virtual', 'discovery']
+TYPE = 'Toolkit'
+LOCALE_DEFAULT = 'en-us'
+VIRTUAL_SOURCE_TYPE = 'ToolkitVirtualSource'
+DISCOVERY_DEFINITION_TYPE = 'ToolkitDiscoveryDefinition'
+STAGED_LINKED_SOURCE_TYPE = 'ToolkitLinkedStagedSource'
+DIRECT_LINKED_SOURCE_TYPE = 'ToolkitLinkedDirectSource'
 
 
-def build(root, outfile):
+def build(plugin_config, upload_artifact, generate_only):
+    """This builds the plugin using the configurations provided in config yaml
+    file provided as input. It reads schemas and source code from the files
+    given in yaml file, generates an encoded string of zip of source code,
+    prepares plugin json output file that can be used by upload command later.
+
+    Args:
+        plugin_config: Plugin config file used for building plugin.
+        upload_artifact: The file to which output of build  is written to.
     """
-    This builds the plugin from main.json and source code and generates
-    plugin json file which will be used by upload command later.
+    logger.debug(
+        'Build parameters include plugin_config: %s, upload_artifact: %s,'
+        ' generate_only: %s', plugin_config, upload_artifact, generate_only)
 
-    Input :
+    # Read content of the plugin config  file provided and perform validations
+    logger.info('Reading plugin config file %s', plugin_config)
+    plugin_config_content = plugin_util.read_plugin_config_file(plugin_config)
+    logger.debug('plugin config file content is : %s', plugin_config_content)
+    plugin_util.validate_plugin_config_content(plugin_config_content)
+    # Read schemas from the file provided in the config and validate them
+    logger.info('Reading schemas from %s', plugin_config_content['schemaFile'])
+    schemas = plugin_util.read_schema_file(plugin_config_content['schemaFile'])
+    logger.debug('schemas found: %s', schemas)
+    plugin_util.validate_schemas(schemas)
 
-    root - Root directory of the build containing main.json and source code.
-    outfile - The file to which output of build (plugin json) is written to.
+    #
+    # Call directly into codegen to generate the python classes and make sure
+    # the ones we zip up are up to date with the schemas.
+    #
+    codegen.generate_python(plugin_config_content['prettyName'],
+                            plugin_config_content['srcDir'],
+                            os.path.dirname(plugin_config), schemas)
 
-    Output : None
+    if generate_only:
+        #
+        # If the generate_only flag is set then just return after generation
+        # has happened.
+        #
+        logger.info('Generating python code only. Skipping artifact build.')
+        return
 
-    Raises :
+    # Prepare the output artifact.
+    plugin_output = prepare_upload_artifact(plugin_config_content, schemas)
 
-    """
-    logger.debug('root: %s', root)
-    logger.debug('outfile: %s', outfile)
-
-    # read manifest into JSON object to start off
-    logger.info('Reading main.json')
-    toolkit_dir = root
-    manifest = {}
-    try:
-        with open(os.path.join(toolkit_dir, 'main.json'), 'r') as f:
-            try:
-                manifest = json.load(f)
-            except ValueError:
-                raise exceptions.UserError('Build failed because main.json'
-                                           ' was not a valid json file.')
-    except IOError as err:
-        raise exceptions.UserError('Unable to read main.json file from {}'
-                                   ' Error code: {}. Error message: {}'.format(
-                                       toolkit_dir, err.errno,
-                                       errno.errorcode.get(
-                                           err.errno, 'unknown err')))
-
-    logger.info('Generating plugin json file at %s', outfile)
-    manifest['language'] = 'PYTHON27'
-    # read resources
-    logger.info('Reading resources ...')
-    read_resources(manifest, toolkit_dir)
-
-    # read workflow scripts from relevant directories into manifest JSON
-    logger.info('Reading linked source definition')
-    read_linked_source_definition(manifest, toolkit_dir)
-
-    logger.info('Reading virtual source definition')
-    read_virtual_source_definition(manifest, toolkit_dir)
-
-    logger.info('Reading discovery definition')
-    read_discovery_definition(manifest, toolkit_dir)
-
-    logger.info('Reading upgrade definition')
-    read_upgrade_definition(manifest, toolkit_dir)
-
-    # read localizable messages info
-    logger.info('Reading localizable messages')
-    read_messages(manifest, toolkit_dir)
-
-    logger.info('Reading snapshot schema')
-    if 'snapshotSchema' not in manifest:
-        raise exceptions.UserError('A toolkit must contain a snapshot schema')
-
-    # set Engine API version
-    manifest['engineApi'] = ENGINE_API_VERSION
-
-    # set SDK version of build
-    manifest['buildApi'] = get_build_api_version()
-
-    # dump JSON into toolkit directory
-    try:
-        with open(outfile, 'w') as f:
-            f.write(json.dumps(manifest, indent=4))
-    except IOError as err:
-        raise exceptions.UserError('Failed to write plugin json file to {}'
-                                   ' Error code: {}. Error message: {}'.format(
-                                       outfile, err.errno,
-                                       errno.errorcode.get(
-                                           err.errno, 'unknown err')))
-    # exit with success
-    logger.info('SUCCESS - Generated plugin json file at %s', outfile)
-    return
+    #
+    # Add empty strings for plugin operations for now as API expects them.
+    # This can be removed when Delphix API changes in future.
+    #
+    add_empty_plugin_operations_to_plugin_output(plugin_output,
+                                                 plugin_config_content)
+    # Write it to upload_artifact as json.
+    generate_upload_artifact(upload_artifact, plugin_output)
+    logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
 
-def get_build_api_version():
-    major, minor, micro = (int(n)
-                           for n in package_util.get_version().split('.'))
-    build_api_version = {
-        'type': 'APIVersion',
-        'major': major,
-        'minor': minor,
-        'micro': micro
+def prepare_upload_artifact(plugin_config_content, schemas):
+    #
+    # This is the output dictionary that will be written
+    # to the upload_artifact.
+    #
+    return {
+        # Hard code the type to a set default.
+        'type':
+        TYPE,
+        'name':
+        plugin_config_content['name'],
+        'prettyName':
+        plugin_config_content['prettyName'],
+        'version':
+        plugin_config_content['version'],
+        # set default value of locale to en-us
+        'defaultLocale':
+        plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
+        # set default value of language to PYTHON27
+        'language':
+        plugin_config_content['language'],
+        'hostTypes':
+        plugin_config_content['hostTypes'],
+        'entryPoint':
+        plugin_config_content['entryPoint'],
+        'buildApi':
+        package_util.get_build_api_version(),
+        'engineApi':
+        ENGINE_API,
+        'sourceCode':
+        zip_and_encode_source_files(plugin_config_content['srcDir']),
+        'virtualSourceDefinition': {
+            'type': VIRTUAL_SOURCE_TYPE,
+            'parameters': schemas['virtualSourceDefinition']
+        },
+        'linkedSourceDefinition': {
+            'type': get_linked_source_definition_type(plugin_config_content),
+            'parameters': schemas['linkedSourceDefinition']
+        },
+        'discoveryDefinition':
+        prepare_discovery_definition(plugin_config_content, schemas),
+        'snapshotSchema':
+        schemas['snapshotDefinition']
     }
-    return build_api_version
 
 
-def read_resources(manifest, toolkit_dir):
-    if 'resources' in manifest:
-        raise exceptions.UserError("main.json must not contain resources.")
-    manifest['resources'] = {}
-
-    # iterate through resources directory
-    rdir = os.path.join(toolkit_dir, 'resources')
-    for dirpath, _, filenames in os.walk(rdir):
-        for filename in filenames:
-            abspath = os.path.join(dirpath, filename)
-            rname = os.path.relpath(abspath, start=rdir)
-            logger.info('  resources/{}'.format(rname))
-            if SWAP_AND_HIDDEN_FILE_REGEX.match(rname):
-                logger.info("Skipping swap/hidden file %s" % rname)
-                continue
-            try:
-                with open(abspath, mode="r") as f:
-                    try:
-                        file_content = f.read()
-                        file_content.decode('utf-8')
-                        manifest["resources"][rname] = file_content
-                    except UnicodeDecodeError:
-                        raise exceptions.UserError(
-                            'ERROR: Please check resources folder to ensure '
-                            'that all files are UTF-8 text. '
-                            'Please delete {} file in resources'
-                            ' folder since it does not contain '
-                            ' UTF-8 text'.format(abspath))
-            except IOError as err:
-                raise exceptions.UserError(
-                    'Unable to read file {}'
-                    ' Error code: {}. Error message: {}'.format(
-                        abspath, err.errno,
-                        errno.errorcode.get(err.errno, 'unknown err')))
-
-
-def read_linked_source_definition(manifest, toolkit_dir):
-    is_staged_toolkit = manifest['linkedSourceDefinition'][
-        'type'] == 'ToolkitLinkedStagedSource'
-    is_direct_toolkit = manifest['linkedSourceDefinition'][
-        'type'] == 'ToolkitLinkedDirectSource'
-
-    if not is_staged_toolkit and not is_direct_toolkit:
-        raise exceptions.UserError('A plugin linked source definition'
-                                   ' must be of type ToolkitLinkedStagedSource'
-                                   ' or ToolkitLinkedDirectSource')
-
-    # make sure appropriate directory exists (staged or linking)
-    has_staged_dir = os.path.isdir(os.path.join(toolkit_dir, 'staged'))
-    has_direct_dir = os.path.isdir(os.path.join(toolkit_dir, 'direct'))
-
-    if has_staged_dir and has_direct_dir:
-        raise exceptions.UserError(
-            'A toolkit directory cannot contain both '
-            'staged and direct directory.'
-            ' The direct must match the toolkit LinkedSourceDefinition type')
-
-    if is_staged_toolkit:
-        if has_direct_dir:
-            raise exceptions.UserError(
-                'The toolkit LinkedSourceDefinition type '
-                'ToolkitLinkedStagedSource requires a staged folder, '
-                'not a direct folder')
-        manifest['linkedSourceDefinition']['preSnapshot'] = read_script(
-            toolkit_dir, 'staged/preSnapshot.py')
-        manifest['linkedSourceDefinition']['postSnapshot'] = read_script(
-            toolkit_dir, 'staged/postSnapshot.py', True, True)
-        manifest['linkedSourceDefinition']['startStaging'] = read_script(
-            toolkit_dir, 'staged/startStaging.py')
-        manifest['linkedSourceDefinition']['status'] = read_script(
-            toolkit_dir, 'staged/status.py')
-        manifest['linkedSourceDefinition']['stopStaging'] = read_script(
-            toolkit_dir, 'staged/stopStaging.py')
-        manifest['linkedSourceDefinition']['resync'] = read_script(
-            toolkit_dir, 'staged/resync.py')
-        manifest['linkedSourceDefinition']['worker'] = read_script(
-            toolkit_dir, 'staged/worker.py')
-        if os.path.exists(os.path.join(toolkit_dir, 'staged/mountSpec.py')):
-            mount_script = read_script(toolkit_dir, 'staged/mountSpec.py')
-            manifest['linkedSourceDefinition']['mountSpec'] = mount_script
-        if os.path.exists(
-                os.path.join(toolkit_dir, 'staged/ownershipSpec.py')):
-            owner_script = read_script(toolkit_dir, 'staged/ownershipSpec.py')
-            manifest['linkedSourceDefinition']['ownershipSpec'] = owner_script
-
-    elif is_direct_toolkit:
-        if has_staged_dir:
-            raise exceptions.UserError(
-                'The toolkit LinkedSourceDefinition type '
-                'ToolkitLinkedDirectSource requires a direct folder, '
-                'not a staged folder')
-        manifest['linkedSourceDefinition']['preSnapshot'] = read_script(
-            toolkit_dir, 'direct/preSnapshot.py')
-        manifest['linkedSourceDefinition']['postSnapshot'] = read_script(
-            toolkit_dir, 'direct/postSnapshot.py', True, True)
-
-
-def read_virtual_source_definition(manifest, toolkit_dir):
-    manifest['virtualSourceDefinition']['configure'] = read_script(
-        toolkit_dir, 'virtual/configure.py', True, True)
-    manifest['virtualSourceDefinition']['unconfigure'] = read_script(
-        toolkit_dir, 'virtual/unconfigure.py')
-    manifest['virtualSourceDefinition']['reconfigure'] = read_script(
-        toolkit_dir, 'virtual/reconfigure.py', True, True)
-    manifest['virtualSourceDefinition']['start'] = read_script(
-        toolkit_dir, 'virtual/start.py')
-    manifest['virtualSourceDefinition']['stop'] = read_script(
-        toolkit_dir, 'virtual/stop.py')
-    manifest['virtualSourceDefinition']['preSnapshot'] = read_script(
-        toolkit_dir, 'virtual/preSnapshot.py')
-    manifest['virtualSourceDefinition']['postSnapshot'] = read_script(
-        toolkit_dir, 'virtual/postSnapshot.py', True, True)
-    manifest['virtualSourceDefinition']['status'] = read_script(
-        toolkit_dir, 'virtual/status.py')
-
-    # These Hook scripts are optional.
-    # Only add to manifest if scripts actually exist.
-    if os.path.exists(os.path.join(toolkit_dir, 'virtual/initialize.py')):
-        init_script = read_script(toolkit_dir, 'virtual/initialize.py')
-        manifest['virtualSourceDefinition']['initialize'] = init_script
-    if os.path.exists(os.path.join(toolkit_dir, 'virtual/mountSpec.py')):
-        mount_script = read_script(toolkit_dir, 'virtual/mountSpec.py')
-        manifest['virtualSourceDefinition']['mountSpec'] = mount_script
-    if os.path.exists(os.path.join(toolkit_dir, 'virtual/ownershipSpec.py')):
-        owner_script = read_script(toolkit_dir, 'virtual/ownershipSpec.py')
-        manifest['virtualSourceDefinition']['ownershipSpec'] = owner_script
-
-
-def read_discovery_definition(manifest, toolkit_dir):
-    repository_discovery = read_script(
-        toolkit_dir, 'discovery/repositoryDiscovery.py', False)
-    source_config_discovery = read_script(
-        toolkit_dir, 'discovery/sourceConfigDiscovery.py', False)
-    """
-    A discoveryDefinition (in main.json) requires both a repositoryDiscovery
-    and sourceConfigDiscovery to also exist. Without a discoveryDefinition,
-    there should not be a repositoryDiscovery or a sourceConfigDiscovery.
-    """
-    if 'discoveryDefinition' in manifest:
-        if not (repository_discovery and source_config_discovery):
-            raise exceptions.UserError(
-                'A toolkit supports discovery if it has a discoveryDefinition '
-                'in its main.json. A discoveryDefinition was found and so '
-                'there must exist a repositoryDiscovery.py and '
-                'sourceConfigDiscovery.py script in the discovery folder.')
+def get_linked_source_definition_type(plugin_config_content):
+    if 'STAGED' == plugin_config_content['pluginType'].upper():
+        return STAGED_LINKED_SOURCE_TYPE
     else:
-        if repository_discovery or source_config_discovery:
-            raise exceptions.UserError(
-                'A toolkit supports discovery if it has a discoveryDefinition '
-                'in its main.json. A discoveryDefinition was not found and so '
-                'there must not exist repositoryDiscovery.py '
-                'and sourceConfigDiscovery.py script in the discovery folder.')
-        # Exit without discovery definition
-        return
-
-    # Repository discovery
-    if 'repositorySchema' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field repositorySchema')
-    if 'repositoryIdentityFields' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field '
-            'repositoryIdentityFields')
-    if 'repositoryNameField' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field repositoryNameField'
-        )
-    manifest['discoveryDefinition'][
-        'repositoryDiscovery'] = repository_discovery
-
-    # Source config discovery
-    if 'sourceConfigSchema' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field sourceConfigSchema')
-    if 'sourceConfigIdentityFields' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field '
-            'sourceConfigIdentityFields')
-    if 'sourceConfigNameField' not in manifest['discoveryDefinition']:
-        raise exceptions.UserError(
-            'A discovery definition must contain the field '
-            'sourceConfigNameField')
-    manifest['discoveryDefinition'][
-        'sourceConfigDiscovery'] = source_config_discovery
+        return DIRECT_LINKED_SOURCE_TYPE
 
 
-def read_upgrade_definition(manifest, toolkit_dir):
-    upgrade_dir = os.path.join(toolkit_dir, 'upgrade')
-    if not os.path.isdir(upgrade_dir):
-        return
-
-    # Ensure that the upgrade directory only has a single directory,
-    # the name will be the fromVersion
-    from_version_dir = [
-        sub_dir for sub_dir in os.listdir(upgrade_dir)
-        if os.path.isdir(os.path.join(upgrade_dir, sub_dir))
-    ]
-    if len(from_version_dir) != 1:
-        raise exceptions.UserError('The upgrade directory must contain'
-                                   ' a single sub-directory which is the'
-                                   ' fromVersion containing the required'
-                                   ' upgrade scripts')
-
-    version_dir = from_version_dir[0]
-    snapshot_upgrade = read_script(
-        toolkit_dir, 'upgrade/{}/upgradeSnapshot.py'.format(version_dir),
-        False)
-    virtual_source_upgrade = read_script(
-        toolkit_dir, 'upgrade/{}/upgradeVirtualSource.py'.format(version_dir),
-        False)
-    linked_source_upgrade = read_script(
-        toolkit_dir, 'upgrade/{}/upgradeLinkedSource.py'.format(version_dir),
-        False)
-    source_config_upgrade = read_script(
-        toolkit_dir, 'upgrade/{}/upgradeSourceConfig.py'.format(version_dir),
-        False)
-
-    if not (snapshot_upgrade and virtual_source_upgrade
-            and linked_source_upgrade):
-        raise exceptions.UserError(
-            'Upgrade requires all of the following scripts '
-            'to be present and nonempty:'
-            'upgradeSnapshot, upgradeVirtualSource, and upgradeLinkedSource')
-
-    manifest['upgradeDefinition'] = {}
-    manifest['upgradeDefinition']['type'] = 'ToolkitUpgradeDefinition'
-    manifest['upgradeDefinition']['fromVersion'] = standardize_upgrade_version(
-        version_dir)
-    manifest['upgradeDefinition']['upgradeSnapshot'] = snapshot_upgrade
-    manifest['upgradeDefinition'][
-        'upgradeVirtualSource'] = virtual_source_upgrade
-    manifest['upgradeDefinition']['upgradeLinkedSource'] = \
-        linked_source_upgrade
-    if source_config_upgrade:
-        manifest['upgradeDefinition'][
-            'upgradeManualSourceConfig'] = source_config_upgrade
-
-
-def is_valid_upgrade_version(version):
-    return bool(UPGRADE_VERSION_REGEX.match(version))
-
-
-def standardize_upgrade_version(dir_name):
-    if not is_valid_upgrade_version(dir_name):
-        logger.error(
-            'The upgrade sub-directory must be a minor/major version number.'
-            ' For example 1.0')
-
-    # We need to construct a valid full version string
-    # from the major/minor version. Since the patch level is ignored,
-    # we can pick any old patch identifier here.
-    return dir_name + '.0'
-
-
-def read_script(toolkit_dir,
-                script,
-                default_script=True,
-                default_return_empty=False):
-    script_path = os.path.join(toolkit_dir, script)
-    if os.path.isfile(script_path):
-        logger.info('  {} added'.format(script))
-        try:
-            with open(script_path) as f:
-                return f.read()
-        except IOError as err:
-            raise exceptions.UserError(
-                'Unable to read file {}'
-                ' Error code: {}. Error message: {}'.format(
-                    script_path, err.errno,
-                    errno.errorcode.get(err.errno, 'unknown err')))
-    else:
-        message = '  {} does not exist'.format(script)
-        if default_script:
-            message += ', adding no-op script'
-        logger.info(message)
-        if default_return_empty:
-            return 'return {}'
-        else:
-            return ''
-
-
-def read_messages(manifest, toolkit_dir):
+def prepare_discovery_definition(config_content, schemas):
     """
-    get the default (fallback) locale, which defines the absolute set of
-    message_ids (this way, if we ever encounter a message_id not defined
-    for the user's locale, we always have a locale to "fallback" to)
+    We need to prepare discoveryDefinition manually since it is split into
+    repositoryDefinition and sourceConfigDefinition in the schemas file and
+    manualSourceConfigDiscovery is moved to config yml as
+    manualDiscovery. repositoryIdentityFields and repositoryNameField are
+    renamed to identityFields and nameField respectively for
+    repositoryDefinition. sourceConfigIdentityFields and sourceConfigNameField
+    are renamed to identityFields and nameField respectively for
+    sourceConfigDefinition.
+
+    Also, identityFields and nameField are moved into their
+    corresponding definitions, so we will need to remove them using
+    pop function before using the corresponding schemas provided in schemaFile
     """
-    default_locale = read_default_locale(manifest)
 
-    msg_dir = os.path.join(toolkit_dir, 'messages')
-    has_msg_dir = os.path.isdir(msg_dir)
-    has_msg_obj = 'messages' in manifest
+    #
+    # Copy repositoryDefinition and sourceConfigDefinition into new dicts for
+    # required manipulation
+    #
+    schema_repo_def = copy.deepcopy(schemas['repositoryDefinition'])
+    schema_source_config_def = copy.deepcopy(schemas['sourceConfigDefinition'])
+
+    return {
+        'type':
+        DISCOVERY_DEFINITION_TYPE,
+        # set manualSourceConfigDiscovery provided in config
+        'manualSourceConfigDiscovery':
+        config_content['manualDiscovery'],
+        # identityFields in schema becomes repositoryIdentityFields
+        'repositoryIdentityFields':
+        schema_repo_def.pop('identityFields'),
+        'repositoryNameField':
+        schema_repo_def.pop('nameField', None),
+        'repositorySchema':
+        schema_repo_def,
+        #
+        # Transform identityFields and nameField into appropriate fields
+        # expected in output artifact.
+        #
+        'sourceConfigIdentityFields':
+        schema_source_config_def.pop('identityFields', None),
+        'sourceConfigNameField':
+        schema_source_config_def.pop('nameField'),
+        'sourceConfigSchema':
+        schema_source_config_def
+    }
+
+
+def add_empty_plugin_operations_to_plugin_output(plugin_output,
+                                                 plugin_config_content):
     """
-    The "messages" object can be explicitly included in the JSON manifest
-    before the plugin is built, or generated from message files in
-    a "messages" directory in the pre-built plugin.
-
-    Below we check which case we fall into:
-        - If neither the "messages" object or a "messages" directory exist,
-          we log it telling the user they have included no messages.
-          (This case is valid because messages are optional.)
-        - If both a "messages" object and "message" directory exist,
-          we log an error, as it is likely the plugin author made a mistake.
-        - If only the "messages" object exist,
-          we do nothing because no additional JSON needs to be generated.
-        - If only the "messages" directory exists,
-          we load the message files from this directory, validate them,
-          and convert them to JSON.
+    Delphix API needs some of the these fields to be present.
+    So adding empty values for now. We should remove these
+    once the API changes in future.
     """
-    if not (has_msg_dir or has_msg_obj):
-        logger.info('No localizable messages found...')
-        return
-    elif has_msg_dir and has_msg_obj:
-        logger.error('ERROR: Both a messages object in main.json'
-                     ' and a messages directory were found')
-        raise exceptions.UserError(
-            'Place all your messages in the messages directory or '
-            'in a messages object in main.json and build again.')
-    elif has_msg_obj:
-        logger.info('Using messages object in main.json '
-                    'to define localizable messages.')
-        return
-
-    errors = []
-    locales, message_ids = parse_message_files(msg_dir, errors)
-
-    # make sure the default locale has a messages file
-    if default_locale not in locales:
-        raise exceptions.UserError(
-            'ERROR: Default locale must have a message file')
-
-    # ensure all message_ids are a subset of the default locale's set
-    for msg_id in message_ids:
-        if msg_id not in locales[default_locale].keys():
-            errors.append(
-                'message id {} is not defined for default locale {}'.format(
-                    msg_id, default_locale))
-
-    if len(errors) > 0:
-        raise exceptions.UserError('ERROR: Message file validation failed.'
-                                   ' Errors are : {}'.format(
-                                       json.dumps(errors)))
-
-    # add message info to json manifest
-    messages_to_json(manifest, locales)
+    plugin_output['resources'] = {}
+    virtual_source_plugin_operations = {
+        'configure': '',
+        'unconfigure': '',
+        'reconfigure': '',
+        'initialize': '',
+        'start': '',
+        'stop': '',
+        'preSnapshot': '',
+        'postSnapshot': ''
+    }
+    discovery_plugin_operations = {
+        'sourceConfigDiscovery': '',
+        'repositoryDiscovery': ''
+    }
+    linked_source_plugin_operations = {'preSnapshot': '', 'postSnapshot': ''}
+    if plugin_util.STAGED_TYPE == plugin_config_content['pluginType'].upper():
+        linked_source_plugin_operations.update({
+            'resync': '',
+            'startStaging': '',
+            'stopStaging': ''
+        })
+    plugin_output['virtualSourceDefinition'].update(
+        virtual_source_plugin_operations)
+    plugin_output['discoveryDefinition'].update(discovery_plugin_operations)
+    plugin_output['linkedSourceDefinition'].update(
+        linked_source_plugin_operations)
 
 
-def parse_message_files(msg_dir, errors):
-    """
-     Loops through the input "messages" directory (msg_dir)
-     and calls parse_message_file on each message file.
-
-     Also checks if duplicate files exist for particular locales.
-
-     Input:
-        msg_dir: the absolute path to the "messages" directory in the toolkit
-        errors: a list of errors found while parsing the message files.
-
-     Output:
-        locales: nested dictionary generated from the message files:
-                    locale names -> (dictionary of message_ids -> messages)
-        message_ids: the set of all message_ids found in the message files
-
-    """
-    locales = {}
-    message_ids = set()
-
-    for dir_path, _, file_names in os.walk(msg_dir):
-        for filename in file_names:
-            if is_locale_filename(filename):
-                locale = get_locale_name(filename)
-                if locale in locales:
-                    errors.append(
-                        'Duplicate locale message files for locale {} found. '.
-                        format(locale))
-
-                logger.info(
-                    'Parsing message file for locale {}'.format(locale))
-                abspath = os.path.join(dir_path, filename)
-                locales[locale] = parse_message_file(abspath, errors)
-
-                for key in locales[locale].keys():
-                    message_ids.add(key)
-
-    return locales, message_ids
-
-
-def parse_message_file(abspath, errors):
-    """
-    Parses an individual message file, including:
-        - ignoring empty lines and comments
-        - recording an error for malformed lines (no "=" delimiter)
-        - recording an error for duplicate message_id
-        - recording an error for non-alphanumeric message_id
-
-    Input:
-        abspath: string representing the absolute path to the messages file
-        errors: a list of error messages (strings) to report to the user
-
-    Output:
-        A string->string dictionary of message_id to messages in the file
-    """
+def generate_upload_artifact(upload_artifact, plugin_output):
+    # dump plugin_output JSON into upload_artifact file
+    logger.info('Generating upload_artifact file at %s', upload_artifact)
     try:
-        with open(abspath) as f:
-            contents = f.read()
+        with open(upload_artifact, 'w') as f:
+            json.dump(plugin_output, f, indent=4)
     except IOError as err:
-        raise exceptions.UserError('Unable to read file {}'
-                                   ' Error code: {}. Error message: {}'.format(
-                                       abspath, err.errno,
-                                       errno.errorcode.get(
-                                           err.errno, 'unknown err')))
-
-    messages = {}
-
-    for line_num, line in enumerate(contents.splitlines()):
-        message_id, sep, msg = line.partition('=')
-        message_id = message_id.rstrip()
-        msg = msg.lstrip()
-
-        if message_id == '' or message_id.startswith('#'):
-            continue
-        elif message_id == line:
-            errors.append('Message file {} has malformed message definition'
-                          '"{}" at line {}'.format(abspath, line, line_num))
-        elif message_id in messages:
-            errors.append('Message file {} has duplicate message id'
-                          '{} at line {}'.format(abspath, message_id,
-                                                 line_num))
-        elif not IDENTIFIER_REGEX.match(message_id):
-            errors.append('Message file {} has invalid message id'
-                          '{} at line {}'.format(abspath, message_id,
-                                                 line_num))
-            errors.append('Messages must begin with a letter, and contain'
-                          'only letters, numbers and underscores')
-
-        messages[message_id] = msg
-
-    return messages
-
-
-def messages_to_json(manifest, locales):
-    """
-    Translate the locales nested map back to json.
-    By mutating the "manifest" object here, the contents of the messages
-    object will be escaped later in the script.
-
-    Input:
-        manifest: a dictionary representing the JSON manifest from main.json
-        locales: A nested dictionary that maps a locale (string)
-                to a dictionary of message_ids (string) to messages (string).
-
-    Output: None.
-    """
-    manifest['messages'] = []
-    for locale, message_map in locales.iteritems():
-        obj = {'type': 'ToolkitLocale', 'localeName': locale, 'messages': {}}
-        obj['messages'] = {
-            msg_id: msg
-            for (msg_id, msg) in message_map.iteritems()
-        }
-        manifest['messages'].append(obj)
-
-
-def get_locale_name(filename):
-    """
-    Returns a locale name based on a file name.
-    We may want to change how file names map to locales, so this logic
-    is abstracted out separately (even if it is simple right now).
-    """
-    return filename.split('.')[0]
-
-
-def is_locale_filename(filename):
-    return bool(LOCALE_REGEX.match(filename))
-
-
-def read_default_locale(manifest):
-    if 'defaultLocale' not in manifest:
         raise exceptions.UserError(
-            'ERROR: A toolkit must contain a defaultLocale property')
-    return manifest['defaultLocale']
+            'Failed to write upload_artifact file to {}. Error code: {}.'
+            ' Error message: {}'.format(upload_artifact, err.errno,
+                                        os.strerror(err.errno)))
+
+
+def zip_and_encode_source_files(source_code_dir):
+    """
+    Given a path, returns a zip file of all non .py files as a base64 encoded
+    string *.py files are skipped to imitate the SDK's build script.
+    We skip them because they cannot be imported in the secure context.
+    Jython creates a class loader to import .py files which the
+    security manager prohibits.
+    """
+
+    #
+    # The contents of the zip should have relative and not absolute paths or
+    # else the imports won't work as expected.
+    #
+    cwd = os.getcwd()
+    try:
+        os.chdir(source_code_dir)
+        compileall.compile_dir(source_code_dir)
+        out_file = StringIO.StringIO()
+        with zipfile.ZipFile(out_file, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for root, _, files in os.walk('.'):
+                for filename in files:
+                    if not filename.endswith('.py'):
+                        logger.debug('Adding %s to zip.',
+                                     os.path.join(root, filename))
+                        zip_file.write(os.path.join(root, filename))
+        encoded_bytes = base64.b64encode(out_file.getvalue())
+        out_file.close()
+        return encoded_bytes
+
+    except OSError as os_err:
+        raise exceptions.UserError(
+            'Failed to read source code directory {}. Error code: {}.'
+            ' Error message: {}'.format(source_code_dir, os_err.errno,
+                                        os.strerror(os_err.errno)))
+    except UnicodeError as uni_err:
+        exceptions.UserError(
+            'Failed to base64 encode source code in the directory {}. '
+            'Error message: {}'.format(source_code_dir, uni_err.reason))
+    finally:
+        os.chdir(cwd)

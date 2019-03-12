@@ -5,6 +5,7 @@
 import json
 
 import httpretty
+import mock
 import pytest
 import requests
 
@@ -530,15 +531,9 @@ class TestDelphixClient:
         assert history[-4].path == u'/resources/json/delphix/session'
 
     @staticmethod
-    def test_request_timeout(engine_api):
-        def exception_callback(request, uri, headers):
-            # raise requests.Timeout to test request exceptions.
-            raise requests.Timeout('Connection timed out.')
-
-        httpretty.register_uri(
-            httpretty.POST,
-            'http://test-engine.com/resources/json/delphix/session',
-            body=exception_callback)
+    @mock.patch('requests.post')
+    def test_request_timeout(mock_post, engine_api):
+        mock_post.side_effect = requests.Timeout('Connection timed out.')
 
         dc = upload.DelphixClient('test-engine.com')
 
@@ -547,11 +542,15 @@ class TestDelphixClient:
 
         message = err_info.value.message
         assert message == ('Upload failed due to a http request failure.'
-                           '\n(\'Connection aborted.\','
-                           ' BadStatusLine("\'\'",))')
+                           '\nConnection timed out.')
 
-        history = httpretty.HTTPretty.latest_requests
-        assert history[-1].path == u'/resources/json/delphix/session'
+        mock_post.assert_called_once_with(
+            data=json.dumps({
+                'version': engine_api,
+                'type': 'APISession'
+            }),
+            headers={'Content-type': 'application/json'},
+            url='http://test-engine.com/resources/json/delphix/session')
 
     @staticmethod
     @pytest.mark.parametrize('engine_api', [{
