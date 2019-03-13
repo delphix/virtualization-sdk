@@ -37,6 +37,7 @@ def build(plugin_config, upload_artifact, generate_only):
     Args:
         plugin_config: Plugin config file used for building plugin.
         upload_artifact: The file to which output of build  is written to.
+        generate_only: Only generate python classes from schema definitions.
     """
     logger.debug(
         'Build parameters include plugin_config: %s, upload_artifact: %s,'
@@ -47,9 +48,15 @@ def build(plugin_config, upload_artifact, generate_only):
     plugin_config_content = plugin_util.read_plugin_config_file(plugin_config)
     logger.debug('plugin config file content is : %s', plugin_config_content)
     plugin_util.validate_plugin_config_content(plugin_config_content)
+    # Resolve the paths for source directory and schema file
+    src_dir = plugin_util.get_src_dir_path(plugin_config,
+                                           plugin_config_content['srcDir'])
+    logger.debug('Source directory path resolved is %s', src_dir)
+    schema_file = plugin_util.get_schema_file_path(
+        plugin_config, plugin_config_content['schemaFile'])
     # Read schemas from the file provided in the config and validate them
-    logger.info('Reading schemas from %s', plugin_config_content['schemaFile'])
-    schemas = plugin_util.read_schema_file(plugin_config_content['schemaFile'])
+    logger.info('Reading schemas from %s', schema_file)
+    schemas = plugin_util.read_schema_file(schema_file)
     logger.debug('schemas found: %s', schemas)
     plugin_util.validate_schemas(schemas)
 
@@ -57,8 +64,7 @@ def build(plugin_config, upload_artifact, generate_only):
     # Call directly into codegen to generate the python classes and make sure
     # the ones we zip up are up to date with the schemas.
     #
-    codegen.generate_python(plugin_config_content['prettyName'],
-                            plugin_config_content['srcDir'],
+    codegen.generate_python(plugin_config_content['prettyName'], src_dir,
                             os.path.dirname(plugin_config), schemas)
 
     if generate_only:
@@ -70,7 +76,8 @@ def build(plugin_config, upload_artifact, generate_only):
         return
 
     # Prepare the output artifact.
-    plugin_output = prepare_upload_artifact(plugin_config_content, schemas)
+    plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
+                                            schemas)
 
     #
     # Add empty strings for plugin operations for now as API expects them.
@@ -83,7 +90,7 @@ def build(plugin_config, upload_artifact, generate_only):
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
 
-def prepare_upload_artifact(plugin_config_content, schemas):
+def prepare_upload_artifact(plugin_config_content, src_dir, schemas):
     #
     # This is the output dictionary that will be written
     # to the upload_artifact.
@@ -113,7 +120,7 @@ def prepare_upload_artifact(plugin_config_content, schemas):
         'engineApi':
         ENGINE_API,
         'sourceCode':
-        zip_and_encode_source_files(plugin_config_content['srcDir']),
+        zip_and_encode_source_files(src_dir),
         'virtualSourceDefinition': {
             'type': VIRTUAL_SOURCE_TYPE,
             'parameters': schemas['virtualSourceDefinition']
@@ -250,7 +257,12 @@ def zip_and_encode_source_files(source_code_dir):
     cwd = os.getcwd()
     try:
         os.chdir(source_code_dir)
-        compileall.compile_dir(source_code_dir)
+        ret_val = compileall.compile_dir(
+            source_code_dir, force=True, quiet=True)
+        if ret_val == 0:
+            raise exceptions.UserError(
+                'Failed to compile source code in the directory {}.'.format(
+                    source_code_dir))
         out_file = StringIO.StringIO()
         with zipfile.ZipFile(out_file, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for root, _, files in os.walk('.'):

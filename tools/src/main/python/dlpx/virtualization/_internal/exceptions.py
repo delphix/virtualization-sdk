@@ -44,20 +44,6 @@ class PathTypeError(UserError):
         super(PathTypeError, self).__init__(message)
 
 
-class PathNotAbsoluteError(UserError):
-    """
-    PathNotAbsoluteError gets raised when a path that should be absolute is
-    not.
-    """
-
-    def __init__(self, path):
-        self.path = path
-        message = ('The path {!r} found in the plugin config file was not'
-                   ' absolute. Change the path to be absolute and run the'
-                   ' command again.'.format(self.path))
-        super(PathNotAbsoluteError, self).__init__(message)
-
-
 class SchemaMissingRequiredFieldError(UserError):
     """
     SchemaMissingRequiredFieldError gets raised when a specific schema is

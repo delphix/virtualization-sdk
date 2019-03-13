@@ -31,7 +31,7 @@ def read_plugin_config_file(plugin_config):
     try:
         with open(plugin_config, 'rb') as f:
             try:
-                return yaml.load(f)
+                return yaml.safe_load(f)
             except yaml.YAMLError as err:
                 if hasattr(err, 'problem_mark'):
                     mark = err.problem_mark
@@ -106,28 +106,33 @@ def validate_plugin_config_content(plugin_config_content):
             ' as it is the only supported option now.'.format(
                 plugin_config_content['language'], LANGUAGE_DEFAULT))
 
-    #
-    # Lastly, validate that both the srcDir and schemaFile values are absolute
-    # paths and they are the correct type (file vs dir) and that they actually
-    # exist.
-    #
-    src_dir = plugin_config_content['srcDir']
-    schema_file = plugin_config_content['schemaFile']
 
+def get_src_dir_path(plugin_config, src_dir):
+    """Get the absolute path if the srcDir provided is relative path and
+    validate that srcDir is a valid directory and that it exists.
+    """
     if not os.path.isabs(src_dir):
-        raise exceptions.PathNotAbsoluteError(src_dir)
-    if not os.path.isabs(schema_file):
-        raise exceptions.PathNotAbsoluteError(schema_file)
+        src_dir = os.path.join(os.path.dirname(plugin_config), src_dir)
 
     if not os.path.exists(src_dir):
         raise exceptions.PathDoesNotExistError(src_dir)
-    if not os.path.exists(schema_file):
-        raise exceptions.PathDoesNotExistError(schema_file)
-
     if not os.path.isdir(src_dir):
         raise exceptions.PathTypeError(src_dir, 'directory')
+    return src_dir
+
+
+def get_schema_file_path(plugin_config, schema_file):
+    """Get the absolute path if schemaFile is a relative path and
+     validate that it is a valid file and that it exists.
+    """
+    if not os.path.isabs(schema_file):
+        schema_file = os.path.join(os.path.dirname(plugin_config), schema_file)
+
+    if not os.path.exists(schema_file):
+        raise exceptions.PathDoesNotExistError(schema_file)
     if not os.path.isfile(schema_file):
         raise exceptions.PathTypeError(schema_file, 'file')
+    return schema_file
 
 
 def validate_schemas(schemas):

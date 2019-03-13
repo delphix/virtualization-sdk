@@ -132,36 +132,6 @@ class TestPluginUtil:
         assert not mock_generate_python.called
 
     @staticmethod
-    @pytest.mark.parametrize('src_dir', ['src'])
-    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_src_dir_not_abs(mock_generate_python, plugin_config_file,
-                                    artifact_file):
-        with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
-
-        message = err_info.value.message
-        assert message == ("The path 'src' found in the plugin config file"
-                           " was not absolute. Change the path to be absolute"
-                           " and run the command again.")
-
-        assert not mock_generate_python.called
-
-    @staticmethod
-    @pytest.mark.parametrize('schema_file', ['schema.json'])
-    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_schema_file_not_abs(mock_generate_python,
-                                        plugin_config_file, artifact_file):
-        with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
-
-        message = err_info.value.message
-        assert message == ("The path 'schema.json' found in the plugin config"
-                           " file was not absolute. Change the path to be"
-                           " absolute and run the command again.")
-
-        assert not mock_generate_python.called
-
-    @staticmethod
     @pytest.mark.parametrize('src_dir', ['/not/a/real/dir/src'])
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     def test_plugin_no_src_dir(mock_generate_python, plugin_config_file,
