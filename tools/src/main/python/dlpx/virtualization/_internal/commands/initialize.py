@@ -106,7 +106,8 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         with open(config_file_path, 'w+') as f:
             config = _get_default_plugin_config(
                 plugin_name, ingestion_strategy, pretty_name,
-                DEFAULT_ENTRY_POINT, src_dir_path, schema_file_path)
+                DEFAULT_ENTRY_POINT, DEFAULT_SRC_DIRECTORY,
+                DEFAULT_SCHEMA_FILE)
             yaml.dump(config, f, default_flow_style=False)
 
         #

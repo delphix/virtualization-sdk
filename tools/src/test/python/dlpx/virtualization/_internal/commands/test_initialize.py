@@ -42,13 +42,12 @@ class TestInitialize:
         assert config['name'] == plugin_name
         assert config['prettyName'] == plugin_pretty_name
         assert config['entryPoint'] == init.DEFAULT_ENTRY_POINT
-        assert config['srcDir'] == os.path.join(tmpdir.strpath,
-                                                init.DEFAULT_SRC_DIRECTORY)
-        assert config['schemaFile'] == os.path.join(tmpdir.strpath,
-                                                    init.DEFAULT_SCHEMA_FILE)
+        assert config['srcDir'] == init.DEFAULT_SRC_DIRECTORY
+        assert config['schemaFile'] == init.DEFAULT_SCHEMA_FILE
 
         # Validate the schema file is identical to the template.
-        with open(config['schemaFile'], 'r') as f:
+        schema_file_path = os.path.join(tmpdir.strpath, config['schemaFile'])
+        with open(schema_file_path, 'r') as f:
             schema = json.load(f)
             assert schema == schema_template
 
@@ -57,7 +56,9 @@ class TestInitialize:
         entry_file = entry_module + '.py'
 
         # Validate the entry file is identical to the template.
-        with open(os.path.join(config['srcDir'], entry_file), 'r') as f:
+        entry_file_path = os.path.join(tmpdir.strpath, config['srcDir'],
+                                       entry_file)
+        with open(entry_file_path, 'r') as f:
             contents = f.read()
             assert contents == entry_point_template
 

@@ -266,6 +266,27 @@ class TestBuildCli:
 class TestUploadCli:
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
+    def test_default_params(mock_upload, artifact_file):
+        engine = 'engine'
+        user = 'admin'
+        password = 'password'
+
+        cwd = os.getcwd()
+        try:
+            os.chdir(os.path.dirname(artifact_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, [
+                'upload', '-e', engine, '-u', user, '--password', password
+            ])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_upload.assert_called_once_with(engine, user, artifact_file,
+                                            password)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
     def test_valid_params(mock_upload, artifact_file):
         engine = 'engine'
         user = 'admin'

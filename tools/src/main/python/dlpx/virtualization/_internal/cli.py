@@ -183,6 +183,8 @@ def build(plugin_config, upload_artifact, generate_only):
 @click.option(
     '-a',
     '--upload-artifact',
+    default='artifact.json',
+    show_default=True,
     type=click.Path(
         exists=True,
         file_okay=True,
