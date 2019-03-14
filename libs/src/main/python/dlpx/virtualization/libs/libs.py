@@ -24,7 +24,7 @@ of a lib operation.
 
 """
 from dlpx.virtualization import libs_pb2
-from dlpx.virtualization.internal import libs as internal_libs
+
 
 __all__ = [
     "run_bash",
@@ -54,6 +54,10 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   Returns:
     RunBashResponse: The return value of run_bash operation.
   """
+
+  # Since this import only resolves at runtime, we keep it in the function scope to allow unit testing of this module.
+  from dlpx.virtualization._engine import libs as internal_libs
+
   if variables is None:
     variables = {}
   run_bash_request = libs_pb2.RunBashRequest()
@@ -81,6 +85,9 @@ def run_sync(remote_connection, source_directory, rsync_user=None,
     exclude_paths (list of str): Paths to be excluded.
     sym_links_to_follow (list of str): Sym links to follow if any.
   """
+
+  # Since this import only resolves at runtime, we keep it in the function scope to allow unit testing of this module.
+  from dlpx.virtualization._engine import libs as internal_libs
 
   run_sync_request = libs_pb2.RunSyncRequest()
   run_sync_request.remote_connection.CopyFrom(remote_connection)
@@ -115,6 +122,10 @@ def run_powershell(remote_connection, command, variables=None):
   Returns:
     RunPowerShellResponse: The return value of run_powershell operation.
   """
+
+  # Since this import only resolves at runtime, we keep it in the function scope to allow unit testing of this module.
+  from dlpx.virtualization._engine import libs as internal_libs
+
   if variables is None:
     variables = {}
   run_powershell_request = libs_pb2.RunPowerShellRequest()
@@ -144,6 +155,10 @@ def run_expect(remote_connection, command, variables=None):
     command (str): Expect(TCL) command to run.
     variables (dict): Environment variables to set before running the command.
   """
+
+  # Since this import only resolves at runtime, we keep it in the function scope to allow unit testing of this module.
+  from dlpx.virtualization._engine import libs as internal_libs
+
   if variables is None:
     variables = {}
   run_expect_request = libs_pb2.RunExpectRequest()

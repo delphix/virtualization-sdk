@@ -45,6 +45,7 @@ message DirectSource {
 message SingleEntireMount {
   RemoteEnvironment remote_environment = 1;
   string mount_path = 2;
+  string shared_path = 3;
 }
 
 // Stuff that can optionally mount only a subset of the ZFS filesystem

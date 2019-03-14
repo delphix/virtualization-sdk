@@ -236,7 +236,7 @@ message StagedMountSpecResponse {
 message ConfigureRequest {
   com.delphix.virtualization.common.Repository repository = 1;
   com.delphix.virtualization.common.Snapshot snapshot = 2;
-  com.delphix.virtualization.common.VirtualSource source = 3;
+  com.delphix.virtualization.common.VirtualSource virtual_source = 3;
 }
 
 message ConfigureResult {

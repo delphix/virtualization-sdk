@@ -275,9 +275,9 @@ class TestUploadCli:
         try:
             os.chdir(os.path.dirname(artifact_file))
             runner = click_testing.CliRunner()
-            result = runner.invoke(cli.delphix_sdk, [
-                'upload', '-e', engine, '-u', user, '--password', password
-            ])
+            result = runner.invoke(
+                cli.delphix_sdk,
+                ['upload', '-e', engine, '-u', user, '--password', password])
         finally:
             os.chdir(cwd)
 

@@ -186,7 +186,7 @@ dlpxPython {
 }
 
 task "testDelphixBin_python2.7"(type: Exec) {
-  executable "${buildDir}/install-test-venvs/python2.7/bin/delphix"
+  executable "${buildDir}/install-test-venvs/python2.7/bin/dvp"
   args "--help"
 
   dependsOn "testInstallation_python2.7"

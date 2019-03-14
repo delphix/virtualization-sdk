@@ -16,6 +16,7 @@ mkdir -p ${JAR_DIRECTORY}
 cp bin/six.py ${JAR_DIRECTORY}
 cp -r bin/google ${JAR_DIRECTORY}
 cp -r bin/enum ${JAR_DIRECTORY}
+cp bin/typing.py ${JAR_DIRECTORY}
 
 mkdir -p ${JAR_DIRECTORY}/dlpx/virtualization/
 touch ${JAR_DIRECTORY}/dlpx/__init__.py
@@ -35,12 +36,13 @@ echo "Pre-compiling the Python Virtualization Platform protobuf module..."
 
 # The command below assumes that there's "python" on the PATH and it resolves to Python 2.7 (CPython).
 java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m py_compile dlpx/virtualization/platform_pb2.py
+java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m py_compile dlpx/virtualization/libs_pb2.py
 
 echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java
 
-rsync -av --progress ./../platform/src/main/python/dlpx/virtualization/platform/ dlpx/virtualization/ --exclude __init__.py
-rsync -av --progress ./../libs/src/main/python/dlpx/virtualization/libs/ dlpx/virtualization/ --exclude __init__.py
+rsync -av --progress ./../platform/src/main/python/dlpx/ dlpx/
+rsync -av --progress ./../libs/src/main/python/dlpx/ dlpx/
 rm -r bin
 
 echo "Creating a Virtualization SDK jar..."

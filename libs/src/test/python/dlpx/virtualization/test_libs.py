@@ -33,7 +33,7 @@ class TestLibs:
                   expected_remote_connection.environment.reference)
           return expected_run_bash_response
 
-      with mock.patch("dlpx.virtualization.internal.libs.run_bash",
+      with mock.patch("dlpx.virtualization._engine.libs.run_bash",
                       side_effect=mock_run_bash, create=True):
 
           actual_run_bash_response = libs.run_bash(expected_remote_connection, expected_command, expected_variables,
@@ -65,7 +65,7 @@ class TestLibs:
                   expected_remote_connection.environment.reference)
           return expected_run_powershell_response
 
-      with mock.patch("dlpx.virtualization.internal.libs.run_powershell",
+      with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
                       side_effect=mock_run_powershell, create=True):
           actual_run_powershell_response = libs.run_powershell(expected_remote_connection,
                                                                   expected_command, expected_variables)
@@ -99,7 +99,7 @@ class TestLibs:
 
           return expected_run_sync_response
 
-      with mock.patch("dlpx.virtualization.internal.libs.run_sync",
+      with mock.patch("dlpx.virtualization._engine.libs.run_sync",
                       side_effect=mock_run_sync, create=True):
           actual_runsync_response = libs.run_sync(expected_remote_connection, expected_source_directory,
                                                   expected_rsync_user, expected_exclude_paths,
@@ -125,7 +125,7 @@ class TestLibs:
                   expected_remote_connection.environment.reference)
           return expected_run_expect_response
 
-      with mock.patch("dlpx.virtualization.internal.libs.run_expect",
+      with mock.patch("dlpx.virtualization._engine.libs.run_expect",
                       side_effect=mock_run_expect, create=True):
           actual_run_expect_response = libs.run_expect(expected_remote_connection,
                                                        expected_command, expected_variables)
