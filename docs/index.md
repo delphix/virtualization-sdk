@@ -26,7 +26,7 @@ When you develop a plugin, you enable end users to use your dataset type just th
 
 We recommend that you read through the first few sections of this documentation. As you read, the docs will walk you through how to get setup for development, and how to develop, build, and deploy your first plugin.
 
-First, follow the Getting Started With the SDK **TODO: link to this doc when it is done** documentation. When you finish with this, you will have a full plugin development environment, and you'll be ready to start development.
+First, follow the [Getting Started](Getting_Started) documentation to setup the SDK. When you finish with this, you will have a full plugin development environment, and you'll be ready to start development.
 
 Second, follow the [Your First Plugin](/Your_First_Plugin) documentation. This is a step-by-step tutorial in which you will develop a very simple plugin. This first plugin is intended mainly as a way to learn the concepts and techniques you'll need to develop your own real plugins later. Nevertheless, this first plugin is not useless -- you will really be able to virtualize simple datasets with it.
 

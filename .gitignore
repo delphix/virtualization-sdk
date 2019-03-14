@@ -1,6 +1,7 @@
 .Python
-docs/.DS_Store
+**/.DS_Store
 bin/
 include/
 lib/
 site/
+.venv/
