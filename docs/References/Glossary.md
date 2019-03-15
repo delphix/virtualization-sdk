@@ -1,8 +1,14 @@
 # Glossary
 
 
+## Artifact
+A single file that is the result of a [build](#building). It is this artifact which is distributed to users, and which is installed onto engines.
+
 ## Automatic Discovery
 [Discovery](#discovery) which is done by the Delphix Engine (with help from a plugin) itself, with no need for the end user to provide any information.
+
+## Building
+The process of creating an [artifact](#artifact) from the collection of files that make up the plugin's source code.
 
 ## Callback
 A Python function that is provided by the Delphix Engine. Plugins use callbacks to request that the Delphix Engine do some task on behalf of the plugin. For example, running a Bash command on an environment, or making an log entry.
@@ -33,6 +39,9 @@ The process by which the Delphix Engine connects a new [dSource](#dsource) to a 
 
 ## Logging
 Logging is when a plugin writes out some human-readable information to a log file. The log file can then be examined, typically in order to debug a problem with the plugin.
+
+## Manifest
+A [YAML](#YAML) file containing a list of plugin properties: What is the plugin's name? What version of the plugin is this? Etc.
 
 ## Manual Discovery
 [Discovery](#discovery) which the end user does by manually entering the necessary information into the Delphix Engine.
@@ -97,3 +106,6 @@ A dataset that has been cloned from a snapshot, and whose data is stored on the 
 
 ## Virtual Source
 An object on the Delphix Engine that holds information related to a [virtual dataset](#virtual-dataset).
+
+## YAML
+YAML is a simple language often used for configuration files. Plugins define their [manifest](#manifest) using YAML.
