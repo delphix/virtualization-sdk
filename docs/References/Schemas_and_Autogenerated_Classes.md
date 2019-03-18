@@ -39,7 +39,7 @@ class RepositoryDefinition:
 > To use the class:
 
 ```python
-from generated import RepositoryDefinition
+from generated.defintions import RepositoryDefinition
 
 repository = RepositoryDefinition()
 repository.name = "name"
@@ -82,7 +82,7 @@ class SourceConfigDefinition:
 
 ```python
 import dlpx
-from generated import SourceConfigDefinition
+from generated.defintions import SourceConfigDefinition
 
 source_config = SourceConfigDefinition()
 source_config.name = "name"
@@ -120,7 +120,7 @@ class LinkedSourceDefinition:
 > To use the class:
 
 ```python
-from generated import LinkedSourceDefinition
+from generated.defintions import LinkedSourceDefinition
 
 source = LinkedSourceDefinition("name", 1000)
 name = source.name
@@ -158,7 +158,7 @@ class VirtualSourceDefinition:
 > To use the class:
 
 ```python
-from generated import VirtualSourceDefinition
+from generated.defintions import VirtualSourceDefinition
 
 source = VirtualSourceDefinition("name", 1000)
 name = source.name
@@ -199,7 +199,7 @@ class VirtualSourceDefinition:
 > To use the class:
 
 ```python
-from generated import SnapshotDefinition
+from generated.defintions import SnapshotDefinition
 
 snapshot = SnapshotDefinition()
 snapshot.version = "1.2.3"

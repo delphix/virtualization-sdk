@@ -5,15 +5,14 @@ title: Virtualization SDK
 # Decorators
 
 The Virtualization SDK exposes decorators to be able to annotate functions that correspond to each [Plugin Operation](Plugin_Operations.md). 
-In the example below, it first creates a `plugin` object by invoking `platform.plugin()`, that can then be used to tag plugin operations.
+In the example below, it first instantiates a `Plugin()` object, that can then be used to tag plugin operations.
 
 
 ```python
-
-from dlpx.virtualization import platform
+from dlpx.virtualization.platform import Plugin
 
 // Initialize a plugin object
-plugin = platform.plugin()
+plugin = Plugin()
 
 @plugin.virtual_source.start()
 def start(virtual_source, repository, source_config):
