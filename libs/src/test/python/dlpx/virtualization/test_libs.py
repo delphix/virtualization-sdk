@@ -131,3 +131,54 @@ class TestLibs:
                                                        expected_command, expected_variables)
 
           assert actual_run_expect_response is None
+
+  @staticmethod
+  def test_log_debug():
+      expected_log_debug_response = libs_pb2.LogResponse()
+
+      expected_message = "message"
+      expected_level = libs_pb2.LogRequest.DEBUG
+
+      def mock_log_debug(actual_log_debug_request):
+          assert actual_log_debug_request.message == expected_message
+          assert actual_log_debug_request.level == expected_level
+
+      with mock.patch("dlpx.virtualization._engine.libs.log",
+                      side_effect=mock_log_debug, create=True):
+          actual_log_debug_response = libs.log_debug(expected_message)
+
+          assert actual_log_debug_response is None
+
+  @staticmethod
+  def test_log_info():
+      expected_log_info_response = libs_pb2.LogResponse()
+
+      expected_message = "message"
+      expected_level = libs_pb2.LogRequest.INFO
+
+      def mock_log_info(actual_log_info_request):
+          assert actual_log_info_request.message == expected_message
+          assert actual_log_info_request.level == expected_level
+
+      with mock.patch("dlpx.virtualization._engine.libs.log",
+                      side_effect=mock_log_info, create=True):
+          actual_log_info_response = libs.log_info(expected_message)
+
+          assert actual_log_info_response is None
+
+  @staticmethod
+  def test_log_error():
+      expected_log_error_response = libs_pb2.LogResponse()
+
+      expected_message = "message"
+      expected_level = libs_pb2.LogRequest.ERROR
+
+      def mock_log_error(actual_log_error_request):
+          assert actual_log_error_request.message == expected_message
+          assert actual_log_error_request.level == expected_level
+
+      with mock.patch("dlpx.virtualization._engine.libs.log",
+                      side_effect=mock_log_error, create=True):
+          actual_log_error_response = libs.log_error(expected_message)
+
+          assert actual_log_error_response is None

@@ -21,3 +21,7 @@ def run_powershell(run_powershell_request):
 
 def run_expect(run_expect_request):
     pass
+
+
+def log(log_debug_request):
+    pass

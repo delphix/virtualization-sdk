@@ -30,7 +30,11 @@ __all__ = [
     "run_bash",
     "run_sync",
     "run_powershell",
-    "run_expect"]
+    "run_expect",
+    "log_debug",
+    "log_info",
+    "log_error"]
+
 
 def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   """run_bash operation wrapper.
@@ -168,3 +172,58 @@ def run_expect(remote_connection, command, variables=None):
     run_expect_request.variables[variable] = value
 
   internal_libs.run_expect(run_expect_request)
+
+
+def log_request(message , log_level):
+  """
+  This is a helper method to set the log level for the log function.
+  """
+  from dlpx.virtualization._engine import libs as internal_libs
+
+  log_request = libs_pb2.LogRequest()
+  log_request.message = message
+  log_request.level = log_level
+
+  internal_libs.log(log_request)
+
+
+def log_debug(message):
+  """log_debug operation wrapper.
+
+  The log_debug function performs a logging operation so that a plugin developer
+  can include log statements in their plugin code. This function will log the message
+  at DEBUG log level.
+
+  Args:
+    message (str) : message passed to the log function.
+  """
+
+  log_request(message, libs_pb2.LogRequest.DEBUG)
+
+
+def log_info(message):
+  """log_info operation wrapper.
+
+  The log_info function performs a logging operation so that a plugin developer
+  can include log statements in their plugin code. This function will log the message
+  at INFO log level.
+
+  Args:
+    message (str) : message passed to the log function.
+  """
+
+  log_request(message, libs_pb2.LogRequest.INFO)
+
+
+def log_error(message):
+  """log_error operation wrapper.
+
+  The log_error function performs a logging operation so that a plugin developer
+  can include log statements in their plugin code. This function will log the message
+  at ERROR log level.
+
+  Args:
+    message (str) : message passed to the log function.
+  """
+
+  log_request(message, libs_pb2.LogRequest.ERROR)

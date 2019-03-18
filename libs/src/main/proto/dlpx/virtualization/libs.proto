@@ -53,3 +53,15 @@ message RunExpectRequest {
 }
 
 message RunExpectResponse { }
+
+message LogRequest {
+  string message = 1;
+  enum LogLevel {
+    DEBUG = 0;
+    INFO = 1;
+    ERROR = 2;
+  }
+  LogLevel level = 2;
+}
+
+message LogResponse { }
