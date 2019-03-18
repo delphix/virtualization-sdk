@@ -81,7 +81,6 @@ class SourceConfigDefinition:
 > To use the class:
 
 ```python
-import dlpx
 from generated.defintions import SourceConfigDefinition
 
 source_config = SourceConfigDefinition()
