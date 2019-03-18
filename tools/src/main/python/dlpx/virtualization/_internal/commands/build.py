@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # This is hard-coded to the delphix web service api version
 # against which the plugin is built. This enables backwards compatibility
 # of plugins to work for future versions of delphix engine.
-ENGINE_API = {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 0}
+ENGINE_API = {'type': 'APIVersion', 'major': 1, 'minor': 10, 'micro': 4}
 
 TYPE = 'Toolkit'
 LOCALE_DEFAULT = 'en-us'
