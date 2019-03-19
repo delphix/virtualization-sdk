@@ -1,5 +1,5 @@
 # Getting Started
-The Virtualization SDK is a Python package on PyPi (LINK). It is installed in your local development environment and is needed to build and upload a plugin. The SDK consists of three parts: the platform and libs libraries and a CLI. The platform and libs libraries expose objects and methods needed to develop a plugin. The CLI is used to build and upload a plugin. 
+The Virtualization SDK is a Python package on [PyPI](https://pypi.org/user/delphix/). It is installed in your local development environment and is needed to build and upload a plugin. The SDK consists of three parts: the platform and libs libraries and a CLI. The platform and libs libraries expose objects and methods needed to develop a plugin. The CLI is used to build and upload a plugin. 
 
 ## Requirements
 
@@ -14,7 +14,7 @@ $ pip install dvp
 ```
 
 !!! note "NOTE"
-	 It is _highly_ recommended to develop plugins inside of a virtual environment. To learn more about virtual environments, refer to virtualenv's [documentation](https://virtualenv.pypa.io/en/latest/).
+	 It is _highly_ recommended to develop plugins inside of a virtual environment. To learn more about virtual environments, refer to [Virtualenv's documentation](https://virtualenv.pypa.io/en/latest/).
 	 
 	 The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:
 	 
@@ -44,7 +44,7 @@ This will generate an upload artifact at `<artifact_file>`. That file can then b
 $ dvp upload -a <artifact_file> -e <delphix_engine_address> -u <delphix_admin_user>
 ```
 
-This will prompt you for the Delphix user's password.
+This will prompt you for the Delphix Engine user's password.
 
 ## FAQs?
 

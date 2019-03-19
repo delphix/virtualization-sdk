@@ -75,10 +75,10 @@ Represents a snapshot of a dataset and its associated metadata represented by th
 A point-in-time read-only copy of a dataset.
 
 ## Source Config
-A collection of information that the Delphix Engine needs to interact with a dataset (whether [linked](#linked-dataset) or [virtual](#virtual-dataset) on an environment.
+A collection of information that the Delphix Engine needs to interact with a dataset (whether [linked](#linked-dataset) or [virtual](#virtual-dataset) on an [environment](#environment).
 
 ## Source Environment
-An environment containing data that is ingested by the Delphix Engine.
+An [environment](#environment) containing data that is ingested by the Delphix Engine.
 
 ## Staged Linking
 A strategy where a [staging environment](#staging-environment) is used to coordinate the ingestion of data into a [dsource](#dsource).
