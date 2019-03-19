@@ -1,14 +1,19 @@
 # Initial Setup
 
-Before we actually start writing plugin code, we'll need to some quick setup work. We'll be using the `dvp` tool, which is described in the [Getting Started](/Getting_Started) section.
+Before we actually start writing plugin code, we'll need to do some quick setup work. We'll be using the `dvp` tool, which is described in the [Getting Started](/Getting_Started) section.
 
 The quoted examples in this section assume you're working on a Unix-like system (TODO: what development environments do we support? Should we call out Windows as special?)
 
 ## Sanity check
 
-First a reminder that it's highly recommended that you develop your plugin in a "virtual environment" (TODO: Link to best practices and/or glossary).
+!!! note "NOTE"
+	 It is _highly_ recommended to develop plugins inside of a virtual environment. To learn more about virtual environments, refer to [Virtualenv's documentation](https://virtualenv.pypa.io/en/latest/).
+	 
+	 The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:
+	 
+	 ```virtualenv -p /path/to/python2.7/binary ENV```
 
-Next, make sure you have a Delphix Engine ready to use, as described in the [Prerequisites](Overview/#prerequisites) section on the previous page.
+Make sure you have a Delphix Engine ready to use, as described in the [Prerequisites](Overview/#prerequisites) section on the previous page.
 
 Finally, let's quickly make sure that `dvp` is working! Type `dvp -h` and you should see something like the following:
 ```
@@ -34,7 +39,7 @@ Commands:
 
 If this looks good, you're ready to begin!
 
-If, instead, you see something like the following, you should go back to the [Getting Started](/Getting_Started) and make sure you have everything set up correctly before continuing.
+If, instead, you see something like the following, go back to the [Getting Started](/Getting_Started) and make sure you set everything up correctly before continuing.
 ```
 (venv)$ dvp
 -bash: dvp: command not found
@@ -42,7 +47,7 @@ If, instead, you see something like the following, you should go back to the [Ge
 
 ## Creating A Bare Plugin
 
-To start, we'll create a new directory in which our new plugin code will live.
+To start, we'll create a new directory where our new plugin code will live.
 ```
 (venv)$ mkdir first_plugin
 (venv)$ cd first_plugin
@@ -54,7 +59,7 @@ Now that we're in our new plugin directory, we can use the `dvp` tool to create 
 (venv) first_plugin$ dvp init -n first_plugin
 ```
 
-The `-n` argument here means "plugin name". We're using the name `first_plugin`.
+The `-n` argument here means "plugin name." We're using the name `first_plugin`.
 
 After running this command, you should see that some files have been created for you:
 
@@ -72,7 +77,7 @@ File | Description
 `src/plugin_runner.py` | A Python file which will eventually contain code that handles plugin [operations](/References/Glossary/#operation)
 
 
-Feel free to open these files up in your editor/IDE, and take a look at them. They will not have a lot of content at this point, but we'll be adding to them as we go through the next few pages.
+Open these files up in your editor/IDE and take a look at them. They will not have a lot of content at this point, but we'll be adding to them as we go through the next few pages.
 
 
 ## Building The New Plugin
@@ -91,7 +96,7 @@ artifact.json		plugin_config.yml	schema.json		src
 
 ## Uploading The New Plugin
 
-Now, we can upload the artifact onto our Delphix Engine. Again, we'll use the `dvp` tool.
+Now we can upload the artifact onto our Delphix Engine. Again, we'll use the `dvp` tool.
 
 ```
 (venv) first_plugin$ dvp upload -e engine.company.com -u admin
@@ -101,6 +106,6 @@ The `-e` argument specifies the engine on which to install the plugin, and the `
 
 You will be prompted for a password.
 
-Once the upload is finished, you can verify in the Delphix Engine UI (Under "Manage/Toolkits") that your new plugin has in fact been installed.
+Once the upload is finished, you can go to Manage > Toolkits in the Delphix Engine UI to verify that your new plugin has in fact been installed.
 
 ![Screenshot](images/PostUpload.png)

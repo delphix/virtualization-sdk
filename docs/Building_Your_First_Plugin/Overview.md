@@ -44,12 +44,12 @@ The manifest is where the plugin describes itself to the Delphix Engine. What is
 The plugin will need to provide "operations". These are Python functions, each of which implement one small piece of functionality. This is how the plugin can customize Delphix behavior to work with a particular kind of dataset.
 One operation will handle setting up a newly-configured virtual dataset. One operation will handle copying data from a source environment, and so on.
 
-Later in this tutorial we will cover the specific examples we need for our first plugin. See (link to reference) for full details on which operations are available, which are required, what each one is required to do, etc.. Also see (link to advanced) for a more-full featured example which uses many more operations.
+Later in this tutorial we will cover the specific examples we need for our first plugin. See [Plugin Operations](../References/Plugin_Operations.md) for full details on which operations are available, which are required, what each one is required to do, etc.. Also see (link to advanced) for a more-full featured example which uses many more operations.
 
 ### Datatype Definitions
 As part of normal operation, a plugin will need to generate and access certain pieces of information in order to do its job. For example, a plugin that works with Postgres might need to know which port number to connect to, or which credentials to use, etc.
 
-Different plugins will have vastly different needs for what information is required here, and the Delphix Engine needs to know the details. Therefore, a plugin can define its own datatypes, which it does by providing "schemas". We'll go into more detail on this later in the tutorial, and you can see full details here (link to reference).
+Different plugins will have vastly different needs for what information is required here, and the Delphix Engine needs to know the details. Therefore, a plugin can define its own datatypes, which it does by providing [schemas](../References/Schemas.md). We'll go into more detail on this later in the tutorial as well.
 
 ## Prerequisites
 In order to complete the following tutorial, you'll need to make sure you have the following set up and ready to go:
