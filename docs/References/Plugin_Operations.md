@@ -4,6 +4,25 @@ title: Virtualization SDK
 
 # Plugin Operations
 
+## Summary
+
+Plugin Operation | Decorator | Required | Delphix Engine Operations
+---------------- | --------- | -------- | -------------------------
+[Repository<br>Discovery](#repository-discovery) | `discovery.repository()` | Yes | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
+[Source Config<br>Discovery](#source--config-discovery) | `discovery.source_config()` | Yes | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
+[Direct Linked Source<br>Pre-Snashot](#direct-linked-source-pre-snapshot) | `linked.pre_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Direct Linked Source<br>Post-Snashot](#direct-linked-source-post-snapshot) | `linked.post_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Pre-Snashot](#staged-linked-source-pre-snapshot) | `linked.pre_snapshot()` | No | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Post-Snashot](#staged-linked-source-post-snapshot) | `linked.post_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Start-Staging](#staged-linked-source-start-staging) | `linked.start_staging()` | No | [Linked Source Enable](Workflows.md#linked-source-enable)
+[Staged Linked Source<br>Stop-Staging](#staged-linked-source-stop-staging) | `linked.stop_staging()` | No | [Linked Source Disable](Workflows.md#linked-source-disable)<br>[Linked Source Delete](Workflows.md#linked-source-delete)
+[Staged Linked Source<br>Status](#staged-linked-source-status) | `linked.status()` | No | N/A
+[Staged Linked Source Worker](#staged-linked-source-worker) | `linked.worker()` | No | N/A
+[Staged Linked Source<br>Mount Specification](#staged-linked-source-mount-specification) | `linked.mount_specification()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sybc)<br>[Linked Source Enable](Workflows.md#linked-source-enable)
+
+
+
+
 ## Repository Discovery
 
 Discovers the set of [repositories](Glossary.md#repository) for a plugin on an [environment](Glossary.md#environment). For a DBMS, this can correspond to the set of binaries installed on a Unix host.
