@@ -352,26 +352,25 @@ class LinkedOperations(object):
            if successful or PluginErrorResult in case of an error.
         """
 
-        staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-        mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                        mount_path=request.staged_source.staged_mount.mount_path,
-                        shared_path=request.staged_source.staged_mount.shared_path)
-        staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
+        # Presnapshot implementations are not required (although they are very common)
+        if self.pre_snapshot_impl is not None:
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
+            mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
+                            mount_path=request.staged_source.staged_mount.mount_path,
+                            shared_path=request.staged_source.staged_mount.shared_path)
+            staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
+                                           connection=request.staged_source.connection,
+                                           parameters=staged_source_definition,
+                                           mount=mount)
 
-        if not self.pre_snapshot_impl:
-                raise RuntimeError("An implementation for the linked.pre_snapshot() operation has "
-                                   "not been defined.")
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        self.pre_snapshot_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+            self.pre_snapshot_impl(
+                staged_source=staged_source,
+                repository=repository,
+                source_config=source_config)
 
         staged_pre_snapshot_response = platform_pb2.StagedPreSnapshotResponse()
         staged_pre_snapshot_response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
@@ -446,25 +445,25 @@ class LinkedOperations(object):
            StartStagingResponse: A response containing StartStagingResult
            if successful or PluginErrorResult in case of an error.
         """
-        staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-        mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                        mount_path=request.staged_source.staged_mount.mount_path,
-                        shared_path=request.staged_source.staged_mount.shared_path)
-        staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+        # startStaging is not a required operation
+        if self.start_staging_impl is not None:
+            staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
+            mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
+                            mount_path=request.staged_source.staged_mount.mount_path,
+                            shared_path=request.staged_source.staged_mount.shared_path)
+            staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
+                                           connection=request.staged_source.connection,
+                                           parameters=staged_source_definition,
+                                           mount=mount)
 
-        if not self.start_staging_impl:
-                raise RuntimeError("An implementation for the linked.start_staging() operation has "
-                                   "not been defined.")
-        self.start_staging_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+
+            self.start_staging_impl(
+                staged_source=staged_source,
+                repository=repository,
+                source_config=source_config)
 
         start_staging_response = platform_pb2.StartStagingResponse()
         start_staging_response.return_value.CopyFrom(platform_pb2.StartStagingResult())
@@ -488,26 +487,25 @@ class LinkedOperations(object):
            StopStagingResponse: A response containing StopStagingResult
            if successful or PluginErrorResult in case of an error.
         """
-        staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-        mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                        mount_path=request.staged_source.staged_mount.mount_path,
-                        shared_path=request.staged_source.staged_mount.shared_path)
-        staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+        # startStaging is not a required operation
+        if self.stop_staging_impl is not None:
+            staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
+            mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
+                            mount_path=request.staged_source.staged_mount.mount_path,
+                            shared_path=request.staged_source.staged_mount.shared_path)
+            staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
+                                           connection=request.staged_source.connection,
+                                           parameters=staged_source_definition,
+                                           mount=mount)
 
-        if not self.stop_staging_impl:
-                raise RuntimeError("An implementation for the linked.stop_staging() operation has "
-                                   "not been defined.")
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        self.stop_staging_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+            self.stop_staging_impl(
+                staged_source=staged_source,
+                repository=repository,
+                source_config=source_config)
 
         stop_staging_response = platform_pb2.StopStagingResponse()
         stop_staging_response.return_value.CopyFrom(platform_pb2.StopStagingResult())
@@ -531,6 +529,13 @@ class LinkedOperations(object):
            StagedStatusResult which has active or inactive status. In
            case of errors, response object will contain PluginErrorResult.
         """
+
+        if not self.status_impl:
+            # If no implementation is provided, the linked source is always active
+            staged_status_response = platform_pb2.StagedStatusResponse()
+            staged_status_response.return_value.status = platform_pb2.StagedStatusResult.ACTIVE
+            return staged_status_response
+
         staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
                         mount_path=request.staged_source.staged_mount.mount_path,
@@ -543,9 +548,6 @@ class LinkedOperations(object):
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        if not self.status_impl:
-                raise RuntimeError("An implementation for the linked.status() operation has "
-                                   "not been defined.")
         status = self.status_impl(
             staged_source=staged_source,
             repository=repository,
@@ -573,31 +575,30 @@ class LinkedOperations(object):
            StagedWorkerResponse: A response containing StagedWorkerResult
            if successful or PluginErrorResult in case of an error.
         """
-        staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-        mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                        mount_path=request.staged_source.staged_mount.mount_path,
-                        shared_path=request.staged_source.staged_mount.shared_path)
-        staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+        # worker is not a required operation
+        if self.worker_impl is not None:
+            staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
+            mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
+                            mount_path=request.staged_source.staged_mount.mount_path,
+                            shared_path=request.staged_source.staged_mount.shared_path)
+            staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
+                                           connection=request.staged_source.connection,
+                                           parameters=staged_source_definition,
+                                           mount=mount)
 
-        if not self.worker_impl:
-                raise RuntimeError("An implementation for the linked.worker() operation has "
-                                   "not been defined.")
-        self.worker_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+
+            self.worker_impl(
+                staged_source=staged_source,
+                repository=repository,
+                source_config=source_config)
 
         staged_worker_response = platform_pb2.StagedWorkerResponse()
         staged_worker_response.return_value.CopyFrom(platform_pb2.StagedWorkerResult())
 
         return staged_worker_response
-
 
     def _internal_mount_specification(self, request):
         """Staged Mount/Ownership Spec Wrapper for staged plugins.
@@ -618,22 +619,12 @@ class LinkedOperations(object):
         """
 
         def to_protobuf_single_mount(single_mount):
+            # Shared path is not supported for linked sources
+            assert not single_mount.shared_path
+
             single_mount_protobuf = common_pb2.SingleEntireMount()
-
-            host_protobuf = common_pb2.RemoteHost()
-            host_protobuf.name = single_mount.remote_environment.host.name
-            host_protobuf.reference = single_mount.remote_environment.host.reference
-            host_protobuf.binary_path = single_mount.remote_environment.host.binary_path
-            host_protobuf.scratch_path = single_mount.remote_environment.host.scratch_path
-
-            environment_protobuf = common_pb2.RemoteEnvironment()
-            environment_protobuf.name = single_mount.remote_environment.name
-            environment_protobuf.reference = single_mount.remote_environment.reference
-            environment_protobuf.host.CopyFrom(host_protobuf)
-
-            single_mount_protobuf.remote_environment.CopyFrom(environment_protobuf)
             single_mount_protobuf.mount_path = single_mount.mount_path
-            single_mount_protobuf.shared_path = single_mount.shared_path
+            single_mount_protobuf.remote_environment.CopyFrom(single_mount.remote_environment)
 
             return single_mount_protobuf
 
@@ -661,11 +652,20 @@ class LinkedOperations(object):
             staged_source=staged_source,
             repository=repository)
 
-        staged_mount_spec_response = platform_pb2.StagedMountSpecResponse()
+        # Only one mount is supported for linked sources
+        mountLen = len(mount_spec.mounts)
+        if mountLen != 1:
+            raise RuntimeError("Exactly one mount must be provided for staging sources. Found {}".format(mountLen))
+
         staged_mount = to_protobuf_single_mount(mount_spec.mounts[0])
+
+        staged_mount_spec_response = platform_pb2.StagedMountSpecResponse()
         staged_mount_spec_response.return_value.staged_mount.CopyFrom(staged_mount)
-        ownership_spec = to_protobuf_ownership_spec(mount_spec.ownership_specification)
-        staged_mount_spec_response.return_value.ownership_spec.CopyFrom(ownership_spec)
+
+        # Ownership spec is optional for linked sources
+        if mount_spec.ownership_specification:
+            ownership_spec = to_protobuf_ownership_spec(mount_spec.ownership_specification)
+            staged_mount_spec_response.return_value.ownership_spec.CopyFrom(ownership_spec)
 
         return staged_mount_spec_response
 
