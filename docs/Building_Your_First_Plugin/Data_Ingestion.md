@@ -132,10 +132,11 @@ Let's try it out and make sure this works!
 
 **Prerequisites**
 
- - You should already have a repository and source config set up from the previous page.
+  - You should already have a repository and source config set up from the previous page.
 
- - Set up a separate staging environment. (TODO: add instructions here)
+  - Set up a separate staging environment. (TODO: add instructions here)
 
+**Procedure**
 
 1. Go to **Manage > Environments**, select your **source** environment, and then go to the **Databases** tab. Find your **Directory Tree** repository, and your source config underneath it.
 
@@ -146,4 +147,4 @@ Let's try it out and make sure this works!
 After you have finished entering this information, the initial sync process will begin. This is what will call your pre-snapshot operation, thus copying data.
 
 !!! note "Gotcha"
-    Once you've manually created a dSource, you will not be allowed to modify your plugin's linked source schema. We will cover how to deal with this correctly later in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
+    Manually creating a dSource sets your plugin’s linked source schema in stone, and you will have to recreate the dSource in order to modify your schema. We will cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
