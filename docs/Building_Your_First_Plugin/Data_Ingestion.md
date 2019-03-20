@@ -6,7 +6,7 @@ title: Virtualization SDK
 
 ## How Does Delphix Ingest Data?
 
-As discussed in the [previous page](/References/Your_First_Plugin/Discovery), the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). This section describes how we ingest such a dataset into the Delphix Engine. It is a two-step process.
+As[previously](/References/Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
 
 ### Linking
 
@@ -14,31 +14,31 @@ The first step is called [linking](/References/Glossary/#linking). This is simpl
 
 ### Syncing
 
-Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing). This is the process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
+Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing). Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
 
-The details of how this copying is done will vary significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from:
+The details of how this is done varies significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from:
 
-With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plugin is not in charge of the data copying. Instead the Delphix Engine will directly pull raw data from the source environment, using the Unix tool `rsync` (or `robocopy` on Windows). The plugin merely provides the location of the data. This is a very simple strategy, and it is also quite limiting.
+With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plugin is not in charge of the data copying. Instead the Delphix Engine directly pulls raw data from the source environment, using the Unix tool `rsync` (or `robocopy` on Windows). The plugin merely provides the location of the data. This is a very simple strategy, and is also quite limiting.
 
-For our first plugin, we'll be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine will use NFS (or CIFS on Windows) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this NFS mount.
+For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS (or CIFS on Windows) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this NFS mount.
 
 !!! note "Gotcha"
-    Although it is not common, it is entirely possible that the staging environment is the same thing as the source environment. Be careful not to assume otherwise in your plugins.
+    Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.
 
 For more details about deciding between using a direct or a staging strategy, please see (link to best practices section).
 
 ### Our Syncing Strategy
 
-For our purposes here in this intro plugin, we'll use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We'll do this by running `scp` from our staging environment, and use user-provided credentials to connect to the source environment.
+For our purposes, we will use a simple strategy of copying files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running `scp` from our staging environment, and use user-provided credentials to connect to the source environment.
 
 For simplicity's sake, we will not bother handling the case mentioned above where the staging environment is the same as the source environment
 
 
 ## Defining Your Linked Source Data Format
 
-In order to be able to successfully do the copying required, plugins might need to get some information from the user. In our case, we will need to connect from the staging environment to the source environment using the `scp` tool. This means we will need to know a username and password.
+In order to be able to successfully do the copying required, plugins might need to get some information from the user. In our case, we need to connect from the staging environment to the source environment using the `scp` tool. This means we need to know the username and password.
 
-Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that will let them provide all the information our schema specifies.
+Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that lets them provide all the information our schema specifies.
 
 (TODO: describe where to put this schema)
 ```json
@@ -62,14 +62,14 @@ Again, we will be using a JSON schema to define the data format. The user will b
 }
 ```
 
-There is one new thing to notice about this schema, as compared with our discovery schemas. The `password` property is tagged as [`"format": "password"`](/References/Glossary/#password-property). This ensures that the Delphix Engine will take precautions like not displaying the value on-screen. For full details, see (link to reference section).
+There is one new thing to notice about this schema, as compared with our discovery schemas. The `password` property is tagged as [`"format": "password"`](/References/Glossary/#password-property). This ensures that the Delphix Engine will take precautions such as displaying the value on-screen. For full details, see (link to reference section).
 
-With this schema, the user will be required to provide a username and password as part of the linking process.
+With this schema, users are required to provide a username and password as part of the linking process.
 
 
 ## Implementing Syncing in Your Plugin
 
-As explained here (link to reference flowchart), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dsource. That means our `preSnapshot` operation has to get the NFS share into the desired state. For us, that means that's the time to do our data copy.
+As explained here (link to reference flowchart), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dSource. This means our `preSnapshot` operation has to get the NFS share into the desired state. For us, this means it is time to do our data copy.
 
 Create a file in your preferred editor (TODO: add suggested/required filename), and add the following Python code. (TODO: revisit when decorators are finalized)
 
@@ -130,17 +130,20 @@ For full details on the `run_bash` callback, and on callbacks in general, please
 
 Let's try it out and make sure this works!
 
-You should already have a respository and source config set up from the previous page.
+**Prerequisites**
 
-Next, you should set up a separate staging environment. (TODO: add instructions here)
+ - You should already have a repository and source config set up from the previous page.
 
-Go to "Manage/Environments", select your **source** environment, and then go to the "Databases" tab. Find your "Directory Tree" repository, and your source config underneath it.
+ - Set up a separate staging environment. (TODO: add instructions here)
 
-Click "Add dSource" on your source config. This will begin the linking process.
 
-You should be presented with a UI in which you will have to specify which environment you want to use for staging. You will also be asked to provide the username and password needed to connect to the source environment.
+1. Go to **Manage > Environments**, select your **source** environment, and then go to the **Databases** tab. Find your **Directory Tree** repository, and your source config underneath it.
+
+2. From your source config click **Add dSource**. This will begin the linking process.
+
+3. In the dSource wizard you will specify which environment you want to use for staging. You will also be asked to provide the username and password needed to connect to the source environment.
 
 After you have finished entering this information, the initial sync process will begin. This is what will call your pre-snapshot operation, thus copying data.
 
 !!! note "Gotcha"
-    Once you've manually created a dsource, you will not be allowed to modify your plugin's linked source schema. We'll cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's linked source schema, you'll have to first delete any dsources you've manually added.
+    Once you've manually created a dSource, you will not be allowed to modify your plugin's linked source schema. We will cover how to deal with this correctly later in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
