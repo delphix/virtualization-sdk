@@ -6,21 +6,19 @@ title: Virtualization SDK
 
 ## Summary
 
-Plugin Operation | Decorator | Required | Delphix Engine Operations
----------------- | --------- | -------- | -------------------------
-[Repository<br>Discovery](#repository-discovery) | `discovery.repository()` | Yes | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
-[Source Config<br>Discovery](#source--config-discovery) | `discovery.source_config()` | Yes | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
-[Direct Linked Source<br>Pre-Snashot](#direct-linked-source-pre-snapshot) | `linked.pre_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
-[Direct Linked Source<br>Post-Snashot](#direct-linked-source-post-snapshot) | `linked.post_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
-[Staged Linked Source<br>Pre-Snashot](#staged-linked-source-pre-snapshot) | `linked.pre_snapshot()` | No | [Linked Source Sync](Workflows.md#linked-source-sync)
-[Staged Linked Source<br>Post-Snashot](#staged-linked-source-post-snapshot) | `linked.post_snapshot()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sync)
-[Staged Linked Source<br>Start-Staging](#staged-linked-source-start-staging) | `linked.start_staging()` | No | [Linked Source Enable](Workflows.md#linked-source-enable)
-[Staged Linked Source<br>Stop-Staging](#staged-linked-source-stop-staging) | `linked.stop_staging()` | No | [Linked Source Disable](Workflows.md#linked-source-disable)<br>[Linked Source Delete](Workflows.md#linked-source-delete)
-[Staged Linked Source<br>Status](#staged-linked-source-status) | `linked.status()` | No | N/A
-[Staged Linked Source Worker](#staged-linked-source-worker) | `linked.worker()` | No | N/A
-[Staged Linked Source<br>Mount Specification](#staged-linked-source-mount-specification) | `linked.mount_specification()` | Yes | [Linked Source Sync](Workflows.md#linked-source-sybc)<br>[Linked Source Enable](Workflows.md#linked-source-enable)
-
-
+Plugin Operation | **Required** | Decorator | Delphix Engine Operations
+---------------- | -------- | --------- | -------------------------
+[Repository<br>Discovery](#repository-discovery) | **Yes** |`discovery.repository()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
+[Source Config<br>Discovery](#source--config-discovery) | **Yes** |`discovery.source_config()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br>[Environment Refresh](Workflows.md#environment-discovery-refresh)
+[Direct Linked Source<br>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **Yes** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Direct Linked Source<br>Post-Snapshot](#direct-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Pre-Snapshot](#staged-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Post-Snapshot](#staged-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Staged Linked Source<br>Start-Staging](#staged-linked-source-start-staging) | **No** | `linked.start_staging()` | [Linked Source Enable](Workflows.md#linked-source-enable)
+[Staged Linked Source<br>Stop-Staging](#staged-linked-source-stop-staging) | **No** | `linked.stop_staging()` | [Linked Source Disable](Workflows.md#linked-source-disable)<br>[Linked Source Delete](Workflows.md#linked-source-delete)
+[Staged Linked Source<br>Status](#staged-linked-source-status) | **No** |`linked.status()` | N/A
+[Staged Linked Source Worker](#staged-linked-source-worker) | **No** |`linked.worker()` | N/A
+[Staged Linked Source<br>Mount Specification](#staged-linked-source-mount-specification) | **Yes** | `linked.mount_specification()` | [Linked Source Sync](Workflows.md#linked-source-sybc)<br>[Linked Source Enable](Workflows.md#linked-source-enable)
 
 
 ## Repository Discovery
@@ -35,6 +33,10 @@ Discovers the set of [repositories](Glossary.md#repository) for a plugin on an [
 ### Signature
 
 `def repository_discovery(source_connection)`
+
+### Decorator
+
+`discovery.repository()`
 
 ### Arguments
 
@@ -91,6 +93,10 @@ Discovers the set of [source configs](Glossary.md#source-config) for a plugin fo
 
 `def source_config_discovery(source_connection)`
 
+### Decorator
+
+`discovery.source_config()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -144,6 +150,10 @@ Sets up a [dSource](Glossary.md#dsource) to ingest data. Only applies when using
 
 `def linked_pre_snapshot(direct_source, repository, source_config)`
 
+### Decorator
+
+`linked.pre_snapshot()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -179,6 +189,10 @@ Captures metadata from a [dSource](Glossary.md#dsource) once data has been inges
 ### Signature
 
 `def linked_post_snapshot(direct_source, repository, source_config)`
+
+### Decorator
+
+`linked.post_snapshot()`
 
 ### Arguments
 
@@ -230,6 +244,10 @@ Sets up a [dSource](Glossary.md#dsource) to ingest data. Only applies when using
 
 `def linked_pre_snapshot(staged_source, repository, source_config)`
 
+### Decorator
+
+`linked.pre_snapshot()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -264,6 +282,10 @@ Captures metadata from a [dSource](Glossary.md#dsource) once data has been inges
 ### Signature
 
 `def linked_post_snapshot(staged_source, repository, source_config)`
+
+### Decorator
+
+`linked.post_snapshot()`
 
 ### Arguments
 
@@ -316,6 +338,10 @@ Required to implement for Delphix Engine operations:
 
 `def start_staging(staged_source, repository, source_config)`
 
+### Decorator
+
+`linked.start_staging()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -353,6 +379,10 @@ Quiesces a [Staging Source](Glossary.md#staging-source) to pause ingestion. Only
 
 `def stop_staging(staged_source, repository, source_config)`
 
+### Decorator
+
+`linked.stop_staging()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -387,6 +417,10 @@ N/A
 ### Signature
 
 `def linked_status(staged_source, repository, source_config)`
+
+### Decorator
+
+`linked.stop_status()`
 
 ### Arguments
 
@@ -424,6 +458,10 @@ N/A
 
 `def worker(staged_source, repository, source_config)`
 
+### Decorator
+
+`linked.worker()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -459,6 +497,10 @@ Returns configurations for the mounts associated for data in staged source. The 
 ### Signature
 
 `def linked_mount_specification(staged_source, repository)`
+
+### Decorator
+
+`linked.mount_specification()`
 
 ### Arguments
 
@@ -519,6 +561,10 @@ Configures the data in a particular snapshot to be usable on a target environmen
 
 `def configure(virtual_source, snapshot, repository)`
 
+### Decorator
+
+`virtual.configure()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -574,6 +620,10 @@ Quiesces the virtual source on a target environment. For database data files, sh
 
 `def unconfigure(virtual_source, snapshot, repository)`
 
+### Decorator
+
+`virtual.unconfigure()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -609,6 +659,10 @@ Re-configures the data for a virtual source to point to the data in a prior snap
 ### Signature
 
 `def reconfigure(virtual_source, snapshot, repository)`
+
+### Decorator
+
+`virtual.reconfigure()`
 
 ### Arguments
 
@@ -664,6 +718,10 @@ Executed whenever the data should be placed in a "running" state.
 
 `def start(virtual_source, repository, source_config)`
 
+### Decorator
+
+`virtual.start()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -700,6 +758,10 @@ Required to implement for Delphix Engine operations:
 
 `def stop(virtual_source, repository, source_config)`
 
+### Decorator
+
+`virtual.stop()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -735,6 +797,10 @@ Prepares the virtual source for taking a snapshot of the data.
 
 `def virtual_pre_snapshot(virtual_source, repository, source_config)`
 
+### Decorator
+
+`virtual.pre_snapshot()`
+
 ### Arguments
 
 Argument | Type | Description
@@ -769,6 +835,10 @@ Captures metadata after a snapshot.
 ### Signature
 
 `def virtual_post_snapshot(virtual_source, repository, source_config)`
+
+### Decorator
+
+`virtual.post_snapshot()`
 
 ### Arguments
 
@@ -824,6 +894,10 @@ The `ownership_specification` is optional. If not specified, the platform will d
 ### Signature
 
 `def virtual_mount_specification(virtual_source, repository)`
+
+### Decorator
+
+`virtual.mount_specification()`
 
 ### Arguments
 
@@ -882,6 +956,10 @@ Determines the status of a [Virtual Source](Glossary.md#virtual-source) to show 
 ### Signature
 
 `def virtual_status(staged_source, repository, source_config)`
+
+### Decorator
+
+`virtual.status()`
 
 ### Arguments
 
