@@ -1,33 +1,39 @@
 # Welcome!
 
-Welcome to the Delphix Virtualization SDK doc page! Here, we hope you'll find all you need to know in order to develop your own plugins.
+With this Delphix Virtualization SDK documentation we hope you will find all you need to know in order to develop your own plugins!
 
 ## Overview
 
-Is this your first time here? Are you wondering what a plugin is, and why you'd want to develop one? Read on!
+If you already know about plugins, and are looking for something specific, use the links to the left to find what you are looking for or search.
 
-If you already know about plugins, and are looking for something specific, you can use the links to the left, or the search bar above, to find what you're looking for.
-
-
-## What Is a Plugin For?
-
-The Delphix Engine is an appliance that lets users quickly and cheaply make "virtual copies" of large datasets. The Delphix Engine has built-in support for interfacing with certain types of datasets (for example Oracle and SQL Server).
-
-But what happens when you want to use a Delphix Engine with a dataset that does not have built-in support? That's where plugins come in.
-
-A plugin extends the functionality of the Delphix Engine to add support for some particular kind of dataset. The plugin teaches the Delphix Engine how to do some operations on such datasets: How are they stopped and started? Where is there data stored? How can they be copied? Etc.
-
-These plugin operations are used as building blocks by the Delphix Engine. From these building blocks, the engine can provide all of the normal Delphix functionality: provisioning, rewinding, replication, syncing, etc.
-
-When you develop a plugin, you enable end users to use your dataset type just the same as if they were using a builtin dataset type.
+If this is your first time here, and you are wondering what developing a Delphix plugin will do for you—read on!
 
 
-## How to Get Started
+## What Does a Delphix Plugin do?
 
-We recommend that you read through the first few sections of this documentation. As you read, the docs will walk you through how to get setup for development, and how to develop, build, and deploy your first plugin.
+The Delphix Engine is an appliance that lets you quickly and cheaply make **virtual copies** of large datasets. The engine has built-in support for interfacing with certain types of datasets, such as Oracle and SQL Server.
 
-First, follow the [Getting Started](Getting_Started) documentation to setup the SDK. When you finish with this, you will have a full plugin development environment, and you'll be ready to start development.
+When you develop a plugin, you enable end users to use your dataset type as if they were using a built-in dataset type, whether it’s MongoDB, Cassandra, or something else. Your plugin will extend the Delphix Engine’s capabilities by teaching it how to run essential virtual data operations on your datasets:
 
-Second, follow the [Your First Plugin](/Your_First_Plugin) documentation. This is a step-by-step tutorial in which you will develop a very simple plugin. This first plugin is intended mainly as a way to learn the concepts and techniques you'll need to develop your own real plugins later. Nevertheless, this first plugin is not useless -- you will really be able to virtualize simple datasets with it.
+ - How to stop and start them
+ - Where to store their data
+ - How to make virtual copies
 
-Once you've completed these two sections, feel free to use the rest of the documentation however you feel. We have a full [reference section](/References), and a more detailed example of a more full-featured plugin that does more complicated work **TODO: link to this doc when it exists**.
+These plugin operations are the building blocks of the Delphix Engine. From these building blocks, the engine can provide all of the normal Delphix functionality to the datasets you connect to such as:
+
+ - Provisioning
+ - Refreshing
+ - Rewinding
+ - Replication
+ - Syncing
+
+
+## Where to Start
+
+Read through the first few sections of this documentation, and we will walk you through how to get setup for development, then how to develop, build, and deploy your first plugin.
+
+[Getting Started](Getting_Started) will show you how to setup the SDK. When you finish this section, you will have a full plugin development environment, and you will be ready to start building.
+
+[Building Your First Plugin](/Your_First_Plugin) will walk you step-by-step through the process of developing a very simple plugin. With it, you will learn the concepts and techniques that you will need to develop fully-fledged plugins. That does not mean this first plugin is useless—you will be able to virtualize simple datasets with it.
+
+Once you complete these sections, use the rest of the documentation whenever you would like. In addition to a full [reference section](/References), we include an example of a full-featured plugin that does complicated tasks. **TODO: link to this doc when it exists.**
