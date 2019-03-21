@@ -36,7 +36,7 @@ For simplicity's sake, we will not bother handling the case mentioned above wher
 
 ## Defining Your Linked Source Data Format
 
-In order to be able to successfully do the copying required, plugins might need to get some information from the user. In our case, we need to connect from the staging environment to the source environment using the `scp` tool. This means we need to know the username and password.
+In order to be able to successfully do the copying required, plugins might need to get some information from the end-user of your plugin. In our case, we need to connect from the staging environment to the source environment using the `scp` tool. This means we need to know the username and password.
 
 Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that lets them provide all the information our schema specifies.
 
