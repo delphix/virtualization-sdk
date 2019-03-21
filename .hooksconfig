@@ -1,0 +1,8 @@
+[gate]
+    name=virt-sdk-docs
+    user-check = skip
+    commit-check = on
+    comment-check = skip
+    release-check = skip
+    review-check = skip
+    triage-check = skip
