@@ -19,10 +19,30 @@ Given the following plugin structure:
 ```
 
 
-The contents of `src/resources/get_date.sh` can be retrieved with:
+If `src/resources/get_date.sh` is needed in `post_snapshot`, it can be retrieved and executed:
 
 ```python
-script_content = pkgutil.get_data('resources', 'get_date.sh')
+import pkgutil
+
+from dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin, SnapshotDefinition
+
+
+plugin = Plugin()
+
+@plugin.linked.post_snapshot()
+def post_snapshot(direct_source, repository, source_config):
+	# Retrieve script contents
+	script_content = pkgutil.get_data('resources', 'get_date.sh')
+
+	# Execute script on remote host
+	response = libs.run_bash(direct_source.connection, script_content)
+
+	# Fail operation if the timestamp couldn't be retrieved
+	if response.exit_code != 0:
+	  raise RuntimeError('Failed to get date: {}'.format(response.stdout))
+
+	return SnapshotDefinition(response.stdout)
 ```
 
 !!! note "NOTE"

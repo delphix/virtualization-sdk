@@ -50,7 +50,7 @@ $ dvp build -c <plugin_config_file> -a <artifact_file>
 This will generate an upload artifact at `<artifact_file>`. That file can then be uploaded with:
 
 ```
-$ dvp upload -e <delphix_engine_address> -u <delphix_admin_user>
+$ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_file>
 ```
 
 You will be prompt for the Delphix Engine user's password.
@@ -58,3 +58,12 @@ You will be prompt for the Delphix Engine user's password.
 ## FAQs?
 
 ## Troubleshooting
+
+#### Installation fails with
+`'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
+
+This is likely caused by an out of date `setuptools` version which is often due to not installing the SDK into a virtual environment. To fix this, first setup a virtual environment and attempt to install the SDK there. If you are already using a virtual environment you can update `setuptools` with:
+
+```
+$ pip install setuptools --upgrade
+```
