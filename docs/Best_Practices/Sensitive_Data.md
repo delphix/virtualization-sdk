@@ -83,8 +83,8 @@ full_command = "echo $DATABASE_PASSWORD | db_cmd shutdown {}".format(db_name)
 dlpx.run_bash(env = target_env, cmd = full_command, user = target_user, vars=environment_vars)
 ```
 
-!! note "NOTE"
-We are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Delphix Engine to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
+!!! note "NOTE"
+	We are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Delphix Engine to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
 
 Once the command runs on the target environment, Bash will substitute in the password, and the database shutdown will run as expected.
 
