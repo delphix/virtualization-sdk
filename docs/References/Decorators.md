@@ -14,8 +14,9 @@ from dlpx.virtualization.platform import Plugin
 // Initialize a plugin object
 plugin = Plugin()
 
+// Use the decorator to annotate the function that corresponds to the "Virtual Source Start" Plugin Operation
 @plugin.virtual_source.start()
-def start(virtual_source, repository, source_config):
+def my_start(virtual_source, repository, source_config):
   print "running start" 
 ```
 
@@ -26,26 +27,26 @@ Assuming the name of the object, is `plugin` as above, the table below lists the
 
 Plugin Operation | Decorator
 ---------------- |  --------
-[SourceConfig Discovey](Plugin_Operations.md#sourceconfig-discovery) | `@plugin.discovery.source_config()`
 [Repository Discovey](Plugin_Operations.md#repository-discovery) | `@plugin.discovery.repository()`
-[Direct Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.linked.pre_snapshot()`
-[Direct Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
-[Staged Pre-Snapshot](Plugin_Operations.md#linkedsource-pre-snapshot) | `@plugin.linked.pre_snapshot()`
-[Staged Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
-[Staged Start-Staging](Plugin_Operations.md#linkedsource-start-staging) | `@plugin.linked.start_staging()`
-[Staged Stop-Staging](Plugin_Operations.md#linkedsource-stop-staging) | `@plugin.linked.stop_staging()`
-[Staged Status](Plugin_Operations.md#linkedsource-status) | `@plugin.linked.status()`
-[Staged Worker](Plugin_Operations.md#linkedsource-worker) | `@plugin.linked.worker()`
-[Staged MountSpecification](Plugin_Operations.md#linkedsource-mount-specification) | `@plugin.linked.mount_specification()`
-[VirtualSource Configure](Plugin_Operations.md#virtualsource-configure) | `@plugin.virtual.configure()`
-[VirtualSource Unconfigure](Plugin_Operations.md#virtualsource-unconfigure) | `@plugin.virtual.unconfigure()`
-[VirtualSource Reconfigure](Plugin_Operations.md#virtualsource-reconfigure) | `@plugin.virtual.reconfigure()`
-[VirtualSource Start](Plugin_Operations.md#virtualsource-start) | `@plugin.virtual.start()`
-[VirtualSource Stop](Plugin_Operations.md#virtualsource-stop) | `@plugin.virtual.stop()`
+[SourceC onfig Discovey](Plugin_Operations.md#source-config-discovery) | `@plugin.discovery.source_config()`
+[Direct Linked Source Pre-Snapshot](Plugin_Operations.md#direct-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
+[Direct Linked Source Post-Snapshot](Plugin_Operations.md#direct-linked-source-post-snapshot) | `@plugin.linked.post_snapshot()`
+[Staged Linked Source Pre-Snapshot](Plugin_Operations.md#staged-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
+[Staged Linked Source Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
+[Staged Linked Source Start-Staging](Plugin_Operations.md#staged-linked-source-start-staging) | `@plugin.linked.start_staging()`
+[Staged Linked Source Stop-Staging](Plugin_Operations.md#staged-linked-source-stop-staging) | `@plugin.linked.stop_staging()`
+[Staged Linked Source Status](Plugin_Operations.md#staged-linked-source-status) | `@plugin.linked.status()`
+[Staged Linked Source Worker](Plugin_Operations.md#staged-linked-source-worker) | `@plugin.linked.worker()`
+[Staged Linked Source Mount Specification](Plugin_Operations.md#staged-linked-source-mount-specification) | `@plugin.linked.mount_specification()`
+[Virtual Source Configure](Plugin_Operations.md#virtual-source-configure) | `@plugin.virtual.configure()`
+[Virtual Source Unconfigure](Plugin_Operations.md#virtual-source-unconfigure) | `@plugin.virtual.unconfigure()`
+[Virtual Source Reconfigure](Plugin_Operations.md#virtual-source-reconfigure) | `@plugin.virtual.reconfigure()`
+[Virtual Source Start](Plugin_Operations.md#virtual-source-start) | `@plugin.virtual.start()`
+[Virtual Source Stop](Plugin_Operations.md#virtual-source-stop) | `@plugin.virtual.stop()`
 [VirtualSource Pre-Snapshot](Plugin_Operations.md#virtualsource-pre-snapshot) | `@plugin.virtual.pre_snapshot()`
-[VirtualSource Post-Snapshot](Plugin_Operations.md#virtualsource-post-snapshot) | `@plugin.virtual.post_snapshot()`
-[VirtualSource MountSpecification](Plugin_Operations.md#virtualsource-mount-specification) | `@plugin.virtual.mount_specification()`
-[VirtualSource Status](Plugin_Operations.md#virtualsource-status) | `@plugin.virtual.status()`
+[Virtual Source Post-Snapshot](Plugin_Operations.md#virtual-source-post-snapshot) | `@plugin.virtual.post_snapshot()`
+[Virtual Source Mount Specification](Plugin_Operations.md#virtual-source-mount-specification) | `@plugin.virtual.mount_specification()`
+[Virtual Source Status](Plugin_Operations.md#virtual-source-status) | `@plugin.virtual.status()`
 
 !!! note
     A plugin should only implement the **direct** operations or the **staged** operations based on the [plugin type](Glossary.md#plugin-type)
