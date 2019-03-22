@@ -109,7 +109,7 @@ Field | Type | Description
 ----- | ---- | -----------
 environment | RemoteEnvironment | Environment for the connection. Internal virtualization platform object.
 path | String | The path on the remote host that has the mounted data set.
-shared_path | String | Optional. The path of the subdirectory of the data set to mount to the remote host.
+shared_path | String | **Optional.** The path of the subdirectory of the data set to mount to the remote host.
 
 
 ## OwnershipSpecification
@@ -144,4 +144,4 @@ mount_specification = MountSpecification([mount], ownership_specification)
 Field | Type | Description
 ----- | ---- | -----------
 mounts | List of [Mount](#mount) objects | The list of mounts to export the data sets to.
-ownership_specification | [OwnershipSpecification](#ownershipspecification) | Optional. The ownership specification to control the ownership attributes for the data set. It defaults to the environment user of the remote environment if it is not specified.
+ownership_specification | [OwnershipSpecification](#ownershipspecification) | **Optional.** Control the ownership attributes for the data set. It defaults to the environment user of the remote environment if it is not specified.

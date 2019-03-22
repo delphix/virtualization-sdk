@@ -20,7 +20,7 @@ def my_start(virtual_source, repository, source_config):
   print "running start" 
 ```
 
-!!! note
+!!! info
     Decorators exposed by the Virtualization SDK are inherently python function calls and needs parentheses `()` appended at the end.
 
 Assuming the name of the object, is `plugin` as above, the table below lists the corresponding decorators for each plugin operation.
@@ -48,5 +48,5 @@ Plugin Operation | Decorator
 [Virtual Source Mount Specification](Plugin_Operations.md#virtual-source-mount-specification) | `@plugin.virtual.mount_specification()`
 [Virtual Source Status](Plugin_Operations.md#virtual-source-status) | `@plugin.virtual.status()`
 
-!!! note
+!!! warning
     A plugin should only implement the **direct** operations or the **staged** operations based on the [plugin type](Glossary.md#plugin-type)
