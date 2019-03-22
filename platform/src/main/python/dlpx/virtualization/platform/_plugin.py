@@ -831,21 +831,19 @@ class VirtualOperations(object):
           UnconfigureResponse: A response containing UnconfigureResult
            if successful or PluginErrorResult in case of an error.
         """
-        virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
-        virtual_source = VirtualSource(guid=request.virtual_source.guid,
-                                       connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+        if self.unconfigure_impl is not None:
+            virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                           connection=request.virtual_source.connection,
+                                           parameters=virtual_source_definition)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        if not self.unconfigure_impl:
-            raise RuntimeError("An implementation for the virtual.unconfigure() operation has "
-                                   "not been defined.")
-        self.unconfigure_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+            self.unconfigure_impl(
+                repository=repository,
+                source_config=source_config,
+                virtual_source=virtual_source)
         unconfigure_response = platform_pb2.UnconfigureResponse()
         unconfigure_response.return_value.CopyFrom(platform_pb2.UnconfigureResult())
         return unconfigure_response
@@ -898,22 +896,19 @@ class VirtualOperations(object):
           StartResponse: A response containing StartResult if successful or
           PluginErrorResult in case of an error.
         """
-        virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
-        virtual_source = VirtualSource(guid=request.virtual_source.guid,
-                                       connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+        if self.start_impl is not None:
+            virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                           connection=request.virtual_source.connection,
+                                           parameters=virtual_source_definition)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        if not self.start_impl:
-            raise RuntimeError("An implementation for the virtual.start() operation has "
-                                   "not been defined.")
-
-        self.start_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+            self.start_impl(
+                repository=repository,
+                source_config=source_config,
+                virtual_source=virtual_source)
         start_response = platform_pb2.StartResponse()
         start_response.return_value.CopyFrom(platform_pb2.StartResult())
         return start_response
@@ -931,23 +926,20 @@ class VirtualOperations(object):
           StopResponse: A response containing StopResult if successful or
           PluginErrorResult in case of an error.
         """
-        virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
-        virtual_source = VirtualSource(guid=request.virtual_source.guid,
-                                       connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+        if self.stop_impl is not None:
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                           connection=request.virtual_source.connection,
+                                           parameters=virtual_source_definition)
 
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        if not self.stop_impl:
-            raise RuntimeError("An implementation for the virtual.stop() operation has "
-                                   "not been defined.")
-
-        self.stop_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+            self.stop_impl(
+                repository=repository,
+                source_config=source_config,
+                virtual_source=virtual_source)
         stop_response = platform_pb2.StopResponse()
         stop_response.return_value.CopyFrom(platform_pb2.StopResult())
         return stop_response
@@ -969,22 +961,20 @@ class VirtualOperations(object):
           VirtualPreSnapshotResponse: A response containing VirtualPreSnapshotResult
           if successful or PluginErrorResult in case of an error.
         """
-        virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
-        virtual_source = VirtualSource(guid=request.virtual_source.guid,
-                                       connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+        if self.pre_snapshot_impl is not None:
+            virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                           connection=request.virtual_source.connection,
+                                           parameters=virtual_source_definition)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
 
-        if not self.pre_snapshot_impl:
-            raise RuntimeError("An implementation for the virtual.pre_snapshot() operation has "
-                                   "not been defined.")
 
-        self.pre_snapshot_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+            self.pre_snapshot_impl(
+                repository=repository,
+                source_config=source_config,
+                virtual_source=virtual_source)
         virtual_pre_snapshot_response = platform_pb2.VirtualPreSnapshotResponse()
         virtual_pre_snapshot_response.return_value.CopyFrom(platform_pb2.VirtualPreSnapshotResult())
         return virtual_pre_snapshot_response
@@ -1048,6 +1038,11 @@ class VirtualOperations(object):
           VirtualStatusResponse: A response containing VirtualStatusResult
           if successful or PluginErrorResult in case of an error.
         """
+        if not self.status_impl:
+            virtual_status_response = platform_pb2.VirtualStatusResponse()
+            virtual_status_response.return_value.status = platform_pb2.VirtualStatusResponse.ACTIVE
+            return virtual_status_response
+
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
@@ -1055,10 +1050,6 @@ class VirtualOperations(object):
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
-
-        if not self.status_impl:
-            raise RuntimeError("An implementation for the virtual.status() operation has "
-                                   "not been defined.")
 
         virtual_status = self.status_impl(
             repository=repository,
