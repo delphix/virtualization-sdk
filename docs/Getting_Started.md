@@ -55,12 +55,29 @@ $ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_fi
 
 You will be prompt for the Delphix Engine user's password.
 
+## Enable the Delphix Engine Feature Flag
+
+Login to the Delphix Engine CLI as the `sysadmin` user:
+
+```
+$ ssh sysadmin@<delphix-engine-hostname>
+> system
+> enableFeatureFlag
+> set name=PYTHON_TOOLKITS
+> ls
+Properties
+    type: FeatureFlagParameters
+    name: PYTHON_TOOLKITS (*)
+> commit
+    Feature flag "PYTHON_TOOLKITS" enabled. If using the CLI, log out and log back in to use the feature.
+Warning: This feature is only supported for specific configurations. If you do not have explicit permission from your account representative to use this feature, disable it and contact them.
+```
+
 ## FAQs?
 
 ## Troubleshooting
 
-#### Installation fails with
-`'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
+#### Installation fails with `'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
 
 This is likely caused by an out of date `setuptools` version which is often due to not installing the SDK into a virtual environment. To fix this, first setup a virtual environment and attempt to install the SDK there. If you are already using a virtual environment you can update `setuptools` with:
 
