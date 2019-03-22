@@ -36,6 +36,10 @@ protobuf {
   generatedFilesBaseDir = "$projectDir/src"
 }
 
+artifacts {
+  python sdist.distFile
+}
+
 dlpxPython {
   dist {
     name = "dvp-common"
@@ -58,8 +62,4 @@ dlpxPython {
 project.afterEvaluate {
   tasks["sdist"].dependsOn tasks["generateProto"]
   tasks["test_python2.7"].dependsOn tasks["generateProto"]
-}
-
-artifacts {
-  python sdist.distFile
 }

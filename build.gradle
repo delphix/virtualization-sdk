@@ -4,9 +4,9 @@
 
 plugins {
   id "com.google.protobuf" version "0.8.7" apply false
-  id "delphix.python" version "0.0.3" apply false
+  id "delphix.python" version "0.0.4" apply false
 }
 
 subprojects {
-  version = "0.2.0-internal-017"
+  version = "0.2.0-internal-018"
 }

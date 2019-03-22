@@ -25,17 +25,14 @@ def htmlReportFiles = fileTree(dir: htmlReportDir,
                 "**/*.css",
         ])
 
-/*
-* A convience task that needs to pass for code to be checked in. 'coverage'
-* runs the tests so it's not necessary to call 'test'.
-*/
-task precommit {
+
+// The "check" task should also lint and format.
+check {
   dependsOn 'lint'
-  dependsOn 'coverage'
   dependsOn 'format'
 }
 
-// A convience task that formats both source and test code.
+// A convenience task that formats both source and test code.
 task format() {
   dependsOn 'formatSrc'
   dependsOn 'formatTest'
@@ -124,13 +121,19 @@ task lintTest(type: Exec) {
   dependsOn "sync_python2.7"
 }
 
+artifacts {
+  python sdist.distFile
+}
+
 dlpxPython {
   dist {
     name = "dvp-tools"
   }
 
   packages {
-    click {}
+    click {
+      version = ">= 7.0"
+    }
 
     protobuf {
       version = "== 3.6.1"

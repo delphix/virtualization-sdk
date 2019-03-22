@@ -12,13 +12,10 @@ repositories {
   mavenCentral()
 }
 
-artifacts {
-  python sdist.distFile
-}
-
 dependencies {
   // Necessary to compile generated java protocol buffer libraries.
   compile project(":common")
+
   // Necessary to compile generated python protocol buffer libraries.
   python project(path: ":common", configuration: "python")
 }
@@ -42,6 +39,10 @@ protobuf {
   generatedFilesBaseDir = "$projectDir/src"
 }
 
+artifacts {
+  python sdist.distFile
+}
+
 dlpxPython {
   dist {
     name = "dvp-platform"
@@ -54,16 +55,14 @@ dlpxPython {
     enum34 {
       markers = "python_version < '3.4'"
     }
+
+    "dvp-common" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":common:sdist").getDistFile().toString())
+    }
   }
 
   devPackages {
-    common {
-      // This specifies the first artifact dependency in the python
-      // configuration. This is the python source dists from other gradle
-      // projects.
-      path = configurations.getByName("python")[0]
-    }
-
     mock {
       version = ">=2.0"
     }

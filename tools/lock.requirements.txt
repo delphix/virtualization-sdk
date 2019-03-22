@@ -1,10 +1,10 @@
 -i https://pypi.org/simple
-certifi==2018.11.29
+certifi==2019.3.9
 chardet==3.0.4
 click==7.0
 idna==2.8
 protobuf==3.6.1
-pyyaml==3.13
+pyyaml==5.1
 requests==2.21.0
 six==1.12.0
 typing==3.6.6 ; python_version < '3.5'

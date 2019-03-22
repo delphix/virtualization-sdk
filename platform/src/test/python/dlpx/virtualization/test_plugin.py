@@ -517,11 +517,10 @@ class TestPlugin:
             assert staged_source.parameters.name == TEST_STAGED_SOURCE
             assert repository.name == TEST_REPOSITORY
 
-            mount1 = Mount(staged_source.connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
-            mount2 = Mount(staged_source.connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
+            mount1 = Mount(staged_source.connection.environment, TEST_MOUNT_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
-            return MountSpecification([mount1, mount2], ownership_spec)
+            return MountSpecification([mount1], ownership_spec)
 
         staged_mount_spec_request = platform_pb2.StagedMountSpecRequest()
         staged_mount_spec_request.staged_source.connection.environment.reference = TEST_ENVIRONMENT
@@ -539,7 +538,6 @@ class TestPlugin:
         assert staged_mount_spec_response.return_value.staged_mount.remote_environment.host.binary_path == TEST_BINARY_PATH
         assert staged_mount_spec_response.return_value.staged_mount.remote_environment.host.scratch_path == TEST_SCRATCH_PATH
         assert staged_mount_spec_response.return_value.staged_mount.mount_path == TEST_MOUNT_PATH
-        assert staged_mount_spec_response.return_value.staged_mount.shared_path == TEST_SHARED_PATH
         assert staged_mount_spec_response.return_value.ownership_spec.uid == TEST_UID
         assert staged_mount_spec_response.return_value.ownership_spec.gid == TEST_GID
 

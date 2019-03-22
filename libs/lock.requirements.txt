@@ -1,3 +1,4 @@
 -i https://pypi.org/simple
+./../common/build/python-dist/dvp-common-0.2.0-internal-018.tar.gz
 protobuf==3.6.1
 six==1.12.0
