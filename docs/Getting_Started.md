@@ -21,7 +21,7 @@ To install the latest version of our SDK run:
 $ pip install dvp
 ```
 
-!!! note "NOTE"
+!!! tip "Use a Virtual Environment"
 	 We highly recommended that you develop plugins inside of a virtual environment. To learn more about virtual environments, refer to [Virtualenv's documentation](https://virtualenv.pypa.io/en/latest/).
 
 	 The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:
@@ -34,7 +34,7 @@ To install a specific version of the SDK run:
 $ pip install dvp==<version>
 ```
 
-!!! note "NOTE"
+!!! note "API Build Version"
     The version of the SDK defines the version of the Virtualization Platform API your plugin will be built against.
 
 ## Basic Usage

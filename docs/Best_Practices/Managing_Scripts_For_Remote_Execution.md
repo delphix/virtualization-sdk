@@ -18,6 +18,8 @@ Given the following plugin structure:
         └── get_date.sh
 ```
 
+__Add snapshot defintion here__
+
 
 If `src/resources/get_date.sh` is needed in `post_snapshot`, it can be retrieved and executed:
 
@@ -25,7 +27,9 @@ If `src/resources/get_date.sh` is needed in `post_snapshot`, it can be retrieved
 import pkgutil
 
 from dlpx.virtualization import libs
-from dlpx.virtualization.platform import Plugin, SnapshotDefinition
+from dlpx.virtualization.platform import Plugin
+
+from generated.definitions import SnapshotDefinition
 
 
 plugin = Plugin()
@@ -40,16 +44,16 @@ def post_snapshot(direct_source, repository, source_config):
 
 	# Fail operation if the timestamp couldn't be retrieved
 	if response.exit_code != 0:
-	  raise RuntimeError('Failed to get date: {}'.format(response.stdout))
+		raise RuntimeError('Failed to get date: {}'.format(response.stdout))
 
-	return SnapshotDefinition(response.stdout)
+	return SnapshotDefinition(name='Snapshot', date=response.stdout)
 ```
 
-!!! note "NOTE"
+!!! note "Python's Working Directory"
 	This assumes that `src/` is Python's current working directory. This is the behavior of the Virtualization Platform.
 
-!!! note "NOTE"
-	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python module. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source direcotry and that subdirectory must contain an `__init__.py` file.
+!!! warning "Resources need to be in a Python module"
+	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python module. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory and that subdirectory must contain an `__init__.py` file.
 
 ### Mutli-level Packages
 
@@ -70,7 +74,7 @@ Given the following plugin structure:
             └── get_date.sh
 ```
 
-The contents of `src/resources/platform/get_data.sh` can be retrieved with:
+The contents of `src/resources/platform/get_date.sh` can be retrieved with:
 
 ```python
 script_content = pkgutil.get_data('resources.platform', 'get_date.sh')
