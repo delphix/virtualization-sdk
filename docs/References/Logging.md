@@ -25,40 +25,57 @@ Logging is typically done to enable your plugin to be more easily debugged.
 ### Example
 Imagine you notice that your plugin is taking a very long time to do discovery. Everything works, it just takes much longer than expected. You'd like to figure out why.
 
-Suppose your plugin has a discovery operation that looks like this (code is abbreviated to be easier to follow):
+!!! info
+    Refer to [Managing Scripts for Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) for how remote scripts can be stored and retrieved.
+
+Suppose your plugin has a source config discovery operation that looks like this (code is abbreviated to be easier to follow):
 ```python
-def my_operation(resources):
-  version_result = libs.run_bash(command=resources["get_db_version"])
-  users_result = libs.run_bash(command=resources["get_db_users"])
-  db_results = libs.run_bash(command=resources["get_databases"])
-  status_result = libs.run_bash(command=resources["get_database_statuses"])
+import pkgutil
+
+from dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.discovery.source_config()
+def my_source_config_discovery(source_connection, repository):
+  version_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_version.sh'))
+  users_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_users.sh'))
+  db_results = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_databases.sh'))
+  status_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_database_statuses.sh'))
   # Later, do something will all these results
 ```
 
 Now, imagine that you notice that it's taking a long time to do discovery, and you'd like to try to figure out why. One thing that might help is to add logging, like this:
 ```python
-def my_operation(resources):
+import pkgutil
+
+from dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.discovery.source_config()
+def my_source_config_discovery(source_connection, repository):
   libs.log_debug("About to get DB version")
-  version_result = dlpx.run_bash(command=resources["get_db_version"])
+  version_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_version.sh'))
   libs.log_debug("About to get DB users")
-  users_result = dlpx.run_bash(command=resources["get_db_users"])
+  users_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_users.sh'))
   libs.log_debug("About to get databases")
-  db_results = libs.run_bash(command=resources["get_databases"])
+  db_results = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_databases.sh'))
   libs.log_debug("About to get DB statuses")
-  status_result = dlpx.run_bash(command=resources["get_database_statuses"])
+  status_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_database_statuses.sh'))
   libs.log_debug("Done collecting data")
 ```
 
 When you look at the log file, perhaps you'll see something like this:
 
-**TODO: Convert this to actual format used in our log files**
-
 ```
-2019-03-01T09:22:17|About to get DB version
-2019-03-01T09:22:19|About to get DB users
-2019-03-01T09:35:41|About to get databases
-2019-03-01T09:35:44|About to get DB statuses
-2019-03-01T09:35:49|Done collecting data
+[2019-03-12 12:17:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB version
+[2019-03-12 12:19:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB users
+[2019-03-12 12:41:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get databases
+[2019-03-12 12:44:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB statuses
+[2019-03-12 12:49:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] Done collecting data
 ```
 
 You can see that it only takes a few seconds for us do each of our data collection steps, with the exception of getting the users, which takes over 13 minutes!
@@ -68,6 +85,7 @@ We now know that our slowdown is something to do with how our bash script is col
 ## How to retrieve logs
 
 **TODO: Add content here after we have a firm process for doing this (there may be a UI coming soon?)**
+The logs will be in a the support bundle under `log/mgmt_log/toolkit_log/<plugin name>`.
 
 ## Logging Levels
 
@@ -80,7 +98,7 @@ These levels are also hierarchical:
 `log_info` writes to `info.log` and `error.log`.
 `log_debug` writes to `debug.log`, `info.log`, and `error.log`.
 
-`log_error` is meant to be used for cases where you know for sure there is a problem. The distinction between what counts as "info" and what counts as "debug" is entirely up to you. Some plugins will pick one of them and use it exclusively. Some will decide to count only the most important messages as "info", with everything else counting as "debug".
+`log_error` is meant to be used for cases where you know for sure there is a problem. The distinction between what counts as **info** and what counts as **debug** is entirely up to you. Some plugins will pick one of them and use it exclusively. Some will decide to count only the most important messages as **info**, with everything else counting as **debug**.
 
 ## Sensitive data
 
