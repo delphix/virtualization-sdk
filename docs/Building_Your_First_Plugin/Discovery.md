@@ -87,7 +87,7 @@ Locate the `sourceConfigDefinition` inside the `schema.json` file and modify the
     },
     "nameField": "name",
     "identityFields": ["path"]
-}
+},
 ```
 
 Now, we have two properties, a property `name` serving as the user-visible name of the source config and `path` which tells us where the data lives on the remote host. Note  we are using `path` as the unique identifier.
@@ -120,8 +120,11 @@ Recall that the `dvp init` command we ran created a file called `src/plugin_runn
 
 
 ```python
+import dlpx.virtualization.libs as callback
 from dlpx.virtualization import platform
-from generated.definitions import RepositoryDefinition
+from dlpx.virtualization.platform import Mount
+from dlpx.virtualization.platform import MountSpecification
+from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
 
 plugin = platform.Plugin()
 
@@ -137,10 +140,15 @@ def repository_discovery(source_connection):
 Taking this line-by-line, here is what's happening in our new method::
 
 ```python
+import dlpx.virtualization.libs as callback
 from dlpx.virtualization import platform
-from generated.definitions import RepositoryDefinition
+from dlpx.virtualization.platform import Mount
+from dlpx.virtualization.platform import MountSpecification
+from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
 ```
-These two lines make certain functionality available to our Python code. This is explained further below.
+These lines make certain functionality available to our Python code. Some of this functionality will
+be used just below, as we implement discovery. Others will be used later on, as we implement
+ingestion and provisioning.
 
 ```python
 plugin = platform.Plugin()

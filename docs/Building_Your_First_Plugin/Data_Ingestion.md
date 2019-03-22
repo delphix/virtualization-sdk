@@ -14,7 +14,7 @@ The first step is called [linking](/References/Glossary/#linking). This is simpl
 
 ### Syncing
 
-Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing). Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
+Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing) for the first time. Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
 
 The details of how this is done varies significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from:
 
@@ -29,10 +29,14 @@ For more details about deciding between using a direct or a staging strategy, pl
 
 ### Our Syncing Strategy
 
-For our purposes, we will use a simple strategy of copying files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running `scp` from our staging environment, and use user-provided credentials to connect to the source environment.
+For our purposes here in this intro plugin, we will use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running the Unix tool `rsync` from our staging environment, and rely on passwordless SSH to connect to the source environment.
 
-For simplicity's sake, we will not bother handling the case mentioned above where the staging environment is the same as the source environment
+!!! note
+    This plugin is assuming that `rsync` is installed on the staging host, and that the staging
+    host user is able to SSH into the source host without having to type in a password. A more
+    full-featured plugin would test these assumptions, usually as part of discovery.
 
+In the special case mentioned above, where the staging environment is the same as the source environment, we could likely do something more efficient. However, for simplicity's sake, we won't do that here.
 
 ## Defining Your Linked Source Data Format
 
@@ -40,91 +44,207 @@ In order to be able to successfully do the copying required, plugins might need 
 
 Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that lets them provide all the information our schema specifies.
 
-(TODO: describe where to put this schema)
+Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` and replace it with the following schema:
 ```json
-{
+"linkedSourceDefinition": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["username", "password"],
-    "properties" {
+    "required": ["source_address", "username", "mount_location"],
+    "properties": {
+        "source_address": {
+            "type": "string",
+            "prettyName": "Host from which to copy",
+            "description": "IP or FQDN of host from which to copy"
+        },
         "username": {
             "type": "string",
             "prettyName": "Username on Source Host",
             "description": "Username for making SSH connection to source host"
         },
-        "password": {
+        "mount_location": {
             "type": "string",
-            "prettyName": "Password on Source Host",
-            "description": "Password for making SSH connection to source host",
-            "format": "password"
+            "format": "unixpath",
+            "prettyName": "Mount Location on Staging Host",
+            "description": "Where to mount storage onto the staging host while syncing"
         }
     }
-}
+},
 ```
 
-There is one new thing to notice about this schema, as compared with our discovery schemas. The `password` property is tagged as [`"format": "password"`](/References/Glossary/#password-property). This ensures that the Delphix Engine will take precautions such as displaying the value on-screen. For full details, see (link to reference section).
+!!! note
+    As will be explained later, this schema will be used to generate Python code. Due to a
+    limitation in this code generation, all names in the Python code will use
+    `lower_case_with_underscores`. To reduce confusion, we strongly suggest that you use schema names like `mount_location` instead of `mountLocation`. This will ensure that the names in the generated Python code exactly match the names in your schemas.
 
-With this schema, users are required to provide a username and password as part of the linking process.
+
+With this schema, the user will be required to provide the source username, the source's IP address, the staging mount location as part of the linking process.
 
 
 ## Implementing Syncing in Your Plugin
 
-As explained here (link to reference flowchart), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dSource. This means our `preSnapshot` operation has to get the NFS share into the desired state. For us, this means it is time to do our data copy.
+There are three things we must do to implement syncing. First, we need to tell the Delphix Engine
+where to mount storage onto the staging environment. Next we need to actually do the work of copying
+data onto that mounted storage. Finally, we need to generate any snapshot-related data.
 
-Create a file in your preferred editor (TODO: add suggested/required filename), and add the following Python code. (TODO: revisit when decorators are finalized)
+### Mount Specification
+
+Before syncing can begin, the Delphix Engine needs to mount some storage onto the staging host.
+Since different plugins can have different requirements about where exactly this mount lives, it is
+up to the plugin to specify this location. As mentioned above, our simple plugin will get this
+location from the user.
+
+Open up the `plugin_runner.py` file and add the following code:
+```
+@plugin.linked.mount_specification()
+def linked_mount_specification(staged_source, repository):
+    mount_location = staged_source.parameters.mount_location
+    mount = Mount(staged_source.connection.environment, mount_location)
+    return MountSpecification([mount])
+```
+
+Let's take this line-by-line to see what's going on here.
+
+```
+@plugin.linked.mount_specification()
+```
+This [decorator](/References/Glossary/#password-property) announces that the following function
+is the code that handles the `mount_specification` operation. This is what allows the Delphix
+Engine to know which function to call when it's time to learn where to mount. Every operation
+definition will begin with a similar decorator.
+
+```
+def linked_mount_specification(staged_source, repository):
+```
+This begins a Python function definition. We chose to call it `linked_mount_specification`, but we
+could have chosen any name at all. This function accepts two arguments, one giving information about
+the linked source, and one giving information about the associated repository.
+
+!!! note
+    The names of these input arguments matter. That is, you'll always need to have an argument
+    called `staged_source` and an argument called `repository`. Other operations will have different
+    required argument names.
+
+```
+    mount_location = staged_source.parameters.mount_location
+```
+
+The `staged_source` input argument contains an attribute called `parameters`. This in turn contains
+all of the properties defined by the `linkedSourceDefinition` schema. So, in our case, that means
+it will contain attributes called `source_address`, `username`, and `mount_location`. This line
+simply retrieves the user-provided mount location and saves it in a local variable.
+
+```
+    mount = Mount(staged_source.connection.environment, mount_location)
+```
+
+This line constructs a new object from the [Mount class](/References/Classes/#mount). This class
+holds details about how Delphix Engine storage is mounted onto remote environments. Here, we
+create a mount object that says to mount onto the staging environment, at the location specified
+by the user.
+
+```
+    return MountSpecification([mount])
+```
+
+On the line just before this one, we created an object that describes a *single* mount. Now, we
+must return a full [mount specification](/References/Glossary/#mount-specification). In general,
+a mount specification is a collection of mounts. But, in our case, we just have one single mount.
+Therefore, we use an array with only one item it in -- namely, the one single mount object we
+created just above.
+
+
+### Data Copying
+
+As explained here (link to reference flowchart), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dsource. That means our `preSnapshot` operation has to get the NFS share into the desired state. For us, that means that's the time to do our data copy.
+
+Open up the `plugin_runner.py` file and add the following code:
 
 ```python
-@delphix.linked_pre_snapshot
-def copy_data_from_source(source_environment, staging_environment, source_config, linked_source, mount_location):
-    environment_variables = { "PASSWORD": linked_source.password }
-    scp_data_location = "%s@%s:%s".format(linked_source.username, source_environment.hostname, source_config.path)
-    scp_command = "echo $PASSWORD | scp -r %s %s".format(scp_data_location, mount_location)
+@plugin.linked.pre_snapshot()
+def copy_data_from_source(staged_source, repository, source_config):
+    stage_mount_path = staged_source.mount.mount_path
+    data_location = "{}@{}:{}".format(staged_source.parameters.username,
+        staged_source.parameters.source_address,
+        source_config.path)
 
-    result = dx.run_bash(staging_environment, copy_command, environment_variables)
+    rsync_command = "rsync -r {} {}".format(data_location, stage_mount_path)
+
+    result = callback.run_bash(staged_source.connection, rsync_command)
 
     if result.exit_code != 0:
-        raise ValueError("Could not copy files. Please check username and password.\n%s".format(result.stderr)
+        raise RuntimeError("Could not copy files. Please ensure that passwordless SSH works for {}.\n{}".format(staged_source.parameters.source_address, result.stderr))
 ```
 
-Taking this line-by-line, here's what's happening in our new method:
+Let's walk through this function and see what's going on
 
-```python
-@delphix.linked_pre_snapshot
+```
+    stage_mount_path = staged_source.mount.mount_path
 ```
 
-This [decorator](/References/Glossary/#password-property) tells the Delphix Engine that this code will define our "pre-snapshot" operation.
+The `staged_source` argument contains information about the current mount location. Here we save that
+to a local variable for convenience.
 
-```python
-def copy_data_from_source(source_environment, staging_environment, source_config, linked_source, mount_location):
+```
+    data_location = "{}@{}:{}".format(staged_source.parameters.username,
+        staged_source.parameters.source_address,
+        source_config.path)
 ```
 
-This begins the Python function that implements our pre-snapshot operation. As compared with our discovery code, there are a lot more inputs coming in from the Delphix Engine.
+This code creates a Python string that represents the location of the data that we want to ingest.
+This is in the form `<user>@<host>:<path>`. For example `jdoe@sourcehost.mycompany.com:/bin`. As
+before with `mount_location`, we have defined our schemas such that these three pieces of information
+were provided by the user. Here we're just putting them into a format that `rsync` will understand.
 
-!!! note "Gotcha"
-    The order of these input arguments matters. That is, the first input argument is always going to represent the source environment, the second the staging environment, and so on. It's highly recommended to use these same variable names to avoid confusion.
-
-```python
-    environment_variables = { "PASSWORD": linked_source.password }
-    scp_data_location = "%s@%s:%s".format(linked_source.username, source_environment.hostname, source_config.path)
-    scp_command = "echo $PASSWORD | scp -r %s %s".format(scp_data_location, mount_location)
+```
+    rsync_command = "rsync -r {} {}".format(data_location, stage_mount_path)
 ```
 
-Here, we are preparing data to help us run a Bash command on the staging host. First, we set up a Python dictionary that represents the environment variables we want. Next, we construct a Python string that represents the actual command we want to run.
+This line is the actual Bash command that we'll be running on the staging host. This will look something like `rsync -r user@host:/source/path /staging/mount/path`.
 
-Note that we are using the `scp` tool to copy files from the source environment onto the NFS share that is mounted to the staging environment.
+```
+    result = callback.run_bash(staged_source.connection, rsync_command)
+```
 
+This is an example of a [callback](/References/Glossary/#callback), where we ask the Delphix Engine
+to do some work on our behalf. In this case, we're asking the engine to run our Bash command on the
+staging environment. For full details on the `run_bash` callback, and on callbacks in general, please see (link to reference).
 
-```python
-    result = dx.run_bash(staging_environment, copy_command, environment_variables)
+```
     if result.exit_code != 0:
-        raise ValueError("Could not copy files. Please check username and password.\n%s".format(result.stderr)
+        raise RuntimeError("Could not copy files. Please ensure that passwordless SSH works for {}.\n{}".format(staged_source.parameters.source_address, result.stderr))
+```
+Finally, we check to see if our Bash command actually worked okay. If not, we raise an error
+message, and describe one possible problem for the user to investigate.
+
+
+### Saving Snapshot Data
+
+Whenever the Delphix Engine takes a [snapshot](/References/Glossary/#snapshot) of a dSource or VDB,
+the plugin has the chance to save any information it likes alongside that snapshot. Later, if the
+snapshot is ever used to provision a new VDB, the plugin can use the previously-saved information
+to help get the new VDB ready for use.
+
+The format of this data is controlled by the plugin's `snapshotDefinition` schema. In our case, we
+don't have any data we need to save. So, there's not much to do here. We will not modify the blank
+schema that was created by `dvp init`.
+
+We do still need to provide python function for the engine to call, but we don't have to do much.
+Open up the `plugin_runner.py` file and add the following code:
+
+```
+def _make_snapshot_data():
+    return SnapshotDefinition()
+
+@plugin.linked.post_snapshot()
+def dsource_post_snapshot(staged_source, repository, source_config):
+    return _make_snapshot_data()
 ```
 
-This code actually runs the Bash command. The function `run_bash` that we're calling here is a called a [callback](/References/Glossary/#callback). Plugins use callbacks to request that the Delphix Engine do work on the plugin's behalf. In our case, we are telling the Delphix Engine to run our bash command on the staging environment.
+The only thing we're really doing here is creating a new object using our (empty) snapshot
+definition, and returning that new empty object. What's new is that we've done this work from a
+helper function, which we've named `_make_snapshot_data`. We'll re-use this helper function
+when we implement provisioning.
 
-We also check that the command succeeded. If not, we will raise an error that explains the situation to the user.
-
-For full details on the `run_bash` callback, and on callbacks in general, please see (link to reference).
 
 ## How to Link and Sync in the Delphix Engine
 
@@ -134,7 +254,8 @@ Let's try it out and make sure this works!
 
   - You should already have a repository and source config set up from the previous page.
 
-  - Set up a separate staging environment. (TODO: add instructions here)
+  - You can optionally set up a new staging environment. Or, you can simply re-use your source
+    environment for staging.
 
 **Procedure**
 
