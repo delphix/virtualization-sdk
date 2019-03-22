@@ -61,9 +61,16 @@ $ echo "hunter2" | db_cmd shutdown inventory
 First, let us take a look at how **not** to do this! Here is a bit of plugin python code that will run the above command.
 
 ```python
-# THIS IS INSECURE! DO NOT DO THIS!
-full_command = "echo {} | db_cmd shutdown {}".format(password, db_name)
-dlpx.run_bash(env = target_env, cmd = full_command, user = target_user)
+from dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+  # THIS IS INSECURE! DO NOT DO THIS!
+  full_command = "echo {} | db_cmd shutdown {}".format(password, db_name)
+  libs.run_bash(virtual_source.connection, full_command)
 ```
 
 This constructs a Python string containing exactly the desired command from above. However, this is not recommended.
@@ -75,15 +82,21 @@ The problem here is that there is a cleartext password in the Python string. But
 The Delphix Engine provides a better way to pass sensitive data to remote bash (or powershell) calls: environment variables. Let us look at a different way to run the same command as above.
 
 ```python
-# Use environment variables to pass sensitive data to remote commands
-environment_vars = {
-  "DATABASE_PASSWORD" : password
-}
-full_command = "echo $DATABASE_PASSWORD | db_cmd shutdown {}".format(db_name)
-dlpx.run_bash(env = target_env, cmd = full_command, user = target_user, vars=environment_vars)
+from dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.stop()
+  # Use environment variables to pass sensitive data to remote commands
+  environment_vars = {
+    "DATABASE_PASSWORD" : password
+  }
+  full_command = "echo $DATABASE_PASSWORD | db_cmd shutdown {}".format(db_name)
+  libs.run_bash(virtual_source.connection, full_command, variables=environment_vars)
 ```
 
-!!! note "NOTE"
+!!! note
 	We are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Delphix Engine to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
 
 Once the command runs on the target environment, Bash will substitute in the password, and the database shutdown will run as expected.

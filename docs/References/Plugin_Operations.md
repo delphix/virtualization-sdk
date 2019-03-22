@@ -110,7 +110,7 @@ Discovers the set of [source configs](Glossary.md#source-config) for a plugin fo
 
 ### Signature
 
-`def source_config_discovery(source_connection)`
+`def source_config_discovery(source_connection, repository)`
 
 ### Decorator
 
