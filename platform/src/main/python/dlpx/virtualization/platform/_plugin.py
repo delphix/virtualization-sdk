@@ -62,6 +62,14 @@ e.g. ConfigureRequest and ConfigureResponse. The wrappers are called by the Dyna
 runtime and      input *Request protobuf message, delegate to the user defined
 method that has logic for the virtualization operation itself (such as configure), and craft
 a response object.
+
+
+Note on method level imports: In method imports are needed for plugin defined
+modules (from generated.definitions). These imports will fail on a developer's
+environment if they haven't generated them yet. If these were module level
+imports, the import for dlpx.virtualization.platform.Plugin will more likely
+fail. The internal methods should only be called by the platform so it's safe
+to have the import in the methods as the objects will exist at runtime.
 """
 
 import json
@@ -71,11 +79,6 @@ from dlpx.virtualization.platform import VirtualSource
 from dlpx.virtualization.platform import DirectSource
 from dlpx.virtualization.platform import StagedSource
 from dlpx.virtualization.platform import Mount
-from generated.definitions import VirtualSourceDefinition
-from generated.definitions import RepositoryDefinition
-from generated.definitions import SnapshotDefinition
-from generated.definitions import LinkedSourceDefinition
-from generated.definitions import SourceConfigDefinition
 
 
 __all__ = ['Plugin']
@@ -158,6 +161,9 @@ class DiscoveryOperations(object):
             SourceConfigDiscoveryResponse: The return value of source config
             discovery operation.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+
         def to_protobuf(source_config):
             parameters = common_pb2.PluginDefinedObject()
             parameters.json = json.dumps(source_config.to_dict())
@@ -269,6 +275,11 @@ class LinkedOperations(object):
            DirectPreSnapshotResponse: A response containing DirectPreSnapshotResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+
         direct_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.direct_source.linked_source.parameters.json))
         direct_source = DirectSource(guid=request.direct_source.linked_source.guid,
                                        connection=request.direct_source.connection,
@@ -307,6 +318,11 @@ class LinkedOperations(object):
            DirectPostSnapshotResult which has the snapshot metadata on success. In
            case of errors, response object will contain PluginErrorResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
             parameters.json = json.dumps(snapshot.to_dict())
@@ -351,6 +367,10 @@ class LinkedOperations(object):
            StagedPreSnapshotResponse: A response containing StagedPreSnapshotResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         # Presnapshot implementations are not required (although they are very common)
         if self.pre_snapshot_impl is not None:
@@ -394,6 +414,10 @@ class LinkedOperations(object):
            StagedPostSnapshotResult which has the snapshot metadata on success. In
            case of errors, response object will contain PluginErrorResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
@@ -445,6 +469,10 @@ class LinkedOperations(object):
            StartStagingResponse: A response containing StartStagingResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         # startStaging is not a required operation
         if self.start_staging_impl is not None:
@@ -487,6 +515,10 @@ class LinkedOperations(object):
            StopStagingResponse: A response containing StopStagingResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         # startStaging is not a required operation
         if self.stop_staging_impl is not None:
@@ -529,6 +561,10 @@ class LinkedOperations(object):
            StagedStatusResult which has active or inactive status. In
            case of errors, response object will contain PluginErrorResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         if not self.status_impl:
             # If no implementation is provided, the linked source is always active
@@ -575,6 +611,10 @@ class LinkedOperations(object):
            StagedWorkerResponse: A response containing StagedWorkerResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
 
         # worker is not a required operation
         if self.worker_impl is not None:
@@ -617,6 +657,9 @@ class LinkedOperations(object):
            StagedMountSpecResult which has the mount/ownership metadata on success.
            In case of errors, response object will contain PluginErrorResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
 
         def to_protobuf_single_mount(single_mount):
             # Shared path is not supported for linked sources
@@ -796,6 +839,11 @@ class VirtualOperations(object):
           ConfigureResponse: A response containing the return value of the
           configure operation, as a ConfigureResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SnapshotDefinition
+
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
 
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
@@ -831,6 +879,11 @@ class VirtualOperations(object):
           UnconfigureResponse: A response containing UnconfigureResult
            if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         if self.unconfigure_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
@@ -862,6 +915,11 @@ class VirtualOperations(object):
           ReconfigureResponse: A response containing the return value of the
           reconfigure operation, as a ReconfigureResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import SourceConfigDefinition
+
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
@@ -896,6 +954,11 @@ class VirtualOperations(object):
           StartResponse: A response containing StartResult if successful or
           PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         if self.start_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
@@ -926,8 +989,12 @@ class VirtualOperations(object):
           StopResponse: A response containing StopResult if successful or
           PluginErrorResult in case of an error.
         """
-        if self.stop_impl is not None:
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
 
+        if self.stop_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                            connection=request.virtual_source.connection,
@@ -940,6 +1007,7 @@ class VirtualOperations(object):
                 repository=repository,
                 source_config=source_config,
                 virtual_source=virtual_source)
+
         stop_response = platform_pb2.StopResponse()
         stop_response.return_value.CopyFrom(platform_pb2.StopResult())
         return stop_response
@@ -961,6 +1029,11 @@ class VirtualOperations(object):
           VirtualPreSnapshotResponse: A response containing VirtualPreSnapshotResult
           if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         if self.pre_snapshot_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
@@ -975,6 +1048,7 @@ class VirtualOperations(object):
                 repository=repository,
                 source_config=source_config,
                 virtual_source=virtual_source)
+
         virtual_pre_snapshot_response = platform_pb2.VirtualPreSnapshotResponse()
         virtual_pre_snapshot_response.return_value.CopyFrom(platform_pb2.VirtualPreSnapshotResult())
         return virtual_pre_snapshot_response
@@ -995,6 +1069,11 @@ class VirtualOperations(object):
           VirtualPostSnapshotResponse: A response containing the return value of the
           virtual post snapshot operation, as a VirtualPostSnapshotResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
             parameters.json = json.dumps(snapshot.to_dict())
@@ -1038,6 +1117,11 @@ class VirtualOperations(object):
           VirtualStatusResponse: A response containing VirtualStatusResult
           if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         if not self.status_impl:
             virtual_status_response = platform_pb2.VirtualStatusResponse()
             virtual_status_response.return_value.status = platform_pb2.VirtualStatusResponse.ACTIVE
@@ -1074,6 +1158,11 @@ class VirtualOperations(object):
           InitializeResponse: A response containing InitializeResult
           if successful or PluginErrorResult in case of an error.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
@@ -1110,6 +1199,10 @@ class VirtualOperations(object):
           VirtualMountSpecResponse: A response containing the return value of the
           virtual mount spec operation, as a VirtualMountSpecResult.
         """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+
         def to_protobuf_single_mount(single_mount):
             single_mount_protobuf = common_pb2.SingleSubsetMount()
 

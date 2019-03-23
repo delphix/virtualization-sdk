@@ -1,6 +1,6 @@
-from dlpx.virtualization.platform import plugin
+from dlpx.virtualization.platform import Plugin
 
-plugin = plugin.Plugin()
+plugin = Plugin()
 
 #
 # Below is an example of the repository discovery operation. This is
