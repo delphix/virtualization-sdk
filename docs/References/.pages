@@ -1,7 +1,7 @@
 arrange:
   - Decorators.md
   - Plugin_Operations.md
-  - Delphix_Libraries.md
+  - Platform_Libraries.md
   - Workflows.md
   - Classes.md
   - Schemas.md

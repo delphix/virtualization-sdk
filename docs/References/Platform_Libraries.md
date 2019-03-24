@@ -2,7 +2,8 @@
 title: Virtualization SDK
 ---
 
-# Delphix Libraries
+# Platform Libraries
+Set of functions that plugins can use these for executing remote commands, logging, etc.
 
 ## run_bash
 

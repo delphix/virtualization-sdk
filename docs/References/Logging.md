@@ -2,11 +2,11 @@
 
 ## What is logging?
 
-The Delphix Engine keeps plugin-specific log files. A plugin can, at any point in any of its [operations](Glossary.md#plugin-operation), write out some text to its log file(s). These log files can be examined later, typically to try to debug a problem with the plugin.
+The Virtualization Platform keeps plugin-specific log files. A plugin can, at any point in any of its [plugin operations](Glossary.md#plugin-operation), write out some text to its log file(s). These log files can be examined later, typically to try to debug a problem with the plugin.
 
 ## How to log
 
-The Delphix engine provides [callbacks](Glossary.md#callback) that plugins can use to write to log files.
+The Virtualization Platform provides [Platform Libraries](Glossary.md#platform-libraries) that plugins can use to write to log files.
 
 Making a log entry is easy, and looks like this:
 ```python
@@ -89,7 +89,7 @@ The logs will be in a the support bundle under `log/mgmt_log/toolkit_log/<plugin
 
 ## Logging Levels
 
-We already looked at an example of the `log_debug` callback. There are two more: `log_info` and `log_error`. Both work exactly the same way.
+We already looked at an example of the `log_debug` plugin library function. There are two more: `log_info` and `log_error`. Both work exactly the same way.
 
 Each of these three logging levels has its own log file. Thus, calling `log_error` will write to an `error.log` file.
 

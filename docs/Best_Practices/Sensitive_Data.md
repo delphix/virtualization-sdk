@@ -5,7 +5,7 @@ Often, a plugin will need to handle sensitive user-provided data. The most commo
 Plugins must be careful to handle sensitive data appropriately. Three tips for handling sensitive data are:
 
 1. Tell the Delphix Engine which parts of your data are sensitive.
-2. When passing sensitive data to remote callbacks (such as `RunBash`), use environment variables.
+2. When passing sensitive data to remote plugin library functions (such as `run_bash`), use environment variables.
 3. Avoid logging, or otherwise writing out the sensitive data.
 
 Each of these tips are explained below.
@@ -75,7 +75,7 @@ def my_virtual_stop(virtual_source, repository, source_config):
 
 This constructs a Python string containing exactly the desired command from above. However, this is not recommended.
 
-The problem here is that there is a cleartext password in the Python string. But, this Python string is not treated as sensitive by the Delphix Engine. For example, suppose the Delphix Engine cannot make a connection to the target environment. In which case, it will raise an error containing the Python string, so that people will know what command failed. But, in our example, that would result in the password being part of the cleartext error message.
+The problem here is that there is a cleartext password in the Python string. But, this Python string is not treated as sensitive by the Virtualization Platform. For example, suppose the Virtualization Platform cannot make a connection to the target environment. In which case, it will raise an error containing the Python string, so that people will know what command failed. But, in our example, that would result in the password being part of the cleartext error message.
 
 ## Using Environment Variables
 
@@ -97,16 +97,16 @@ plugin = Plugin()
 ```
 
 !!! note
-	We are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Delphix Engine to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
+	We are no longer putting the cleartext password into the Python command string. Instead, we are instructing the Virtualization Platform to put the password into an environment variable on the target environment. The Python command string merely mentions the name of the environment variable, and does not contain the password itself.
 
 Once the command runs on the target environment, Bash will substitute in the password, and the database shutdown will run as expected.
 
-Unlike with the command string, the Delphix Engine **does** treat environment variables as sensitive information, and will not include them in error messages or internal logs, etc.
+Unlike with the command string, the Virtualization Platform **does** treat environment variables as sensitive information, and will not include them in error messages or internal logs, etc.
 
 # Don't Write Out Sensitive Data
 
 Plugin writers are strongly advised to never write out unencrypted sensitive data. This is common-sense general advice that applies to all areas of programming, not just for plugins. However, there are a couple of special concerns for plugins.
 
-The Delphix Engine provides logging capabilities to plugins. The generated logs are unencrypted and not treated as sensitive. Therefore, it is important for plugins to **never log sensitive data**.
+The Virtualization Platform provides logging capabilities to plugins. The generated logs are unencrypted and not treated as sensitive. Therefore, it is important for plugins to **never log sensitive data**.
 
-In addition, remember that your plugin is not treated as sensitive by the Delphix Engine. Plugin code is distributed unencrypted, and is viewable in cleartext Delphix Engine users. Sensitive data such as passwords should never be hard-coded in your plugin code.
+In addition, remember that your plugin is not treated as sensitive by the Virtualization Platform. Plugin code is distributed unencrypted, and is viewable in cleartext by Delphix Engine users. Sensitive data such as passwords should never be hard-coded in your plugin code.

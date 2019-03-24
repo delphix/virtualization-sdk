@@ -120,13 +120,13 @@ Recall that the `dvp init` command we ran created a file called `src/plugin_runn
 
 
 ```python
-import dlpx.virtualization.libs as callback
-from dlpx.virtualization import platform
+import dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
 from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
 
-plugin = platform.Plugin()
+plugin = Plugin()
 
 @plugin.discovery.repository()
 def repository_discovery(source_connection):
@@ -134,14 +134,14 @@ def repository_discovery(source_connection):
     return [repository]
 ```
 
-!!! note
+!!! tip
     Be careful to always use consistent indentation in Python code!
 
 Taking this line-by-line, here is what's happening in our new method::
 
 ```python
-import dlpx.virtualization.libs as callback
-from dlpx.virtualization import platform
+import dlpx.virtualization import libs
+from dlpx.virtualization.platform import Plugin
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
 from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
@@ -151,10 +151,10 @@ be used just below, as we implement discovery. Others will be used later on, as 
 ingestion and provisioning.
 
 ```python
-plugin = platform.Plugin()
+plugin = Plugin()
 ```
 
-The python expression `platform.Plugin()` creates a Python object which allows us to define our plugin types. We have the ability to do this because of the `import plugin` statement above.
+The python expression `Plugin()` creates a Python object which allows us to define our plugin types. We have the ability to do this because of the `import Plugin` statement above.
 
 This object is stored in a variable we have elected to call `plugin`. We are free to call this variable anything we want, so long as we also change the `entryPoint` line in the `plugin_config.yml` file. We will just leave it as `plugin`.
 
@@ -233,5 +233,8 @@ For example, in the above screenshot, we are specifying that we want to sync the
 Once you have added one or more source configs, you will be able to sync, this is covered on the next page.
 
 
-!!! note
+!!! warning
     Once you have manually created a source config, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema, you will have to delete any source configs you have manually added.
+
+!!! question "Survey"
+    Please fill out this [survey](https://forms.gle/cEWzdTnvi6vNeMT58) to give us feedback about this section.

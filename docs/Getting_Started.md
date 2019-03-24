@@ -84,3 +84,6 @@ This is likely caused by an out of date `setuptools` version which is often due 
 ```
 $ pip install setuptools --upgrade
 ```
+
+!!! question "Survey"
+    Please fill out this [survey](https://forms.gle/pMZSzbU6tAkaHxLt8) to give us feedback about this section.

@@ -22,7 +22,7 @@ With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plu
 
 For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS (or CIFS on Windows) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this NFS mount.
 
-!!! note "Gotcha"
+!!! tip "Gotcha"
     Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.
 
 For more details about deciding between using a direct or a staging strategy, please see (link to best practices section).
@@ -31,7 +31,7 @@ For more details about deciding between using a direct or a staging strategy, pl
 
 For our purposes here in this intro plugin, we will use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running the Unix tool `rsync` from our staging environment, and rely on passwordless SSH to connect to the source environment.
 
-!!! note
+!!! info
     This plugin is assuming that `rsync` is installed on the staging host, and that the staging
     host user is able to SSH into the source host without having to type in a password. A more
     full-featured plugin would test these assumptions, usually as part of discovery.
@@ -49,9 +49,9 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
 "linkedSourceDefinition": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["source_address", "username", "mount_location"],
+    "required": ["sourceAddress", "username", "mountLocation"],
     "properties": {
-        "source_address": {
+        "sourceAddress": {
             "type": "string",
             "prettyName": "Host from which to copy",
             "description": "IP or FQDN of host from which to copy"
@@ -61,7 +61,7 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
             "prettyName": "Username on Source Host",
             "description": "Username for making SSH connection to source host"
         },
-        "mount_location": {
+        "mountLocation": {
             "type": "string",
             "format": "unixpath",
             "prettyName": "Mount Location on Staging Host",
@@ -71,10 +71,9 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
 },
 ```
 
-!!! note
-    As will be explained later, this schema will be used to generate Python code. Due to a
-    limitation in this code generation, all names in the Python code will use
-    `lower_case_with_underscores`. To reduce confusion, we strongly suggest that you use schema names like `mount_location` instead of `mountLocation`. This will ensure that the names in the generated Python code exactly match the names in your schemas.
+!!! info
+    As will be explained later, this schema will be used to generate Python code. All names in the Python code will use
+    `lower_case_with_underscores` as per Python variable naming conventions for any schema variables in `camelCase`.
 
 
 With this schema, the user will be required to provide the source username, the source's IP address, the staging mount location as part of the linking process.
@@ -119,7 +118,7 @@ This begins a Python function definition. We chose to call it `linked_mount_spec
 could have chosen any name at all. This function accepts two arguments, one giving information about
 the linked source, and one giving information about the associated repository.
 
-!!! note
+!!! warning
     The names of these input arguments matter. That is, you'll always need to have an argument
     called `staged_source` and an argument called `repository`. Other operations will have different
     required argument names.
@@ -130,8 +129,8 @@ the linked source, and one giving information about the associated repository.
 
 The `staged_source` input argument contains an attribute called `parameters`. This in turn contains
 all of the properties defined by the `linkedSourceDefinition` schema. So, in our case, that means
-it will contain attributes called `source_address`, `username`, and `mount_location`. This line
-simply retrieves the user-provided mount location and saves it in a local variable.
+it will contain attributes called `source_address`, `username`, and `mount_location`. Note how any attribute defined in `camelCase` in the schema is converted to `variable_with_underscores`. This line
+simply retrieves the user-provided mount location and saves it in a local variable. 
 
 ```
     mount = Mount(staged_source.connection.environment, mount_location)
@@ -169,7 +168,7 @@ def copy_data_from_source(staged_source, repository, source_config):
 
     rsync_command = "rsync -r {} {}".format(data_location, stage_mount_path)
 
-    result = callback.run_bash(staged_source.connection, rsync_command)
+    result = libs.run_bash(staged_source.connection, rsync_command)
 
     if result.exit_code != 0:
         raise RuntimeError("Could not copy files. Please ensure that passwordless SSH works for {}.\n{}".format(staged_source.parameters.source_address, result.stderr))
@@ -192,7 +191,7 @@ to a local variable for convenience.
 
 This code creates a Python string that represents the location of the data that we want to ingest.
 This is in the form `<user>@<host>:<path>`. For example `jdoe@sourcehost.mycompany.com:/bin`. As
-before with `mount_location`, we have defined our schemas such that these three pieces of information
+before with `mountLocation`, we have defined our schemas such that these three pieces of information
 were provided by the user. Here we're just putting them into a format that `rsync` will understand.
 
 ```
@@ -202,12 +201,12 @@ were provided by the user. Here we're just putting them into a format that `rsyn
 This line is the actual Bash command that we'll be running on the staging host. This will look something like `rsync -r user@host:/source/path /staging/mount/path`.
 
 ```
-    result = callback.run_bash(staged_source.connection, rsync_command)
+    result = libs.run_bash(staged_source.connection, rsync_command)
 ```
 
-This is an example of a [callback](/References/Glossary/#callback), where we ask the Delphix Engine
-to do some work on our behalf. In this case, we're asking the engine to run our Bash command on the
-staging environment. For full details on the `run_bash` callback, and on callbacks in general, please see (link to reference).
+This is an example of a [platform library](/References/Glossary/#platform-libraries) function, where we ask the Virtualization Platform
+to do some work on our behalf. In this case, we're asking the platform to run our Bash command on the
+staging environment. For full details on the `run_bash` platfrom library function and others, see this [reference](/References/Platform_Libraries).
 
 ```
     if result.exit_code != 0:
@@ -267,5 +266,8 @@ Let's try it out and make sure this works!
 
 After you have finished entering this information, the initial sync process will begin. This is what will call your pre-snapshot operation, thus copying data.
 
-!!! note "Gotcha"
+!!! warning "Gotcha"
     Manually creating a dSource sets your plugin’s linked source schema in stone, and you will have to recreate the dSource in order to modify your schema. We will cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
+
+!!! question "Survey"
+    Please fill out this [survey](https://forms.gle/mi7y1Yafz8H3Gq2P9) to give us feedback about this section.

@@ -10,9 +10,6 @@ A single file that is the result of a [build](#building). It is this artifact wh
 ## Building
 The process of creating an [artifact](#artifact) from the collection of files that make up the plugin's source code.
 
-## Callback
-A Python function that is provided by the Delphix Engine. Plugins use callbacks to request that the Delphix Engine do some task on behalf of the plugin. For example, running a Bash command on an environment, or making an log entry.
-
 ## Decorator
 A Python construct which is used by plugins to "tag" certain functions, so that the Delphix Engine knows which function corresponds to which plugin operation.
 
@@ -51,6 +48,9 @@ A collection of information, provided by the plugin, which give all the details 
 
 ## Password Properties
 In [schemas](#schema), any string property can be tagged with `"format": "password"`. This will let the Delphix Engine know that the property contains sensitive information. Any such values will only be stored in encrypted format, and the UI will not display the values on screen.
+
+## Platform Libraries
+A set of Python functions that are provided by the Virtualization Platform. Plugins use these library functions to request that the Virtualization Platform do some task on behalf of the plugin. For example, running a Bash command on an environment, or making an log entry.
 
 ## Plugin
 A tool that customizes the Delphix Engine so it knows how to interact with a particular kind of dataset.

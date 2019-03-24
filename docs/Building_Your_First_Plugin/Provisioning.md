@@ -29,9 +29,9 @@ Open up `schema.json`, locate the `virtualSourceDefintion` section, and change i
 "virtualSourceDefinition": {
     "type": "object",
     "additionalProperties" : false,
-    "required": ["mount_location"],
+    "required": ["mountLocation"],
     "properties" : {
-        "mount_location": {
+        "mountLocation": {
             "type": "string",
             "format": "unixpath",
             "prettyName": "Mount Location on Target Host",
@@ -157,3 +157,6 @@ Finally, let us try it out to make sure provisioning works!
 4. This will open the Provision VDB wizard, complete the steps and select **Submit**.   
   During VDB provisioning one of the things you will have to do is to provide the data required by your virtual source schema. In our case, that means you will be asked to provide a value for `mountPath`. You will also be asked to choose a target environment on which the new VDB will live. After the wizard finishes, you will see a job appear on the right-hand side of the screen. When that job completes, your new VDB should be ready.
 5. To ensure everything has worked correctly, log into to your target environment. From there, you can examine the directory you specified as the `mountPath`. What you should see is a copy of the directory that you linked to with your dSource.
+
+!!! question "Survey"
+    Please fill out this [survey](https://forms.gle/zTot9R9sx9PcMwmz5) to give us feedback about this section.
