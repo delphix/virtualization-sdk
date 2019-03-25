@@ -108,5 +108,5 @@ Once the upload is finished, you can verify the installation from the Manage > T
 ![Screenshot](images/PostUpload.png)
 
 
-!!! question "Survey"
+!!! question "[Survey](https://forms.gle/d4es9yPJ4LhD9qxf7)"
     Please fill out this [survey](https://forms.gle/d4es9yPJ4LhD9qxf7) to give us feedback about this section.

@@ -85,5 +85,5 @@ This is likely caused by an out of date `setuptools` version which is often due 
 $ pip install setuptools --upgrade
 ```
 
-!!! question "Survey"
+!!! question "[Survey](https://forms.gle/pMZSzbU6tAkaHxLt8)"
     Please fill out this [survey](https://forms.gle/pMZSzbU6tAkaHxLt8) to give us feedback about this section.

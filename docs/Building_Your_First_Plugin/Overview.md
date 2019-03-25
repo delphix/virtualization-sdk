@@ -67,5 +67,5 @@ To complete the tutorial that follows, make sure you check off the things on thi
 - Add at least one Unix host—but preferably three—to the Delphix Engine as remote environments
 - Have a tool at hand for editing text files—mostly Python and JSON. A simple text editor would work fine, or you can use a full-fledged IDE.
 
-!!! question "Survey"
+!!! question "[Survey](https://forms.gle/26APvZq7Lm6nEQ8q8)"
     Please fill out this [survey](https://forms.gle/26APvZq7Lm6nEQ8q8) to give us feedback about this section.

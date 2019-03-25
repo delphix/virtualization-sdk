@@ -236,5 +236,5 @@ Once you have added one or more source configs, you will be able to sync, this i
 !!! warning
     Once you have manually created a source config, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema, you will have to delete any source configs you have manually added.
 
-!!! question "Survey"
+!!! question "[Survey](https://forms.gle/cEWzdTnvi6vNeMT58)"
     Please fill out this [survey](https://forms.gle/cEWzdTnvi6vNeMT58) to give us feedback about this section.

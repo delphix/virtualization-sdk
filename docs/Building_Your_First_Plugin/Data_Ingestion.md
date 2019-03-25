@@ -269,5 +269,5 @@ After you have finished entering this information, the initial sync process will
 !!! warning "Gotcha"
     Manually creating a dSource sets your plugin’s linked source schema in stone, and you will have to recreate the dSource in order to modify your schema. We will cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
 
-!!! question "Survey"
+!!! question "[Survey](https://forms.gle/mi7y1Yafz8H3Gq2P9)"
     Please fill out this [survey](https://forms.gle/mi7y1Yafz8H3Gq2P9) to give us feedback about this section.
