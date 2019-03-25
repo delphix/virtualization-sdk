@@ -18,10 +18,28 @@ Given the following plugin structure:
         └── get_date.sh
 ```
 
-__Add snapshot defintion here__
+Assume `SnapshotDefinition` is:
+
+```
+"snapshotDefinition": {
+    "type" : "object",
+    "additionalProperties" : false,
+    "properties" : {
+        "name": {"type": "string"},
+        "date": {"type": "string"}
+    }
+}
+```
+
+and `src/resources/get_date.sh` contains:
+
+```
+#!/usr/bin/env bash
+date
+```
 
 
-If `src/resources/get_date.sh` is needed in `post_snapshot`, it can be retrieved and executed:
+If `get_date.sh` is needed in `post_snapshot`, it can be retrieved and executed:
 
 ```python
 import pkgutil
@@ -53,7 +71,7 @@ def post_snapshot(direct_source, repository, source_config):
 	This assumes that `src/` is Python's current working directory. This is the behavior of the Virtualization Platform.
 
 !!! warning "Resources need to be in a Python module"
-	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python module. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory and that subdirectory must contain an `__init__.py` file.
+	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python package. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an `__init__.py` file.
 
 ### Mutli-level Packages
 
