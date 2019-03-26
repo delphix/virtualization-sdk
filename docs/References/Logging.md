@@ -95,7 +95,7 @@ Each of these three logging levels has its own log file. Thus, calling `log_erro
 
 These levels are also hierarchical:
 `log_error` writes only to `error.log`.
-`log_info` writes to `info.log` and `error.log`.
+`log_info` writes to `info.log` and `debug.log`.
 `log_debug` writes to `debug.log`, `info.log`, and `error.log`.
 
 `log_error` is meant to be used for cases where you know for sure there is a problem. The distinction between what counts as **info** and what counts as **debug** is entirely up to you. Some plugins will pick one of them and use it exclusively. Some will decide to count only the most important messages as **info**, with everything else counting as **debug**.
