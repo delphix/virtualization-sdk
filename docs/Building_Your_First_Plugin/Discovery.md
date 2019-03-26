@@ -140,7 +140,7 @@ def repository_discovery(source_connection):
 Taking this line-by-line, here is what's happening in our new method::
 
 ```python
-import dlpx.virtualization import libs
+from dlpx.virtualization import libs
 from dlpx.virtualization.platform import Plugin
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
