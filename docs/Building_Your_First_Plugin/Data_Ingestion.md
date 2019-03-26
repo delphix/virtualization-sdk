@@ -6,7 +6,7 @@ title: Virtualization SDK
 
 ## How Does Delphix Ingest Data?
 
-As[previously](/References/Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
+As [previously](/References/Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
 
 ### Linking
 
@@ -16,9 +16,12 @@ The first step is called [linking](/References/Glossary/#linking). This is simpl
 
 Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing) for the first time. Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
 
-The details of how this is done varies significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from:
+The details of how this is done varies significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from: direct and staging.
 
-With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plugin is not in charge of the data copying. Instead the Delphix Engine directly pulls raw data from the source environment, using the Unix tool `rsync` (or `robocopy` on Windows). The plugin merely provides the location of the data. This is a very simple strategy, and is also quite limiting.
+With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plugin is not in charge
+of the data copying. Instead the Delphix Engine directly pulls raw data from the source environment.
+The plugin merely provides the location of the data. This is a very simple strategy, and is also
+quite limiting.
 
 For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS (or CIFS on Windows) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this NFS mount.
 
@@ -40,7 +43,7 @@ In the special case mentioned above, where the staging environment is the same a
 
 ## Defining Your Linked Source Data Format
 
-In order to be able to successfully do the copying required, plugins might need to get some information from the end-user of your plugin. In our case, we need to connect from the staging environment to the source environment using the `scp` tool. This means we need to know the username and password.
+In order to be able to successfully do the copying required, plugins might need to get some information from the end-user of your plugin. In our case, we need to tell `rsync` how to access the files. This means we need to know the source environment's IP address (or domain name), the username we need to connect as, and finally the location where the files live.
 
 Again, we will be using a JSON schema to define the data format. The user will be presented with a UI that lets them provide all the information our schema specifies.
 
@@ -49,9 +52,9 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
 "linkedSourceDefinition": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["sourceAddress", "username", "mountLocation"],
+    "required": ["source_address", "username", "mount_location"],
     "properties": {
-        "sourceAddress": {
+        "source_address": {
             "type": "string",
             "prettyName": "Host from which to copy",
             "description": "IP or FQDN of host from which to copy"
@@ -61,7 +64,7 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
             "prettyName": "Username on Source Host",
             "description": "Username for making SSH connection to source host"
         },
-        "mountLocation": {
+        "mount_location": {
             "type": "string",
             "format": "unixpath",
             "prettyName": "Mount Location on Staging Host",
@@ -72,8 +75,11 @@ Open up `schema.json` in your editor/IDE. Locate the `LinkedSourceDefinition` an
 ```
 
 !!! info
-    As will be explained later, this schema will be used to generate Python code. All names in the Python code will use
-    `lower_case_with_underscores` as per Python variable naming conventions for any schema variables in `camelCase`.
+    As will be explained later, this schema will be used to generate Python code. All names in the
+    Python code will use `lower_case_with_underscores` as per Python variable naming conventions.
+    That is, if we were to use `mountLocation` as the schema property name, it would still be called
+    `mount_location` in the generated Python code. To reduce confusion, we strongly suggest you use
+    this naming convention for the properties in your schema.
 
 
 With this schema, the user will be required to provide the source username, the source's IP address, the staging mount location as part of the linking process.
@@ -130,7 +136,7 @@ the linked source, and one giving information about the associated repository.
 The `staged_source` input argument contains an attribute called `parameters`. This in turn contains
 all of the properties defined by the `linkedSourceDefinition` schema. So, in our case, that means
 it will contain attributes called `source_address`, `username`, and `mount_location`. Note how any attribute defined in `camelCase` in the schema is converted to `variable_with_underscores`. This line
-simply retrieves the user-provided mount location and saves it in a local variable. 
+simply retrieves the user-provided mount location and saves it in a local variable.
 
 ```
     mount = Mount(staged_source.connection.environment, mount_location)
@@ -258,11 +264,21 @@ Let's try it out and make sure this works!
 
 **Procedure**
 
-1. Go to **Manage > Environments**, select your **source** environment, and then go to the **Databases** tab. Find your **Directory Tree** repository, and your source config underneath it.
+!!! note
+    Recall that, for simplicity's sake, this plugin requires that passwordless SSH is set up between
+    your staging and source environments. You may want to verify this before continuing.
 
-2. From your source config click **Add dSource**. This will begin the linking process.
+1. As before, use `dvp build` and `dvp upload` to get your latest plugin changes installed onto
+the Delphix Engine.
 
-3. In the dSource wizard you will specify which environment you want to use for staging. You will also be asked to provide the username and password needed to connect to the source environment.
+2. Go to **Manage > Environments**, select your **source** environment, and then go to the **Databases** tab. Find **Repository for our First Plugin**, and your source config underneath it.
+
+3. From your source config click **Add dSource**. This will begin the linking process. The first
+screen you see should ask for the properties that you recently added to your `linkedSourceDefinition`. ![Screenshot](images/LinkingWizard.png)
+
+4. Walk through the remainder of the screens and hit **Submit**. This will kick off the initial link and first sync.
+
+5. You can confirm that your new dSource was added successfully by going to **Manage > Datasets**.
 
 After you have finished entering this information, the initial sync process will begin. This is what will call your pre-snapshot operation, thus copying data.
 

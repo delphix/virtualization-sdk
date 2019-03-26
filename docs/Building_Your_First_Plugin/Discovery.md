@@ -114,13 +114,13 @@ Right now, we are concerned with discovery. There are two customizable operation
 ### Repository Discovery
 For repositories, we will need to write a "repository discovery" operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
 
-As a reminder, our only external dependency on the remote environment is simply the existence of a filesystem. Since every Unix host has an environment, that means we will have exactly one repository per remote environment. Therefore, our repository discovery operation can be very simple.
+As a reminder, our only external dependency on the remote environment is simply the existence of a filesystem. Since every Unix host has a filesystem, that means we will have exactly one repository per remote environment. Therefore, our repository discovery operation can be very simple.
 
 Recall that the `dvp init` command we ran created a file called `src/plugin_runner.py`. Open this file in your editor/IDE. Change the content so that it looks like this:
 
 
 ```python
-import dlpx.virtualization import libs
+from dlpx.virtualization import libs
 from dlpx.virtualization.platform import Plugin
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
@@ -212,11 +212,11 @@ Let us make sure discovery works!
 
 2. Run `dvp install -e <engine> -u <user>`, as before. This will get all the new changes onto the Delphix Engine.
 
-3. Once the new plugin is uploaded, add a remote unix environment to your engine. To do this, go to **Manage > Environments**, click **Add**, answer the questions, and **Submit**. (If you already have an environment set up, you can just refresh it).
+3. Once the new plugin is uploaded, add a remote unix environment to your engine. To do this, go to **Manage > Environments**, chose **Add Environment** from the menu, answer the questions, and **Submit**. (If you already have an environment set up, you can just refresh it instead).
 
-  To keep an eye on this discovery process, you may need to open the **operation** tab on the UI. If any errors happen, they will be reported here.
+  To keep an eye on this discovery process, you may need to open the **Actions** tab on the UI. If any errors happen, they will be reported here.
 
-4. After the automatic discovery process completes, go to the **Databases** tab, you will see an entry for **Repository For Our First Plugin**. This is the repository you created in your Python code.
+4. After the automatic discovery process completes, go to the **Databases** tab. You will see an entry for **Repository For Our First Plugin**. This is the repository you created in your Python code.
 
 ![Screenshot](images/PostDiscovery.png)
 
@@ -228,7 +228,9 @@ However, because we have allowed manual source config discovery, you can add you
 
 This should all look familiar. It is precisely what we defined in our source config schema. As expected, there are two entries, one for our `name` property, and one for `path`.
 
-For example, in the above screenshot, we are specifying that we want to sync the `/bin` directory from the remote host, and we want to call it `Binaries`.
+For example, in the above screenshot, we are specifying that we want to sync the `/bin` directory
+from the remote host, and we want to call it `Binaries`. You can pick any directory and name that
+you want.
 
 Once you have added one or more source configs, you will be able to sync, this is covered on the next page.
 

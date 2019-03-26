@@ -53,10 +53,14 @@ To start, we will create a new directory where our new plugin code will live.
 Now that we are in our new plugin directory, we can use the `dvp` tool to create a plugin for us. This plugin will be a mere skeleton -- it will not do anything useful until we modify it in the subsequent pages.
 
 ```
-(venv) first_plugin$ dvp init -n first_plugin
+(venv) first_plugin$ dvp init -n first_plugin -s STAGED
 ```
 
 The `-n` argument here means "plugin name." We are using the name `first_plugin`.
+
+The `-s` argument tells which syncing strategy we want to use.
+
+You can type `dvp init -h` for more information about the options available.
 
 After running this command, you should see that files have been created for you:
 
@@ -69,8 +73,8 @@ These files are described below:
 
 File | Description
 --------------------|----------------------
-`plugin_config.yml` | The [manifest](/References/Glossary/#manifest) file, provides a list of plugin properties
-`schema.json`       | Contains [schemas](/References/Glossary/#schema) which provides custom datatype definitions
+`plugin_config.yml` | The [manifest](/References/Glossary/#manifest) file, which provides a list of plugin properties
+`schema.json`       | Contains [schemas](/References/Glossary/#schema) which provide custom datatype definitions
 `src/plugin_runner.py` | A Python file which will eventually contain code that handles plugin [operations](/References/Glossary/#operation)
 
 

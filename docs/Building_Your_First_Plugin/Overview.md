@@ -15,14 +15,14 @@ Here we will briefly overview how data moves through the Delphix Engine.
 ### Ingestion
 It all begins with Delphix ingesting data—copying some data from what we call a [source environment](../References/Glossary.md#source-environment)  onto the Delphix Engine.
 
-Plugins can use two basic strategies to do this copying:
+Plugins can use either of two basic strategies to do this copying:
 
- - [direct linking](../References/Glossary.md#direct-linking)
- - [staged linking](../References/Glossary.md#staged-linking).
+ - [direct linking](../References/Glossary.md#direct-linking), where the Delphix Engine pulls data directly from the source environment.
+ - [staged linking](../References/Glossary.md#staged-linking), where the plugin is responsible for pulling data from the source environment.
 
-Our plugin will use the staged linking strategy, refer to (link to reference) for more information about direct linking.
+Our plugin will use the staged linking strategy.
 
-With staged linking, Delphix mounts an NFS share onto a **staging environmen**. You can use either the source environment or a different environment for staging. We will write our plugin to handle both approaches.
+With staged linking, Delphix mounts an NFS share onto a [staging environment](../References/Glossary.md#staging-environment). You can use either the source environment or a different environment for staging. We will write our plugin to handle both approaches.
 
 Once Delphix mounts the NFS share onto the staging environment, the plugin needs to arrange for the relevant data to be copied from the source environment onto the NFS share, which is backed by Delphix Engine storage.
 
@@ -50,9 +50,9 @@ A plugin consists of three main parts. We will cover them briefly here, and then
 Manifest is where the plugin describes itself to the Delphix Engine. What is the plugin called? What version of the plugin is being used? What type(s) of environments does the plugin work with? What features does the plugin offer?...
 
 ### Operations/Code
-The plugin will need to provide operations. These are Python functions, each of which implement one small piece of functionality. This is how the plugin customizes Delphix behavior to work with the kind of dataset you’re building the plugin for. One operation will handle setting up a newly-configured virtual dataset. Another will handle copying data from a source environment, and so on.
+The plugin will need to provide operations. These are Python functions, each of which implements one small piece of functionality. This is how the plugin customizes Delphix behavior to work with the kind of dataset you’re building the plugin for. One operation will handle setting up a newly-configured virtual dataset. Another will handle copying data from a source environment, and so on.
 
-Later we’ll provide examples for our first plugin. See [Plugin Operations](../References/Plugin_Operations.md) for full details on the operations that are available, which are required, what each one is required to do. Also see <link to advanced> for a more full-featured example with more operations.
+Later we’ll provide examples for our first plugin. See [Plugin Operations](../References/Plugin_Operations.md) for full details on the operations that are available, which are required, and what each one is required to do.
 
 ### Datatype Definitions
 As part of normal operations, plugins need to generate and access certain pieces of information in order to do their job. For example, plugins that work with Postgres might need to know which port number to connect to, or which credentials to use.
