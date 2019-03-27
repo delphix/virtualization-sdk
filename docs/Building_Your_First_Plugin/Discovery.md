@@ -170,6 +170,12 @@ We are using a Python [decorator](/References/Glossary/#decorator) which signals
 
 The Delphix Engine will pass us information about the source environment in an argument called `source_connection`. As it happens, we will not need to use this information at all in our case.
 
+!!! warning
+    The name of this input argument matters. That is, you'll always need to have an argumentcalled
+    `source_connection` here. Each plugin operation has its own set of required argument names. For
+    details on which arguments apply to which operations, see the [reference section]
+    (/References/Plugin_Operations).
+
 
 ```python
     repository = RepositoryDefinition('Repository for our First Plugin')

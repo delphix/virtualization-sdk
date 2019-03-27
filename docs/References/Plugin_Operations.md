@@ -8,6 +8,10 @@ title: Virtualization SDK
 !!! warning
     If a Plugin Operations is **Required** and is not present, the corresponding Delphix Engine Operation will fail when invoked. The plugin can still be built and uploaded to the Delphix Engine.
 
+!!! warning
+    For each operation, the argument names must match exactly. For example, the Repository Discovery
+    operation must have a single argument named `source_connection`.
+
 
 Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 ---------------- | -------- | --------- | -------------------------
