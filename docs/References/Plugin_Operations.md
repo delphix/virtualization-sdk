@@ -34,7 +34,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Virtual Source<br/>Pre-Snapshot](#virtual-source-pre-snapshot) | **No** | `virtual.pre_snapshot()` | [Virtual Source Snapshot](Workflows.md#virtual-source-snapshot)
 [Virtual Source<br/>Post-Snapshot](#virtual-source-post-snapshot) | **Yes** | `virtual.post_snapshot()` | [Virtual Source Snapshot](Workflows.md#virtual-source-snapshot)
 [Virtual Source<br>Mount Specification](#virtual-source-mount-specification) | **Yes** | `virtual.mount_specification()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)<br/>[Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Rollback](Workflows.md#virtual-source-rollback)<br/>[Virtual Source Start](Workflows.md#virtual-source-start)
-[Virtual Source<br/>Status](#virtual-source-status) | **No** | `virtual.status()` | N/A
+[Virtual Source<br/>Status](#virtual-source-status) | **No** | `virtual.status()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)
 
 
 ## Repository Discovery
@@ -1032,7 +1032,7 @@ If not implemented, the platform assumes that the status is `Status.ACTIVE`.
 
 ### Delphix Engine Operations
 
-* N/A
+* [Virtual Source Enable](Workflows.md#virtual-source-enable)
 
 ### Signature
 
