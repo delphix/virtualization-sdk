@@ -107,8 +107,8 @@ mount = Mount(environment, path)
 
 Field | Type | Description
 ----- | ---- | -----------
-environment | RemoteEnvironment | Environment for the connection. Internal virtualization platform object.
-path | String | The path on the remote host that has the mounted data set.
+remote_environment | RemoteEnvironment | Environment for the connection. Internal virtualization platform object.
+mount_path | String | The path on the remote host that has the mounted data set.
 shared_path | String | **Optional.** The path of the subdirectory of the data set to mount to the remote host.
 
 
