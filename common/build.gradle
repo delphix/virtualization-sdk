@@ -41,6 +41,12 @@ artifacts {
 }
 
 dlpxPython {
+  sources {
+    delphix {
+      url = "https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/"
+    }
+  }
+
   dist {
     name = "dvp-common"
   }

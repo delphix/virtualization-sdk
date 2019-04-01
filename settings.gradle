@@ -6,6 +6,7 @@ pluginManagement {
   repositories {
     gradlePluginPortal()
     mavenCentral()
+    mavenLocal()  // Allows use of locally build Python plugins.
     maven {
       name "delphix"
       url "http://artifactory.delphix.com/artifactory/delphix-gradle-plugins"

@@ -1,15 +1,15 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "39eca711cfc13554ec6b2de8d3226ff006033acf3e3dc4e3850d40a0b93f1b96"
+            "sha256": "47dc236248a8159b5cb2be823f3e49e7c5656a8c45c9b83fc69ed289ef3dc907"
         },
         "pipfile-spec": 6,
         "requires": {},
         "sources": [
             {
-                "name": "pypi",
-                "url": "https://pypi.org/simple",
-                "verify_ssl": true
+                "name": "delphix",
+                "url": "https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/",
+                "verifySsl": true
             }
         ]
     },
