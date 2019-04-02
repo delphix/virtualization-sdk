@@ -71,11 +71,11 @@ def my_source_config_discovery(source_connection, repository):
 When you look at the log file, perhaps you'll see something like this:
 
 ```
-[2019-03-12 12:17:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB version
-[2019-03-12 12:19:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB users
-[2019-03-12 12:41:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get databases
-[2019-03-12 12:44:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] About to get DB statuses
-[2019-03-12 12:49:05,907][DEBUG][my_plugin][Thread-47][ToolkitLogProvider.logMessageForToolkit] Done collecting data
+[2019-03-12 12:17:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB version
+[2019-03-12 12:19:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB users
+[2019-03-12 12:41:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get databases
+[2019-03-12 12:44:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB statuses
+[2019-03-12 12:49:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] Done collecting data
 ```
 
 You can see that it only takes a few seconds for us do each of our data collection steps, with the exception of getting the users, which takes over 13 minutes!
@@ -85,7 +85,7 @@ We now know that our slowdown is something to do with how our bash script is col
 ## How to retrieve logs
 
 **TODO: Add content here after we have a firm process for doing this (there may be a UI coming soon?)**
-The logs will be in a the support bundle under `log/mgmt_log/toolkit_log/<plugin name>`.
+The logs will be in a the support bundle under `log/mgmt_log/plugin_log/<plugin name>`.
 
 ## Logging Levels
 
