@@ -1,79 +1,103 @@
-class RepositoryDefinition(object):
+class Model(object):
+    # swaggerTypes: The key is attribute name and the
+    # value is attribute type.
+    swagger_types = {}
 
+    # attributeMap: The key is attribute name and the
+    # value is json key in definition.
+    attribute_map = {}
+
+class RepositoryDefinition(Model):
   def __init__(self, name):
-    self.__name = name
+    self.swagger_types = {
+      'name': str
+    }
+
+    self.attribute_map = {
+      'name': 'name'
+    }
+    self._name = name
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @staticmethod
   def from_dict(input_dict):
-    return RepositoryDefinition(input_dict["name"])
+    return RepositoryDefinition(input_dict['name'])
 
-  def to_dict(self):
-    return { "name": self.__name }
-
-class SourceConfigDefinition(object):
-
+class SourceConfigDefinition(Model):
   def __init__(self, name):
-    self.__name = name
+    self.swagger_types = {
+      'name': str
+    }
+
+    self.attribute_map = {
+      'name': 'name'
+    }
+    self._name = name
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @staticmethod
   def from_dict(input_dict):
-    return SourceConfigDefinition(input_dict["name"])
+    return SourceConfigDefinition(input_dict['name'])
 
-  def to_dict(self):
-    return { "name": self.__name }
-
-class LinkedSourceDefinition(object):
-
+class LinkedSourceDefinition(Model):
   def __init__(self, name):
-    self.__name = name
+    self.swagger_types = {
+      'name': str
+    }
+
+    self.attribute_map = {
+      'name': 'name'
+    }
+    self._name = name
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @staticmethod
   def from_dict(input_dict):
-    return LinkedSourceDefinition(input_dict["name"])
+    return LinkedSourceDefinition(input_dict['name'])
 
-  def to_dict(self):
-    return { "name": self.__name }
-
-class VirtualSourceDefinition(object):
-
+class VirtualSourceDefinition(Model):
   def __init__(self, name):
-    self.__name = name
+    self.swagger_types = {
+      'name': str
+    }
+
+    self.attribute_map = {
+      'name': 'name'
+    }
+    self._name = name
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @staticmethod
   def from_dict(input_dict):
-    return VirtualSourceDefinition(input_dict["name"])
+    return VirtualSourceDefinition(input_dict['name'])
 
-  def to_dict(self):
-    return { "name": self.__name }
-
-class SnapshotDefinition(object):
-
+class SnapshotDefinition(Model):
   def __init__(self, name):
-    self.__name = name
+    self.swagger_types = {
+      'name': str
+    }
+
+    self.attribute_map = {
+      'name': 'name'
+    }
+    self._name = name
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @staticmethod
   def from_dict(input_dict):
-    return SnapshotDefinition(input_dict["name"])
-
-  def to_dict(self):
-    return { "name": self.__name }
+    return SnapshotDefinition(input_dict['name'])

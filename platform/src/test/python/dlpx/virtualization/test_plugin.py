@@ -5,8 +5,16 @@
 import json
 import pytest
 from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.platform import _plugin
+
 from mock import MagicMock, patch
 import fake_generated_definitions
+
+from fake_generated_definitions import SnapshotDefinition
+from fake_generated_definitions import VirtualSourceDefinition
+from fake_generated_definitions import LinkedSourceDefinition
+from fake_generated_definitions import SourceConfigDefinition
+from fake_generated_definitions import RepositoryDefinition
 
 TEST_ENVIRONMENT = 'TestEnvironment'
 TEST_USER = 'TestUser'
@@ -63,11 +71,118 @@ class TestPlugin:
                 pass
 
     @staticmethod
+    def test_to_dict():
+        class Model(object):
+            # swaggerTypes: The key is attribute name and the
+            # value is attribute type.
+            swagger_types = {}
+
+            # attributeMap: The key is attribute name and the
+            # value is json key in definition.
+            attribute_map = {}
+
+        class SubTestDefinition(Model):
+            def __init__(self, name, sub_mount_location):
+                self.swagger_types = {
+                  'name': str,
+                  'sub_mount_location': str
+                }
+
+                self.attribute_map = {
+                    'name': 'name',
+                    'sub_mount_location': 'subMountLocation'
+                }
+
+                self._name = name
+                self._sub_mount_location = sub_mount_location
+
+            @property
+            def name(self):
+                return self._name
+
+            @property
+            def sub_mount_location(self):
+                return self._sub_mount_location
+
+        class TestDefinition(Model):
+            def __init__(self, name, mount_location, sub_test_definition, some_list, some_dict, model_list, model_dict):
+                self.swagger_types = {
+                    'name': str,
+                    'mount_location': str,
+                    'sub_test_definition': SubTestDefinition,
+                    'some_list': list,
+                    'some_dict': dict,
+                    'model_list': list,
+                    'model_dict': dict
+                }
+
+                self.attribute_map = {
+                    'name': 'name',
+                    'mount_location': 'mountLocation',
+                    'sub_test_definition': 'subTestDefinition',
+                    'some_list': 'someList',
+                    'some_dict': 'someDict',
+                    'model_list': 'modelList',
+                    'model_dict': 'modelDict'
+                }
+                self._name = name
+                self._mount_location = mount_location
+                self._sub_test_definition = sub_test_definition
+                self._some_list = some_list
+                self._some_dict = some_dict
+                self._model_list = model_list
+                self._model_dict = model_dict
+
+            @property
+            def name(self):
+                return self._name
+
+            @property
+            def mount_location(self):
+                return self._mount_location
+
+            @property
+            def sub_test_definition(self):
+                return self._sub_test_definition
+
+            @property
+            def some_list(self):
+                return self._some_list
+
+            @property
+            def some_dict(self):
+                return self._some_dict
+
+            @property
+            def model_list(self):
+                return self._model_list
+
+            @property
+            def model_dict(self):
+                return self._model_dict
+
+        sub_test_definition = SubTestDefinition('sub_test_name', '/mnt/sub_location')
+        test_definition = TestDefinition('test_name', '/mnt/location', sub_test_definition, ['list'], {'key': 'value'}, [sub_test_definition], {'key': sub_test_definition})
+
+        expected_dict = {
+            'name': 'test_name',
+            'mountLocation': '/mnt/location',
+            'subTestDefinition': {'name': 'sub_test_name', 'subMountLocation': '/mnt/sub_location'},
+            'someList': ['list'],
+            'someDict': {'key': 'value'},
+            'modelList': [{'name': 'sub_test_name',
+            'subMountLocation': '/mnt/sub_location'}],
+            'modelDict': {'key': {'name': 'sub_test_name', 'subMountLocation': '/mnt/sub_location'}}
+        }
+
+        assert _plugin._to_dict(test_definition) == expected_dict
+
+    @staticmethod
     def test_virtual_configure(my_plugin):
 
         @my_plugin.virtual.configure()
         def virtual_configure_impl(virtual_source, repository, snapshot):
-            return SourceConfig(repository.name, snapshot.name, virtual_source.parameters.name)
+            return SourceConfigDefinition(snapshot.name)
 
         configure_request = platform_pb2.ConfigureRequest()
         configure_request.repository.parameters.json = TEST_REPOSITORY_JSON
@@ -76,7 +191,7 @@ class TestPlugin:
 
         config_response = my_plugin.virtual._internal_configure(configure_request)
 
-        expected_source_config = json.dumps(SourceConfig(TEST_REPOSITORY, TEST_SNAPSHOT, TEST_VIRTUAL_SOURCE).to_dict())
+        expected_source_config = TEST_SNAPSHOT_JSON
         assert config_response.return_value.source_config.parameters.json == expected_source_config
 
     @staticmethod
@@ -110,7 +225,7 @@ class TestPlugin:
             assert snapshot.name == TEST_SNAPSHOT
             assert source_config.name == TEST_SOURCE_CONFIG
             assert virtual_source.parameters.name == TEST_VIRTUAL_SOURCE
-            return SourceConfig(snapshot.name, source_config.name, virtual_source.parameters.name)
+            return SourceConfigDefinition(snapshot.name)
 
         reconfigure_request = platform_pb2.ReconfigureRequest()
         reconfigure_request.snapshot.parameters.json = TEST_SNAPSHOT_JSON
@@ -118,7 +233,7 @@ class TestPlugin:
         reconfigure_request.virtual_source.parameters.json = TEST_VIRTUAL_SOURCE_JSON
 
         reconfigure_response = my_plugin.virtual._internal_reconfigure(reconfigure_request)
-        expected_source_config = json.dumps(SourceConfig(TEST_SNAPSHOT, TEST_SOURCE_CONFIG, TEST_VIRTUAL_SOURCE).to_dict())
+        expected_source_config = TEST_SNAPSHOT_JSON
 
         assert reconfigure_response.return_value.source_config.parameters.json == expected_source_config
 
@@ -196,7 +311,7 @@ class TestPlugin:
             assert repository.name == TEST_REPOSITORY
             assert source_config.name == TEST_SOURCE_CONFIG
             assert virtual_source.parameters.name == TEST_VIRTUAL_SOURCE
-            return Snapshot(TEST_SNAPSHOT)
+            return SnapshotDefinition(TEST_SNAPSHOT)
 
         virtual_post_snapshot_request = platform_pb2.VirtualPostSnapshotRequest()
         virtual_post_snapshot_request.repository.parameters.json = TEST_REPOSITORY_JSON
@@ -204,7 +319,7 @@ class TestPlugin:
         virtual_post_snapshot_request.virtual_source.parameters.json = TEST_VIRTUAL_SOURCE_JSON
 
         virtual_post_snapshot_response = my_plugin.virtual._internal_post_snapshot(virtual_post_snapshot_request)
-        expected_snapshot = json.dumps(Snapshot(TEST_SNAPSHOT).to_dict())
+        expected_snapshot = TEST_SNAPSHOT_JSON
 
         assert virtual_post_snapshot_response.return_value.snapshot.parameters.json == expected_snapshot
 
@@ -300,7 +415,7 @@ class TestPlugin:
         def repository_discovery_impl(source_connection):
             assert source_connection.environment.reference == TEST_ENVIRONMENT
             assert source_connection.user.reference == TEST_USER
-            return [Repository(TEST_REPOSITORY), Repository(TEST_REPOSITORY)]
+            return [RepositoryDefinition(TEST_REPOSITORY), RepositoryDefinition(TEST_REPOSITORY)]
 
         repository_discovery_request = platform_pb2.RepositoryDiscoveryRequest()
         repository_discovery_request.source_connection.environment.reference = TEST_ENVIRONMENT
@@ -319,8 +434,8 @@ class TestPlugin:
             assert source_connection.environment.reference == TEST_ENVIRONMENT
             assert source_connection.user.reference == TEST_USER
             assert repository.name == TEST_REPOSITORY
-            return [SourceConfig(TEST_REPOSITORY, TEST_SNAPSHOT, TEST_ENVIRONMENT),
-                    SourceConfig(TEST_REPOSITORY, TEST_SNAPSHOT, TEST_ENVIRONMENT)]
+            return [SourceConfigDefinition(TEST_REPOSITORY),
+                    SourceConfigDefinition(TEST_REPOSITORY)]
 
         source_config_discovery_request = platform_pb2.SourceConfigDiscoveryRequest()
         source_config_discovery_request.source_connection.environment.reference =  TEST_ENVIRONMENT
@@ -330,7 +445,7 @@ class TestPlugin:
         source_config_discovery_response = my_plugin.discovery._internal_source_config(source_config_discovery_request)
 
         for source_config in source_config_discovery_response.return_value.source_configs:
-            assert source_config.parameters.json == json.dumps(SourceConfig(TEST_REPOSITORY, TEST_SNAPSHOT, TEST_ENVIRONMENT).to_dict())
+            assert source_config.parameters.json == TEST_REPOSITORY_JSON
 
     @staticmethod
     def test_direct_pre_snapshot(my_plugin):
@@ -362,7 +477,7 @@ class TestPlugin:
             assert direct_source.parameters.name == TEST_DIRECT_SOURCE
             assert repository.name == TEST_REPOSITORY
             assert source_config.name == TEST_SOURCE_CONFIG
-            return Snapshot(TEST_SNAPSHOT)
+            return SnapshotDefinition(TEST_SNAPSHOT)
 
         direct_post_snapshot_request = platform_pb2.DirectPostSnapshotRequest()
         direct_post_snapshot_request.repository.parameters.json = TEST_REPOSITORY_JSON
@@ -370,7 +485,7 @@ class TestPlugin:
         direct_post_snapshot_request.direct_source.linked_source.parameters.json = TEST_DIRECT_SOURCE_JSON
 
         direct_post_snapshot_response = my_plugin.linked._internal_direct_post_snapshot(direct_post_snapshot_request)
-        expected_snapshot = json.dumps(Snapshot(TEST_SNAPSHOT).to_dict())
+        expected_snapshot = TEST_SNAPSHOT_JSON
 
         assert direct_post_snapshot_response.return_value.snapshot.parameters.json == expected_snapshot
 
@@ -404,8 +519,7 @@ class TestPlugin:
             assert staged_source.parameters.name == TEST_STAGED_SOURCE
             assert repository.name == TEST_REPOSITORY
             assert source_config.name == TEST_SOURCE_CONFIG
-            return Snapshot(TEST_SNAPSHOT)
-
+            return SnapshotDefinition(TEST_SNAPSHOT)
 
         staged_post_snapshot_request = platform_pb2.StagedPostSnapshotRequest()
         staged_post_snapshot_request.repository.parameters.json = TEST_REPOSITORY_JSON
@@ -413,7 +527,7 @@ class TestPlugin:
         staged_post_snapshot_request.staged_source.linked_source.parameters.json = TEST_STAGED_SOURCE_JSON
 
         staged_post_snapshot_response = my_plugin.linked._internal_staged_post_snapshot(staged_post_snapshot_request)
-        expected_snapshot = json.dumps(Snapshot(TEST_SNAPSHOT).to_dict())
+        expected_snapshot = TEST_SNAPSHOT_JSON
 
         assert staged_post_snapshot_response.return_value.snapshot.parameters.json == expected_snapshot
 
@@ -540,27 +654,3 @@ class TestPlugin:
         assert staged_mount_spec_response.return_value.staged_mount.mount_path == TEST_MOUNT_PATH
         assert staged_mount_spec_response.return_value.ownership_spec.uid == TEST_UID
         assert staged_mount_spec_response.return_value.ownership_spec.gid == TEST_GID
-
-"""
-The following classes are sample plugin defined types.
-"""
-class Repository:
-    def __init__(self, repository_name):
-        self.inner_map = {'name': repository_name}
-
-    def to_dict(self):
-        return self.inner_map
-
-class SourceConfig:
-    def __init__(self, repository, snapshot, source):
-        self.inner_map = {'repository': repository, 'snapshot': snapshot, 'source': source}
-
-    def to_dict(self):
-        return self.inner_map
-
-class Snapshot:
-    def __init__(self, snapshot_name):
-        self.inner_map = {'name': snapshot_name}
-
-    def to_dict(self):
-        return self.inner_map
