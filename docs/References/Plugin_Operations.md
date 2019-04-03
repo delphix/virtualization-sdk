@@ -1036,7 +1036,7 @@ If not implemented, the platform assumes that the status is `Status.ACTIVE`.
 
 ### Signature
 
-`def virtual_status(staged_source, repository, source_config)`
+`def virtual_status(virtual_source, repository, source_config)`
 
 ### Decorator
 
@@ -1062,6 +1062,6 @@ from dlpx.virtualization.platform import Status
 plugin = Plugin()
 
 @plugin.virtual.status()
-def virtual_status(virtual_source, repository):
+def virtual_status(virtual_source, repository, source_config):
   return Status.ACTIVE
 ```
