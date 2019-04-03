@@ -1,5 +1,5 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/
-./../common/build/python-dist/dvp-common-0.2.0-internal-020.tar.gz
-./../libs/build/python-dist/dvp-libs-0.2.0-internal-020.tar.gz
-./../platform/build/python-dist/dvp-platform-0.2.0-internal-020.tar.gz
-./../tools/build/python-dist/dvp-tools-0.2.0-internal-020.tar.gz
+./../common/build/python-dist/dvp-common-0.3.0-internal-002.tar.gz
+./../libs/build/python-dist/dvp-libs-0.3.0-internal-002.tar.gz
+./../platform/build/python-dist/dvp-platform-0.3.0-internal-002.tar.gz
+./../tools/build/python-dist/dvp-tools-0.3.0-internal-002.tar.gz

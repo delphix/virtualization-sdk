@@ -13,9 +13,10 @@ plugin = Plugin()
 # def repository_discovery(source_connection):
 #   # This is an object generated from the repositoryDefinition schema.
 #   # In order to use it you must:
-#   #   Run the 'compile' command provided by the SDK tools
-#   #   Import it in the generated file like:
-#   #      from generated.definitions import RepositoryDefinition
+#   #   - Run the 'build -g' command provided by the SDK tools from the
+#   #       plugin's root directory.
+#   #   - Import it in this module using:
+#   #       from generated.definitions import RepositoryDefinition
 #   repo = RepositoryDefinition('repo')
 #   return repo
 #
