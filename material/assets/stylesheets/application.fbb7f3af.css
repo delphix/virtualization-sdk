@@ -176,12 +176,12 @@ kbd {
     margin: 1.5em 0;
     border-bottom: 0.1rem dotted rgba(0, 0, 0, 0.26); }
   .md-typeset a {
-    color: #004E66;
+    color: #1381D7;
     word-break: break-word; }
     .md-typeset a, .md-typeset a::before {
       transition: color 0.125s; }
     .md-typeset a:hover, .md-typeset a:active {
-      color: #1AD6F5; }
+      color: #1998F1; }
   .md-typeset code,
   .md-typeset pre {
     background-color: rgba(236, 236, 236, 0.5);
@@ -561,7 +561,7 @@ hr {
   left: 0;
   height: 4.8rem;
   transition: background-color 0.25s, color 0.25s;
-  background-color: #004E66;
+  background-color: #1381D7;
   color: white;
   box-shadow: none;
   z-index: 2;
@@ -787,11 +787,11 @@ hr {
     .md-nav__link[data-md-state="blur"] {
       color: rgba(0, 0, 0, 0.54); }
     .md-nav__link:active, .md-nav__link--active {
-      color: #004E66; }
+      color: #1381D7; }
     .md-nav__item--nested > .md-nav__link {
       color: inherit; }
     .md-nav__link:focus, .md-nav__link:hover {
-      color: #1AD6F5; }
+      color: #1998F1; }
   .md-nav__source {
     display: none; }
 
