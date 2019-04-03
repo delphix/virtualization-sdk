@@ -24,6 +24,7 @@ of a lib operation.
 
 """
 from dlpx.virtualization import libs_pb2
+from dlpx.virtualization.libs.exceptions import LibraryError
 
 
 __all__ = [
@@ -34,7 +35,6 @@ __all__ = [
     "log_debug",
     "log_info",
     "log_error"]
-
 
 def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   """run_bash operation wrapper.
@@ -75,6 +75,27 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   return run_bash_response
 
 
+def _handle_response(response):
+  """
+   This function handles callback responses. It proceeds differently based on what the response reported...
+   All of our callback response types have one of these three setups:
+    - If there was a successful callback, this method returns the return value ("result") of the callback
+    - If there was an actionable error, this method will throw a LibraryError, which the plugin may choose to catch
+    - If there was a non-actionable error, this method calls exit()
+  """
+  if response.HasField("error"):
+    if response.error.HasField("actionable_error"):
+      actionable = response.error.actionable_error
+      # Give the plugin a chance to catch/handle this problem
+      raise LibraryError(actionable.id, actionable.message)
+
+    # Nothing the plugin can do, so quit ASAP
+    exit()
+
+  # Unpack the return value from the response
+  return response.return_value
+
+
 def run_sync(remote_connection, source_directory, rsync_user=None,
              exclude_paths=None, sym_links_to_follow=None):
   """run_sync operation wrapper.
@@ -103,7 +124,8 @@ def run_sync(remote_connection, source_directory, rsync_user=None,
   if sym_links_to_follow is not None:
     run_sync_request.sym_links_to_follow.extend(sym_links_to_follow)
 
-  internal_libs.run_sync(run_sync_request)
+  response = internal_libs.run_sync(run_sync_request)
+  _handle_response(response)
 
 
 def run_powershell(remote_connection, command, variables=None):

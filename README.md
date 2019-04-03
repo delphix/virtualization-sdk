@@ -42,6 +42,29 @@ In order to clean up the build directories, execute the `clean.sh` script:
 ./clean.sh
 ```
 
+### Testing a Local SDK build
+
+We have two suites of SDK unit tests, one for platform and one for libs.
+
+#### Platform wrappers unit testing
+
+If you made any changes to the plugin layer, you should consider adding new unit tests to `test_plugin.py`.
+
+To run the platform wrappers unit test, run the following command from your terminal in the virtualization-sdk/platform/ directory:
+```
+../gradlew test
+```
+
+## Libs wrappers unit testing
+
+If you made any changes to the libs layer, you should consider adding new unit tests to `test_libs.py`.
+
+To run the libs unit test, run the following command from your terminal in the virtualization-sdk/libs/ directory:
+```
+../gradlew test
+```
+
+
 ### Using a Local SDK Build With Appgate Code
 
 We need to put the local SDK build somewhere that the appgate code can access it, and we need to actually tell the appgate code to use it.
@@ -118,26 +141,6 @@ Add the following entry to `dlpx-app-gate/.classpath`:
 ```
 <classpathentry kind="lib" path="appliance/lib/sdk-<version>.jar"/>
 ```
-
-
-## Platform wrappers unit testing
-
-If you added any wrappers to `plugin.py`, you can add corresponding unit tests to `test_plugin.py`.
-
-To run the platform wrappers unit test, run the following command from your terminal in the virtualization-sdk/platform/ directory:
-```
-../gradlew :platform:test_python2.7
-```
-
-## Libs wrappers unit testing
-
-If you added any wrappers to `libs.py`, you can add corresponding unit tests to `test_libs.py`.
-
-To run the libs unit test, run the following command from your terminal in the virtualization-sdk/libs/ directory:
-```
-../gradlew test
-```
-
 
 ## SDK Review and Provisional Appgate review
 

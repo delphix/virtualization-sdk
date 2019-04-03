@@ -10,6 +10,22 @@ option java_multiple_files = true;
 
 package com.delphix.virtualization.libs;
 
+
+message ActionableLibraryError {
+    int32 id = 1;
+    string message = 2;
+}
+
+message NonActionableLibraryError {
+}
+
+message LibraryErrorResult {
+  oneof error {
+    ActionableLibraryError actionable_error = 1;
+    NonActionableLibraryError non_actionable_error = 2;
+  }
+}
+
 message RunBashRequest {
   com.delphix.virtualization.common.RemoteConnection remote_connection = 1;
   string command = 2;
@@ -44,7 +60,14 @@ message RunSyncRequest {
 
 }
 
-message RunSyncResponse { }
+message RunSyncResult { }
+
+message RunSyncResponse {
+  oneof result {
+    RunSyncResult return_value = 1;
+    LibraryErrorResult error = 2;
+  }
+}
 
 message RunExpectRequest {
   com.delphix.virtualization.common.RemoteConnection remote_connection = 1;

@@ -3,9 +3,11 @@
 #
 
 import mock
+import pytest
 
 from dlpx.virtualization import libs_pb2
 from dlpx.virtualization import libs
+from dlpx.virtualization.libs.exceptions import LibraryError
 from dlpx.virtualization import common_pb2
 
 class TestLibs:
@@ -73,6 +75,42 @@ class TestLibs:
           assert actual_run_powershell_response.exit_code == expected_run_powershell_response.exit_code
           assert actual_run_powershell_response.stdout == expected_run_powershell_response.stdout
           assert actual_run_powershell_response.stderr == expected_run_powershell_response.stderr
+
+  @staticmethod
+  def test_run_sync_with_actionable_error():
+      expected_id = 15
+      expected_message = "Some message"
+
+      response = libs_pb2.RunSyncResponse()
+      response.error.actionable_error.id = expected_id
+      response.error.actionable_error.message = expected_message
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_sync",
+                      return_value=response, create=True):
+          with pytest.raises(LibraryError) as info:
+             response = libs.run_sync(connection, "dir")
+          assert info.value._id == expected_id
+          assert info.value.message == expected_message
+
+  @staticmethod
+  def test_run_sync_with_nonactionable_error():
+
+      response = libs_pb2.RunSyncResponse()
+      na_error = libs_pb2.NonActionableLibraryError()
+      response.error.non_actionable_error.CopyFrom(na_error)
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_sync",
+                      return_value=response, create=True):
+          with pytest.raises(SystemExit):
+              response = libs.run_sync(connection, "dir")
 
   @staticmethod
   def test_run_sync():

@@ -159,7 +159,7 @@ def _is_swagger_model(obj):
     """
     bases = obj.__class__.__bases__
     if len(bases) == 0:
-        return false
+        return False
     return bases[0].__name__ == 'Model' and hasattr(obj, 'swagger_types') and hasattr(obj, 'attribute_map')
 
 

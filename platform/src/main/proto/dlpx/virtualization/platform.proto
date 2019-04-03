@@ -22,11 +22,11 @@ package com.delphix.virtualization.platform;
 /* ERROR REPORTING */
 
 /*
- * This indicates that a plugin elected not to handle an error raised by a callback.
+ * This indicates that a plugin elected not to handle an error raised by a library call.
  *  - error_id can be used to look up the original exception from the callback worker.
- *  - call_stack gives the location in Python code where the erroring callback was executed.
+ *  - call_stack gives the location in Python code whence the erroring library call was executed.
  */
-message UnhandledCallbackError {
+message UnhandledLibraryError {
   uint32 error_id = 1;
   string call_stack = 2;
 }
@@ -42,7 +42,7 @@ message GenericPluginError {
 /* More error types will get inserted here in future */
 message PluginErrorResult {
   oneof error {
-    UnhandledCallbackError unhandled_callback_error = 1;
+    UnhandledLibraryError unhandled_library_error = 1;
     GenericPluginError generic_plugin_error = 2;
   }
 }
