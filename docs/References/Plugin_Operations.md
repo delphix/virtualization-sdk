@@ -465,7 +465,7 @@ N/A
 
 ### Decorator
 
-`linked.stop_status()`
+`linked.status()`
 
 ### Arguments
 
