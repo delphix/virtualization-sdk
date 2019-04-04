@@ -4,14 +4,13 @@
 
 This repository contains the Virtualization SDK for building custom data source integrations for the Delphix Dynamic Data Platform.
 
-
 # Development process
 
-At a very high level, our development process looks like this:
+At a very high level, our development process usually looks like this:
 
 1. Make local changes to SDK and appgate code. Test these changes locally. Iterate on this until you have everything working.
 2. Publish a review for SDK code, and also publish a "provisional" review of appgate code. Address any feedback.
-3. Push the SDK code and publish a new SDK build to artifactory.
+3. Push the SDK code and publish new SDK builds to our internal servers.
 4. Modify the appgate code to use the newly-published SDK build from artifactory.
 5. Finalize your appgate review.
 6. Push the appgate changes.
@@ -24,10 +23,12 @@ To do local development, we need to generate an SDK build locally. We also need 
 
 ### Making a Local SDK build
 
+There are two separate components in play here -- a JAR that is used by our appgate code, and a Python distribution that is used by end users and by our blackbox tests. There are separate build procedures for each of these.
+
 #### Versioning
 The first thing to do is to change the version number. In the root of the SDK codebase, open the `build.gradle` file, and change the version. For almost all cases, this will simply involve incrementing the "build number", which is the three-digit number at the very end of the version.
 
-#### Building
+#### Building the JAR
 In order to build an SDK runtime JAR, navigate to the root directory of the repository, and execute:
 ```
 ./build.sh
@@ -36,34 +37,38 @@ The build script will produce a few build directories and output `sdk-<version>.
 
 Note that the build script does not yet do a lot of error checking. So, it is sometimes not immediately apparent if the build did not succeed. Check the timestamp on the `sdk-<version>.jar` file to make sure it's been newly-built. If not, you might have to scroll through the `build.sh` output to find an error message.
 
-#### Cleaning Up
-In order to clean up the build directories, execute the `clean.sh` script:
+If you want to remove the results of the JAR build, they can be cleaned by going to the root directory of the respository and executing:
 ```
 ./clean.sh
 ```
 
+#### Building the Python distribution
+
+To build the Python source distribution, navigate to the root directory of the repository and type:
+```
+./gradlew sdist
+```
+
+The results of this build will be stored in the various `*/build/python-dist` directories. (One each for `common`, `platform`, etc.)
+
 ### Testing a Local SDK build
 
-We have two suites of SDK unit tests, one for platform and one for libs.
+There are three levels of testing:
+- Unit Testing
+- Testing with appgate code
+- Testing with qa-gate code
 
-#### Platform wrappers unit testing
+#### Unit Testing
 
-If you made any changes to the plugin layer, you should consider adding new unit tests to `test_plugin.py`.
+Running `./gradlew test` from the top level of the repository will run all SDK unit tests. Smaller sets of tests can be run from inside each directory (`common`, `platform`, etc.) by going into that directory and running `../gradlew test`.
 
-To run the platform wrappers unit test, run the following command from your terminal in the virtualization-sdk/platform/ directory:
-```
-../gradlew test
-```
+#### Testing With Appgate Code
 
-## Libs wrappers unit testing
+Usually your SDK changes will require corresponding appgate changes. You can test this by importing a "local build" of the SDK JAR into your appgate code, as described below. Once that is done, you can test as you normally would test appgate code: run unit tests, manually test on a VM, run blackbox tests, whatever.
 
-If you made any changes to the libs layer, you should consider adding new unit tests to `test_libs.py`.
+#### Testing With Qa-Gate Code
 
-To run the libs unit test, run the following command from your terminal in the virtualization-sdk/libs/ directory:
-```
-../gradlew test
-```
-
+Unfortunately, there is currently no way to point blackbox tests at a local SDK. You must always publish your Python distribution to our Pypi server (details below) before you can run blackbox tests against it.
 
 ### Using a Local SDK Build With Appgate Code
 
@@ -150,18 +155,46 @@ In addition, it's customary to publish a "provisional" appgate review, so that p
 
 ## Pushing and Deploying SDK Code
 
-Once you've got ship-its for your review, you can `git push` them.
+### Preparation
 
-We do not yet have an autobuild/autodeploy mechanism for SDK changes, and so you must manually publish a new build to artifactory.
+1. Make sure you have both the JAR and the Python distribution built, as described above. Double check that you have the correct version in `build.gradle`.
 
-As above, you just need to run `./build.sh` from the root of your SDK repo to build. You should double-check that the name of the generated jar file really matches the correct version format.
+2. You will need your Artifactory API key, which you can get by navigating to http://artifactory.delphix.com/artifactory/webapp/#/profile (make sure you're logged in).
 
-To deploy, run the following command from your terminal:
+3. Make sure that you have `twine` installed (run `pip install twine`), and make sure that your `~/.pypirc` file has your credentials:
+```bash
+[~] cat ~/.pypirc
+[distutils]
+index-servers =
+    local
+
+[local]
+repository: http://artifactory.delphix.com/artifactory/api/pypi/delphix-local
+username: user
+password: pass
+```
+
+### Publishing
+
+We do not yet have an autobuild/autodeploy mechanism for SDK changes, and so you must manually perform three related steps separately
+
+1. Push your source changes to our git server with `git push`.
+!!! note
+    Depending on what you've changed, you may find a variety of "lock files" that have been changed. These need to be checked in and pushed alongside your source changes. These guarantee consistent builds from developer to developer.
+
+2. Publish the Jar to our Artifactory server with this command:
 ```
 curl -H 'X-JFrog-Art-Api: <Artifactory-API-key>' -T /path/to/virtualization-sdk/sdk-<version>.jar "http://artifactory.delphix.com/artifactory/virtualization-sdk/com/delphix/virtualization/sdk/<version>/sdk-<version>.jar"
 ```
-You can retrieve your API key by navigating to http://artifactory.delphix.com/artifactory/webapp/#/profile (make sure you're logged in).
 
+3. Publish the Python distribution to our Pypi server with these commands:
+```bash
+twine upload -r local tools/build/python-dist/*
+twine upload -r local libs/build/python-dist/*
+twine upload -r local platform/build/python-dist/*
+twine upload -r local common/build/python-dist/*
+twine upload -r local dvp/build/python-dist/*
+```
 
 ## Using Newly-Deployed SDK Build
 
@@ -175,46 +208,7 @@ First, undo the temporary changes we made earlier:
 
 Next, we need to point to our newly-deployed version:
 1. Modify `appliance/gradle.properties` and change `virtualizationSdkVer` to refer to your new version number.
-2. Modify `ivy-eclipse.deps.xml` and change the `com.delphix.virtualization` line to refer to your new version number.
-
-
-## Publishing Python packages to internal pypi for nightly Blackbox testing
-For Blackbox testing we need to make sure the SDK tool version matches to the
-SDK build of the engine. For this we will need to use the SDK python packages generated as part of the
-gradle build process. Specifically to test build and upload we need the tools package which contains the
-cli. After pushing an appgate side change which will modify the SDK version you will need
-to update the SDK version in this repo, rebuild the packages and upload then to our internal pypi repo so that
-Blackbox can make use of them in regression.  Once we have the final SDK packaging settled that will
-replace this solution.
-
-You will need to have credentials to upload to our internal pypi repo, delphix-local. You can contact devops for this.
-
-Create a .pypirc file in your home directory so you do not have to retype credentials every time.
-EX:
-```bash
-[~] cat ~/.pypirc
-[distutils]
-index-servers =
-    local
-
-[local]
-repository: http://artifactory.delphix.com/artifactory/api/pypi/delphix-local
-username: user
-password: pass
-```
-
-Install twine as other publishing methods are deprecated: `pip install twine`
-
-Run `./gradlew build` to generate the packages. Make sure the version is set correctly in `build.gradle`
-
-Run the following to upload the packages from the virtualization-sdk root directory
-```bash
-twine upload -r local tools/build/python-dist/*
-twine upload -r local libs/build/python-dist/*
-twine upload -r local platform/build/python-dist/*
-twine upload -r local common/build/python-dist/*
-twine upload -r local dvp/build/python-dist/*
-```
+2. Modify `ivy-eclipse-deps.xml` and change the `com.delphix.virtualization` line to refer to your new version number.
 
 ## Finalizing Appgate Review
 
