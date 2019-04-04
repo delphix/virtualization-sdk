@@ -73,7 +73,7 @@ def post_snapshot(direct_source, repository, source_config):
 !!! warning "Resources need to be in a Python module"
 	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python package. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an `__init__.py` file.
 
-### Mutli-level Packages
+### Multi-level Packages
 
 Given the following plugin structure:
 

@@ -96,7 +96,7 @@ Because we are using manual discovery, the end user is going to be responsible f
 
 The `prettyName` and `description` entries will be used by the UI to tell the user what these fields mean.
 
-Because we set `additionalFields` to `false`, this will prevent users from supplying properties other than `name` and `path`.
+Because we set `additionalProperties` to `false`, this will prevent users from supplying properties other than `name` and `path`.
 
 Finally, we have specified that the `path` property must be a well-formatted Unix path. This allows the UI to enforce that the format is correct before the user is allowed to proceed. (Note this only enforces the format, and does not actually check to see if the path really exists on some remote environment!)
 
@@ -216,7 +216,7 @@ Let us make sure discovery works!
 
 1. Run the `dvp build` commands, as before. This will build the plugin, with all of the new changes, and create an artifact.
 
-2. Run `dvp install -e <engine> -u <user>`, as before. This will get all the new changes onto the Delphix Engine.
+2. Run `dvp upload -e <engine> -u <user>`, as before. This will get all the new changes onto the Delphix Engine.
 
 3. Once the new plugin is uploaded, add a remote unix environment to your engine. To do this, go to **Manage > Environments**, chose **Add Environment** from the menu, answer the questions, and **Submit**. (If you already have an environment set up, you can just refresh it instead).
 
