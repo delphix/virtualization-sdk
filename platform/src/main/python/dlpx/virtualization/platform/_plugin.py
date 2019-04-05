@@ -741,8 +741,8 @@ class LinkedOperations(object):
         from generated.definitions import LinkedSourceDefinition
 
         def to_protobuf_single_mount(single_mount):
-            # Shared path is not supported for linked sources
-            assert not single_mount.shared_path
+            if single_mount.shared_path:
+                raise RuntimeError("Shared path is not supported for linked sources.")
 
             single_mount_protobuf = common_pb2.SingleEntireMount()
             single_mount_protobuf.mount_path = single_mount.mount_path
@@ -896,6 +896,12 @@ class VirtualOperations(object):
             return mount_specification_impl
         return mount_specification_decorator
 
+    @staticmethod
+    def _from_protobuf_single_subset_mount(single_subset_mount):
+            return Mount(remote_environment=single_subset_mount.remote_environment,
+                                mount_path=single_subset_mount.mount_path,
+                                shared_path=single_subset_mount.shared_path)
+
     def _internal_configure(self, request):
         """Configure operation wrapper.
 
@@ -924,10 +930,12 @@ class VirtualOperations(object):
         from generated.definitions import SnapshotDefinition
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
 
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         snapshot = SnapshotDefinition.from_dict(json.loads(request.snapshot.parameters.json))
@@ -965,9 +973,12 @@ class VirtualOperations(object):
 
         if self.unconfigure_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
+
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                            connection=request.virtual_source.connection,
-                                           parameters=virtual_source_definition)
+                                           parameters=virtual_source_definition,
+                                           mounts=mounts)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -998,14 +1009,18 @@ class VirtualOperations(object):
         from generated.definitions import VirtualSourceDefinition
         from generated.definitions import SnapshotDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import RepositoryDefinition
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         snapshot = SnapshotDefinition.from_dict(json.loads(request.snapshot.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
 
         if not self.reconfigure_impl:
             raise RuntimeError("An implementation for the virtual.reconfigure() operation has "
@@ -1013,6 +1028,7 @@ class VirtualOperations(object):
 
         config = self.reconfigure_impl(
             snapshot=snapshot,
+            repository=repository,
             source_config=source_config,
             virtual_source=virtual_source)
         reconfigure_response = platform_pb2.ReconfigureResponse()
@@ -1040,9 +1056,11 @@ class VirtualOperations(object):
 
         if self.start_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                            connection=request.virtual_source.connection,
-                                           parameters=virtual_source_definition)
+                                           parameters=virtual_source_definition,
+                                           mounts=mounts)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1075,9 +1093,11 @@ class VirtualOperations(object):
 
         if self.stop_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                            connection=request.virtual_source.connection,
-                                           parameters=virtual_source_definition)
+                                           parameters=virtual_source_definition,
+                                           mounts=mounts)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1115,9 +1135,11 @@ class VirtualOperations(object):
 
         if self.pre_snapshot_impl is not None:
             virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+            mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
             virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                            connection=request.virtual_source.connection,
-                                           parameters=virtual_source_definition)
+                                           parameters=virtual_source_definition,
+                                           mounts=mounts)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1161,9 +1183,11 @@ class VirtualOperations(object):
             return snapshot_protobuf
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1207,9 +1231,11 @@ class VirtualOperations(object):
             return virtual_status_response
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1243,9 +1269,11 @@ class VirtualOperations(object):
         from generated.definitions import SourceConfigDefinition
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -1311,9 +1339,11 @@ class VirtualOperations(object):
             return ownership_spec_protobuf
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(json.loads(request.virtual_source.parameters.json))
+        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m) for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(guid=request.virtual_source.guid,
                                        connection=request.virtual_source.connection,
-                                       parameters=virtual_source_definition)
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
 

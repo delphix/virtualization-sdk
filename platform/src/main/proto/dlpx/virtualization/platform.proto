@@ -270,6 +270,7 @@ message ReconfigureRequest {
   com.delphix.virtualization.common.Snapshot snapshot = 1;
   com.delphix.virtualization.common.SourceConfig source_config = 2;
   com.delphix.virtualization.common.VirtualSource virtual_source = 3;
+  com.delphix.virtualization.common.Repository repository = 4;
 }
 
 message ReconfigureResult {

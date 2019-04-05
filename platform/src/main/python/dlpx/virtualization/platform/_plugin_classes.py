@@ -26,10 +26,11 @@ __all__ = [
 
 class VirtualSource(object):
 
-    def __init__(self, guid, connection, parameters):
+    def __init__(self, guid, connection, parameters, mounts):
         self._guid = guid
         self._connection = connection
         self._parameters = parameters
+        self._mounts = mounts
 
     @property
     def guid(self):
@@ -45,6 +46,11 @@ class VirtualSource(object):
     def parameters(self):
         """VirtualSourceDefinition: The parameters of this VirtualSource."""
         return self._parameters
+
+    @property
+    def mounts(self):
+        """list(Mount): The mounts of this VirtualSource."""
+        return self._mounts
 
 class StagedSource(object):
 
