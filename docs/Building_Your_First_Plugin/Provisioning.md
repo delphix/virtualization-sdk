@@ -131,7 +131,7 @@ returns the existing source config without making any changes.
 
 ```python
 @plugin.virtual.reconfigure()
-def reconfigure_existing_vdb(virtual_source, snapshot, repository, source_config):
+def reconfigure_existing_vdb(virtual_source, repository, source_config, snapshot):
     return source_config
 ```
 

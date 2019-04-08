@@ -719,7 +719,7 @@ Re-configures the data for a virtual source to point to the data in a prior snap
 
 ### Signature
 
-`def reconfigure(virtual_source, snapshot, repository, source_config)`
+`def reconfigure(virtual_source, repository, source_config, snapshot)`
 
 ### Decorator
 
@@ -746,7 +746,7 @@ from generated.definitions import SourceConfigDefinition
 plugin = Plugin()
 
 @plugin.virtual.reconfigure()
-def configure(virtual_source, repository, snapshot, source_config):
+def configure(virtual_source, repository, source_config, snapshot):
   name = "updated_config_name"
   source_config = SourceConfigDefinition()
   source_config.name = name
