@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "50de3ecadf6ec61109232af2532afe20f086d498473bdd16736de317ef30d18e"
+            "sha256": "df23a388f8c50157c9d1664a7b7052a63c6b3ae5b3357b59414519bf70563f4a"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,8 +15,8 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-0.3.0-internal-003.tar.gz",
-            "version": "== 0.3.0-internal-003"
+            "path": "../common/build/python-dist/dvp-common-0.3.0.tar.gz",
+            "version": "== 0.3.0"
         },
         "enum34": {
             "hashes": [
@@ -79,7 +79,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.0'",
+            "markers": "python_version < '3.3'",
             "version": "==1.0.2"
         },
         "mock": {

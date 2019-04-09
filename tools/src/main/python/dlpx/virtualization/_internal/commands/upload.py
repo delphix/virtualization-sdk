@@ -101,20 +101,18 @@ class DelphixClient:
         """
         logger.info('Logging onto the Delphix Engine {!r}.'.format(
             self.__engine))
-        self.__post(
-            'delphix/session',
-            data={
-                'type': 'APISession',
-                'version': engine_api
-            })
+        self.__post('delphix/session',
+                    data={
+                        'type': 'APISession',
+                        'version': engine_api
+                    })
         logger.debug('Session started successfully.')
-        self.__post(
-            'delphix/login',
-            data={
-                'type': 'LoginRequest',
-                'username': user,
-                'password': password
-            })
+        self.__post('delphix/login',
+                    data={
+                        'type': 'LoginRequest',
+                        'username': user,
+                        'password': password
+                    })
         logger.info('Successfully logged in as {!r}.'.format(user))
 
     def upload_plugin(self, name, content):
@@ -132,10 +130,9 @@ class DelphixClient:
 
         logger.info('Uploading plugin {!r}.'.format(name))
         # Encode plugin content.
-        self.__post(
-            'delphix/data/upload',
-            content_type=self.__UPLOAD_CONTENT,
-            data=self.__encode(json.dumps(content), token, name))
+        self.__post('delphix/data/upload',
+                    content_type=self.__UPLOAD_CONTENT,
+                    data=self.__encode(json.dumps(content), token, name))
         logger.info('Plugin was successfully uploaded.')
 
     def __post(self, resource, content_type='application/json', data=None):

@@ -141,8 +141,9 @@ def _execute_swagger_codegen(swagger_file, output_dir):
 
         logger.info('Running process with arguments: {!r}'.format(
             ' '.join(process_inputs)))
-        process = subprocess.Popen(
-            process_inputs, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(process_inputs,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
     except OSError as err:
         if err.errno == errno.ENOENT:
             raise exceptions.UserError('Swagger python code generation failed.'

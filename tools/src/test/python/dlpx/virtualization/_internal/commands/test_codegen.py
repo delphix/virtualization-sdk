@@ -79,8 +79,9 @@ class TestCodegen:
                 # has a success exit code.
                 #
                 if not self.fake_popen_output.return_code:
-                    self.create_codegen_jar_files(
-                        self.output_dir, self.package_name, self.module_name)
+                    self.create_codegen_jar_files(self.output_dir,
+                                                  self.package_name,
+                                                  self.module_name)
                 return self.fake_popen_output
 
             @staticmethod

@@ -21,7 +21,6 @@ def validate_option_exists(ctx, param, value):
     always optional out of the box.
     """
     if not value:
-        print('inside')
         # Let the user know if there is an environment variable for this param
         if param.envvar:
             raise click.BadParameter(
@@ -76,5 +75,5 @@ class MutuallyExclusiveOption(click.Option):
                 '"{}" is mutually exclusive with argument(s) "{}".'.format(
                     self.name, ', '.join(self.mutually_exclusive)))
 
-        return super(MutuallyExclusiveOption, self).handle_parse_result(
-            ctx, opts, args)
+        return super(MutuallyExclusiveOption,
+                     self).handle_parse_result(ctx, opts, args)

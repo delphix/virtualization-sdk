@@ -32,8 +32,8 @@ def plugin_config_file(tmpdir, plugin_config_filename, plugin_config_content):
      write that directly.
     """
     if isinstance(plugin_config_content, dict):
-        plugin_config_content = yaml.dump(
-            plugin_config_content, default_flow_style=False)
+        plugin_config_content = yaml.dump(plugin_config_content,
+                                          default_flow_style=False)
 
     f = tmpdir.join(plugin_config_filename)
     f.write(plugin_config_content)

@@ -35,9 +35,10 @@ class TestBuild:
 
         build.build(plugin_config_file, artifact_file, False)
 
-        mock_generate_python.assert_called_once_with(
-            gen_py.name, gen_py.source_dir, gen_py.plugin_content_dir,
-            gen_py.schema_dict)
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
 
         # After running build this file should now exist.
         assert os.path.exists(artifact_file)
@@ -57,9 +58,10 @@ class TestBuild:
         gen_py = codegen_gen_py_inputs
         build.build(plugin_config_file, artifact_file, True)
 
-        mock_generate_python.assert_called_once_with(
-            gen_py.name, gen_py.source_dir, gen_py.plugin_content_dir,
-            gen_py.schema_dict)
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
 
         assert not mock_prep_artifact.called
 
@@ -258,8 +260,9 @@ class TestPluginUtil:
                                  'nameField': 'name'
                              }])
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_source_config_def_missing_field(
-            mock_generate_python, plugin_config_file, artifact_file):
+    def test_plugin_source_config_def_missing_field(mock_generate_python,
+                                                    plugin_config_file,
+                                                    artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False)
 
@@ -282,8 +285,9 @@ class TestPluginUtil:
                                  'identityFields': ['name']
                              }])
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_repository_def_missing_field(
-            mock_generate_python, plugin_config_file, artifact_file):
+    def test_plugin_repository_def_missing_field(mock_generate_python,
+                                                 plugin_config_file,
+                                                 artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False)
 

@@ -2,6 +2,9 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+exclude README-dev.md
+
+include LICENSE
 include src/main/python/dlpx/virtualization/_internal/codegen/swagger-codegen-cli-2.3.1.jar
 include src/main/python/dlpx/virtualization/_internal/codegen/codegen-config.json
 recursive-include src/main/python/dlpx/virtualization/_internal/commands/plugin_template *

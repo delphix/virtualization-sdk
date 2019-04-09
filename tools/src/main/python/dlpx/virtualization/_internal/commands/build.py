@@ -257,8 +257,9 @@ def zip_and_encode_source_files(source_code_dir):
     cwd = os.getcwd()
     try:
         os.chdir(source_code_dir)
-        ret_val = compileall.compile_dir(
-            source_code_dir, force=True, quiet=True)
+        ret_val = compileall.compile_dir(source_code_dir,
+                                         force=True,
+                                         quiet=True)
         if ret_val == 0:
             raise exceptions.UserError(
                 'Failed to compile source code in the directory {}.'.format(

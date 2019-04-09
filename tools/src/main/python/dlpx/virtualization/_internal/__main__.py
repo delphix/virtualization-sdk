@@ -2,7 +2,7 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-from virtualization._internal import cli
+from dlpx.virtualization._internal import cli
 
 
 def main():

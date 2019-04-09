@@ -75,20 +75,18 @@ def delphix_sdk(verbose, quiet):
 
 
 @delphix_sdk.command()
-@click.option(
-    '-r',
-    '--root-dir',
-    'root',
-    default=os.getcwd(),
-    show_default=True,
-    type=click.Path(
-        exists=True,
-        file_okay=False,
-        dir_okay=True,
-        writable=True,
-        resolve_path=True),
-    callback=click_util.validate_option_exists,
-    help='Set the plugin root directory.')
+@click.option('-r',
+              '--root-dir',
+              'root',
+              default=os.getcwd(),
+              show_default=True,
+              type=click.Path(exists=True,
+                              file_okay=False,
+                              dir_okay=True,
+                              writable=True,
+                              resolve_path=True),
+              callback=click_util.validate_option_exists,
+              help='Set the plugin root directory.')
 @click.option(
     '-n',
     '--plugin-name',
@@ -105,9 +103,8 @@ def delphix_sdk(verbose, quiet):
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '
           'requires a staging server.'))
-@click.option(
-    '--pretty-name',
-    help='Set the pretty name of the plugin that will be displayed.')
+@click.option('--pretty-name',
+              help='Set the pretty name of the plugin that will be displayed.')
 def init(root, name, ingestion_strategy, pretty_name):
     """
     Create a plugin in the root directory. The plugin will be valid
@@ -123,12 +120,11 @@ def init(root, name, ingestion_strategy, pretty_name):
     '--plugin-config',
     default='plugin_config.yml',
     show_default=True,
-    type=click.Path(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
-        resolve_path=True),
+    type=click.Path(exists=True,
+                    file_okay=True,
+                    dir_okay=False,
+                    writable=False,
+                    resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Set the path to plugin config file.'
     'This file contains the configuration required to build the plugin.')
@@ -138,8 +134,10 @@ def init(root, name, ingestion_strategy, pretty_name):
     cls=click_util.MutuallyExclusiveOption,
     default='artifact.json',
     show_default=True,
-    type=click.Path(
-        file_okay=True, dir_okay=False, writable=True, resolve_path=True),
+    type=click.Path(file_okay=True,
+                    dir_okay=False,
+                    writable=True,
+                    resolve_path=True),
     callback=click_util.validate_option_exists,
     mutually_exclusive=['generate_only'],
     help='Set the upload artifact.'
@@ -168,34 +166,31 @@ def build(plugin_config, upload_artifact, generate_only):
 
 
 @delphix_sdk.command()
-@click.option(
-    '-e',
-    '--delphix-engine',
-    'engine',
-    callback=click_util.validate_option_exists,
-    help='Upload plugin to the provided engine.'
-    ' This should be either the hostname or IP address.')
-@click.option(
-    '-u',
-    '--user',
-    callback=click_util.validate_option_exists,
-    help='Authenticate to the Delphix Engine with the provided user.')
+@click.option('-e',
+              '--delphix-engine',
+              'engine',
+              callback=click_util.validate_option_exists,
+              help='Upload plugin to the provided engine.'
+              ' This should be either the hostname or IP address.')
+@click.option('-u',
+              '--user',
+              callback=click_util.validate_option_exists,
+              help='Authenticate to the Delphix Engine with the provided user.'
+              )
 @click.option(
     '-a',
     '--upload-artifact',
     default='artifact.json',
     show_default=True,
-    type=click.Path(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        resolve_path=True),
+    type=click.Path(exists=True,
+                    file_okay=True,
+                    dir_okay=False,
+                    readable=True,
+                    resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Path to the upload artifact that was generated through build.')
-@click.password_option(
-    confirmation_prompt=False,
-    help='Authenticate using the provided password.')
+@click.password_option(confirmation_prompt=False,
+                       help='Authenticate using the provided password.')
 def upload(engine, user, upload_artifact, password):
     """
     Upload the generated upload artifact (the plugin JSON file) that was built

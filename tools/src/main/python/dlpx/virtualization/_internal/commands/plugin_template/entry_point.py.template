@@ -1,0 +1,33 @@
+from dlpx.virtualization.platform import Plugin
+
+from generated.definitions import RepositoryDefinition
+
+plugin = Plugin()
+
+
+#
+# Below is an example of the repository discovery operation.
+#
+# NOTE: The decorators are defined on the 'plugin' object created above.
+#
+# Mark the function below as the operation that does repository discovery.
+@plugin.discovery.repository()
+def repository_discovery(source_connection):
+    #
+    # This is an object generated from the repositoryDefinition schema.
+    # In order to use it locally you must run the 'build -g' command provided
+    # by the SDK tools from the plugin's root directory.
+    #
+
+    return [RepositoryDefinition(name={{ name }})]
+
+
+@plugin.discovery.source_config()
+def source_config_discovery(source_connection, repository):
+    #
+    # To have automatic discovery of source configs, return a list of
+    # SourceConfigDefinitions similar to the list of
+    # RepositoryDefinitions above.
+    #
+
+    return []

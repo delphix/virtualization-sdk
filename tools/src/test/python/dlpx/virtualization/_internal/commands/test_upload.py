@@ -254,8 +254,7 @@ class TestEngineApi:
 
     @staticmethod
     @pytest.mark.parametrize('engine_api', [
-        None, 'not a dict',
-        {
+        None, 'not a dict', {
             'type': 'APIVersion',
             'major': 'not an int',
             'minor': 11,
@@ -506,11 +505,11 @@ class TestDelphixClient:
             forcing_headers=login_header)
 
         token_body, token_header = TestDelphixClient.TOKEN_RESP_SUCCESS
-        httpretty.register_uri(
-            httpretty.POST, 'http://test-engine.com/resources/'
-            'json/delphix/toolkit/requestUploadToken',
-            body=token_body,
-            forcing_headers=token_header)
+        httpretty.register_uri(httpretty.POST,
+                               'http://test-engine.com/resources/'
+                               'json/delphix/toolkit/requestUploadToken',
+                               body=token_body,
+                               forcing_headers=token_header)
 
         upload_body, upload_header = TestDelphixClient.UPLOAD_RESP_SUCCESS
         httpretty.register_uri(
@@ -711,12 +710,12 @@ class TestDelphixClient:
             forcing_headers=login_header)
 
         token_body, token_header = TestDelphixClient.TOKEN_RESP_FAIL
-        httpretty.register_uri(
-            httpretty.POST, 'http://test-engine.com/resources/'
-            'json/delphix/toolkit/requestUploadToken',
-            body=token_body,
-            forcing_headers=token_header,
-            status=403)
+        httpretty.register_uri(httpretty.POST,
+                               'http://test-engine.com/resources/'
+                               'json/delphix/toolkit/requestUploadToken',
+                               body=token_body,
+                               forcing_headers=token_header,
+                               status=403)
 
         dc = upload.DelphixClient('test-engine.com')
         dc.login(engine_api, 'admin', 'delphix')
@@ -753,11 +752,11 @@ class TestDelphixClient:
             forcing_headers=login_header)
 
         token_body, token_header = TestDelphixClient.TOKEN_RESP_SUCCESS
-        httpretty.register_uri(
-            httpretty.POST, 'http://test-engine.com/resources/'
-            'json/delphix/toolkit/requestUploadToken',
-            body=token_body,
-            forcing_headers=token_header)
+        httpretty.register_uri(httpretty.POST,
+                               'http://test-engine.com/resources/'
+                               'json/delphix/toolkit/requestUploadToken',
+                               body=token_body,
+                               forcing_headers=token_header)
 
         upload_body, upload_header = TestDelphixClient.UPLOAD_RESP_FAIL
         httpretty.register_uri(

@@ -13,14 +13,12 @@ class TestClickUtil:
     @staticmethod
     def test_mutually_exclusive_options_success():
         @click.command()
-        @click.option(
-            '-a',
-            cls=click_util.MutuallyExclusiveOption,
-            mutually_exclusive=['b'])
-        @click.option(
-            '-b',
-            cls=click_util.MutuallyExclusiveOption,
-            mutually_exclusive=['a'])
+        @click.option('-a',
+                      cls=click_util.MutuallyExclusiveOption,
+                      mutually_exclusive=['b'])
+        @click.option('-b',
+                      cls=click_util.MutuallyExclusiveOption,
+                      mutually_exclusive=['a'])
         def test_command(a, b):
             click.echo(a)
 
@@ -34,16 +32,14 @@ class TestClickUtil:
     @staticmethod
     def test_mutually_exclusive_options_failed():
         @click.command()
-        @click.option(
-            '-a',
-            is_flag=True,
-            cls=click_util.MutuallyExclusiveOption,
-            mutually_exclusive=['b'])
-        @click.option(
-            '-b',
-            is_flag=True,
-            cls=click_util.MutuallyExclusiveOption,
-            mutually_exclusive=['a'])
+        @click.option('-a',
+                      is_flag=True,
+                      cls=click_util.MutuallyExclusiveOption,
+                      mutually_exclusive=['b'])
+        @click.option('-b',
+                      is_flag=True,
+                      cls=click_util.MutuallyExclusiveOption,
+                      mutually_exclusive=['a'])
         def test_command(a, b):
             pass
 

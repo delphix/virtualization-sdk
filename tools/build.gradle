@@ -156,6 +156,10 @@ dlpxPython {
     typing {
       markers = "python_version < '3.5'"
     }
+
+    jinja2 {
+      version = ">= 2.10"
+    }
   }
 
   devPackages {

@@ -7,6 +7,7 @@ import os
 import shutil
 from collections import OrderedDict
 
+import jinja2
 import yaml
 
 from dlpx.virtualization._internal import exceptions, file_util, plugin_util
@@ -104,10 +105,12 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing config file at %r.', config_file_path)
         with open(config_file_path, 'w+') as f:
-            config = _get_default_plugin_config(
-                plugin_name, ingestion_strategy, pretty_name,
-                DEFAULT_ENTRY_POINT, DEFAULT_SRC_DIRECTORY,
-                DEFAULT_SCHEMA_FILE)
+            config = _get_default_plugin_config(plugin_name,
+                                                ingestion_strategy,
+                                                pretty_name,
+                                                DEFAULT_ENTRY_POINT,
+                                                DEFAULT_SRC_DIRECTORY,
+                                                DEFAULT_SCHEMA_FILE)
             yaml.dump(config, f, default_flow_style=False)
 
         #
@@ -116,13 +119,25 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         # be copied.
         #
         logger.info('Writing entry file at %r.', entry_point_file_path)
-        shutil.copyfile(ENTRY_POINT_TEMPLATE_PATH, entry_point_file_path)
+        with open(entry_point_file_path, 'w+') as f:
+            entry_point_content = _get_entry_point_file(plugin_name)
+            f.write(entry_point_content)
+
     except Exception as e:
         logger.debug('Attempting to cleanup after failure.')
         file_util.delete_paths(DEFAULT_PLUGIN_CONFIG_FILE, DEFAULT_SCHEMA_FILE,
                                DEFAULT_SRC_DIRECTORY)
         raise exceptions.UserError(
             'Failed to initialize plugin directory {!r}: {}.'.format(root, e))
+
+
+def _get_entry_point_file(plugin_name):
+    env = jinja2.Environment(loader=jinja2.PackageLoader(
+        __package__, 'plugin_template'),
+                             autoescape=jinja2.select_autoescape(['py']))
+
+    template = env.get_template('entry_point.py.template')
+    return template.render(name=repr(plugin_name))
 
 
 def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,

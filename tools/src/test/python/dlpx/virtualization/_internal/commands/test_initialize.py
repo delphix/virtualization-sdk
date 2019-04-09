@@ -65,23 +65,20 @@ class TestInitialize:
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(
-                os.path.dirname(plugin_config_file), plugin_name,
-                plugin_util.DIRECT_TYPE, None)
+            init.init(os.path.dirname(plugin_config_file), plugin_name,
+                      plugin_util.DIRECT_TYPE, None)
 
     @staticmethod
     def test_invalid_with_schema_file(schema_file, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(
-                os.path.dirname(schema_file), plugin_name,
-                plugin_util.DIRECT_TYPE, None)
+            init.init(os.path.dirname(schema_file), plugin_name,
+                      plugin_util.DIRECT_TYPE, None)
 
     @staticmethod
     def test_invalid_with_src_dir(src_dir, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(
-                os.path.dirname(src_dir), plugin_name, plugin_util.DIRECT_TYPE,
-                None)
+            init.init(os.path.dirname(src_dir), plugin_name,
+                      plugin_util.DIRECT_TYPE, None)
 
     @staticmethod
     @mock.patch('yaml.dump')

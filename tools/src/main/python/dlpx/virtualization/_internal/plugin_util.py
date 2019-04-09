@@ -39,8 +39,9 @@ def read_plugin_config_file(plugin_config):
                         'Command failed because the plugin config file '
                         'provided as input {!r} was not valid yaml. '
                         'Verify the file contents. '
-                        'Error position: {}:{}'.format(
-                            plugin_config, mark.line + 1, mark.column + 1))
+                        'Error position: {}:{}'.format(plugin_config,
+                                                       mark.line + 1,
+                                                       mark.column + 1))
     except IOError as err:
         raise exceptions.UserError(
             'Unable to read plugin config file {!r}'
