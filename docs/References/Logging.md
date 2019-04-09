@@ -84,8 +84,7 @@ We now know that our slowdown is something to do with how our bash script is col
 
 ## How to retrieve logs
 
-**TODO: Add content here after we have a firm process for doing this (there may be a UI coming soon?)**
-The logs will be in a the support bundle under `log/mgmt_log/plugin_log/<plugin name>`.
+Download a support bundle by going to **Help** > **Support Logs**  and select **Download**. The logs will be in a the support bundle under `log/mgmt_log/plugin_log/<plugin name>`.
 
 ## Logging Levels
 

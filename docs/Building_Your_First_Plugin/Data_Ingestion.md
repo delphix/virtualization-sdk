@@ -23,7 +23,7 @@ of the data copying. Instead the Delphix Engine directly pulls raw data from the
 The plugin merely provides the location of the data. This is a very simple strategy, and is also
 quite limiting.
 
-For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS (or CIFS on Windows) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this NFS mount.
+For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS for Unix environments (or iSCSI on Windows environments) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this storage mount.
 
 !!! tip "Gotcha"
     Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.

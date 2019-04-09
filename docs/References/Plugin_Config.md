@@ -1,5 +1,5 @@
-# Plugin Config File
-The plugin config file is a [YAML](https://yaml.org/) file that marks the root of a plugin and defines metadata about the plugin and its structure. The config file is read at build time to generate the upload artifact.
+# Plugin Config
+The plugin config is a [YAML](https://yaml.org/) file that marks the root of a plugin and defines metadata about the plugin and its structure. The config file is read at build time to generate the upload artifact.
 
 The name of the file does not matter and can be specified during the build, but, by default, the build looks for `plugin_config.yml`.
 
@@ -17,7 +17,7 @@ The name of the file does not matter and can be specified during the build, but,
 |manualDiscovery|Y|boolean|True if the plugin supports manual discovery of source config objects.|
 |pluginType|Y|enum|The ingestion strategy of the plugin. Can be either `STAGED` or `DIRECT`.|
 |language|Y|enum|Must be `PYTHON27`.|
-|defaultLocale|N|enum|The local to be used by the plugin if the Delphix user does not specify one. Plugin messages will be displayed in this locale by default. The default value is `en-us`.|
+|defaultLocale|N|enum|The locale to be used by the plugin if the Delphix user does not specify one. Plugin messages will be displayed in this locale by default. The default value is `en-us`.|
 
 ## Example
 Assume the following basic plugin structure:
@@ -38,7 +38,7 @@ from dlpx.virtualization.platform import Plugin
 mongodb = Plugin()
 ```
 
-This is a valid plugin configuration file for the plugin:
+This is a valid plugin config for the plugin:
 
 ```yaml
 name: dlpx-mongo

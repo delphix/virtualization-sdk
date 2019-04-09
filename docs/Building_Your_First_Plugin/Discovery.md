@@ -100,7 +100,7 @@ Because we set `additionalProperties` to `false`, this will prevent users from s
 
 Finally, we have specified that the `path` property must be a well-formatted Unix path. This allows the UI to enforce that the format is correct before the user is allowed to proceed. (Note this only enforces the format, and does not actually check to see if the path really exists on some remote environment!)
 
-Refer to (link to reference) for more details about these entries, and for other things that you can do in these schemas.
+Refer to the reference page for [Schemas](/References/Schemas) for more details about these entries, and for other things that you can do in these schemas.
 
 ## Implementing Discovery in Your Plugin
 
@@ -112,7 +112,7 @@ Right now, we are concerned with discovery. There are two customizable operation
 
 
 ### Repository Discovery
-For repositories, we will need to write a "repository discovery" operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
+For repositories, we will need to write a [repository discovery](/References/Plugin_Operations/#repository-discovery) operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
 
 As a reminder, our only external dependency on the remote environment is simply the existence of a filesystem. Since every Unix host has a filesystem, that means we will have exactly one repository per remote environment. Therefore, our repository discovery operation can be very simple.
 
@@ -173,8 +173,7 @@ The Delphix Engine will pass us information about the source environment in an a
 !!! warning
     The name of this input argument matters. That is, you'll always need to have an argumentcalled
     `source_connection` here. Each plugin operation has its own set of required argument names. For
-    details on which arguments apply to which operations, see the [reference section]
-    (/References/Plugin_Operations).
+    details on which arguments apply to which operations, see the [reference section](/References/Plugin_Operations).
 
 
 ```python
@@ -226,7 +225,7 @@ Let us make sure discovery works!
 
 ![Screenshot](images/PostDiscovery.png)
 
-Notice that it says "No databases found on installation". This is because we chose not to do automatic source config discovery.
+Notice that it says *No databases found on installation*. This is because we chose not to do automatic source config discovery.
 
 However, because we have allowed manual source config discovery, you can add your own entries by clicking the plus sign (**Add Database**). Complete the information in the Add Database dialog and click Add.
 
@@ -242,7 +241,10 @@ Once you have added one or more source configs, you will be able to sync, this i
 
 
 !!! warning
-    Once you have manually created a source config, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema, you will have to delete any source configs you have manually added.
+    Once you have automatically or manually created source configs, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema:
+    
+    - You will have to delete any source configs you have manually added.
+    - Delete the plugin and its corresponding objects (dSources, Virtual Sources, etc) if the source configs were manually discovered.
 
 !!! question "[Survey](https://forms.gle/cEWzdTnvi6vNeMT58)"
     Please fill out this [survey](https://forms.gle/cEWzdTnvi6vNeMT58) to give us feedback about this section.

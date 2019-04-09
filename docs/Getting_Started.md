@@ -44,7 +44,7 @@ Our [CLI reference](References/CLI) describes commands, provides examples, and a
 To build your plugin:
 
 ```
-$ dvp build -c <plugin_config_file> -a <artifact_file>
+$ dvp build -c <plugin_config> -a <artifact_file>
 ```
 
 This will generate an upload artifact at `<artifact_file>`. That file can then be uploaded with:
@@ -73,13 +73,15 @@ Properties
 Warning: This feature is only supported for specific configurations. If you do not have explicit permission from your account representative to use this feature, disable it and contact them.
 ```
 
-## FAQs?
 
 ## Troubleshooting
 
-#### Installation fails with `'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
+#### Installation fails with incorrect version spec
 
-This is likely caused by an out of date `setuptools` version which is often due to not installing the SDK into a virtual environment. To fix this, first setup a virtual environment and attempt to install the SDK there. If you are already using a virtual environment you can update `setuptools` with:
+!!! error
+    `'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
+
+This is likely caused by an out of date `setuptools` version (minimum version `38.0.0`) which is often due to not installing the SDK into a virtual environment. To fix this, first setup a virtual environment and attempt to install the SDK there. If you are already using a virtual environment you can update `setuptools` with:
 
 ```
 $ pip install setuptools --upgrade

@@ -3,7 +3,7 @@ title: Virtualization SDK
 ---
 
 # Platform Libraries
-Set of functions that plugins can use these for executing remote commands, logging, etc.
+Set of functions that plugins can use these for executing remote commands, etc.
 
 ## run_bash
 
@@ -19,8 +19,8 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the host.
-variables | dict[String, String] | Optional. Environement variables to set when running the command.
-use_login_shell | boolean | Optional. Whether to use a login shell.
+variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+use_login_shell | boolean | **Optional**. Whether to use a login shell.
 
 ### Returns
 An object of `RunBashResponse`
@@ -60,7 +60,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
 command | String | Expect(Tcl) command to run.
-variables | dict[String, String] | Optional. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 
 ### Returns
 
@@ -91,7 +91,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the remote host.
-variables | dict[String, String] | Optional. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 
 ### Returns
 An object of `RunPowershellResponse`

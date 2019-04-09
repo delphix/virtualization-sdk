@@ -17,15 +17,13 @@ Imagine this sequence of events:
 5. The user installs the new plugin version.
 6. The user attempts to [provision](/References/Glossary/#provisioning) a new [VDB](/References/Glossary/#vdb) from the snapshot they took in step 3.
 
-Now, when provision-related plugin code is called (for example the [configure](/References/Plugin_Operations/#Virtual_Source_Configure) operation), it is going to be handed the snapshot data that was stored in step 2.
+Now, when provision-related plugin code is called (for example the [configure](/References/Plugin_Operations/#virtual-source-configure) operation), it is going to be handed the snapshot data that was stored in step 2.
 
 The problem here is that we'll have a data format mismatch. The previously-saved snapshot data will have separate `date` and `time` fields, but the new plugin code will be expecting instead a single field called `timestamp`.
 
 ## Data Upgrading
 
-The solution to this problem is for the plugin to provide [upgrade operations](/References/Glossary/#VDB).
-
-**TODO: UPDATE THIS SECTION WHEN UPGRADE SCRIPT FORMAT ARE FINALIZED**
+**Coming Soon!**
 
 ## Versioning Rules
 

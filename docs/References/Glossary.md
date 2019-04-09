@@ -37,8 +37,8 @@ The process by which the Delphix Engine connects a new [dSource](#dsource) to a 
 ## Logging
 Logging is when a plugin writes out some human-readable information to a log file. The log file can then be examined, typically in order to debug a problem with the plugin.
 
-## Manifest
-A [YAML](#YAML) file containing a list of plugin properties: What is the plugin's name? What version of the plugin is this? Etc.
+## Plugin Config
+A [YAML](#yaml) file containing a list of plugin properties: What is the plugin's name? What version of the plugin is this? Etc. More details [here](/References/Plugin_Config).
 
 ## Manual Discovery
 [Discovery](#discovery) which the end user does by manually entering the necessary information into the Delphix Engine.
@@ -108,4 +108,4 @@ A dataset that has been cloned from a snapshot, and whose data is stored on the 
 An object on the Delphix Engine that holds information related to a [virtual dataset](#virtual-dataset).
 
 ## YAML
-YAML is a simple language often used for configuration files. Plugins define their [manifest](#manifest) using YAML.
+YAML is a simple language often used for configuration files. Plugins define their [plugin config](#plugin-config) using YAML.

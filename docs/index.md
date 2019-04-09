@@ -36,4 +36,4 @@ Read through the first few sections of this documentation, and we will walk you 
 
 [Building Your First Plugin](/Your_First_Plugin) will walk you step-by-step through the process of developing a very simple plugin. With it, you will learn the concepts and techniques that you will need to develop fully-fledged plugins. That does not mean this first plugin is useless—you will be able to virtualize simple datasets with it.
 
-Once you complete these sections, use the rest of the documentation whenever you would like. In addition to a full [reference section](/References), we include an example of a full-featured plugin that does complicated tasks. **TODO: link to this doc when it exists.**
+Once you complete these sections, use the rest of the documentation whenever you would like. In addition to a full [reference section](/References), we include an example of a full-featured plugin that does complicated tasks (**Coming Soon!**).
