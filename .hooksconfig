@@ -5,6 +5,7 @@
     slack-color = 1AD6F5 
     slack-notify = virt-sdk-pushes
     approvers = gatekeepers-virtualization-sdk
+    tags-allowed = true
 
  [branch "master"]
     gate-release-check = skip
