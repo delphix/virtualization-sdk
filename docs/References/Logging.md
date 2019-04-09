@@ -4,23 +4,59 @@
 
 The Virtualization Platform keeps plugin-specific log files. A plugin can, at any point in any of its [plugin operations](Glossary.md#plugin-operation), write out some text to its log file(s). These log files can be examined later, typically to try to debug a problem with the plugin.
 
-## How to log
+## Overview
 
-The Virtualization Platform provides [Platform Libraries](Glossary.md#platform-libraries) that plugins can use to write to log files.
+The Virtualization Platform integrates with Python's built-in [logging framework](https://docs.python.org/2/library/logging.html). A special [Handler](https://docs.python.org/2/library/logging.html#handler-objects) is exposed by the platform at `dlpx.virtualization.libs.PlatformHandler`. This handler needs to be added to the Python logger your plugin creates. Logging statements made through Python's logging framework will then be routed to the platform.
 
-Making a log entry is easy, and looks like this:
+## Basic Setup
+ Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's [logging documentation](https://docs.python.org/2/library/logging.html) and the [example below](#customized-example) to better understand how it can be customized.
+
 ```python
-from dlpx.virtualization import libs
+import logging
 
-libs.log_debug("Here is the text that goes in the log file")
+from dlpx.virtualization.libs import PlatformHandler
+
+# Get the root logger.
+logger = logging.getLogger()
+logger.addHandler(PlatformHandler())
+
+# The root logger's default level is logging.WARNING.
+# Without the line below, logging statements of levels
+# lower than logging.WARNING will be suppressed.
+logger.setLevel(logging.DEBUG)
 ```
 
-Inside the log file, you'll be able to see not only your text, but also a timestamp.
+!!! note "Logging Setup"
+	Python's logging framework is global. Setup only needs to happen once, but where it happens is important. Any logging statements that occur before the `PlatformHandler` is added will not be logged by the platform.
+	
+	It is highly recommended that the logging setup is done in the plugin's entry point module before any operations are ran.
+	
+!!! warning "Add the PlatformHandler to the root logger"
+	Loggers in Python have a hierarchy and all loggers are children of a special logger called the "root logger". Logging hierarchy is not always intuitive and depends on how modules are structured.
+	
+	To avoid this complexity, add the `PlatformHandler` to the root logger. The root logger can be retrieved with `logging.getLogger()`.
+	
+	
+## Usage
+Once the `PlatformHandler` has been added to the logger, logging is done with Python's [Logger](https://docs.python.org/2/library/logging.html#logger-objects) object. Below is a simple example including the basic setup code used above:
 
+```python
+import logging
 
-## Why log?
+from dlpx.virtualization.libs import PlatformHandler
 
-Logging is typically done to enable your plugin to be more easily debugged.
+logger = logging.getLogger()
+logger.addHandler(PlatformHandler())
+
+# The root logger's default level is logging.WARNING.
+# Without the line below, logging statements of levels
+# lower than logging.WARNING will be suppressed.
+logger.setLevel(logging.DEBUG)
+
+logger.debug('debug')
+logger.info('info')
+logger.error('error')
+```
 
 ### Example
 Imagine you notice that your plugin is taking a very long time to do discovery. Everything works, it just takes much longer than expected. You'd like to figure out why.
@@ -35,47 +71,98 @@ import pkgutil
 from dlpx.virtualization import libs
 from dlpx.virtualization.platform import Plugin
 
+
 plugin = Plugin()
 
+@plugin.discovery.repository()
+def repository_discovery(source_connection): 
+  return [RepositoryDefinition('Logging Example')]
+
+
 @plugin.discovery.source_config()
-def my_source_config_discovery(source_connection, repository):
+def source_config_discovery(source_connection, repository):
   version_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_version.sh'))
   users_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_users.sh'))
   db_results = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_databases.sh'))
   status_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_database_statuses.sh'))
-  # Later, do something will all these results
+
+  # Return an empty list for simplicity. In reality
+  # something would be done with the results above.
+  return []
+ 
 ```
 
 Now, imagine that you notice that it's taking a long time to do discovery, and you'd like to try to figure out why. One thing that might help is to add logging, like this:
 ```python
+import logging
 import pkgutil
 
 from dlpx.virtualization import libs
 from dlpx.virtualization.platform import Plugin
 
+from generated.definitions import RepositoryDefinition
+
+# This should probably be defined in its own module outside
+# of the plugin's entry point file. It is here for simplicity.
+def _setup_logger():
+	# This will log the time, level, filename, line number, and log message.
+	log_message_format = '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s'
+	log_message_date_format = '%Y-%m-%d %H:%M:%S'
+
+	# Create a custom formatter. This will help with diagnosability.
+	formatter = logging.Formatter(log_message_format, datefmt= log_message_date_format)
+
+	platform_handler = libs.PlatformHandler()
+	platform_handler.setFormatter(formatter)
+
+	logger = logging.getLogger()
+	logger.addHandler(platform_handler)
+
+	# By default the root logger's level is logging.WARNING.
+	logger.setLevel(logging.DEBUG)
+
+
+# Setup the logger.
+_setup_logger()
+
+# logging.getLogger(__name__) is the convention way to get a logger in Python.
+# It returns a new logger per module and will be a child of the root logger.
+# Since we setup the root logger, nothing else needs to be done to set this
+# one up.
+logger = logging.getLogger(__name__)
+
+
 plugin = Plugin()
 
+@plugin.discovery.repository()
+def repository_discovery(source_connection): 
+  return [RepositoryDefinition('Logging Example')]
+
 @plugin.discovery.source_config()
-def my_source_config_discovery(source_connection, repository):
-  libs.log_debug("About to get DB version")
+def source_config_discovery(source_connection, repository):
+  logger.debug('About to get DB version')
   version_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_version.sh'))
-  libs.log_debug("About to get DB users")
+  logger.debug('About to get DB users')
   users_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_db_users.sh'))
-  libs.log_debug("About to get databases")
+  logger.debug('About to get databases')
   db_results = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_databases.sh'))
-  libs.log_debug("About to get DB statuses")
+  logger.debug('About to get DB statuses')
   status_result = libs.run_bash(source_connection, pkgutil.get_data('resources', 'get_database_statuses.sh'))
-  libs.log_debug("Done collecting data")
+  logger.debug('Done collecting data')
+  
+  # Return an empty list for simplicity. In reality
+  # something would be done with the results above.
+  return []
 ```
 
 When you look at the log file, perhaps you'll see something like this:
 
 ```
-[2019-03-12 12:17:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB version
-[2019-03-12 12:19:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB users
-[2019-03-12 12:41:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get databases
-[2019-03-12 12:44:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] About to get DB statuses
-[2019-03-12 12:49:05,907][DEBUG][my_plugin][Thread-47][PluginLogProvider.logMessageForPlugin] Done collecting data
+2019-03-12 12:17:05,770 DEBUG    [plugin_runner.py:47] About to get DB version
+2019-03-12 12:19:05,865 DEBUG    [plugin_runner.py:49] About to get DB users
+2019-03-12 12:41:05,907 DEBUG    [plugin_runner.py:51] About to get databases
+2019-03-12 12:44:05,953 DEBUG    [plugin_runner.py:53] About to get DB statuses
+2019-03-12 12:49:05,996 DEBUG    [plugin_runner.py:55] Done collecting data
 ```
 
 You can see that it only takes a few seconds for us do each of our data collection steps, with the exception of getting the users, which takes over 13 minutes!
@@ -88,16 +175,20 @@ Download a support bundle by going to **Help** > **Support Logs**  and select **
 
 ## Logging Levels
 
-We already looked at an example of the `log_debug` plugin library function. There are two more: `log_info` and `log_error`. Both work exactly the same way.
+Python has a number of [preset logging levels](https://docs.python.org/2/library/logging.html#logging-levels) and allows for custom ones as well. Since logging on the Virtualization Platform uses the `logging` framework, log statements of all levels are supported.
 
-Each of these three logging levels has its own log file. Thus, calling `log_error` will write to an `error.log` file.
+However, the Virtualization Platform will map all logging levels into three files: `debug.log`, `info.log`, and `error.log` in the following way:
 
-These levels are also hierarchical:
-`log_error` writes only to `error.log`.
-`log_info` writes to `info.log` and `debug.log`.
-`log_debug` writes to `debug.log`, `info.log`, and `error.log`.
+|Python Logging Level|Logging File|
+|:------------------:|:-----------:|
+|DEBUG| debug.log|
+|INFO| info.log|
+|WARN| error.log|
+|WARNING| error.log|
+|ERROR| error.log|
+|CRITICAL| error.log|
 
-`log_error` is meant to be used for cases where you know for sure there is a problem. The distinction between what counts as **info** and what counts as **debug** is entirely up to you. Some plugins will pick one of them and use it exclusively. Some will decide to count only the most important messages as **info**, with everything else counting as **debug**.
+As is the case with the `logging` framework, logging statements are hierarchical: logging statements made at the `logging.DEBUG` level will be written only to `debug.log` while logging statements made at the `logging.ERROR` level will be written to `debug.log`, `info.log`, and `error.log`.
 
 ## Sensitive data
 
