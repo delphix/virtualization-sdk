@@ -8,14 +8,14 @@ from dlpx.virtualization._internal import package_util
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '0.3.0'
+        assert package_util.get_version() == '0.4.0'
 
     @staticmethod
     def test_get_build_api_version():
         build_api_version = {
             'type': 'APIVersion',
             'major': 0,
-            'minor': 3,
+            'minor': 4,
             'micro': 0
         }
         assert package_util.get_build_api_version() == build_api_version

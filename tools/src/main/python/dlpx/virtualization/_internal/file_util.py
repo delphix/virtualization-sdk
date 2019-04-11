@@ -23,7 +23,7 @@ def delete_paths(*args):
         args (list of str): A list of paths to attempt to delete.
     """
     for path in args:
-        if os.path.exists(path):
+        if path and os.path.exists(path):
             try:
                 if os.path.isdir(path):
                     logger.debug(
@@ -50,6 +50,6 @@ def validate_paths_do_not_exist(*args):
     """
     logger.info('Validating files and directories to be written do not exist.')
     for path in args:
-        if os.path.exists(path):
+        if path and os.path.exists(path):
             raise exceptions.PathExistsError(path)
         logger.debug('SUCCESS: Path %r does not exist.', path)

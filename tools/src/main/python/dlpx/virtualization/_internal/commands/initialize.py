@@ -24,10 +24,9 @@ DEFAULT_ENTRY_POINT = '{}:{}'.format(DEFAULT_ENTRY_POINT_FILE[:-3],
                                      DEFAULT_ENTRY_POINT_SYMBOL)
 
 # Internal constants for the template directory.
+ENTRY_POINT_TEMPLATE_NAME = 'entry_point.py.template'
 INIT_FILE_ROOT = os.path.dirname(__file__)
 PLUGIN_TEMPLATE_DIR = os.path.join(INIT_FILE_ROOT, 'plugin_template')
-ENTRY_POINT_TEMPLATE_PATH = os.path.join(PLUGIN_TEMPLATE_DIR,
-                                         'entry_point_template.py')
 SCHEMA_TEMPLATE_PATH = os.path.join(PLUGIN_TEMPLATE_DIR,
                                     'schema_template.json')
 
@@ -120,23 +119,34 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing entry file at %r.', entry_point_file_path)
         with open(entry_point_file_path, 'w+') as f:
-            entry_point_content = _get_entry_point_file(plugin_name)
+            entry_point_content = _get_entry_point_contents(plugin_name)
             f.write(entry_point_content)
 
     except Exception as e:
         logger.debug('Attempting to cleanup after failure.')
-        file_util.delete_paths(DEFAULT_PLUGIN_CONFIG_FILE, DEFAULT_SCHEMA_FILE,
-                               DEFAULT_SRC_DIRECTORY)
+        file_util.delete_paths(config_file_path, schema_file_path,
+                               src_dir_path)
         raise exceptions.UserError(
             'Failed to initialize plugin directory {!r}: {}.'.format(root, e))
 
 
-def _get_entry_point_file(plugin_name):
-    env = jinja2.Environment(loader=jinja2.PackageLoader(
-        __package__, 'plugin_template'),
-                             autoescape=jinja2.select_autoescape(['py']))
+def _get_entry_point_contents(plugin_name):
+    """
+    Creates a valid, complete entry point file from the template with the
+    given parameters that is escaped correctly and ready to be written.
 
-    template = env.get_template('entry_point.py.template')
+    Args:
+        plugin_name (str): The name of the plugin to use for the entry point.
+            This should not be escaped.
+    Returns:
+        str: The contents of a valid entry point file.
+    """
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(PLUGIN_TEMPLATE_DIR), autoescape=False)
+
+    template = env.get_template(ENTRY_POINT_TEMPLATE_NAME)
+
+    # Call 'repr' to put the string in quotes and escape quotes.
     return template.render(name=repr(plugin_name))
 
 

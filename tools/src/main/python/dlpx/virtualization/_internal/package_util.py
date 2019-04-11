@@ -35,7 +35,7 @@ def _get_settings():
     Reads the settings file and constructs a Python object from it.
 
     This assumes that the settings file is in the root
-    of virtualization._internal.
+    of dlpx.virtualization._internal.
     """
     parser = configparser.SafeConfigParser()
     parser.read(os.path.join(get_internal_package_root(), SETTINGS_FILE_NAME))
@@ -44,7 +44,7 @@ def _get_settings():
 
 @_run_once
 def get_version():
-    """Returns the version of the virtualization._internal package."""
+    """Returns the version of the dlpx.virtualization._internal package."""
     return _get_settings().get('General', 'package_version')
 
 
@@ -62,7 +62,9 @@ def get_build_api_version():
 
 @_run_once
 def get_internal_package_root():
-    """Returns the root directory of the virtualization._internal package."""
+    """
+    Returns the root directory of the dlpx.virtualization._internal package.
+    """
     for path in virtualization_internal.__path__:
         settings_path = os.path.join(path, SETTINGS_FILE_NAME)
         if os.path.isfile(settings_path):

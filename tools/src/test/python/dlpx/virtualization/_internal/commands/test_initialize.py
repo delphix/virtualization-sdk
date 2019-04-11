@@ -6,6 +6,7 @@ import ast
 import json
 import os
 
+import jinja2
 import mock
 import pytest
 
@@ -21,14 +22,26 @@ def schema_template():
 
 @pytest.fixture
 def entry_point_template():
-    with open(init.ENTRY_POINT_TEMPLATE_PATH, 'r') as f:
+    with open(
+            os.path.join(init.PLUGIN_TEMPLATE_DIR,
+                         init.ENTRY_POINT_TEMPLATE_NAME), 'r') as f:
         return f.read()
+
+
+@pytest.fixture()
+def format_entry_point_template(entry_point_template):
+    template = jinja2.Environment().from_string(entry_point_template)
+
+    def format_template(plugin_name):
+        return template.render(name=repr(plugin_name))
+
+    return format_template
 
 
 class TestInitialize:
     @staticmethod
     def test_init(tmpdir, schema_template, entry_point_template, plugin_name,
-                  plugin_pretty_name):
+                  plugin_pretty_name, format_entry_point_template):
         # Initialize an empty directory.
         init.init(tmpdir.strpath, plugin_name, plugin_util.STAGED_TYPE,
                   plugin_pretty_name)
@@ -60,7 +73,7 @@ class TestInitialize:
                                        entry_file)
         with open(entry_file_path, 'r') as f:
             contents = f.read()
-            assert contents == entry_point_template
+            assert contents == format_entry_point_template(plugin_name)
 
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file, plugin_name):
@@ -91,9 +104,14 @@ class TestInitialize:
             init.init(tmpdir.strpath, plugin_name, plugin_util.STAGED_TYPE,
                       plugin_pretty_name)
 
-        mock_cleanup.assert_called_once_with(init.DEFAULT_PLUGIN_CONFIG_FILE,
-                                             init.DEFAULT_SCHEMA_FILE,
-                                             init.DEFAULT_SRC_DIRECTORY)
+        src_dir_path = os.path.join(tmpdir.strpath, init.DEFAULT_SRC_DIRECTORY)
+        config_file_path = os.path.join(tmpdir.strpath,
+                                        init.DEFAULT_PLUGIN_CONFIG_FILE)
+        schema_file_path = os.path.join(tmpdir.strpath,
+                                        init.DEFAULT_SCHEMA_FILE)
+
+        mock_cleanup.assert_called_once_with(config_file_path,
+                                             schema_file_path, src_dir_path)
 
     @staticmethod
     def test_default_schema_definition(schema_template):
@@ -129,8 +147,9 @@ class TestInitialize:
         assert schema_template['snapshotDefinition']['properties'] == {}
 
     @staticmethod
-    def test_default_entry_point(entry_point_template):
-        tree = ast.parse(entry_point_template)
+    def test_default_entry_point(plugin_name):
+        entry_point_contents = init._get_entry_point_contents(plugin_name)
+        tree = ast.parse(entry_point_contents)
         for stmt in ast.walk(tree):
             if isinstance(stmt, ast.Assign):
                 #
