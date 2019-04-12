@@ -8,7 +8,6 @@ import os
 import mock
 import pytest
 import yaml
-
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.commands import build
 
@@ -112,8 +111,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("The plugin config file provided is missing some"
-                           " required fields. Missing fields are ['srcDir']")
+        assert "u'srcDir' is a required property" in message
 
         assert not mock_generate_python.called
 
@@ -126,10 +124,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ('Invalid language BAD_LANGUAGE found in plugin'
-                           ' config file. Please specify PYTHON27 as the'
-                           ' language in plugin config file as it is the'
-                           ' only supported option now.')
+        assert "u'BAD_LANGUAGE' is not one of [u'PYTHON27']" in message
 
         assert not mock_generate_python.called
 

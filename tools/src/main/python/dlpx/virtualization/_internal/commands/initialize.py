@@ -9,7 +9,6 @@ from collections import OrderedDict
 
 import jinja2
 import yaml
-
 from dlpx.virtualization._internal import exceptions, file_util, plugin_util
 
 logger = logging.getLogger(__name__)
@@ -104,7 +103,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing config file at %r.', config_file_path)
         with open(config_file_path, 'w+') as f:
-            config = _get_default_plugin_config(plugin_name,
+            config = _get_default_plugin_config(config_file_path, plugin_name,
                                                 ingestion_strategy,
                                                 pretty_name,
                                                 DEFAULT_ENTRY_POINT,
@@ -123,7 +122,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
             f.write(entry_point_content)
 
     except Exception as e:
-        logger.debug('Attempting to cleanup after failure.')
+        logger.debug('Attempting to cleanup after failure. %s', e)
         file_util.delete_paths(config_file_path, schema_file_path,
                                src_dir_path)
         raise exceptions.UserError(
@@ -150,8 +149,9 @@ def _get_entry_point_contents(plugin_name):
     return template.render(name=repr(plugin_name))
 
 
-def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
-                               entry_point, src_dir_path, schema_file_path):
+def _get_default_plugin_config(config_file_path, plugin_name,
+                               ingestion_strategy, pretty_name, entry_point,
+                               src_dir_path, schema_file_path):
     """
     Returns a valid plugin configuration as an OrderedDict.
 
@@ -173,7 +173,7 @@ def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
     config = OrderedDict([('name', plugin_name.encode('utf-8')),
                           ('prettyName', pretty_name.encode('utf-8')),
                           ('version', '0.1.0'), ('language', 'PYTHON27'),
-                          ('hostTypes', ['UNIX']),
+                          ('hostTypes', 'UNIX'),
                           ('pluginType', ingestion_strategy.encode('utf-8')),
                           ('manualDiscovery', True),
                           ('entryPoint', entry_point.encode('utf-8')),
@@ -181,5 +181,5 @@ def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
                           ('schemaFile', schema_file_path.encode('utf-8'))])
 
     # This should always return something valid
-    plugin_util.validate_plugin_config_content(config)
+    plugin_util.validate_plugin_config_content(config_file_path, config)
     return config

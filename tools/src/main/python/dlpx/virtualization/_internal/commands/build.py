@@ -11,8 +11,8 @@ import os
 import StringIO
 import zipfile
 
-from dlpx.virtualization._internal import (codegen, exceptions, package_util,
-                                           plugin_util)
+from dlpx.virtualization._internal import (codegen, exceptions, file_util,
+                                           package_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 # This is hard-coded to the delphix web service api version
@@ -44,16 +44,21 @@ def build(plugin_config, upload_artifact, generate_only):
         ' generate_only: %s', plugin_config, upload_artifact, generate_only)
 
     # Read content of the plugin config  file provided and perform validations
-    logger.info('Reading plugin config file %s', plugin_config)
-    plugin_config_content = plugin_util.read_plugin_config_file(plugin_config)
+    logger.info('Reading and validating plugin config file %s', plugin_config)
+    plugin_config_content, plugin_module_content, plugin_entry_point = \
+        plugin_util.read_and_validate_plugin_config_file(
+            plugin_config, not generate_only)
+
     logger.debug('plugin config file content is : %s', plugin_config_content)
-    plugin_util.validate_plugin_config_content(plugin_config_content)
+
     # Resolve the paths for source directory and schema file
-    src_dir = plugin_util.get_src_dir_path(plugin_config,
-                                           plugin_config_content['srcDir'])
+    src_dir = file_util.get_src_dir_path(plugin_config,
+                                         plugin_config_content['srcDir'])
     logger.debug('Source directory path resolved is %s', src_dir)
+
     schema_file = plugin_util.get_schema_file_path(
         plugin_config, plugin_config_content['schemaFile'])
+
     # Read schemas from the file provided in the config and validate them
     logger.info('Reading schemas from %s', schema_file)
     schemas = plugin_util.read_schema_file(schema_file)

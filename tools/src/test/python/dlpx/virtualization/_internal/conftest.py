@@ -8,7 +8,6 @@ import os
 
 import pytest
 import yaml
-
 from dlpx.virtualization._internal import package_util
 
 #
@@ -119,7 +118,7 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
     """
     config = {
         'version': '2.0.0',
-        'hostTypes': ['UNIX'],
+        'hostTypes': 'UNIX',
         'entryPoint': 'python_vfiles:vfiles',
         'pluginType': 'DIRECT',
     }
@@ -271,7 +270,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'version': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
-        'hostTypes': ['UNIX'],
+        'hostTypes': 'UNIX',
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',

@@ -8,7 +8,6 @@ import logging
 import os
 
 import requests
-
 from dlpx.virtualization._internal import exceptions
 
 logger = logging.getLogger(__name__)

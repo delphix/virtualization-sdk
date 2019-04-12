@@ -1,11 +1,18 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/
+./../common/build/python-dist/dvp-common-0.4.0-internal-001.tar.gz
+./../libs/build/python-dist/dvp-libs-0.4.0-internal-001.tar.gz
+./../platform/build/python-dist/dvp-platform-0.4.0-internal-001.tar.gz
+attrs==19.1.0
 certifi==2019.3.9
 chardet==3.0.4
 click==7.0
+functools32==3.2.3.post2 ; python_version < '3'
 idna==2.8
 jinja2==2.10.1
+jsonschema==3.0.1
 markupsafe==1.1.1
 protobuf==3.6.1
+pyrsistent==0.14.11
 pyyaml==5.1
 requests==2.21.0
 six==1.12.0

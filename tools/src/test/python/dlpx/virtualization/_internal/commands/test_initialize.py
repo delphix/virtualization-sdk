@@ -9,7 +9,6 @@ import os
 import jinja2
 import mock
 import pytest
-
 from dlpx.virtualization._internal import exceptions, plugin_util
 from dlpx.virtualization._internal.commands import initialize as init
 
@@ -46,11 +45,12 @@ class TestInitialize:
         init.init(tmpdir.strpath, plugin_name, plugin_util.STAGED_TYPE,
                   plugin_pretty_name)
 
-        config = plugin_util.read_plugin_config_file(
-            os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE))
-
         # Validate the config file is as we expect.
-        plugin_util.validate_plugin_config_content(config)
+        config, plugin_module_content, plugin_entry_point =\
+            plugin_util.read_and_validate_plugin_config_file(
+                os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
+                True)
+
         assert config['pluginType'] == plugin_util.STAGED_TYPE
         assert config['name'] == plugin_name
         assert config['prettyName'] == plugin_pretty_name

@@ -3,50 +3,47 @@
 #
 
 import json
+import logging
 import os
 
-import yaml
-
 from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal.plugin_validator import (PluginValidator,
+                                                            ValidationMode)
 
-EXPECTED_KEYS_IN_PLUGIN_CONFIG = frozenset({
-    'name', 'prettyName', 'version', 'hostTypes', 'entryPoint', 'srcDir',
-    'schemaFile', 'manualDiscovery', 'pluginType', 'language'
-})
+logger = logging.getLogger(__name__)
 
 EXPECTED_SCHEMAS = frozenset({
     'repositoryDefinition', 'sourceConfigDefinition',
     'virtualSourceDefinition', 'linkedSourceDefinition', 'snapshotDefinition'
 })
 
-EXPECTED_FIELDS = frozenset({'identityFields', 'nameField'})
-
 LANGUAGE_DEFAULT = 'PYTHON27'
 
 STAGED_TYPE = 'STAGED'
 DIRECT_TYPE = 'DIRECT'
 
+EXPECTED_FIELDS = frozenset({'identityFields', 'nameField'})
+PLUGIN_SCHEMAS_DIR = os.path.join(os.path.dirname(__file__),
+                                  'validation_schemas')
+PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
+                                    'plugin_config_schema.json')
 
-def read_plugin_config_file(plugin_config):
-    try:
-        with open(plugin_config, 'rb') as f:
-            try:
-                return yaml.safe_load(f)
-            except yaml.YAMLError as err:
-                if hasattr(err, 'problem_mark'):
-                    mark = err.problem_mark
-                    raise exceptions.UserError(
-                        'Command failed because the plugin config file '
-                        'provided as input {!r} was not valid yaml. '
-                        'Verify the file contents. '
-                        'Error position: {}:{}'.format(plugin_config,
-                                                       mark.line + 1,
-                                                       mark.column + 1))
-    except IOError as err:
-        raise exceptions.UserError(
-            'Unable to read plugin config file {!r}'
-            '\nError code: {}. Error message: {}'.format(
-                plugin_config, err.errno, os.strerror(err.errno)))
+
+def read_and_validate_plugin_config_file(plugin_config, stop_build):
+    validation_mode = ValidationMode.error \
+        if stop_build else ValidationMode.warning
+    validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
+                                validation_mode)
+    validator.validate()
+    return validator.plugin_config_content, validator.plugin_module_content,\
+        validator.plugin_entry_point
+
+
+def validate_plugin_config_content(plugin_config_file, plugin_config_content):
+    validator = PluginValidator.from_config_content(plugin_config_file,
+                                                    plugin_config_content,
+                                                    PLUGIN_CONFIG_SCHEMA)
+    validator.validate()
 
 
 def read_schema_file(schema_file):
@@ -63,63 +60,6 @@ def read_schema_file(schema_file):
             'Unable to load schemas from {!r}'
             '\nError code: {}. Error message: {}'.format(
                 schema_file, err.errno, os.strerror(err.errno)))
-
-
-def validate_plugin_config_content(plugin_config_content):
-    """
-    Validates the given plugin configuration is valid.
-
-    The plugin configuration should include:
-    name            the plugin name
-    prettyName      the plugin's displayed name
-    version         the plugin version
-    hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS)
-    entryPoint      the entry point of the plugin defined by the decorator
-    srcDir          the directory that the source code is writen in
-    schemaFile:     the file containing defined schemas in the plugin
-    manualDiscovery whether or not manual discovery is supported
-    pluginType      whether the plugin is DIRECT or STAGED
-    language        language of the source code (ex: PYTHON27 for python2.7)
-
-    Args:
-        plugin_config_content (dict): A dictionary representing a plugin
-          configuration file.
-    Raises:
-        UserError: If the configuration is not valid.
-        PathNotAbsoluteError: If the src and schema paths are not absolute.
-    """
-    # First validate that all the expected keys are in the plugin config.
-    if not all(name in plugin_config_content
-               for name in EXPECTED_KEYS_IN_PLUGIN_CONFIG):
-        missing_fields = [
-            key for key in EXPECTED_KEYS_IN_PLUGIN_CONFIG
-            if key not in plugin_config_content
-        ]
-        raise exceptions.UserError(
-            'The plugin config file provided is missing some required fields.'
-            ' Missing fields are {}'.format(missing_fields))
-
-    # Then validate that the language was set to the right language
-    if plugin_config_content['language'] != LANGUAGE_DEFAULT:
-        raise exceptions.UserError(
-            'Invalid language {} found in plugin config file. '
-            'Please specify {} as the language in plugin config file'
-            ' as it is the only supported option now.'.format(
-                plugin_config_content['language'], LANGUAGE_DEFAULT))
-
-
-def get_src_dir_path(plugin_config, src_dir):
-    """Get the absolute path if the srcDir provided is relative path and
-    validate that srcDir is a valid directory and that it exists.
-    """
-    if not os.path.isabs(src_dir):
-        src_dir = os.path.join(os.path.dirname(plugin_config), src_dir)
-
-    if not os.path.exists(src_dir):
-        raise exceptions.PathDoesNotExistError(src_dir)
-    if not os.path.isdir(src_dir):
-        raise exceptions.PathTypeError(src_dir, 'directory')
-    return src_dir
 
 
 def get_schema_file_path(plugin_config, schema_file):

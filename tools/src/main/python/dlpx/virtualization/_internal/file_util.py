@@ -53,3 +53,17 @@ def validate_paths_do_not_exist(*args):
         if path and os.path.exists(path):
             raise exceptions.PathExistsError(path)
         logger.debug('SUCCESS: Path %r does not exist.', path)
+
+
+def get_src_dir_path(file_name, src_dir):
+    """Get the absolute path if the srcDir provided is relative path and
+    validate that srcDir is a valid directory and that it exists.
+    """
+    if not os.path.isabs(src_dir):
+        src_dir = os.path.join(os.path.dirname(file_name), src_dir)
+
+    if not os.path.exists(src_dir):
+        raise exceptions.PathDoesNotExistError(src_dir)
+    if not os.path.isdir(src_dir):
+        raise exceptions.PathTypeError(src_dir, 'directory')
+    return src_dir

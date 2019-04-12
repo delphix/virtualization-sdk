@@ -149,12 +149,31 @@ dlpxPython {
       version = ">= 3"
     }
 
+    jsonschema {
+      version = ">= 3"
+    }
+
     requests {
       version = ">= 2.21.0"
     }
 
     typing {
       markers = "python_version < '3.5'"
+    }
+
+    "dvp-common" {
+            version = "== $project.version"
+            path = file(tasks.getByPath(":common:sdist").getDistFile().toString())
+    }
+
+    "dvp-platform" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":platform:sdist").getDistFile().toString())
+    }
+
+    "dvp-libs" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":libs:sdist").getDistFile().toString())
     }
 
     jinja2 {

@@ -8,7 +8,6 @@ import os
 import subprocess
 
 import pytest
-
 from dlpx.virtualization._internal import codegen, exceptions
 
 

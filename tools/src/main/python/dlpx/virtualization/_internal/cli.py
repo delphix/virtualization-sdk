@@ -8,7 +8,6 @@ import traceback
 from contextlib import contextmanager
 
 import click
-
 from dlpx.virtualization._internal import (click_util, exceptions,
                                            logging_util, package_util,
                                            plugin_util)

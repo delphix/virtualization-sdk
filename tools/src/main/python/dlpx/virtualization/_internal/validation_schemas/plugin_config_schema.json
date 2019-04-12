@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties":  {
+      "name":  {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9]+"
+      },
+      "prettyName":  {
+          "type": "string"
+      },
+      "version":  {
+          "type": "string",
+          "pattern": "^([0-9]+)\\.([0-9]+)\\.([a-zA-Z0-9_]+)$"
+      },
+      "hostTypes":  {
+          "type": "string",
+          "enum": [ "UNIX", "WINDOWS" ]
+      },
+      "entryPoint":  {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+$"
+      },
+      "srcDir":  {
+          "type": "string"
+      },
+      "schemaFile":  {
+          "type": "string"
+      },
+      "manualDiscovery":  {
+          "type": "boolean"
+      },
+      "pluginType":  {
+          "type": "string",
+          "enum": ["DIRECT", "STAGED"]
+      },
+      "language":  {
+          "type": "string",
+          "enum": ["PYTHON27"]
+      }
+    },
+    "required": ["name", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
+}
