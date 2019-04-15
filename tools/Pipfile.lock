@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0ce9ab60115a3b46b46df7656d2149427e760330b3bebf4a9015fb811251d970"
+            "sha256": "d63ffe6c55b3ffc2d42217479f5a69e6e167fbd9bc90ffe1665079cc71d9c04c"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -43,17 +43,15 @@
             "index": "delphix",
             "version": "==7.0"
         },
-        "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-001.tar.gz",
-            "version": "== 0.4.0-internal-001"
-        },
-        "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-001.tar.gz",
-            "version": "== 0.4.0-internal-001"
-        },
-        "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-001.tar.gz",
-            "version": "== 0.4.0-internal-001"
+        "enum34": {
+            "hashes": [
+                "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850",
+                "sha256:644837f692e5f550741432dd3f223bbb9852018674981b1664e5dc339387588a",
+                "sha256:6bd0f6ad48ec2aa117d3d141940d484deccda84d4fcd884f5c3d93c23ecd8c79",
+                "sha256:8ad8c4783bf61ded74527bffb48ed9b54166685e4230386a9ed9b1279e2df5b1"
+            ],
+            "index": "delphix",
+            "version": "==1.1.6"
         },
         "functools32": {
             "hashes": [
@@ -279,7 +277,7 @@
                 "sha256:6bd0f6ad48ec2aa117d3d141940d484deccda84d4fcd884f5c3d93c23ecd8c79",
                 "sha256:8ad8c4783bf61ded74527bffb48ed9b54166685e4230386a9ed9b1279e2df5b1"
             ],
-            "markers": "python_version < '3.4'",
+            "index": "delphix",
             "version": "==1.1.6"
         },
         "flake8": {
@@ -295,7 +293,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "functools32": {

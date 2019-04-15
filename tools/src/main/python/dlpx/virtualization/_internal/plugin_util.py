@@ -30,6 +30,15 @@ PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
 
 
 def read_and_validate_plugin_config_file(plugin_config, stop_build):
+    """Reads a plugin config file and validates the contents using a
+    pre-defined schema. If stop_build is True, will report exception
+    back, otherwise warnings.
+    Returns:
+        On successful validation, returns content of the plugin
+        config, content of the python module specified in in the
+        pluginEntryPoint and also name of the plugin entry point
+        in the module.
+    """
     validation_mode = ValidationMode.error \
         if stop_build else ValidationMode.warning
     validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
@@ -40,6 +49,10 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build):
 
 
 def validate_plugin_config_content(plugin_config_file, plugin_config_content):
+    """Validates the given plugin config content using a pre-defined schema.
+    Plugin config file name is used to get the absolute path of plugin source
+    directory.
+    """
     validator = PluginValidator.from_config_content(plugin_config_file,
                                                     plugin_config_content,
                                                     PLUGIN_CONFIG_SCHEMA)

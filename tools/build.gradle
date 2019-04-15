@@ -161,24 +161,14 @@ dlpxPython {
       markers = "python_version < '3.5'"
     }
 
-    "dvp-common" {
-            version = "== $project.version"
-            path = file(tasks.getByPath(":common:sdist").getDistFile().toString())
-    }
-
-    "dvp-platform" {
-      version = "== $project.version"
-      path = file(tasks.getByPath(":platform:sdist").getDistFile().toString())
-    }
-
-    "dvp-libs" {
-      version = "== $project.version"
-      path = file(tasks.getByPath(":libs:sdist").getDistFile().toString())
-    }
-
     jinja2 {
       version = ">= 2.10"
     }
+
+    enum34 {
+      version = ">= 1.1.6"
+    }
+
   }
 
   devPackages {

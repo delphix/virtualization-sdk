@@ -5,9 +5,9 @@ backports.functools-lru-cache==1.5 ; python_version < '3.2'
 configparser==3.7.4 ; python_version < '3.2'
 coverage==4.5.3
 entrypoints==0.3
-enum34==1.1.6 ; python_version < '3.4'
+enum34==1.1.6
 flake8==3.7.7
-funcsigs==1.0.2 ; python_version < '3.3'
+funcsigs==1.0.2 ; python_version < '3.0'
 functools32==3.2.3.post2 ; python_version < '3'
 futures==3.2.0 ; python_version < '3.2'
 httpretty==0.9.6

@@ -3,7 +3,7 @@
   "properties":  {
       "name":  {
           "type": "string",
-          "pattern": "[a-zA-Z0-9]+"
+          "pattern": "[a-zA-Z0-9_]+"
       },
       "prettyName":  {
           "type": "string"
@@ -13,8 +13,12 @@
           "pattern": "^([0-9]+)\\.([0-9]+)\\.([a-zA-Z0-9_]+)$"
       },
       "hostTypes":  {
-          "type": "string",
-          "enum": [ "UNIX", "WINDOWS" ]
+          "type": "array",
+          "items":  {
+              "type": "string",
+              "enum": [ "UNIX", "WINDOWS" ]
+          },
+          "maxItems": 2
       },
       "entryPoint":  {
           "type": "string",
@@ -38,5 +42,5 @@
           "enum": ["PYTHON27"]
       }
     },
-    "required": ["name", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
+    "required": ["name", "prettyName", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
 }

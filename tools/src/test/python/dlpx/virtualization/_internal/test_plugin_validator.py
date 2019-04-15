@@ -5,6 +5,7 @@
 import os
 from collections import OrderedDict
 
+import mock
 import pytest
 from dlpx.virtualization._internal import exceptions, plugin_util
 from dlpx.virtualization._internal.plugin_validator import (PluginValidator,
@@ -20,6 +21,13 @@ def plugin_config_file(tmpdir):
 def src_dir(tmpdir):
     tmpdir.mkdir('src')
     return os.path.join(tmpdir.strpath, 'src')
+
+
+@pytest.fixture(scope='session', autouse=True)
+def mock_module_import():
+    with mock.patch.object(PluginValidator,
+                           '_PluginValidator__validate_plugin_entry_point'):
+        yield
 
 
 class TestPluginValidator:
@@ -42,7 +50,7 @@ class TestPluginValidator:
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', 'UNIX'), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
             ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
             ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
@@ -59,7 +67,7 @@ class TestPluginValidator:
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', 'UNIX'), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
             ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
             ('schemaFile', 'schema.json'.encode('utf-8'))
@@ -85,7 +93,7 @@ class TestPluginValidator:
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
             ('version', version), ('language', 'PYTHON27'),
-            ('hostTypes', 'UNIX'), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
             ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
             ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
@@ -117,7 +125,7 @@ class TestPluginValidator:
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
-            ('hostTypes', 'UNIX'), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
             ('entryPoint', entry_point.encode('utf-8')), ('srcDir', src_dir),
             ('schemaFile', 'schema.json'.encode('utf-8'))

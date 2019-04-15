@@ -18,12 +18,30 @@ logger = logging.getLogger(__name__)
 
 
 class ValidationMode(enum.Enum):
+    """
+    Defines the validation mode that validator uses.
+    info - validator will give out info messages if validation fails.
+    warning - validator will log a warning if validation fails.
+    error - validator will raise an exception if validation fails.
+    """
     info = logging.info
     warning = logging.warn
     error = logging.error
 
 
 class PluginValidator:
+    """
+    Reads a plugin config file and validates the contents using a
+    pre-defined schema.
+    Returns:
+        On successful validation, callers can get the content of the plugin
+        config, content of the python module specified in in the
+        pluginEntryPoint and also name of the plugin entry point in the
+        module. If validation fails or has issues - will report exception
+        back if validation mode is error, otherwise warnings or info based
+        on validation mode.
+    """
+
     def __init__(self,
                  plugin_config,
                  plugin_config_schema,
@@ -51,10 +69,20 @@ class PluginValidator:
     @classmethod
     def from_config_content(cls, plugin_config_file, plugin_config_content,
                             plugin_config_schema):
+        """
+        Instantiates the validator with given plugin config content.
+        plugin_config_file path is not read but used to get the absolute
+        path of plugin source directory.
+        Returns:
+            PluginValidator
+        """
         return cls(plugin_config_file, plugin_config_schema,
                    ValidationMode.error, plugin_config_content)
 
     def validate(self):
+        """
+        Validates the plugin config file.
+        """
         try:
             logger.debug("Run config validations")
             self.__run_validations()
@@ -68,6 +96,11 @@ class PluginValidator:
                 raise e
 
     def __run_validations(self):
+        """
+        Reads a plugin config file and validates the contents using a
+        pre-defined schema. If validation is successful, tries to import
+        the plugin module and validates the entry point specified.
+        """
         logger.info('Reading plugin config file %s', self.__plugin_config)
 
         if self.__plugin_config_content is None:
@@ -85,6 +118,10 @@ class PluginValidator:
         self.__validate_plugin_entry_point(src_dir)
 
     def __read_plugin_config_file(self):
+        """
+        Reads a plugin config file and raises UserError if there is an issue
+        reading the file.
+        """
         try:
             with open(self.__plugin_config, 'rb') as f:
                 try:
@@ -174,22 +211,31 @@ class PluginValidator:
         module = entry_point_strings[0]
         self.__plugin_entry_point = entry_point_strings[1]
 
-        if 'pytest' not in sys.modules:
-            # Import the module to check if its good.
+        # Import the module to check if its good.
+        try:
             self.__plugin_module_content = PluginValidator.__import_plugin(
                 src_dir, module)
+        except ImportError as err:
+            raise exceptions.UserError(
+                'Unable to load module \'{}\' specified in '
+                'pluginEntryPoint \'{}\' from path \'{}\'. '
+                'Error message: {}'.format(module, self.__plugin_entry_point,
+                                           src_dir, err))
 
-            # Check for the plugin entry point in the module.
-            objects = dir(self.__plugin_module_content)
+        # Check for the plugin entry point in the module.
+        objects = dir(self.__plugin_module_content)
 
-            if self.__plugin_entry_point not in objects:
-                raise exceptions.UserError(
-                    'Entry point \'{}\' provided in the plugin config '
-                    'file is not found in module \'{}\'.'.format(
-                        self.__plugin_entry_point, module))
+        if self.__plugin_entry_point not in objects:
+            raise exceptions.UserError(
+                'Entry point \'{}\' provided in the plugin config '
+                'file is not found in module \'{}\'.'.format(
+                    self.__plugin_entry_point, module))
 
     @staticmethod
     def __import_plugin(src_dir, module):
+        """
+        Imports the given python module.
+        """
         sys.path.append(src_dir)
         module_content = importlib.import_module(module)
         return module_content
