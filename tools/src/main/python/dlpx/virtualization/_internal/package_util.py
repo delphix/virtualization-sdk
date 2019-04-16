@@ -6,8 +6,9 @@ import functools
 import logging
 import os
 
-from dlpx.virtualization import _internal as virtualization_internal
 from six.moves import configparser
+
+from dlpx.virtualization import _internal as virtualization_internal
 
 logger = logging.getLogger(__name__)
 

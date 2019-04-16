@@ -8,6 +8,7 @@ import httpretty
 import mock
 import pytest
 import requests
+
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.commands import upload
 

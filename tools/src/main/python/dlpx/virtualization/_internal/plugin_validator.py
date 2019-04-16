@@ -11,8 +11,9 @@ import sys
 
 import jsonschema
 import yaml
-from dlpx.virtualization._internal import exceptions, file_util
 from jsonschema.exceptions import ValidationError
+
+from dlpx.virtualization._internal import exceptions, file_util
 
 logger = logging.getLogger(__name__)
 

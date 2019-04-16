@@ -8,4 +8,5 @@ include LICENSE
 include src/main/python/dlpx/virtualization/_internal/codegen/swagger-codegen-cli-2.3.1.jar
 include src/main/python/dlpx/virtualization/_internal/codegen/codegen-config.json
 recursive-include src/main/python/dlpx/virtualization/_internal/commands/plugin_template *
+recursive-include src/main/python/dlpx/virtualization/_internal/validation_schemas *
 recursive-include src/main/python *.cfg

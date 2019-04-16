@@ -8,6 +8,7 @@ import os
 import mock
 import pytest
 import yaml
+
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.commands import build
 
