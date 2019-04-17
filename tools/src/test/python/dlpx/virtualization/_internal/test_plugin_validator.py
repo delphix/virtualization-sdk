@@ -37,7 +37,7 @@ class TestPluginValidator:
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
                                         plugin_util.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.error)
+                                        ValidationMode.ERROR)
             validator.validate()
 
         message = err_info.value.message

@@ -21,13 +21,13 @@ logger = logging.getLogger(__name__)
 class ValidationMode(enum.Enum):
     """
     Defines the validation mode that validator uses.
-    info - validator will give out info messages if validation fails.
-    warning - validator will log a warning if validation fails.
-    error - validator will raise an exception if validation fails.
+    INFO - validator will give out info messages if validation fails.
+    WARNING - validator will log a warning if validation fails.
+    ERROR - validator will raise an exception if validation fails.
     """
-    info = logging.info
-    warning = logging.warn
-    error = logging.error
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
 
 
 class PluginValidator:
@@ -78,7 +78,7 @@ class PluginValidator:
             PluginValidator
         """
         return cls(plugin_config_file, plugin_config_schema,
-                   ValidationMode.error, plugin_config_content)
+                   ValidationMode.ERROR, plugin_config_content)
 
     def validate(self):
         """
@@ -88,9 +88,9 @@ class PluginValidator:
             logger.debug("Run config validations")
             self.__run_validations()
         except Exception as e:
-            if self.__validation_mode is ValidationMode.info:
+            if self.__validation_mode is ValidationMode.INFO:
                 logger.info('Validation failed on plugin config file : %s', e)
-            elif self.__validation_mode is ValidationMode.warning:
+            elif self.__validation_mode is ValidationMode.WARNING:
                 logger.warning('Validation failed on plugin config file : %s',
                                e)
             else:
@@ -214,6 +214,8 @@ class PluginValidator:
 
         # Import the module to check if its good.
         try:
+            logger.debug('Adding %s to system path %s', src_dir, sys.path)
+            sys.path.append(src_dir)
             self.__plugin_module_content = PluginValidator.__import_plugin(
                 src_dir, module)
         except ImportError as err:
@@ -222,6 +224,9 @@ class PluginValidator:
                 'pluginEntryPoint \'{}\' from path \'{}\'. '
                 'Error message: {}'.format(module, self.__plugin_entry_point,
                                            src_dir, err))
+        finally:
+            sys.path.remove(src_dir)
+            logger.debug('Removed %s from system path %s', src_dir, sys.path)
 
         # Check for the plugin entry point in the module.
         objects = dir(self.__plugin_module_content)
@@ -237,6 +242,5 @@ class PluginValidator:
         """
         Imports the given python module.
         """
-        sys.path.append(src_dir)
         module_content = importlib.import_module(module)
         return module_content

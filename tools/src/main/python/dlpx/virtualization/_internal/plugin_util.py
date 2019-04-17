@@ -39,8 +39,8 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build):
         pluginEntryPoint and also name of the plugin entry point
         in the module.
     """
-    validation_mode = ValidationMode.error \
-        if stop_build else ValidationMode.warning
+    validation_mode = ValidationMode.ERROR \
+        if stop_build else ValidationMode.WARNING
     validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
                                 validation_mode)
     validator.validate()

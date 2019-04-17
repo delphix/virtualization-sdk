@@ -10,7 +10,8 @@ from collections import OrderedDict
 import jinja2
 import yaml
 
-from dlpx.virtualization._internal import exceptions, file_util, plugin_util
+from dlpx.virtualization._internal import (codegen, exceptions, file_util,
+                                           plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +97,11 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         logger.info('Writing schema file at %r.', schema_file_path)
         shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
+        # Generate the definitions based on the schema file
+        schemas = plugin_util.read_schema_file(schema_file_path)
+        codegen.generate_python(pretty_name, src_dir_path,
+                                os.path.dirname(config_file_path), schemas)
+
         #
         # Create the plugin config file. The config file relies on input from
         # the user, so it's easier to deal with a dictionary than a file. This
@@ -104,7 +110,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing config file at %r.', config_file_path)
         with open(config_file_path, 'w+') as f:
-            config = _get_default_plugin_config(config_file_path, plugin_name,
+            config = _get_default_plugin_config(plugin_name,
                                                 ingestion_strategy,
                                                 pretty_name,
                                                 DEFAULT_ENTRY_POINT,
@@ -121,6 +127,11 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         with open(entry_point_file_path, 'w+') as f:
             entry_point_content = _get_entry_point_contents(plugin_name)
             f.write(entry_point_content)
+
+        # Validate the plugin config and the entry point
+        # This should always return something valid
+        plugin_util.read_and_validate_plugin_config_file(
+            config_file_path, False)
 
     except Exception as e:
         logger.debug('Attempting to cleanup after failure. %s', e)
@@ -150,9 +161,8 @@ def _get_entry_point_contents(plugin_name):
     return template.render(name=repr(plugin_name))
 
 
-def _get_default_plugin_config(config_file_path, plugin_name,
-                               ingestion_strategy, pretty_name, entry_point,
-                               src_dir_path, schema_file_path):
+def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
+                               entry_point, src_dir_path, schema_file_path):
     """
     Returns a valid plugin configuration as an OrderedDict.
 
@@ -181,6 +191,4 @@ def _get_default_plugin_config(config_file_path, plugin_name,
                           ('srcDir', src_dir_path.encode('utf-8')),
                           ('schemaFile', schema_file_path.encode('utf-8'))])
 
-    # This should always return something valid
-    plugin_util.validate_plugin_config_content(config_file_path, config)
     return config
