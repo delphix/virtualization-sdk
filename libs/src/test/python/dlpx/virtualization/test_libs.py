@@ -11,13 +11,13 @@ from dlpx.virtualization.libs.exceptions import LibraryError
 from dlpx.virtualization import common_pb2
 
 class TestLibs:
+
   @staticmethod
   def test_run_bash():
-
       expected_run_bash_response = libs_pb2.RunBashResponse()
-      expected_run_bash_response.exit_code = 0
-      expected_run_bash_response.stdout = "stdout"
-      expected_run_bash_response.stderr = "stderr"
+      expected_run_bash_response.return_value.exit_code = 0
+      expected_run_bash_response.return_value.stdout = "stdout"
+      expected_run_bash_response.return_value.stderr = "stderr"
 
       expected_remote_connection = common_pb2.RemoteConnection()
       expected_remote_connection.environment.name = "RemoteConnectionEnv"
@@ -37,21 +37,54 @@ class TestLibs:
 
       with mock.patch("dlpx.virtualization._engine.libs.run_bash",
                       side_effect=mock_run_bash, create=True):
-
-          actual_run_bash_response = libs.run_bash(expected_remote_connection, expected_command, expected_variables,
+          actual_run_bash_result = libs.run_bash(expected_remote_connection, expected_command, expected_variables,
                                                       expected_use_login_shell)
 
-          assert actual_run_bash_response.exit_code == expected_run_bash_response.exit_code
-          assert actual_run_bash_response.stdout == expected_run_bash_response.stdout
-          assert actual_run_bash_response.stderr == expected_run_bash_response.stderr
+          assert actual_run_bash_result.exit_code == expected_run_bash_response.return_value.exit_code
+          assert actual_run_bash_result.stdout == expected_run_bash_response.return_value.stdout
+          assert actual_run_bash_result.stderr == expected_run_bash_response.return_value.stderr
+
+  @staticmethod
+  def test_run_bash_with_actionable_error():
+      expected_id = 15
+      expected_message = "Some message"
+
+      response = libs_pb2.RunBashResponse()
+      response.error.actionable_error.id = expected_id
+      response.error.actionable_error.message = expected_message
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_bash",
+                      return_value=response, create=True):
+          with pytest.raises(LibraryError) as info:
+              response = libs.run_bash(connection, "command")
+          assert info.value._id == expected_id
+          assert info.value.message == expected_message
+
+  @staticmethod
+  def test_run_bash_with_nonactionable_error():
+      response = libs_pb2.RunBashResponse()
+      na_error = libs_pb2.NonActionableLibraryError()
+      response.error.non_actionable_error.CopyFrom(na_error)
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_bash",
+                      return_value=response, create=True):
+          with pytest.raises(SystemExit):
+              response = libs.run_bash(connection, "command")
 
   @staticmethod
   def test_run_powershell():
-
       expected_run_powershell_response = libs_pb2.RunPowerShellResponse()
-      expected_run_powershell_response.exit_code = 0
-      expected_run_powershell_response.stdout = "stdout"
-      expected_run_powershell_response.stderr = "stderr"
+      expected_run_powershell_response.return_value.exit_code = 0
+      expected_run_powershell_response.return_value.stdout = "stdout"
+      expected_run_powershell_response.return_value.stderr = "stderr"
 
       expected_remote_connection = common_pb2.RemoteConnection()
       expected_remote_connection.environment.name = "RemoteConnectionEnv"
@@ -69,12 +102,47 @@ class TestLibs:
 
       with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
                       side_effect=mock_run_powershell, create=True):
-          actual_run_powershell_response = libs.run_powershell(expected_remote_connection,
-                                                                  expected_command, expected_variables)
+          actual_run_powershell_result = libs.run_powershell(expected_remote_connection,
+                                                            expected_command, expected_variables)
 
-          assert actual_run_powershell_response.exit_code == expected_run_powershell_response.exit_code
-          assert actual_run_powershell_response.stdout == expected_run_powershell_response.stdout
-          assert actual_run_powershell_response.stderr == expected_run_powershell_response.stderr
+          assert actual_run_powershell_result.exit_code == expected_run_powershell_response.return_value.exit_code
+          assert actual_run_powershell_result.stdout == expected_run_powershell_response.return_value.stdout
+          assert actual_run_powershell_result.stderr == expected_run_powershell_response.return_value.stderr
+
+  @staticmethod
+  def test_run_powershell_with_actionable_error():
+      expected_id = 15
+      expected_message = "Some message"
+
+      response = libs_pb2.RunPowerShellResponse()
+      response.error.actionable_error.id = expected_id
+      response.error.actionable_error.message = expected_message
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
+                      return_value=response, create=True):
+          with pytest.raises(LibraryError) as info:
+              response = libs.run_powershell(connection, "command")
+          assert info.value._id == expected_id
+          assert info.value.message == expected_message
+
+  @staticmethod
+  def test_run_powershell_with_nonactionable_error():
+      response = libs_pb2.RunPowerShellResponse()
+      na_error = libs_pb2.NonActionableLibraryError()
+      response.error.non_actionable_error.CopyFrom(na_error)
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
+                      return_value=response, create=True):
+          with pytest.raises(SystemExit):
+              response = libs.run_powershell(connection, "command")
 
   @staticmethod
   def test_run_sync_with_actionable_error():
@@ -169,3 +237,39 @@ class TestLibs:
                                                        expected_command, expected_variables)
 
           assert actual_run_expect_response is None
+
+  @staticmethod
+  def test_run_expect_with_actionable_error():
+      expected_id = 15
+      expected_message = "Some message"
+
+      response = libs_pb2.RunExpectResponse()
+      response.error.actionable_error.id = expected_id
+      response.error.actionable_error.message = expected_message
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_expect",
+                      return_value=response, create=True):
+          with pytest.raises(LibraryError) as info:
+             response = libs.run_expect(connection, "command")
+          assert info.value._id == expected_id
+          assert info.value.message == expected_message
+
+  @staticmethod
+  def test_run_sync_with_nonactionable_error():
+
+      response = libs_pb2.RunExpectResponse()
+      na_error = libs_pb2.NonActionableLibraryError()
+      response.error.non_actionable_error.CopyFrom(na_error)
+
+      connection = common_pb2.RemoteConnection()
+      connection.environment.name = "name"
+      connection.environment.reference = "ref"
+
+      with mock.patch("dlpx.virtualization._engine.libs.run_expect",
+                      return_value=response, create=True):
+          with pytest.raises(SystemExit):
+              response = libs.run_expect(connection, "command")

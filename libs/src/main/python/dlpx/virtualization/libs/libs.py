@@ -36,6 +36,27 @@ __all__ = [
     "run_expect"
 ]
 
+def _handle_response(response):
+  """
+   This function handles callback responses. It proceeds differently based on what the response reported...
+   All of our callback response types have one of these three setups:
+    - If there was a successful callback, this method returns the return value ("result") of the callback
+    - If there was an actionable error, this method will throw a LibraryError, which the plugin may choose to catch
+    - If there was a non-actionable error, this method calls exit()
+  """
+  if response.HasField("error"):
+    if response.error.HasField("actionable_error"):
+      actionable = response.error.actionable_error
+      # Give the plugin a chance to catch/handle this problem
+      raise LibraryError(actionable.id, actionable.message)
+
+    # Nothing the plugin can do, so quit ASAP
+    exit()
+
+  # Unpack the return value from the response
+  return response.return_value
+
+
 def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   """run_bash operation wrapper.
 
@@ -71,29 +92,7 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False):
   for variable, value in variables.items():
     run_bash_request.variables[variable] = value
   run_bash_response = internal_libs.run_bash(run_bash_request)
-
-  return run_bash_response
-
-
-def _handle_response(response):
-  """
-   This function handles callback responses. It proceeds differently based on what the response reported...
-   All of our callback response types have one of these three setups:
-    - If there was a successful callback, this method returns the return value ("result") of the callback
-    - If there was an actionable error, this method will throw a LibraryError, which the plugin may choose to catch
-    - If there was a non-actionable error, this method calls exit()
-  """
-  if response.HasField("error"):
-    if response.error.HasField("actionable_error"):
-      actionable = response.error.actionable_error
-      # Give the plugin a chance to catch/handle this problem
-      raise LibraryError(actionable.id, actionable.message)
-
-    # Nothing the plugin can do, so quit ASAP
-    exit()
-
-  # Unpack the return value from the response
-  return response.return_value
+  return _handle_response(run_bash_response)
 
 
 def run_sync(remote_connection, source_directory, rsync_user=None,
@@ -160,8 +159,7 @@ def run_powershell(remote_connection, command, variables=None):
   for variable, value in variables.items():
     run_powershell_request.variables[variable] = value
   run_powershell_response = internal_libs.run_powershell(run_powershell_request)
-
-  return run_powershell_response
+  return _handle_response(run_powershell_response)
 
 
 def run_expect(remote_connection, command, variables=None):
@@ -193,7 +191,8 @@ def run_expect(remote_connection, command, variables=None):
   for variable, value in variables.items():
     run_expect_request.variables[variable] = value
 
-  internal_libs.run_expect(run_expect_request)
+  response = internal_libs.run_expect(run_expect_request)
+  _handle_response(response)
 
 
 def _log_request(message, log_level):
@@ -228,4 +227,5 @@ def _log_request(message, log_level):
   else:
     log_request.level = libs_pb2.LogRequest.ERROR
 
-  internal_libs.log(log_request)
+  response = internal_libs.log(log_request)
+  _handle_response(response)

@@ -33,10 +33,17 @@ message RunBashRequest {
   bool use_login_shell = 4;
 }
 
-message RunBashResponse {
+message RunBashResult {
   int32 exit_code = 1;
   string stdout = 2;
   string stderr = 3;
+}
+
+message RunBashResponse {
+  oneof result {
+    RunBashResult return_value = 1;
+    LibraryErrorResult error = 2;
+  }
 }
 
 message RunPowerShellRequest {
@@ -45,10 +52,17 @@ message RunPowerShellRequest {
   map<string, string> variables = 3;
 }
 
-message RunPowerShellResponse {
+message RunPowerShellResult {
   int32 exit_code = 1;
   string stdout = 2;
   string stderr = 3;
+}
+
+message RunPowerShellResponse {
+  oneof result {
+    RunPowerShellResult return_value = 1;
+    LibraryErrorResult error = 2;
+  }
 }
 
 message RunSyncRequest {
@@ -75,7 +89,14 @@ message RunExpectRequest {
   map<string, string> variables = 3;
 }
 
-message RunExpectResponse { }
+message RunExpectResult { }
+
+message RunExpectResponse {
+  oneof result {
+    RunExpectResult return_value = 1;
+    LibraryErrorResult error = 2;
+  }
+}
 
 message LogRequest {
   string message = 1;
@@ -87,4 +108,11 @@ message LogRequest {
   LogLevel level = 2;
 }
 
-message LogResponse { }
+message LogResult { }
+
+message LogResponse {
+  oneof result {
+    LogResult return_value = 1;
+    LibraryErrorResult error = 2;
+  }
+}
