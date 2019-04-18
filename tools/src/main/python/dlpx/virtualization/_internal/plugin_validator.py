@@ -111,13 +111,6 @@ class PluginValidator:
                      self.__plugin_config_content)
         self.__validate_plugin_config_content()
 
-        src_dir = file_util.get_src_dir_path(
-            self.__plugin_config, self.__plugin_config_content['srcDir'])
-
-        logger.debug('Validating plugin entry point : %s',
-                     self.__plugin_config_content['entryPoint'])
-        self.__validate_plugin_entry_point(src_dir)
-
     def __read_plugin_config_file(self):
         """
         Reads a plugin config file and raises UserError if there is an issue
