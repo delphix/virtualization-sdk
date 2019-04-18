@@ -6,7 +6,7 @@ title: Virtualization SDK
 
 ## How Does Delphix Ingest Data?
 
-As [previously](/Building_Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
+As [previously](/Building_Your_First_Plugin/Discovery.md) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
 
 ### Linking
 
