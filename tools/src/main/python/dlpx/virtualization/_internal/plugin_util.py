@@ -99,6 +99,16 @@ def validate_schemas(schemas):
             'The schemas file provided is missing some required schemas. '
             'Missing schema definitions are {}'.format(missing_fields))
 
+    # Next validate that no unexpected schemas are there.
+    if not all(schema in EXPECTED_SCHEMAS for schema in schemas):
+        extra_fields = [
+            key.encode('UTF8') for key in schemas
+            if key not in EXPECTED_SCHEMAS
+        ]
+        raise exceptions.UserError(
+            'The schemas file provided contains extra defined schemas. '
+            'Extra schema definitions are {}'.format(extra_fields))
+
     # Then validate that the expected fields are in the definitions.
     if not all(field in schemas['sourceConfigDefinition']
                for field in EXPECTED_FIELDS):

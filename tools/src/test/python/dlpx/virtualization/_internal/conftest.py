@@ -168,7 +168,7 @@ def manual_discovery():
 @pytest.fixture
 def schema_content(repository_definition, source_config_definition,
                    virtual_source_definition, linked_source_definition,
-                   snapshot_definition):
+                   snapshot_definition, additional_definition):
 
     schema = {}
 
@@ -186,6 +186,19 @@ def schema_content(repository_definition, source_config_definition,
 
     if snapshot_definition:
         schema['snapshotDefinition'] = snapshot_definition
+
+    if additional_definition:
+        schema['additionalDefinition'] = additional_definition
+
+    return schema
+
+
+@pytest.fixture
+def swagger_schema_content(schema_content, snapshot_parameters_definition):
+
+    schema = schema_content
+    if snapshot_parameters_definition:
+        schema['snapshotParametersDefinition'] = snapshot_parameters_definition
 
     return schema
 
@@ -252,6 +265,24 @@ def snapshot_definition():
             }
         }
     }
+
+
+@pytest.fixture
+def snapshot_parameters_definition():
+    return {
+        'type': 'object',
+        'additionalProperties': False,
+        'properties': {
+            'resync': {
+                'type': 'boolean'
+            }
+        }
+    }
+
+
+@pytest.fixture
+def additional_definition():
+    return None
 
 
 @pytest.fixture

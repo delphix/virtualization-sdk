@@ -13,7 +13,7 @@ import jsonschema
 import yaml
 from jsonschema.exceptions import ValidationError
 
-from dlpx.virtualization._internal import exceptions, file_util
+from dlpx.virtualization._internal import exceptions
 
 logger = logging.getLogger(__name__)
 

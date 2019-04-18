@@ -83,23 +83,26 @@ from dlpx.virtualization.platform import Mount
 
 __all__ = ['Plugin']
 
-def _to_dict(obj):
-    """Operates on Swagger generated model classes and returns the model's attributes as a
-    dictionary such that they are composable with from_dict. i.e. from_dict(_to_dict(obj)) == obj
 
-    The flask generated to_dict() method is not composable and does not work with 'camelCase'
-    attributes as it replaces them with 'snake_case'.
-    For example if an attribute in a JSON object is 'mountLocation' with a value '/mnt/location',
-    the swaggger generated to_dict will incorrectly return the dictionary:
+def _to_dict(obj):
+    """Operates on Swagger generated model classes and returns the model's
+    attributes as a dictionary such that they are composable with from_dict.
+    i.e. from_dict(_to_dict(obj)) == obj
+
+    The flask generated to_dict() method is not composable and does not work
+    with 'camelCase' attributes as it replaces them with 'snake_case'.
+    For example if an attribute in a JSON object is 'mountLocation' with a
+    value '/mnt/location', the swaggger generated to_dict will incorrectly
+    return the dictionary:
     {'mount_location': '/mnt/location'}
 
-    The swagger generated to_dict() below was modified to return the attribute name instead of the
-    python variable name:
+    The swagger generated to_dict() below was modified to return the attribute
+    name instead of the python variable name:
 
     def to_dict(self):
         result = {}
 
-        for attr, _ in six.iteritems(self.swagger_types): <-- attr is in snake_case
+        for attr, _ in six.iteritems(self.swagger_types): <-- attr = snake_case
             value = getattr(self, attr)
             if isinstance(value, list):
                 result[attr] = list(map(
@@ -126,7 +129,8 @@ def _to_dict(obj):
         dict: A dictonary representation of the model.
     """
     if not _is_swagger_model(obj):
-        raise RuntimeError("class {} is not a swagger class".format(obj.__class__.__name__))
+        raise RuntimeError("class {} is not a swagger class".format(
+            obj.__class__.__name__))
 
     result = {}
 
@@ -149,10 +153,12 @@ def _to_dict(obj):
 
 
 def _is_swagger_model(obj):
-    """Checks if the object passed in is an instance of a Swagger generated model.
+    """Checks if the object passed in is an instance of a Swagger generated
+    model.
 
     Args:
-        obj (extends Model): object to check if it is an instance of a swagger generated model.
+        obj (extends Model): object to check if it is an instance of a swagger
+        generated model.
 
     Returns:
         bool: True if the class was generated via Swagger, false otherwise.
@@ -160,7 +166,9 @@ def _is_swagger_model(obj):
     bases = obj.__class__.__bases__
     if len(bases) == 0:
         return False
-    return bases[0].__name__ == 'Model' and hasattr(obj, 'swagger_types') and hasattr(obj, 'attribute_map')
+    return (bases[0].__name__ == 'Model'
+            and hasattr(obj, 'swagger_types')
+            and hasattr(obj, 'attribute_map'))
 
 
 class DiscoveryOperations(object):
@@ -380,7 +388,6 @@ class LinkedOperations(object):
 
         return direct_pre_snapshot_response
 
-
     def _internal_direct_post_snapshot(self, request):
         """Post Snapshot Wrapper for direct plugins.
 
@@ -440,42 +447,59 @@ class LinkedOperations(object):
         Run pre-snapshot operation for a staged source.
 
         Args:
-           request (StagedPreSnapshotRequest): Pre Snapshot arguments.
+            request (StagedPreSnapshotRequest): Pre Snapshot arguments.
 
         Returns:
-           StagedPreSnapshotResponse: A response containing StagedPreSnapshotResult
-           if successful or PluginErrorResult in case of an error.
+            StagedPreSnapshotResponse: A response containing
+                StagedPreSnapshotResult if successful or PluginErrorResult
+                in case of an error.
         """
         # Reasoning for method imports are in this file's docstring.
         from generated.definitions import RepositoryDefinition
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotParametersDefinition
 
-        # Presnapshot implementations are not required (although they are very common)
+        #
+        # Presnapshot implementations are not required.
+        # (although they are very common)
+        #
         if self.pre_snapshot_impl is not None:
+            linked_source = request.staged_source.linked_source
 
-            staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-            mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                            mount_path=request.staged_source.staged_mount.mount_path,
-                            shared_path=request.staged_source.staged_mount.shared_path)
-            staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                           connection=request.staged_source.connection,
-                                           parameters=staged_source_definition,
-                                           mount=mount)
+            staged_source_definition = (LinkedSourceDefinition.from_dict(
+                    json.loads(linked_source.parameters.json)))
 
-            repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-            source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+            staged_mount = request.staged_source.staged_mount
+
+            mount = Mount(
+                remote_environment=staged_mount.remote_environment,
+                mount_path=staged_mount.mount_path,
+                shared_path=staged_mount.shared_path)
+
+            staged_source = StagedSource(
+                    guid=linked_source.guid,
+                    connection=request.staged_source.connection,
+                    parameters=staged_source_definition,
+                    mount=mount)
+
+            repository = RepositoryDefinition.from_dict(
+                    json.loads(request.repository.parameters.json))
+            source_config = SourceConfigDefinition.from_dict(
+                    json.loads(request.source_config.parameters.json))
+            snapshot_parameters = SnapshotParametersDefinition.from_dict(
+                    json.loads(request.snapshot_parameters.parameters.json))
 
             self.pre_snapshot_impl(
                 staged_source=staged_source,
                 repository=repository,
-                source_config=source_config)
+                source_config=source_config,
+                snapshot_parameters=snapshot_parameters)
 
-        staged_pre_snapshot_response = platform_pb2.StagedPreSnapshotResponse()
-        staged_pre_snapshot_response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
+        response = platform_pb2.StagedPreSnapshotResponse()
+        response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
 
-        return staged_pre_snapshot_response
-
+        return response
 
     def _internal_staged_post_snapshot(self, request):
         """Post Snapshot Wrapper for staged plugins.
@@ -489,14 +513,16 @@ class LinkedOperations(object):
            request (StagedPostSnapshotRequest): Post Snapshot arguments.
 
         Returns:
-           StagedPostSnapshotResponse: A response containing the return value -
-           StagedPostSnapshotResult which has the snapshot metadata on success. In
-           case of errors, response object will contain PluginErrorResult.
+            StagedPostSnapshotResponse: A response containing the return value
+                StagedPostSnapshotResult which has the snapshot metadata on
+                success. In case of errors, response object will contain
+                PluginErrorResult.
         """
         # Reasoning for method imports are in this file's docstring.
         from generated.definitions import RepositoryDefinition
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotParametersDefinition
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
@@ -505,32 +531,42 @@ class LinkedOperations(object):
             snapshot_protobuf.parameters.CopyFrom(parameters)
             return snapshot_protobuf
 
-        staged_source_definition = LinkedSourceDefinition.from_dict(json.loads(request.staged_source.linked_source.parameters.json))
-        mount = Mount(remote_environment=request.staged_source.staged_mount.remote_environment,
-                        mount_path=request.staged_source.staged_mount.mount_path,
-                        shared_path=request.staged_source.staged_mount.shared_path)
-        staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
+        staged_source_definition = LinkedSourceDefinition.from_dict(
+                json.loads(
+                        request.staged_source.linked_source.parameters.json))
+        mount = Mount(
+                remote_environment=
+                request.staged_source.staged_mount.remote_environment,
+                mount_path=request.staged_source.staged_mount.mount_path,
+                shared_path=request.staged_source.staged_mount.shared_path)
+        staged_source = StagedSource(
+                guid=request.staged_source.linked_source.guid,
+                connection=request.staged_source.connection,
+                parameters=staged_source_definition,
+                mount=mount)
 
-        repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
+        repository = RepositoryDefinition.from_dict(
+                json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+                json.loads(request.source_config.parameters.json))
+        snapshot_parameters = SnapshotParametersDefinition.from_dict(
+                json.loads(request.snapshot_parameters.parameters.json))
 
         if not self.post_snapshot_impl:
-                raise RuntimeError("An implementation for the linked.post_snapshot() operation has "
-                                   "not been defined.")
+                raise RuntimeError(
+                        'An implementation for the linked.post_snapshot()'
+                        ' operation has not been defined.')
 
         snapshot = self.post_snapshot_impl(
             staged_source=staged_source,
             repository=repository,
-            source_config=source_config)
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
-        staged_post_snapshot_response = platform_pb2.StagedPostSnapshotResponse()
-        staged_post_snapshot_response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
+        response = platform_pb2.StagedPostSnapshotResponse()
+        response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
 
-        return staged_post_snapshot_response
-
+        return response
 
     def _internal_start_staging(self, request):
         """Start staging Wrapper for staged plugins.
@@ -577,7 +613,6 @@ class LinkedOperations(object):
 
         return start_staging_response
 
-
     def _internal_stop_staging(self, request):
         """Stop staging Wrapper for staged plugins.
 
@@ -622,7 +657,6 @@ class LinkedOperations(object):
         stop_staging_response.return_value.CopyFrom(platform_pb2.StopStagingResult())
 
         return stop_staging_response
-
 
     def _internal_status(self, request):
         """Staged Status Wrapper for staged plugins.
@@ -672,7 +706,6 @@ class LinkedOperations(object):
         staged_status_response.return_value.status = status.value
 
         return staged_status_response
-
 
     def _internal_worker(self, request):
         """Staged Worker Wrapper for staged plugins.
@@ -991,7 +1024,6 @@ class VirtualOperations(object):
         unconfigure_response.return_value.CopyFrom(platform_pb2.UnconfigureResult())
         return unconfigure_response
 
-
     def _internal_reconfigure(self, request):
         """Reconfigure operation wrapper.
 
@@ -1034,7 +1066,6 @@ class VirtualOperations(object):
         reconfigure_response = platform_pb2.ReconfigureResponse()
         reconfigure_response.return_value.source_config.parameters.json = json.dumps(_to_dict(config))
         return reconfigure_response
-
 
     def _internal_start(self, request):
         """Start operation wrapper.
@@ -1111,7 +1142,6 @@ class VirtualOperations(object):
         stop_response.return_value.CopyFrom(platform_pb2.StopResult())
         return stop_response
 
-
     def _internal_pre_snapshot(self, request):
         """Virtual pre snapshot operation wrapper.
 
@@ -1153,7 +1183,6 @@ class VirtualOperations(object):
         virtual_pre_snapshot_response = platform_pb2.VirtualPreSnapshotResponse()
         virtual_pre_snapshot_response.return_value.CopyFrom(platform_pb2.VirtualPreSnapshotResult())
         return virtual_pre_snapshot_response
-
 
     def _internal_post_snapshot(self, request):
         """Virtual post snapshot operation wrapper.
@@ -1204,7 +1233,6 @@ class VirtualOperations(object):
         virtual_post_snapshot_response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
         return virtual_post_snapshot_response
 
-
     def _internal_status(self, request):
         """Virtual status operation wrapper.
 
@@ -1248,7 +1276,6 @@ class VirtualOperations(object):
         virtual_status_response.return_value.status = virtual_status.value
         return virtual_status_response
 
-
     def _internal_initialize(self, request):
         """Initialize operation wrapper.
 
@@ -1289,7 +1316,6 @@ class VirtualOperations(object):
         initialize_response = platform_pb2.InitializeResponse()
         initialize_response.return_value.CopyFrom(platform_pb2.InitializeResult())
         return initialize_response
-
 
     def _internal_mount_specification(self, request):
         """Virtual mount spec operation wrapper.
@@ -1366,20 +1392,19 @@ class VirtualOperations(object):
 
 
 class Plugin(object):
+    def __init__(self):
+        self.__discovery = DiscoveryOperations()
+        self.__linked = LinkedOperations()
+        self.__virtual = VirtualOperations()
 
-  def __init__(self):
-    self.__discovery = DiscoveryOperations()
-    self.__linked = LinkedOperations()
-    self.__virtual = VirtualOperations()
+    @property
+    def discovery(self):
+        return self.__discovery
 
-  @property
-  def discovery(self):
-    return self.__discovery
+    @property
+    def linked(self):
+        return self.__linked
 
-  @property
-  def linked(self):
-      return self.__linked
-
-  @property
-  def virtual(self):
-      return self.__virtual
+    @property
+    def virtual(self):
+        return self.__virtual

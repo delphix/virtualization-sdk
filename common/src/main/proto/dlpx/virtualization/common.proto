@@ -82,6 +82,10 @@ message Snapshot {
   PluginDefinedObject parameters = 1;
 }
 
+message SnapshotParameters {
+  PluginDefinedObject parameters = 1;
+}
+
 message PluginDefinedObject {
   string json = 1;
 }

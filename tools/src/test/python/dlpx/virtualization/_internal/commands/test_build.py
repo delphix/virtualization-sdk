@@ -240,6 +240,25 @@ class TestPluginUtil:
         assert not mock_generate_python.called
 
     @staticmethod
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    @pytest.mark.parametrize('additional_definition', [{
+        'type': 'object',
+        'additionalProperties': False,
+        'properties': {}
+    }])
+    def test_plugin_extra_schema_def(mock_generate_python, plugin_config_file,
+                                     artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False)
+
+        message = err_info.value.message
+        assert message == ("The schemas file provided contains extra"
+                           " defined schemas. Extra schema definitions are"
+                           " ['additionalDefinition']")
+
+        assert not mock_generate_python.called
+
+    @staticmethod
     @pytest.mark.parametrize('source_config_definition',
                              [{
                                  'type': 'object',
