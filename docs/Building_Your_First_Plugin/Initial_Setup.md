@@ -81,7 +81,7 @@ Open these files in your editor/IDE and take a look at them. At this point they 
 
 ## Building The New Plugin
 
-The new files we created above have to get [built](/References/Glossary/#plugin-build) to produce a single [artifact](/References/Glossary/#artifact). This is done with the `dvp` tool.
+The new files we created above have to get [built](/References/Glossary/#building) to produce a single [artifact](/References/Glossary/#artifact). This is done with the `dvp` tool.
 
 ```
 (venv) first_plugin$ dvp build
