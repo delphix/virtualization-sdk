@@ -45,16 +45,10 @@ def build(plugin_config, upload_artifact, generate_only):
 
     # Read content of the plugin config  file provided and perform validations
     logger.info('Reading and validating plugin config file %s', plugin_config)
-    plugin_config_content, plugin_module_content, plugin_entry_point = \
-        plugin_util.read_and_validate_plugin_config_file(
-            plugin_config, not generate_only)
+    plugin_config_content = plugin_util.read_and_validate_plugin_config_file(
+        plugin_config, not generate_only, False)
 
     logger.debug('plugin config file content is : %s', plugin_config_content)
-
-    # Resolve the paths for source directory and schema file
-    src_dir = file_util.get_src_dir_path(plugin_config,
-                                         plugin_config_content['srcDir'])
-    logger.debug('Source directory path resolved is %s', src_dir)
 
     schema_file = plugin_util.get_schema_file_path(
         plugin_config, plugin_config_content['schemaFile'])
@@ -64,6 +58,11 @@ def build(plugin_config, upload_artifact, generate_only):
     schemas = plugin_util.read_schema_file(schema_file)
     logger.debug('schemas found: %s', schemas)
     plugin_util.validate_schemas(schemas)
+
+    # Resolve the paths for source directory and schema file
+    src_dir = file_util.get_src_dir_path(plugin_config,
+                                         plugin_config_content['srcDir'])
+    logger.debug('Source directory path resolved is %s', src_dir)
 
     #
     # Call directly into codegen to generate the python classes and make sure
@@ -80,6 +79,14 @@ def build(plugin_config, upload_artifact, generate_only):
         logger.info('Generating python code only. Skipping artifact build.')
         return
 
+    #
+    # Validate the plugin config content by importing the module
+    # and check the entry point as well.
+    #
+    plugin_module_content, plugin_entry_point = \
+        plugin_util.validate_plugin_config_content(
+            plugin_config, plugin_config_content, not generate_only)
+
     # Prepare the output artifact.
     plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
                                             schemas)
@@ -90,6 +97,7 @@ def build(plugin_config, upload_artifact, generate_only):
     #
     add_empty_plugin_operations_to_plugin_output(plugin_output,
                                                  plugin_config_content)
+
     # Write it to upload_artifact as json.
     generate_upload_artifact(upload_artifact, plugin_output)
     logger.info('Successfully generated artifact file at %s.', upload_artifact)

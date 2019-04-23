@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "18f27e6ffd6660d16dfb19920f8e7e070074cd5e7d7f8331f5f8a96c929a2f3d"
+            "sha256": "b690139117396c6bb3c2c52e0dad3a14e53f518f8c7f81749f6ec786458eb50d"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,20 +15,20 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-004.tar.gz",
-            "version": "== 0.4.0-internal-004"
+            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-005.tar.gz",
+            "version": "== 0.4.0-internal-005"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-004.tar.gz",
-            "version": "== 0.4.0-internal-004"
+            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-005.tar.gz",
+            "version": "== 0.4.0-internal-005"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-004.tar.gz",
-            "version": "== 0.4.0-internal-004"
+            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-005.tar.gz",
+            "version": "== 0.4.0-internal-005"
         },
         "dvp-tools": {
-            "path": "../tools/build/python-dist/dvp-tools-0.4.0-internal-004.tar.gz",
-            "version": "== 0.4.0-internal-004"
+            "path": "../tools/build/python-dist/dvp-tools-0.4.0-internal-005.tar.gz",
+            "version": "== 0.4.0-internal-005"
         }
     },
     "develop": {

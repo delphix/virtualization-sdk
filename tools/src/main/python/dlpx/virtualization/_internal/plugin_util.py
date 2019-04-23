@@ -29,34 +29,37 @@ PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
                                     'plugin_config_schema.json')
 
 
-def read_and_validate_plugin_config_file(plugin_config, stop_build):
+def read_and_validate_plugin_config_file(plugin_config, stop_build,
+                                         run_all_validations):
     """Reads a plugin config file and validates the contents using a
     pre-defined schema. If stop_build is True, will report exception
     back, otherwise warnings.
     Returns:
         On successful validation, returns content of the plugin
-        config, content of the python module specified in in the
-        pluginEntryPoint and also name of the plugin entry point
-        in the module.
+        config.
     """
-    validation_mode = ValidationMode.ERROR \
-        if stop_build else ValidationMode.WARNING
+    validation_mode = (ValidationMode.ERROR
+                       if stop_build else ValidationMode.WARNING)
     validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
-                                validation_mode)
+                                validation_mode, run_all_validations)
     validator.validate()
-    return validator.plugin_config_content, validator.plugin_module_content,\
-        validator.plugin_entry_point
+    return validator.plugin_config_content
 
 
-def validate_plugin_config_content(plugin_config_file, plugin_config_content):
+def validate_plugin_config_content(plugin_config_file, plugin_config_content,
+                                   stop_build):
     """Validates the given plugin config content using a pre-defined schema.
     Plugin config file name is used to get the absolute path of plugin source
     directory.
     """
+    validation_mode = (ValidationMode.ERROR
+                       if stop_build else ValidationMode.WARNING)
     validator = PluginValidator.from_config_content(plugin_config_file,
                                                     plugin_config_content,
-                                                    PLUGIN_CONFIG_SCHEMA)
+                                                    PLUGIN_CONFIG_SCHEMA,
+                                                    validation_mode)
     validator.validate()
+    return validator.plugin_module_content, validator.plugin_entry_point
 
 
 def read_schema_file(schema_file):

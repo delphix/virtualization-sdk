@@ -37,7 +37,7 @@ class TestPluginValidator:
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
                                         plugin_util.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR)
+                                        ValidationMode.ERROR, True)
             validator.validate()
 
         message = err_info.value.message
@@ -59,7 +59,7 @@ class TestPluginValidator:
 
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
-            plugin_util.PLUGIN_CONFIG_SCHEMA)
+            plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
         validator.validate()
 
     @staticmethod
@@ -77,7 +77,7 @@ class TestPluginValidator:
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA)
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         message = err_info.value.message
         assert "u'srcDir' is a required property" in message
@@ -103,7 +103,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA)
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         except exceptions.UserError as err_info:
             message = err_info.message
@@ -135,7 +135,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA)
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         except exceptions.UserError as err_info:
             message = err_info.message

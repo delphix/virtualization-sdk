@@ -13,7 +13,7 @@ import jsonschema
 import yaml
 from jsonschema.exceptions import ValidationError
 
-from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal import exceptions, file_util, logging_util
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +47,12 @@ class PluginValidator:
                  plugin_config,
                  plugin_config_schema,
                  validation_mode,
+                 run_all_validations,
                  plugin_config_content=None):
         self.__plugin_config = plugin_config
         self.__plugin_config_schema = plugin_config_schema
         self.__validation_mode = validation_mode
+        self.__run_all_validations = run_all_validations
         self.__plugin_config_content = plugin_config_content
         self.__plugin_module_content = None
         self.__plugin_entry_point = None
@@ -69,7 +71,7 @@ class PluginValidator:
 
     @classmethod
     def from_config_content(cls, plugin_config_file, plugin_config_content,
-                            plugin_config_schema):
+                            plugin_config_schema, validation_mode):
         """
         Instantiates the validator with given plugin config content.
         plugin_config_file path is not read but used to get the absolute
@@ -77,8 +79,8 @@ class PluginValidator:
         Returns:
             PluginValidator
         """
-        return cls(plugin_config_file, plugin_config_schema,
-                   ValidationMode.ERROR, plugin_config_content)
+        return cls(plugin_config_file, plugin_config_schema, validation_mode,
+                   True, plugin_config_content)
 
     def validate(self):
         """
@@ -110,6 +112,17 @@ class PluginValidator:
         logger.debug('Validating plugin config file content : %s',
                      self.__plugin_config_content)
         self.__validate_plugin_config_content()
+
+        if not self.__run_all_validations:
+            logger.debug('Plugin config file schema validation is done')
+            return
+
+        src_dir = file_util.get_src_dir_path(
+            self.__plugin_config, self.__plugin_config_content['srcDir'])
+
+        logger.debug('Validating plugin entry point : %s',
+                     self.__plugin_config_content['entryPoint'])
+        self.__validate_plugin_entry_point(src_dir)
 
     def __read_plugin_config_file(self):
         """
@@ -210,7 +223,7 @@ class PluginValidator:
             logger.debug('Adding %s to system path %s', src_dir, sys.path)
             sys.path.append(src_dir)
             self.__plugin_module_content = PluginValidator.__import_plugin(
-                src_dir, module)
+                module)
         except ImportError as err:
             raise exceptions.UserError(
                 'Unable to load module \'{}\' specified in '
@@ -218,6 +231,15 @@ class PluginValidator:
                 'Error message: {}'.format(module, self.__plugin_entry_point,
                                            src_dir, err))
         finally:
+            #
+            # Importing plugin code messes up the logger due to adding extra
+            # handlers from the plugin code. So resetting here resolves such
+            # issues.
+            # TODO - this code should be removed once we move plugin module
+            # import into an isolated environent/sub process.
+            #
+            logging_util.setup_logger()
+            logging_util.add_console_handler(30)
             sys.path.remove(src_dir)
             logger.debug('Removed %s from system path %s', src_dir, sys.path)
 
@@ -231,9 +253,16 @@ class PluginValidator:
                     self.__plugin_entry_point, module))
 
     @staticmethod
-    def __import_plugin(src_dir, module):
+    def __import_plugin(module):
         """
         Imports the given python module.
+        TODO:
+            Importing module in the current context pollutes the runtime of
+            the caller, in this case dvp. If the module being imported, for
+            e.g. contains code that adds a handler to the root logger at
+            import time, this can cause issues with logging in this code and
+            callers of validator. To avoid such issues, perform the import in
+            in a sub-process and on completion return the output.
         """
         module_content = importlib.import_module(module)
         return module_content

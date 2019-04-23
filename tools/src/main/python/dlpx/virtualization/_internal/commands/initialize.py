@@ -131,7 +131,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         # Validate the plugin config and the entry point
         # This should always return something valid
         plugin_util.read_and_validate_plugin_config_file(
-            config_file_path, False)
+            config_file_path, False, True)
 
     except Exception as e:
         logger.debug('Attempting to cleanup after failure. %s', e)

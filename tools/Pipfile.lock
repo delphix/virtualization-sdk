@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d63ffe6c55b3ffc2d42217479f5a69e6e167fbd9bc90ffe1665079cc71d9c04c"
+            "sha256": "7c86b3b766b30fd15c736454a50060be8e2d681072a9bebd9021e0724a6e40e9"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -42,6 +42,10 @@
             ],
             "index": "delphix",
             "version": "==7.0"
+        },
+        "dvp-tools": {
+            "editable": true,
+            "path": "."
         },
         "enum34": {
             "hashes": [
@@ -141,8 +145,7 @@
         },
         "pyrsistent": {
             "hashes": [
-                "sha256:3ca82748918eb65e2d89f222b702277099aca77e34843c5eb9d52451173970e2",
-                "sha256:f518d6e0a6a19d250c925d0da3346b47c8c94850e8a3efa9c641c5960b48a979"
+                "sha256:3ca82748918eb65e2d89f222b702277099aca77e34843c5eb9d52451173970e2"
             ],
             "version": "==0.14.11"
         },
