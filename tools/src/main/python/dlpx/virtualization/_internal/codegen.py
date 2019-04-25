@@ -220,13 +220,16 @@ def _copy_generated_to_dir(src_location, dst_location):
             shutil.copytree(src, os.path.join(destination_dir, name))
             logger.info('Successfully copied directory {!r}.'.format(name))
         except OSError as err:
-            if err.errno == errno.ENOTDIR:
+            if err.errno == errno.ENOTDIR or err.errno == errno.EINVAL:
                 #
                 # In the case that it's not a dir, this error would have been
                 # caught. Try copying it as a file. The dst should not have the
                 # name in it this time.
                 #
-                shutil.copy(src, destination_dir)
+                # errno.ENOTDIR is received on linux/mac and
+                # errno.EINVAL is received on windows
+                #
+                shutil.copy2(src, destination_dir)
                 logger.info('Successfully copied file {!r}.'.format(name))
             else:
                 #
