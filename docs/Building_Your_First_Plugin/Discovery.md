@@ -57,7 +57,7 @@ Open up the `schema.json` file in your editor/IDE and locate `repositoryDefiniti
 
 Since we do not have any special dependencies, we can just leave it as-is.
 
-For detailed information about exactly how repository schemas work, see [the reference page](/References/Schemas).
+For detailed information about exactly how repository schemas work, see [the reference page](/References/Schemas.md).
 
 In brief, what we are doing here is saying that each of our repositories will have a single property called `name`, which will be used both as a unique identifier and as the user-visible name of the repository.
 
@@ -100,7 +100,7 @@ Because we set `additionalProperties` to `false`, this will prevent users from s
 
 Finally, we have specified that the `path` property must be a well-formatted Unix path. This allows the UI to enforce that the format is correct before the user is allowed to proceed. (Note this only enforces the format, and does not actually check to see if the path really exists on some remote environment!)
 
-Refer to the reference page for [Schemas](/References/Schemas) for more details about these entries, and for other things that you can do in these schemas.
+Refer to the reference page for [Schemas](/References/Schemas.md) for more details about these entries, and for other things that you can do in these schemas.
 
 ## Implementing Discovery in Your Plugin
 
@@ -173,7 +173,7 @@ The Delphix Engine will pass us information about the source environment in an a
 !!! warning
     The name of this input argument matters. That is, you'll always need to have an argumentcalled
     `source_connection` here. Each plugin operation has its own set of required argument names. For
-    details on which arguments apply to which operations, see the [reference section](/References/Plugin_Operations).
+    details on which arguments apply to which operations, see the [reference section](/References/Plugin_Operations.md).
 
 
 ```python

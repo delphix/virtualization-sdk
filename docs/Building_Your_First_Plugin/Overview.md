@@ -13,16 +13,16 @@ Our plugin will virtualize simple directory trees on Unix systems. The actual co
 Here we will briefly overview how data moves through the Delphix Engine.
 
 ### Ingestion
-It all begins with Delphix ingesting data—copying some data from what we call a [source environment](../References/Glossary.md#source-environment)  onto the Delphix Engine.
+It all begins with Delphix ingesting data—copying some data from what we call a [source environment](../References/Glossary/#source-environment)  onto the Delphix Engine.
 
 Plugins can use either of two basic strategies to do this copying:
 
- - [direct linking](../References/Glossary.md#direct-linking), where the Delphix Engine pulls data directly from the source environment.
- - [staged linking](../References/Glossary.md#staged-linking), where the plugin is responsible for pulling data from the source environment.
+ - [direct linking](../References/Glossary/#direct-linking), where the Delphix Engine pulls data directly from the source environment.
+ - [staged linking](../References/Glossary/#staged-linking), where the plugin is responsible for pulling data from the source environment.
 
 Our plugin will use the staged linking strategy.
 
-With staged linking, Delphix exposes and mounts storage to a [staging environment](../References/Glossary.md#staging-environment).  This would be an NFS share for Unix environments and iSCSI disks for Windows environments. You can use either the source environment or a different environment for staging. We will write our plugin to handle both approaches.
+With staged linking, Delphix exposes and mounts storage to a [staging environment](../References/Glossary/#staging-environment).  This would be an NFS share for Unix environments and iSCSI disks for Windows environments. You can use either the source environment or a different environment for staging. We will write our plugin to handle both approaches.
 
 Once Delphix mounts the storage share onto the staging environment, the plugin needs to arrange for the relevant data to be copied from the source environment onto the storage share, which is backed by Delphix Engine storage.
 

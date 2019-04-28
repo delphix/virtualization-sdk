@@ -39,7 +39,7 @@ $ pip install dvp==<version>
 
 ## Basic Usage
 
-Our [CLI reference](References/CLI) describes commands, provides examples, and a help section.
+Our [CLI reference](/References/CLI.md) describes commands, provides examples, and a help section.
 
 To build your plugin:
 

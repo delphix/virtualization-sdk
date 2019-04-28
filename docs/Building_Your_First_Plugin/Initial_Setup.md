@@ -1,6 +1,6 @@
 # Initial Setup
 
-Before we begin to start writing plugin code, we will need to do some setup work. We will be using the `dvp` tool, which is described in the [Getting Started](/Getting_Started) section.
+Before we begin to start writing plugin code, we will need to do some setup work. We will be using the `dvp` tool, which is described in the [Getting Started](/Getting_Started.md) section.
 
 The quoted examples in this section assume you're working on a Unix-like system.
 
@@ -8,7 +8,7 @@ The quoted examples in this section assume you're working on a Unix-like system.
 
 First a reminder that it's highly recommended that you develop your plugin in a [virtual environment](https://virtualenv.pypa.io/en/latest/).
 
-Next, make sure you have a Delphix Engine ready to use, as described in the [Prerequisites](Overview/#prerequisites) section on the previous page.
+Next, make sure you have a Delphix Engine ready to use, as described in the [Prerequisites](/References/Overview/#prerequisites) section on the previous page.
 
 Finally, let's quickly make sure that `dvp` is working! Type `dvp -h` and you should see something like the following:
 ```
@@ -34,7 +34,7 @@ Commands:
 
 If this looks good, you are ready to begin!
 
-If, instead, you see something like the following, go back to [Getting Started](/Getting_Started) and make sure you setup everything correctly before continuing.
+If, instead, you see something like the following, go back to [Getting Started](/Getting_Started.md) and make sure you setup everything correctly before continuing.
 ```
 (venv)$ dvp
 -bash: dvp: command not found

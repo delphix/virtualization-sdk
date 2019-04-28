@@ -28,7 +28,7 @@ Assuming the name of the object, is `plugin` as above, the table below lists the
 Plugin Operation | Decorator
 ---------------- |  --------
 [Repository Discovey](Plugin_Operations.md#repository-discovery) | `@plugin.discovery.repository()`
-[SourceC onfig Discovey](Plugin_Operations.md#source-config-discovery) | `@plugin.discovery.source_config()`
+[Source Config Discovey](Plugin_Operations.md#source-config-discovery) | `@plugin.discovery.source_config()`
 [Direct Linked Source Pre-Snapshot](Plugin_Operations.md#direct-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
 [Direct Linked Source Post-Snapshot](Plugin_Operations.md#direct-linked-source-post-snapshot) | `@plugin.linked.post_snapshot()`
 [Staged Linked Source Pre-Snapshot](Plugin_Operations.md#staged-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
