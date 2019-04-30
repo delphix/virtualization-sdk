@@ -158,11 +158,10 @@ def source_config_discovery(source_connection, repository):
 When you look at the log file, perhaps you'll see something like this:
 
 ```
-2019-03-12 12:17:05,770 DEBUG    [plugin_runner.py:47] About to get DB version
-2019-03-12 12:19:05,865 DEBUG    [plugin_runner.py:49] About to get DB users
-2019-03-12 12:41:05,907 DEBUG    [plugin_runner.py:51] About to get databases
-2019-03-12 12:44:05,953 DEBUG    [plugin_runner.py:53] About to get DB statuses
-2019-03-12 12:49:05,996 DEBUG    [plugin_runner.py:55] Done collecting data
+[Worker-360|JOB-315|ENVIRONMENT_DISCOVER(UNIX_HOST_ENVIRONMENT-5)] [2019-04-30 12:10:42] [DEBUG] [python_runner.py:44] About to get DB version
+[Worker-360|JOB-316|DB_SYNC(APPDATA_CONTAINER-21)] [2019-04-30 12:19:35] [DEBUG] [python_runner.py:49] About to get DB users
+[Worker-325|JOB-280|ENVIRONMENT_REFRESH(UNIX_HOST_ENVIRONMENT-5)] [DEBUG] [plugin_runner.py:51] About to get databases
+[Worker-326|JOB-281|SOURCES_DISABLE(UNIX_HOST_ENVIRONMENT-5)] [DEBUG] [plugin_runner.py:53] About to get DB statuses
 ```
 
 You can see that it only takes a few seconds for us do each of our data collection steps, with the exception of getting the users, which takes over 13 minutes!
