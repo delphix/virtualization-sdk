@@ -132,6 +132,8 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas):
         package_util.get_build_api_version(),
         'engineApi':
         ENGINE_API,
+        'rootSquashEnabled':
+        plugin_config_content.get('rootSquashEnabled', 'true'),
         'sourceCode':
         zip_and_encode_source_files(src_dir),
         'virtualSourceDefinition': {
@@ -295,7 +297,7 @@ def zip_and_encode_source_files(source_code_dir):
             ' Error message: {}'.format(source_code_dir, os_err.errno,
                                         os.strerror(os_err.errno)))
     except UnicodeError as uni_err:
-        exceptions.UserError(
+        raise exceptions.UserError(
             'Failed to base64 encode source code in the directory {}. '
             'Error message: {}'.format(source_code_dir, uni_err.reason))
     finally:
