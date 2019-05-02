@@ -1,0 +1,216 @@
+{
+  "definitions": {
+    "jsonSchema": {
+      "definitions": {
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/definitions/jsonSchema" }
+        },
+        "nonNegativeInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "nonNegativeIntegerDefault0": {
+            "allOf": [
+                { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeInteger" },
+                { "default": 0 }
+            ]
+        },
+        "simpleTypes": {
+            "enum": [
+                "array",
+                "boolean",
+                "integer",
+                "null",
+                "number",
+                "object",
+                "string"
+            ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true,
+            "default": []
+        }
+      },
+      "type": ["object", "boolean"],
+      "properties": {
+        "$id": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$ref": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$comment": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": true,
+        "readOnly": {
+            "type": "boolean",
+            "default": false
+        },
+        "examples": {
+            "type": "array",
+            "items": true
+        },
+        "multipleOf": {
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "number"
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "number"
+        },
+        "maxLength": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeInteger" },
+        "minLength": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeIntegerDefault0" },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": { "$ref": "#/definitions/jsonSchema" },
+        "items": {
+            "anyOf": [
+                { "$ref": "#/definitions/jsonSchema" },
+                { "$ref": "#/definitions/jsonSchema/definitions/schemaArray" }
+            ],
+            "default": true
+        },
+        "maxItems": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeInteger" },
+        "minItems": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeIntegerDefault0" },
+        "uniqueItems": {
+            "type": "boolean",
+            "default": false
+        },
+        "contains": { "$ref": "#/definitions/jsonSchema" },
+        "maxProperties": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeInteger" },
+        "minProperties": { "$ref": "#/definitions/jsonSchema/definitions/nonNegativeIntegerDefault0" },
+        "required": { "$ref": "#/definitions/jsonSchema/definitions/stringArray" },
+        "additionalProperties": { "$ref": "#/definitions/jsonSchema" },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/definitions/jsonSchema" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/definitions/jsonSchema" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/definitions/jsonSchema" },
+            "propertyNames": { "format": "regex" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#/definitions/jsonSchema" },
+                    { "$ref": "#/definitions/jsonSchema/definitions/stringArray" }
+                ]
+            }
+        },
+        "propertyNames": { "$ref": "#/definitions/jsonSchema" },
+        "const": true,
+        "enum": {
+            "type": "array",
+            "items": true,
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/jsonSchema/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/jsonSchema/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "format": { "type": "string" },
+        "contentMediaType": { "type": "string" },
+        "contentEncoding": { "type": "string" },
+        "if": { "$ref": "#/definitions/jsonSchema" },
+        "then": { "$ref": "#/definitions/jsonSchema" },
+        "else": { "$ref": "#/definitions/jsonSchema" },
+        "allOf": { "$ref": "#/definitions/jsonSchema/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/jsonSchema/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/jsonSchema/definitions/schemaArray" },
+        "not": { "$ref": "#/definitions/jsonSchema" }
+      },
+      "default": true
+    },
+    "discoverableObject": {
+       "type": "object",
+       "required": ["nameField", "identityFields"],
+       "nameField": { "type": "string" },
+       "identityFields": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+    }
+  },
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "repositoryDefinition",
+    "sourceConfigDefinition",
+    "virtualSourceDefinition",
+    "linkedSourceDefinition",
+    "snapshotDefinition"
+  ],
+  "properties": {
+    "repositoryDefinition": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/jsonSchema"
+        },
+        {
+          "$ref": "#/definitions/discoverableObject"
+        }
+      ]
+    },
+    "sourceConfigDefinition": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/jsonSchema"
+        },
+        {
+          "$ref": "#/definitions/discoverableObject"
+        }
+      ]
+    },
+    "virtualSourceDefinition": {
+      "$ref": "#/definitions/jsonSchema"
+    },
+    "linkedSourceDefinition": {
+      "$ref": "#/definitions/jsonSchema"
+    },
+    "snapshotDefinition": {
+      "$ref": "#/definitions/jsonSchema"
+    }
+  },
+  "additionalProperties": false
+}

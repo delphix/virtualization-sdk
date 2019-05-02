@@ -123,7 +123,7 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
         'defaultLocale': 'en-us',
-        'rootSquashEnabled': 'true',
+        'rootSquashEnabled': True,
     }
 
     if plugin_name:
@@ -342,7 +342,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),
         'engineApi': engine_api,
-        'rootSquashEnabled': 'true',
+        'rootSquashEnabled': True,
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
     }
     if virtual_source_definition:
@@ -387,7 +387,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
-        'rootSquashEnabled': 'true',
+        'rootSquashEnabled': True,
         'resources': {}
     }
 

@@ -30,6 +30,7 @@ def htmlReportFiles = fileTree(dir: htmlReportDir,
 check {
   dependsOn 'lint'
   dependsOn 'format'
+  dependsOn 'coverage'
 }
 
 // A convenience task that formats both source and test code.

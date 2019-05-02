@@ -10,7 +10,8 @@ import jinja2
 import mock
 import pytest
 
-from dlpx.virtualization._internal import exceptions, plugin_util
+from dlpx.virtualization._internal import (exceptions, plugin_util,
+                                           schema_validator, util_classes)
 from dlpx.virtualization._internal.commands import initialize as init
 
 
@@ -115,7 +116,10 @@ class TestInitialize:
 
     @staticmethod
     def test_default_schema_definition(schema_template):
-        plugin_util.validate_schemas(schema_template)
+        validator = schema_validator.SchemaValidator(
+            None, plugin_util.PLUGIN_SCHEMA, util_classes.ValidationMode.ERROR,
+            schema_template)
+        validator.validate()
 
         # Validate the repository schema only has the 'name' property.
         assert len(schema_template['repositoryDefinition']

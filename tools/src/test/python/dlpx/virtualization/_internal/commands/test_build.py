@@ -226,7 +226,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert "u'srcDir' is a required property" in message
+        assert "'srcDir' is a required property" in message
 
         assert not mock_generate_python.called
 
@@ -239,7 +239,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert "u'BAD_LANGUAGE' is not one of [u'PYTHON27']" in message
+        assert "'BAD_LANGUAGE' is not one of ['PYTHON27']" in message
 
         assert not mock_generate_python.called
 
@@ -347,16 +347,14 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("The schemas file provided is missing some"
-                           " required schemas. Missing schema definitions are"
-                           " ['virtualSourceDefinition']")
+        assert "'virtualSourceDefinition' is a required property" in message
 
         assert not mock_generate_python.called
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @pytest.mark.parametrize('additional_definition', [{
-        'type': 'object',
+        'type': 'objectxxx',
         'additionalProperties': False,
         'properties': {}
     }])
@@ -366,9 +364,8 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("The schemas file provided contains extra"
-                           " defined schemas. Extra schema definitions are"
-                           " ['additionalDefinition']")
+        assert "Additional properties are not allowed " \
+               "('additionalDefinition' was unexpected)" in message
 
         assert not mock_generate_python.called
 
@@ -396,9 +393,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("The provided schema for sourceConfigDefinition is"
-                           " missing required fields. Verify that the"
-                           " field(s) ['identityFields'] are there.")
+        assert "'identityFields' is a required property" in message
 
         assert not mock_generate_python.called
 
@@ -421,8 +416,6 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("The provided schema for repositoryDefinition is"
-                           " missing required fields. Verify that the"
-                           " field(s) ['nameField'] are there.")
+        assert "'nameField' is a required property" in message
 
         assert not mock_generate_python.called

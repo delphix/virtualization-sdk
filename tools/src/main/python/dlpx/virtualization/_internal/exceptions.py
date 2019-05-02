@@ -4,6 +4,7 @@
 
 import collections
 import json
+import re
 
 
 class UserError(Exception):
@@ -127,3 +128,60 @@ class UnexpectedError(UserError):
                    '\nDumping full response:\n{}'.format(
                        str(self.status_code), self.response))
         super(UnexpectedError, self).__init__(message)
+
+
+class SchemaValidationError(UserError):
+    """
+    SchemaValidationError gets raised when the validation on plugin config
+    or plugin schema fails. Takes in the validation errors and formats
+    the error attributes into a message string.
+    """
+
+    def __init__(self, schema_file, validation_errors):
+        self.schema_file = schema_file
+        self.validation_errors = validation_errors
+        error_msg = "\n\n".join(
+            map(lambda err: self.__format_error(err), validation_errors))
+        message = ('{}\nValidation failed on {}, Found {} errors.'.format(
+            error_msg, self.schema_file, len(validation_errors)))
+        super(SchemaValidationError, self).__init__(message)
+
+    @staticmethod
+    def __format_error(err):
+        """
+        Formats the error message by extracting out required ValidationError
+        information. jsonschema.ValidationError has several attributes. Below
+        are the 3 required to form the error message string. This could be
+        modified in future to add more info in the validation error message.
+        message - error message from validation failure
+        path - path of the schema that failed validation
+        instance - instance on which validation failed
+        e.g.
+        Validation Error:
+            'identityFields' is a required property
+
+            Failed validating 'required' in
+            schema['properties']['repositoryDefinition']['allOf'][1]:
+                {'identityFields': {'items': {'type': 'string'},
+                                     'minItems': 1,
+                                     'type': 'array'},
+                 'nameField': {'type': 'string'},
+                 'required': ['nameField', 'identityFields'],
+                 'type': 'object'}
+
+            On instance['repositoryDefinition']:
+                {'nameField': 'name',
+                 'properties': {'name': {'type': 'string'}},
+                 'type': 'object'}
+        """
+        err_instance = json.dumps(err.instance, indent=2)
+
+        #
+        # Validation error message could be unicode encoded string. Strip out
+        # any leading unicode characters for proper display and logging.
+        #
+        err_msg = re.compile(r'\bu\b', re.IGNORECASE)
+        err_msg = err_msg.sub("", err.message)
+        error_string = '{} on {}\n{}'.format(err_msg, map(str, list(err.path)),
+                                             err_instance)
+        return error_string

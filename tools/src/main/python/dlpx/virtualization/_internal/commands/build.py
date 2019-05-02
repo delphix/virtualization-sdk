@@ -54,10 +54,15 @@ def build(plugin_config, upload_artifact, generate_only):
         plugin_config, plugin_config_content['schemaFile'])
 
     # Read schemas from the file provided in the config and validate them
-    logger.info('Reading schemas from %s', schema_file)
-    schemas = plugin_util.read_schema_file(schema_file)
+    logger.info('Reading and validating schemas from %s', schema_file)
+    schemas = plugin_util.read_and_validate_schema_file(
+        schema_file, not generate_only)
     logger.debug('schemas found: %s', schemas)
-    plugin_util.validate_schemas(schemas)
+
+    # Resolve the paths for source directory and schema file
+    src_dir = file_util.get_src_dir_path(plugin_config,
+                                         plugin_config_content['srcDir'])
+    logger.debug('Source directory path resolved is %s', src_dir)
 
     # Resolve the paths for source directory and schema file
     src_dir = file_util.get_src_dir_path(plugin_config,
@@ -70,6 +75,14 @@ def build(plugin_config, upload_artifact, generate_only):
     #
     codegen.generate_python(plugin_config_content['prettyName'], src_dir,
                             os.path.dirname(plugin_config), schemas)
+
+    #
+    # Validate the plugin config content by importing the module
+    # and check the entry point as well.
+    #
+    plugin_module_content, plugin_entry_point = \
+        plugin_util.validate_plugin_config_content(
+            plugin_config, plugin_config_content, not generate_only)
 
     if generate_only:
         #
@@ -133,7 +146,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas):
         'engineApi':
         ENGINE_API,
         'rootSquashEnabled':
-        plugin_config_content.get('rootSquashEnabled', 'true'),
+        plugin_config_content.get('rootSquashEnabled', True),
         'sourceCode':
         zip_and_encode_source_files(src_dir),
         'virtualSourceDefinition': {

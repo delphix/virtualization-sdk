@@ -4,6 +4,7 @@
 
 import logging
 import os
+import sys
 import traceback
 from contextlib import contextmanager
 
@@ -72,6 +73,11 @@ def delphix_sdk(verbose, quiet):
     # will be printed to the console until this is executed.
     #
     logging_util.add_console_handler(console_logging_level)
+
+    if sys.version_info[:2] != (2, 7):
+        raise exceptions.UserError(
+            'Python version check failed.'
+            'Supported version is 2.7.x, found {}'.format(sys.version_info))
 
 
 @delphix_sdk.command()

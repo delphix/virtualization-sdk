@@ -40,7 +40,15 @@
       "language":  {
           "type": "string",
           "enum": ["PYTHON27"]
+      },
+      "rootSquashEnabled":  {
+          "type": "boolean"
+      },
+      "defaultLocale":  {
+          "type": "string",
+          "default": "en-us"
       }
     },
+    "additionalProperties": false,
     "required": ["name", "prettyName", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
 }

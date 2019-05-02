@@ -2,32 +2,19 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import enum
 import importlib
 import json
 import logging
 import os
 import sys
 
-import jsonschema
 import yaml
-from jsonschema.exceptions import ValidationError
+from jsonschema import Draft7Validator
 
 from dlpx.virtualization._internal import exceptions, file_util, logging_util
+from dlpx.virtualization._internal.util_classes import ValidationMode
 
 logger = logging.getLogger(__name__)
-
-
-class ValidationMode(enum.Enum):
-    """
-    Defines the validation mode that validator uses.
-    INFO - validator will give out info messages if validation fails.
-    WARNING - validator will log a warning if validation fails.
-    ERROR - validator will raise an exception if validation fails.
-    """
-    INFO = 1
-    WARNING = 2
-    ERROR = 3
 
 
 class PluginValidator:
@@ -86,8 +73,8 @@ class PluginValidator:
         """
         Validates the plugin config file.
         """
+        logger.debug('Run config validations')
         try:
-            logger.debug("Run config validations")
             self.__run_validations()
         except Exception as e:
             if self.__validation_mode is ValidationMode.INFO:
@@ -143,7 +130,7 @@ class PluginValidator:
                             'Error position: {}:{}'.format(
                                 self.__plugin_config, mark.line + 1,
                                 mark.column + 1))
-        except IOError as err:
+        except (IOError, OSError) as err:
             raise exceptions.UserError(
                 'Unable to read plugin config file {!r}'
                 '\nError code: {}. Error message: {}'.format(
@@ -178,13 +165,13 @@ class PluginValidator:
             with open(self.__plugin_config_schema, 'r') as f:
                 try:
                     plugin_schema = json.load(f)
-                except Exception as err:
+                except ValueError as err:
                     raise exceptions.UserError(
                         'Failed to load schemas because {!r} is not a '
                         'valid json file. Error: {}'.format(
                             self.__plugin_config_schema, err))
 
-        except IOError as err:
+        except (IOError, OSError) as err:
             raise exceptions.UserError(
                 'Unable to read plugin config schema file {!r}'
                 '\nError code: {}. Error message: {}'.format(
@@ -196,13 +183,17 @@ class PluginValidator:
             json.dumps(self.__plugin_config_content))
 
         # Validate the plugin config against the schema
-        try:
-            jsonschema.validate(instance=plugin_config_json,
-                                schema=plugin_schema)
-        except ValidationError as err:
-            raise exceptions.UserError(
-                'Validation failed on {}, Error message: {}'.format(
-                    self.__plugin_config, err.message))
+        v = Draft7Validator(plugin_schema)
+
+        #
+        # This will do lazy validation so that we can consolidate all the
+        # validation errors and report everything wrong with the schema.
+        #
+        validation_errors = sorted(v.iter_errors(plugin_config_json), key=str)
+
+        if validation_errors:
+            raise exceptions.SchemaValidationError(self.__plugin_config,
+                                                   validation_errors)
 
     def __validate_plugin_entry_point(self, src_dir):
         """
@@ -219,8 +210,9 @@ class PluginValidator:
         self.__plugin_entry_point = entry_point_strings[1]
 
         # Import the module to check if its good.
+        logger.debug('Adding %s to system path %s and checking import',
+                     src_dir, sys.path)
         try:
-            logger.debug('Adding %s to system path %s', src_dir, sys.path)
             sys.path.append(src_dir)
             self.__plugin_module_content = PluginValidator.__import_plugin(
                 module)

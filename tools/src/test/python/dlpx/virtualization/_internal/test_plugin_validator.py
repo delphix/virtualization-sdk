@@ -9,8 +9,8 @@ import mock
 import pytest
 
 from dlpx.virtualization._internal import exceptions, plugin_util
-from dlpx.virtualization._internal.plugin_validator import (PluginValidator,
-                                                            ValidationMode)
+from dlpx.virtualization._internal.plugin_validator import PluginValidator
+from dlpx.virtualization._internal.util_classes import ValidationMode
 
 
 @pytest.fixture
@@ -74,17 +74,17 @@ class TestPluginValidator:
             ('schemaFile', 'schema.json'.encode('utf-8'))
         ])
 
-        with pytest.raises(exceptions.UserError) as err_info:
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         message = err_info.value.message
-        assert "u'srcDir' is a required property" in message
+        assert "'srcDir' is a required property" in message
 
     @staticmethod
     @pytest.mark.parametrize('version, expected', [
-        pytest.param('xxx', "u'xxx' does not match"),
+        pytest.param('xxx', "'xxx' does not match"),
         pytest.param('1.0.0', None),
         pytest.param('1.0.0_HF', None)
     ])
@@ -105,19 +105,19 @@ class TestPluginValidator:
                 plugin_config_file, plugin_config_content,
                 plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
-        except exceptions.UserError as err_info:
+        except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
     @pytest.mark.parametrize('entry_point, expected', [
-        pytest.param('staged_plugin', "u'staged_plugin' does not match"),
-        pytest.param(':staged_plugin', "u':staged_plugin' does not match"),
-        pytest.param('staged:', "u'staged:' does not match"),
+        pytest.param('staged_plugin', "'staged_plugin' does not match"),
+        pytest.param(':staged_plugin', "':staged_plugin' does not match"),
+        pytest.param('staged:', "'staged:' does not match"),
         pytest.param('staged_plugin::staged',
-                     "u'staged_plugin::staged' does not match"),
+                     "'staged_plugin::staged' does not match"),
         pytest.param(':staged_plugin:staged:',
-                     "u':staged_plugin:staged:' does not match"),
+                     "':staged_plugin:staged:' does not match"),
         pytest.param('staged_plugin:staged', None)
     ])
     def test_plugin_entry_point(src_dir, plugin_config_file, entry_point,
@@ -137,6 +137,50 @@ class TestPluginValidator:
                 plugin_config_file, plugin_config_content,
                 plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
-        except exceptions.UserError as err_info:
+        except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
+
+    @staticmethod
+    def test_plugin_additional_properties(src_dir, plugin_config_file):
+        plugin_config_content = OrderedDict([
+            ('name', 'staged'.encode('utf-8')),
+            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('version', '1.0.0'), ('language', 'PYTHON27'),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('manualDiscovery', True),
+            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
+            ('unknown_key', 'unknown_value'.encode('utf-8')),
+            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
+        ])
+
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+            validator.validate()
+        except exceptions.SchemaValidationError as err_info:
+            message = err_info.message
+            assert "Additional properties are not allowed " \
+                   "('unknown_key' was unexpected)" in message
+
+    @staticmethod
+    def test_multiple_validation_errors(plugin_config_file):
+        plugin_config_content = OrderedDict([
+            ('name', 'staged'.encode('utf-8')),
+            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('version', '0.1.0'), ('language', 'PYTHON27'),
+            ('hostTypes', ['xxx']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('manualDiscovery', True),
+            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
+            ('schemaFile', 'schema.json'.encode('utf-8'))
+        ])
+
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+            validator.validate()
+        message = err_info.value.message
+        assert "'srcDir' is a required property" in message
+        assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message

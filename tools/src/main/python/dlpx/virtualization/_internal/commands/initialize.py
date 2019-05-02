@@ -97,8 +97,11 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         logger.info('Writing schema file at %r.', schema_file_path)
         shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
+        # Read and valida the schema file
+        schemas = plugin_util.read_and_validate_schema_file(
+            schema_file_path, False)
+
         # Generate the definitions based on the schema file
-        schemas = plugin_util.read_schema_file(schema_file_path)
         codegen.generate_python(pretty_name, src_dir_path,
                                 os.path.dirname(config_file_path), schemas)
 
