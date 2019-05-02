@@ -64,25 +64,12 @@ def build(plugin_config, upload_artifact, generate_only):
                                          plugin_config_content['srcDir'])
     logger.debug('Source directory path resolved is %s', src_dir)
 
-    # Resolve the paths for source directory and schema file
-    src_dir = file_util.get_src_dir_path(plugin_config,
-                                         plugin_config_content['srcDir'])
-    logger.debug('Source directory path resolved is %s', src_dir)
-
     #
     # Call directly into codegen to generate the python classes and make sure
     # the ones we zip up are up to date with the schemas.
     #
     codegen.generate_python(plugin_config_content['prettyName'], src_dir,
                             os.path.dirname(plugin_config), schemas)
-
-    #
-    # Validate the plugin config content by importing the module
-    # and check the entry point as well.
-    #
-    plugin_module_content, plugin_entry_point = \
-        plugin_util.validate_plugin_config_content(
-            plugin_config, plugin_config_content, not generate_only)
 
     if generate_only:
         #
