@@ -37,24 +37,6 @@ $ pip install dvp==<version>
 !!! note "API Build Version"
     The version of the SDK defines the version of the Virtualization Platform API your plugin will be built against.
 
-## Basic Usage
-
-Our [CLI reference](/References/CLI.md) describes commands, provides examples, and a help section.
-
-To build your plugin:
-
-```
-$ dvp build -c <plugin_config> -a <artifact_file>
-```
-
-This will generate an upload artifact at `<artifact_file>`. That file can then be uploaded with:
-
-```
-$ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_file>
-```
-
-You will be prompt for the Delphix Engine user's password.
-
 ## Enable the Delphix Engine Feature Flag
 
 Login to the Delphix Engine CLI as the `sysadmin` user:
@@ -73,6 +55,23 @@ Properties
 Warning: This feature is only supported for specific configurations. If you do not have explicit permission from your account representative to use this feature, disable it and contact them.
 ```
 
+## Basic Usage
+
+Our [CLI reference](/References/CLI.md) describes commands, provides examples, and a help section.
+
+To build your plugin:
+
+```
+$ dvp build -c <plugin_config> -a <artifact_file>
+```
+
+This will generate an upload artifact at `<artifact_file>`. That file can then be uploaded with:
+
+```
+$ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_file>
+```
+
+You will be prompt for the Delphix Engine user's password.
 
 ## Troubleshooting
 
