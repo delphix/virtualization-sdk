@@ -13,6 +13,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 
 - macOS 10.10+ or Ubuntu 14.04+
 - Python 2.7 (Python 3 is not supported)
+- Java 7+
 
 ## Installation
 To install the latest version of our SDK run:
