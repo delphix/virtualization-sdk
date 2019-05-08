@@ -31,16 +31,11 @@ The first thing to do is to change the version number. In the root of the SDK co
 #### Building the JAR
 In order to build an SDK runtime JAR, navigate to the root directory of the repository, and execute:
 ```
-./build.sh
+./gradlew jar
 ```
-The build script will produce a few build directories and output `sdk-<version>.jar` file.
+This will produce the jar under `build/libs`.
 
-Note that the build script does not yet do a lot of error checking. So, it is sometimes not immediately apparent if the build did not succeed. Check the timestamp on the `sdk-<version>.jar` file to make sure it's been newly-built. If not, you might have to scroll through the `build.sh` output to find an error message.
-
-If you want to remove the results of the JAR build, they can be cleaned by going to the root directory of the respository and executing:
-```
-./clean.sh
-```
+Note that the build not yet do a lot of error checking. So, it is sometimes not immediately apparent if the build did not succeed. Check the timestamp on the `sdk-<version>.jar` file to make sure it's been newly-built. If it's not up to date, you might need to modify the script `bin/build.sh` to produce more output, rerun the jar task, and look at the failure messages.
 
 #### Building the Python distribution
 
@@ -76,7 +71,7 @@ We need to put the local SDK build somewhere that the appgate code can access it
 
 #### Making Local SDK Build Available
 
-This step is easy. Simply copy `sdk-<version>.jar` to `appliance/lib` in the `app-gate`.
+This step is easy. Simply copy `build/libs/sdk-<version>.jar` to `appliance/lib` in the `app-gate`.
 
 Don't forget to check this change into git if you plan on using `git dx-test` or `git appliance-deploy` to test.  (Note: you will **not** be pushing this! We'll undo this change later.)
 
@@ -86,49 +81,49 @@ Don't forget to check this change into git if you plan on using `git dx-test` or
 Delphix Engine and IntelliJ both use gradle to build.  So, we have to ensure that the gradle build knows how to find and use our local SDK build. This is a two-step process.
 
 
-**Step 1** We need to tell gradle to look for jars in the `lib` directory. In order to do that, we will have to add the following code to `appliance/gradle-lib/java-common.gradle`:
+1. We need to tell gradle to look for jars in the `lib` directory. In order to do that, we will have to add the following code to `appliance/gradle-lib/java-common.gradle`:
 
-```
-    flatDir {
-        dirs "${gradleLibDir}/../lib/"
-    }
-```
+	```
+	    flatDir {
+	        dirs "${gradleLibDir}/../lib/"
+	    }
+	```
 
-The above entry has to be added in the list of external repositories. Here is a more complete listing.
+	The above entry has to be added in the list of external repositories. Here is a more complete listing.
 
-```
-/*
- * External repositories we fetch jars from. This should never include a repository
- * that is not managed by Delphix. Third party repos should be mirrored through
- * http://artifactory.delphix.com/.
- */
-repositories {
-    /*
-     * Legacy location for jars that were checked directly into the app-gate.
-     */
-    ivy {
-        ivyPattern "${gradleLibDir}/../lib/[module]/ivy-[revision].xml"
-        artifactPattern "${gradleLibDir}/../lib/[module]/[artifact]-[revision].[ext]"
-    }
-    ...
-    ...
-    flatDir {
-        dirs "${gradleLibDir}/../lib/"
-    }
-}
-```
-
-**Step 2** We have to tell gradle to actually use our local SDK where applicable. We have two modules that need to see the SDK: `appdata` and `workflow`. So, we have to edit both `appliance/server/appdata/build.gradle` and `appliance/server/workflow/build.gradle`).
-
-We need to add the following line:
-```
-compile name: "sdk-<version>"
+	```
+	/*
+	 * External repositories we fetch jars from. This should never include a repository
+	 * that is not managed by Delphix. Third party repos should be mirrored through
+	 * http://artifactory.delphix.com/.
+	 */
+	repositories {
+	    /*
+	     * Legacy location for jars that were checked directly into the app-gate.
+	     */
+	    ivy {
+	        ivyPattern "${gradleLibDir}/../lib/[module]/ivy-[revision].xml"
+	        artifactPattern "${gradleLibDir}/../lib/[module]/[artifact]-[revision].[ext]"
+	    }
+	    ...
+	    ...
+	    flatDir {
+	        dirs "${gradleLibDir}/../lib/"
+	    }
+	}
 ```
 
-We also need to remove (or comment out) this line so that gradle will not try to use an artifactory build:
-```
-implementation group: "com.delphix.virtualization", name: "sdk", version: virtualizationSdkVer
-```
+2. We have to tell gradle to actually use our local SDK where applicable. We have two modules that need to see the SDK: `appdata` and `workflow`. So, we have to edit both `appliance/server/appdata/build.gradle` and `appliance/server/workflow/build.gradle`).
+
+	We need to add the following line:
+	```
+	compile name: "sdk-<version>"
+	```
+
+	We also need to remove (or comment out) this line so that gradle will not try to use an artifactory build:
+	```
+	implementation group: "com.delphix.virtualization", name: "sdk", version: virtualizationSdkVer
+	```
 
 Once you complete the above two steps, IntelliJ should notice the changes to your build files and rebuild the project. If you don't have the auto-rebuild option turned on, refresh the gradle build.
 
@@ -155,46 +150,39 @@ In addition, it's customary to publish a "provisional" appgate review, so that p
 
 ## Pushing and Deploying SDK Code
 
-### Preparation
-
-1. Make sure you have both the JAR and the Python distribution built, as described above. Double check that you have the correct version in `build.gradle`.
-
-2. You will need your Artifactory API key, which you can get by navigating to http://artifactory.delphix.com/artifactory/webapp/#/profile (make sure you're logged in).
-
-3. Make sure that you have `twine` installed (run `pip install twine`), and make sure that your `~/.pypirc` file has your credentials:
-```bash
-[~] cat ~/.pypirc
-[distutils]
-index-servers =
-    local
-
-[local]
-repository: http://artifactory.delphix.com/artifactory/api/pypi/delphix-local
-username: user
-password: pass
-```
 
 ### Publishing
 
-We do not yet have an autobuild/autodeploy mechanism for SDK changes, and so you must manually perform three related steps separately
+There are two Gradle tasks that do publishing: `publishDebug` and `publishProd`. They differ in two ways:
 
-1. Push your source changes to our git server with `git push`.
-!!! note
-    Depending on what you've changed, you may find a variety of "lock files" that have been changed. These need to be checked in and pushed alongside your source changes. These guarantee consistent builds from developer to developer.
+1. They publish the Python distributions to separate repositories on Artifactory (the jar is always published to the same one.). `publishDebug` uploads to `dvp-local-pypi`. This is a special repository that has been setup to test the SDK. It falls back our our production PyPI repository, but artifacts uploaded to `dvp-local-pypi` do not impact production artifacts. This should be used for testing. `publishProd` does upload the Python distributions to our production Artifactory PyPI repository, `delphix-local`.
 
-2. Publish the Jar to our Artifactory server with this command:
-```
-curl -H 'X-JFrog-Art-Api: <Artifactory-API-key>' -T /path/to/virtualization-sdk/sdk-<version>.jar "http://artifactory.delphix.com/artifactory/virtualization-sdk/com/delphix/virtualization/sdk/<version>/sdk-<version>.jar"
-```
+2. `publishProd` runs tests, formatting, and linting while `publishDebug` does not.
 
-3. Publish the Python distribution to our Pypi server with these commands:
-```bash
-twine upload -r local tools/build/python-dist/*
-twine upload -r local libs/build/python-dist/*
-twine upload -r local platform/build/python-dist/*
-twine upload -r local common/build/python-dist/*
-twine upload -r local dvp/build/python-dist/*
-```
+NOTE: The external release to `pypi.org` is done outside of the build system.
+
+#### Setup
+
+1. There are three environment variables that need to be set in order to publish: `ARTIFACTORY_PYPI_USER`, `ARTIFACTORY_PYPI_PASS`, and `ARTIFACTORY_JAR_KEY`.
+
+	`ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS` are one set of credentials used to upload the Python distributions to our internal PyPI repositories. The credentials are the same for both internal PyPI repositories mentioned above.
+	`ARTIFACTORY_JAR_KEY`
+
+   - `ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS` is the username/password combo given to you by whoever setup your Artifactory pypi account. If you do not have one, please reach out to the `#appdata-core` channel. These used to upload the Python distributions to our internal PyPI repositories. The credentials are the same for both internal PyPI repositories mentioned above.
+   - `ARTIFACTORY_JAR_KEY` is your Artifactory API key and is used to upload the jar. It can be retreived from http://artifactory.delphix.com/artifactory/webapp/#/profile. You may have to login. This is different from the PyPI credentials because the artifacts are being uploaded to different repositories on Artifactory.
+
+2. `twine` needs to be installed. This is a Python package that is used to upload Python distributions. If it's not installed, install it by running `pip install twine`.
+
+
+#### Debug Publishing
+
+Run `./gradlew publishDebug`. This will build the jar, every Python distribution, and upload them to Artifactory with the Python distributions going to our testing repository, `dvp-local-pypi`.
+
+You can install `dvp` from this repository with the command `pip install -i https://artifactory.delphix.com/artifactory/api/pypi/dvp-local-pypi/simple dvp==<version>`.
+
+#### Final Publishing
+
+Once you are absolutely certain all changes have been made run `./gradlew publishProd`. This will run checks, build the jar, create the Python distributions, and upload all of them to Artifactory with the Python distributions going to `delphix-local`.
 
 ## Using Newly-Deployed SDK Build
 

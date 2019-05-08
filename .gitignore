@@ -26,6 +26,9 @@ activate*
 # Pipenv virtual env directory
 .venv/
 
+# Ignore other virtual environments
+venv/
+
 # Pytest cache
 .pytest_cache/
 

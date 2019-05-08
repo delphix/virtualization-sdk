@@ -73,6 +73,18 @@ task clearVEnv(type: Exec) {
 }
 
 /*
+ * As part of running a packages 'setup.py' file, setuptools creates 'egg-info' directories that contain information
+ * about the build distribution. These can sometimes cause issues. We should probably build Python distributions in
+ * 'build' so these would be created there, however they still could be created in the 'src' directory if someone runs
+ * 'setup.py' manually. This is often done during development to install the package for testing.
+ */
+task removeEggInfo(type: Delete) {
+    delete "${projectDir}/src/main/python/dvp_tools.egg-info"
+}
+
+clean.dependsOn('removeEggInfo')
+
+/*
 * BUILD TASKS
 */
 
