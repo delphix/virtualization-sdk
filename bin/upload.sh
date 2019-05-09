@@ -28,7 +28,6 @@ fi
 if [[ $# -eq 0 ]]; then
   REPO="http://artifactory.delphix.com/artifactory/api/pypi/dvp-local-pypi"
 else
-  die "GOING TO DO A PROD UPLOAD"
   REPO="http://artifactory.delphix.com/artifactory/api/pypi/delphix-local"
 fi
 
