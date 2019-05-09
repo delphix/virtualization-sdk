@@ -5,7 +5,6 @@
 import os
 
 import pytest
-
 from dlpx.virtualization._internal import exceptions, plugin_util
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode

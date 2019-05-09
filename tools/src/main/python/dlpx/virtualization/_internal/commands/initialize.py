@@ -9,7 +9,6 @@ from collections import OrderedDict
 
 import jinja2
 import yaml
-
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            plugin_util)
 

@@ -6,9 +6,8 @@ import functools
 import logging
 import os
 
-from six.moves import configparser
-
 from dlpx.virtualization import _internal as virtualization_internal
+from six.moves import configparser
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +57,27 @@ def get_build_api_version():
         'micro': micro
     }
     return build_api_version
+
+
+@_run_once
+def get_engine_api_version_from_settings():
+    """
+    Returns the engine api version from dlpx.virtualization._internal package.
+    """
+    return _get_settings().get('General', 'engine_api_version')
+
+
+def get_engine_api_version():
+    """Returns the engine api version in JSON format."""
+    major, minor, micro = (
+        int(n) for n in get_engine_api_version_from_settings().split('.'))
+    engine_api_version = {
+        'type': 'APIVersion',
+        'major': major,
+        'minor': minor,
+        'micro': micro
+    }
+    return engine_api_version
 
 
 @_run_once

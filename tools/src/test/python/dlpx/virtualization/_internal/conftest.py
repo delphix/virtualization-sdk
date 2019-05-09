@@ -8,7 +8,6 @@ import os
 
 import pytest
 import yaml
-
 from dlpx.virtualization._internal import package_util
 
 #

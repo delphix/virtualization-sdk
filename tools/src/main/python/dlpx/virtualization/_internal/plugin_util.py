@@ -72,6 +72,15 @@ def read_and_validate_schema_file(schema_file, stop_build):
     return validator.plugin_schemas
 
 
+def get_plugin_config_property(plugin_config_path, prop):
+    """
+    Returns the value for a specific property from the plugin config file.
+    """
+    plugin_config_content = read_and_validate_plugin_config_file(
+        plugin_config_path, False, False)
+    return plugin_config_content[prop]
+
+
 def get_schema_file_path(plugin_config, schema_file):
     """
     Get the absolute path if schemaFile is a relative path and

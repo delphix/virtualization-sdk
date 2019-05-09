@@ -6,10 +6,9 @@ import json
 import logging
 import os
 
-from jsonschema import Draft7Validator
-
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.util_classes import ValidationMode
+from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
 

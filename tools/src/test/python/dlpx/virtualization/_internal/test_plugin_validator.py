@@ -7,7 +7,6 @@ from collections import OrderedDict
 
 import mock
 import pytest
-
 from dlpx.virtualization._internal import exceptions, plugin_util
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode

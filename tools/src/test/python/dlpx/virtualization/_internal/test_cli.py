@@ -8,7 +8,6 @@ import click.testing as click_testing
 import mock
 import pytest
 import yaml
-
 from dlpx.virtualization._internal import cli, exceptions, plugin_util
 
 
@@ -308,7 +307,7 @@ class TestUploadCli:
         engine = 'engine'
         user = 'admin'
         password = 'delphix2'
-        mock_upload.side_effect = exceptions.HttpPostError(
+        mock_upload.side_effect = exceptions.HttpError(
             401, {
                 'type': 'APIError',
                 'details': 'Invalid username or password.',
@@ -324,7 +323,7 @@ class TestUploadCli:
 
         assert result.exit_code == 1
         assert result.output == (
-            'Plugin upload failed with HTTP Status 401'
+            'API request failed with HTTP Status 401'
             '\nDetails: Invalid username or password.'
             '\nAction: Try with a different set of credentials.'
             '\n')
@@ -355,3 +354,150 @@ class TestUploadCli:
                                  u' "/not/a/real/file/artifact.json"'
                                  u' does not exist.'
                                  u'\n')
+
+
+class TestDownloadCli:
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    def test_default_params(mock_download_logs, plugin_config_file):
+        engine = 'engine'
+        user = 'admin'
+        password = 'password'
+        directory = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(plugin_config_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, [
+                'download-logs', '-e', engine, '-u', user, '--password',
+                password
+            ])
+        finally:
+            os.chdir(directory)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_download_logs.assert_called_once_with(engine, plugin_config_file,
+                                                   user, password, directory)
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    def test_valid_params(mock_download_logs, plugin_config_file):
+        engine = 'engine'
+        user = 'admin'
+        password = 'password'
+        directory = os.getcwd()
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-e', engine, '-c', plugin_config_file, '-u',
+            user, '-d', directory, '--password', password
+        ])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_download_logs.assert_called_once_with(engine, plugin_config_file,
+                                                   user, password, directory)
+
+    @staticmethod
+    def test_missing_params():
+        user = 'admin'
+        password = 'password'
+        directory = os.getcwd()
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-u', user, '-d', directory, '--password',
+            password
+        ])
+
+        assert result.exit_code == 2
+        assert result.output == (
+            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
+            u'\n'
+            u'Error: Invalid value for "-e" / '
+            u'"--delphix-engine": Option is required '
+            u'and must be specified via the command line.'
+            u'\n')
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    def test_bad_password(mock_download_logs, plugin_config_file):
+        engine = 'engine'
+        user = 'admin'
+        password = 'delphix2'
+        directory = os.getcwd()
+        mock_download_logs.side_effect = exceptions.HttpError(
+            401, {
+                'type': 'APIError',
+                'details': 'Invalid username or password.',
+                'action': 'Try with a different set of credentials.',
+                'id': 'exception.webservices.login.failed'
+            })
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-e', engine, '-c', plugin_config_file, '-u',
+            user, '--password', password, '-d', directory
+        ])
+
+        assert result.exit_code == 1
+        assert result.output == (
+            'API request failed with HTTP Status 401'
+            '\nDetails: Invalid username or password.'
+            '\nAction: Try with a different set of credentials.'
+            '\n')
+        mock_download_logs.assert_called_once_with(engine, plugin_config_file,
+                                                   user, password, directory)
+
+    @staticmethod
+    @pytest.mark.parametrize('directory', ['/not/a/real/directory'])
+    def test_directory_not_exist(directory):
+        # No mock is needed because we should never call the upload function.
+        engine = 'engine'
+        user = 'admin'
+        password = 'delphix'
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-e', engine, '-u', user, '--password', password,
+            '-d', directory
+        ])
+
+        assert result.exit_code == 2
+        assert result.output == (
+            u'Usage: delphix-sdk download-logs [OPTIONS]'
+            u'\nTry "delphix-sdk download-logs -h" for help.'
+            u'\n'
+            u'\nError: Invalid value for "-d" /'
+            u' "--directory": Directory'
+            u' "/not/a/real/directory"'
+            u' does not exist.'
+            u'\n')
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_file',
+                             ['/not/a/real/file/plugin_config.yml'])
+    def test_file_not_exist(plugin_config_file):
+        engine = 'engine'
+        user = 'admin'
+        password = 'delphix'
+        directory = os.getcwd()
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-e', engine, '-c', plugin_config_file, '-u',
+            user, '--password', password, '-d', directory
+        ])
+
+        assert result.exit_code == 2
+        assert result.output == (
+            u'Usage: delphix-sdk download-logs [OPTIONS]'
+            u'\nTry "delphix-sdk download-logs -h" for help.'
+            u'\n'
+            u'\nError: Invalid value for "-c" /'
+            u' "--plugin-config": File'
+            u' "/not/a/real/file/plugin_config.yml"'
+            u' does not exist.'
+            u'\n')

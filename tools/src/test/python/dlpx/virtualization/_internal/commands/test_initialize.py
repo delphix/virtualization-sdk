@@ -9,7 +9,6 @@ import os
 import jinja2
 import mock
 import pytest
-
 from dlpx.virtualization._internal import (exceptions, plugin_util,
                                            schema_validator, util_classes)
 from dlpx.virtualization._internal.commands import initialize as init

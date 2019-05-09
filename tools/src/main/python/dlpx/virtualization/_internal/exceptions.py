@@ -78,23 +78,37 @@ class InvalidArtifactError(UserError):
         super(InvalidArtifactError, self).__init__(message)
 
 
-class HttpPostError(UserError):
+class MissingPluginError(UserError):
     """
-    HttpPostError gets raised when the response's type is ErrorResult. Takes
+    MissingPluginError is raised when the plugin name specified by the
+    user does not exist on the Delphix Engine that is provided.
+    """
+
+    def __init__(self, plugin_name, delphix_engine):
+        message = (
+            'Cannot find plugin {} on Delphix Engine {}.'
+            ' Upload your plugin with "dvp upload" and try again.'.format(
+                plugin_name, delphix_engine))
+        super(MissingPluginError, self).__init__(message)
+
+
+class HttpError(UserError):
+    """
+    HttpError gets raised when the response's type is ErrorResult. Takes
     in the code and error message that gets returned.
     """
 
     def __init__(self, status_code, error):
         self.status_code = status_code
         self.error = error
-        message = 'Plugin upload failed with HTTP Status {}\n{}'.format(
+        message = 'API request failed with HTTP Status {}\n{}'.format(
             str(self.status_code), self.parse_error(self.error))
-        super(HttpPostError, self).__init__(message)
+        super(HttpError, self).__init__(message)
 
     @staticmethod
     def parse_error(error):
         """
-        This function returns the parsed error from an HttpPostError. While
+        This function returns the parsed error from an HttpError. While
         the error is likely to have a details and action property, depending
         on where the error was originally generated from on the appliance, the
         format may be different so we want to try to print that nicely as well.

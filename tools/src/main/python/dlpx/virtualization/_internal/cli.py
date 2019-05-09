@@ -9,11 +9,12 @@ import traceback
 from contextlib import contextmanager
 
 import click
-
 from dlpx.virtualization._internal import (click_util, exceptions,
                                            logging_util, package_util,
                                            plugin_util)
 from dlpx.virtualization._internal.commands import build as build_internal
+from dlpx.virtualization._internal.commands import \
+    download_logs as download_logs_internal
 from dlpx.virtualization._internal.commands import initialize as init_internal
 from dlpx.virtualization._internal.commands import upload as upload_internal
 
@@ -178,8 +179,8 @@ def build(plugin_config, upload_artifact, generate_only):
               '--delphix-engine',
               'engine',
               callback=click_util.validate_option_exists,
-              help='Upload plugin to the provided engine. '
-              'This should be either the hostname or IP address.')
+              help='Upload plugin to the provided Delphix engine.'
+              ' This should be either the hostname or IP address.')
 @click.option('-u',
               '--user',
               callback=click_util.validate_option_exists,
@@ -208,6 +209,54 @@ def upload(engine, user, upload_artifact, password):
     """
     with command_error_handler():
         upload_internal.upload(engine, user, upload_artifact, password)
+
+
+@delphix_sdk.command()
+@click.option('-e',
+              '--delphix-engine',
+              'engine',
+              callback=click_util.validate_option_exists,
+              help='Download plugin logs from the provided Delphix engine.'
+              ' This should be either the hostname or IP address.')
+@click.option('-c',
+              '--plugin-config',
+              default='plugin_config.yml',
+              show_default=True,
+              type=click.Path(exists=True,
+                              file_okay=True,
+                              dir_okay=False,
+                              resolve_path=True),
+              callback=click_util.validate_option_exists,
+              help='Set the path to plugin config file. '
+              'This file contains the plugin name to download logs for.')
+@click.option('-u',
+              '--user',
+              callback=click_util.validate_option_exists,
+              help='Authenticate to the Delphix Engine with the provided user.'
+              )
+@click.option(
+    '-d',
+    '--directory',
+    default=os.getcwd(),
+    show_default=True,
+    type=click.Path(exists=True,
+                    file_okay=False,
+                    dir_okay=True,
+                    writable=True,
+                    resolve_path=True),
+    callback=click_util.validate_option_exists,
+    help='Specify the directory of where to download the plugin logs.')
+@click.password_option(confirmation_prompt=False,
+                       help='Authenticate using the provided password.')
+def download_logs(engine, plugin_config, user, password, directory):
+    """
+    Download plugin logs from a target Delphix Engine to a local directory.
+    Note: Plugin logs must exist after running the plugin scripts, otherwise
+    the download will fail.
+    """
+    with command_error_handler():
+        download_logs_internal.download_logs(engine, plugin_config, user,
+                                             password, directory)
 
 
 def get_console_logging_level(verbose, quiet):

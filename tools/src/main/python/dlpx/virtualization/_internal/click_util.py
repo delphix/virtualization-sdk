@@ -36,7 +36,7 @@ def validate_option_exists(ctx, param, value):
 class MutuallyExclusiveOption(click.Option):
     """
     A Click Option type that is mutually exclusive with another option. Click
-    does not support mutally exclusive options out of the box.
+    does not support mutually exclusive options out of the box.
 
     Example usage:
 
