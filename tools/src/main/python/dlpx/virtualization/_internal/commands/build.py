@@ -81,15 +81,16 @@ def build(plugin_config, upload_artifact, generate_only):
 
     #
     # Validate the plugin config content by importing the module
-    # and check the entry point as well.
+    # and check the entry point as well. Returns a manifest on
+    # successful validation.
     #
-    plugin_module_content, plugin_entry_point = \
-        plugin_util.validate_plugin_config_content(
-            plugin_config, plugin_config_content, not generate_only)
+    manifest = plugin_util.get_plugin_manifest(plugin_config,
+                                               plugin_config_content,
+                                               not generate_only)
 
     # Prepare the output artifact.
     plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
-                                            schemas)
+                                            schemas, manifest)
 
     #
     # Add empty strings for plugin operations for now as API expects them.
@@ -103,7 +104,7 @@ def build(plugin_config, upload_artifact, generate_only):
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
 
-def prepare_upload_artifact(plugin_config_content, src_dir, schemas):
+def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     #
     # This is the output dictionary that will be written
     # to the upload_artifact.
@@ -147,7 +148,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas):
         'discoveryDefinition':
         prepare_discovery_definition(plugin_config_content, schemas),
         'snapshotSchema':
-        schemas['snapshotDefinition']
+        schemas['snapshotDefinition'],
+        'manifest':
+        manifest
     }
 
 

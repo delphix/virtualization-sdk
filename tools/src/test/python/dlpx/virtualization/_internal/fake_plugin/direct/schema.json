@@ -1,0 +1,38 @@
+{
+    "repositoryDefinition": {
+        "type": "object",
+        "properties": {
+            "name": { "type": "string" }
+        },
+        "nameField": "name",
+        "identityFields": ["name"]
+    },
+    "sourceConfigDefinition": {
+        "type": "object",
+        "required": ["name", "path"],
+        "additionalProperties": false,
+        "properties": {
+            "name": { "type": "string" },
+            "path": { "type": "string" }
+        },
+        "nameField": "name",
+        "identityFields": ["path"]
+    },
+    "virtualSourceDefinition": {
+        "type": "object",
+        "additionalProperties" : false,
+        "properties" : {
+            "path": { "type": "string" }
+        }
+    },
+    "linkedSourceDefinition": {
+        "type": "object",
+        "additionalProperties" : false,
+        "properties" : {}
+    },
+    "snapshotDefinition": {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {}
+    }
+}

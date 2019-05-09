@@ -1,0 +1,11 @@
+name: python_files
+prettyName: Unstructured Files using Python
+version: 2.0.0
+hostTypes:
+  - UNIX
+entryPoint: python_vfiles:vfiles
+srcDir: src/
+schemaFile: ./schema.json
+manualDiscovery: true
+pluginType: DIRECT
+language: PYTHON27

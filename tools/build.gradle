@@ -213,6 +213,27 @@ dlpxPython {
     yapf {
       version = ">= 0.25"
     }
+
+    /*
+     * Following dvp-* packages are just meant for dev/test envs so that
+     * dependent packages are available in path when running unit tests
+     * under the tools package. These packages should never be production
+     * dependencies as they need to be shipped independently.
+     */
+    "dvp-common" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":common:sdist").getDistFile().toString())
+    }
+
+    "dvp-platform" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":platform:sdist").getDistFile().toString())
+    }
+
+    "dvp-libs" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":libs:sdist").getDistFile().toString())
+    }
   }
 
   supportedPythons {

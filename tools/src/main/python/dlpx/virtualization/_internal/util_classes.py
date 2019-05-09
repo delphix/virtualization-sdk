@@ -15,3 +15,28 @@ class ValidationMode(enum.Enum):
     INFO = 1
     WARNING = 2
     ERROR = 3
+
+
+class MessageUtils:
+    """
+    Defines helpers methods to format warning and exception messages.
+    """
+
+    @staticmethod
+    def exception_msg(exceptions):
+        exception_msg = '\n'.join(
+            MessageUtils.__format_msg('Exception', ex)
+            for ex in exceptions['exception'])
+        return exception_msg
+
+    @staticmethod
+    def warning_msg(warnings):
+        warning_msg = '\n'.join(
+            MessageUtils.__format_msg('Warning', warning)
+            for warning in warnings['warning'])
+        return warning_msg
+
+    @staticmethod
+    def __format_msg(msg_type, msg):
+        msg_str = "{}: {}".format(msg_type, msg)
+        return msg_str

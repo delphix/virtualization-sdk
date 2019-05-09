@@ -2,15 +2,16 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import importlib
 import json
 import logging
 import os
-import sys
+from collections import defaultdict
 
 import yaml
-from dlpx.virtualization._internal import exceptions, file_util, logging_util
-from dlpx.virtualization._internal.util_classes import ValidationMode
+from dlpx.virtualization._internal import (exceptions, file_util,
+                                           plugin_importer)
+from dlpx.virtualization._internal.util_classes import (MessageUtils,
+                                                        ValidationMode)
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
@@ -40,20 +41,20 @@ class PluginValidator:
         self.__validation_mode = validation_mode
         self.__run_all_validations = run_all_validations
         self.__plugin_config_content = plugin_config_content
-        self.__plugin_module_content = None
-        self.__plugin_entry_point = None
+        self.__plugin_manifest = None
+        self.__warnings = defaultdict(list)
 
     @property
     def plugin_config_content(self):
         return self.__plugin_config_content
 
     @property
-    def plugin_module_content(self):
-        return self.__plugin_module_content
+    def plugin_manifest(self):
+        return self.__plugin_manifest
 
     @property
-    def plugin_entry_point(self):
-        return self.__plugin_entry_point
+    def warnings(self):
+        return self.__warnings
 
     @classmethod
     def from_config_content(cls, plugin_config_file, plugin_config_content,
@@ -83,6 +84,11 @@ class PluginValidator:
                                e)
             else:
                 raise e
+
+        if self.__warnings:
+            warning_msg = MessageUtils.warning_msg(self.__warnings)
+            logger.warn('{}\nFound {} issues in plugin code.'.format(
+                warning_msg, len(self.__warnings['warning'])))
 
     def __run_validations(self):
         """
@@ -205,49 +211,30 @@ class PluginValidator:
         entry_point_strings = entry_point_field.split(':')
 
         # Get the module and entry point name to import
-        module = entry_point_strings[0]
-        self.__plugin_entry_point = entry_point_strings[1]
+        entry_point_module = entry_point_strings[0]
+        entry_point_object = entry_point_strings[1]
+        plugin_type = self.__plugin_config_content['pluginType']
 
-        # Import the module to check if its good.
-        logger.debug('Adding %s to system path %s and checking import',
-                     src_dir, sys.path)
         try:
-            sys.path.append(src_dir)
-            self.__plugin_module_content = PluginValidator.__import_plugin(
-                module)
+            self.__plugin_manifest, self.__warnings = (
+                PluginValidator.__import_plugin(src_dir, entry_point_module,
+                                                entry_point_object,
+                                                plugin_type))
         except ImportError as err:
             raise exceptions.UserError(
                 'Unable to load module \'{}\' specified in '
                 'pluginEntryPoint \'{}\' from path \'{}\'. '
-                'Error message: {}'.format(module, self.__plugin_entry_point,
-                                           src_dir, err))
-        finally:
-            #
-            # Importing plugin code messes up the logger due to adding extra
-            # handlers from the plugin code. So resetting here resolves such
-            # issues.
-            # TODO - this code should be removed once we move plugin module
-            # import into an isolated environent/sub process.
-            #
-            logging_util.setup_logger()
-            logging_util.add_console_handler(30)
-            sys.path.remove(src_dir)
-            logger.debug('Removed %s from system path %s', src_dir, sys.path)
+                'Error message: {}'.format(entry_point_module,
+                                           entry_point_object, src_dir, err))
 
-        # Check for the plugin entry point in the module.
-        objects = dir(self.__plugin_module_content)
-
-        if self.__plugin_entry_point not in objects:
-            raise exceptions.UserError(
-                'Entry point \'{}\' provided in the plugin config '
-                'file is not found in module \'{}\'.'.format(
-                    self.__plugin_entry_point, module))
+        logger.debug("Got manifest %s", self.__plugin_manifest)
 
     @staticmethod
-    def __import_plugin(module):
+    def __import_plugin(src_dir, entry_point_module, entry_point_object,
+                        plugin_type):
         """
         Imports the given python module.
-        TODO:
+        NOTE:
             Importing module in the current context pollutes the runtime of
             the caller, in this case dvp. If the module being imported, for
             e.g. contains code that adds a handler to the root logger at
@@ -255,5 +242,10 @@ class PluginValidator:
             callers of validator. To avoid such issues, perform the import in
             in a sub-process and on completion return the output.
         """
-        module_content = importlib.import_module(module)
-        return module_content
+        warnings = defaultdict(list)
+        importer = plugin_importer.PluginImporter(src_dir, entry_point_module,
+                                                  entry_point_object,
+                                                  plugin_type, True)
+        manifest, warnings = importer.import_plugin()
+
+        return manifest, warnings

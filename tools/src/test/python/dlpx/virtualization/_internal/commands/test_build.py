@@ -10,6 +10,7 @@ import pytest
 import yaml
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.commands import build
+from dlpx.virtualization._internal.plugin_validator import PluginValidator
 
 
 @pytest.fixture
@@ -23,9 +24,12 @@ def artifact_file_created():
 
 class TestBuild:
     @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_success(mock_generate_python, plugin_config_file,
-                           artifact_file, artifact_content,
+    def test_build_success(mock_generate_python, mock_plugin_manifest,
+                           plugin_config_file, artifact_file, artifact_content,
                            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
@@ -38,7 +42,7 @@ class TestBuild:
                                                      gen_py.source_dir,
                                                      gen_py.plugin_content_dir,
                                                      gen_py.schema_dict)
-
+        mock_plugin_manifest.assert_called()
         # After running build this file should now exist.
         assert os.path.exists(artifact_file)
 
@@ -49,12 +53,13 @@ class TestBuild:
 
     @staticmethod
     @pytest.mark.parametrize('artifact_filename', ['somefile.json'])
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_success_non_default_output_file(mock_generate_python,
-                                                   plugin_config_file,
-                                                   artifact_file,
-                                                   artifact_content,
-                                                   codegen_gen_py_inputs):
+    def test_build_success_non_default_output_file(
+            mock_generate_python, mock_import_plugin, plugin_config_file,
+            artifact_file, artifact_content, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -66,6 +71,7 @@ class TestBuild:
                                                      gen_py.source_dir,
                                                      gen_py.plugin_content_dir,
                                                      gen_py.schema_dict)
+        mock_import_plugin.assert_called()
 
         # After running build this file should now exist.
         assert os.path.exists(artifact_file)
@@ -126,7 +132,8 @@ class TestBuild:
                                              plugin_config_content, src_dir,
                                              schema_content):
         upload_artifact = build.prepare_upload_artifact(
-            plugin_config_content, src_dir, schema_content)
+            plugin_config_content, src_dir, schema_content, {})
+
         assert upload_artifact == basic_artifact_content
 
     @staticmethod

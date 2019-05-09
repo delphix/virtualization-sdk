@@ -49,7 +49,7 @@ class TestInitialize:
         # Validate the config file is as we expect.
         config = plugin_util.read_and_validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, True)
+            True, False)
 
         assert config['pluginType'] == plugin_util.STAGED_TYPE
         assert config['name'] == plugin_name

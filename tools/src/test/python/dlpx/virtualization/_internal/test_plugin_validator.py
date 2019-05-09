@@ -23,13 +23,6 @@ def src_dir(tmpdir):
     return os.path.join(tmpdir.strpath, 'src')
 
 
-@pytest.fixture(scope='session', autouse=True)
-def mock_module_import():
-    with mock.patch.object(PluginValidator,
-                           '_PluginValidator__validate_plugin_entry_point'):
-        yield
-
-
 class TestPluginValidator:
     @staticmethod
     def test_plugin_bad_config_file(plugin_config_file):
@@ -45,7 +38,11 @@ class TestPluginValidator:
                            " directory".format(plugin_config_file))
 
     @staticmethod
-    def test_plugin_valid_content(src_dir, plugin_config_file):
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
+    def test_plugin_valid_content(mock_import_plugin, src_dir,
+                                  plugin_config_file):
         plugin_config_content = OrderedDict([
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
@@ -60,6 +57,8 @@ class TestPluginValidator:
             plugin_config_file, plugin_config_content,
             plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
         validator.validate()
+
+        mock_import_plugin.assert_called()
 
     @staticmethod
     def test_plugin_missing_field(plugin_config_file):
@@ -82,13 +81,16 @@ class TestPluginValidator:
         assert "'srcDir' is a required property" in message
 
     @staticmethod
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
     @pytest.mark.parametrize('version, expected', [
         pytest.param('xxx', "'xxx' does not match"),
         pytest.param('1.0.0', None),
         pytest.param('1.0.0_HF', None)
     ])
-    def test_plugin_version_format(src_dir, plugin_config_file, version,
-                                   expected):
+    def test_plugin_version_format(mock_import_plugin, src_dir,
+                                   plugin_config_file, version, expected):
         plugin_config_content = OrderedDict([
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
@@ -104,11 +106,15 @@ class TestPluginValidator:
                 plugin_config_file, plugin_config_content,
                 plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
+            mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
     @pytest.mark.parametrize('entry_point, expected', [
         pytest.param('staged_plugin', "'staged_plugin' does not match"),
         pytest.param(':staged_plugin', "':staged_plugin' does not match"),
@@ -119,8 +125,8 @@ class TestPluginValidator:
                      "':staged_plugin:staged:' does not match"),
         pytest.param('staged_plugin:staged', None)
     ])
-    def test_plugin_entry_point(src_dir, plugin_config_file, entry_point,
-                                expected):
+    def test_plugin_entry_point(mock_import_plugin, src_dir,
+                                plugin_config_file, entry_point, expected):
         plugin_config_content = OrderedDict([
             ('name', 'staged'.encode('utf-8')),
             ('prettyName', 'StagedPlugin'.encode('utf-8')),
@@ -136,6 +142,7 @@ class TestPluginValidator:
                 plugin_config_file, plugin_config_content,
                 plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
+            mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
@@ -183,3 +190,31 @@ class TestPluginValidator:
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
+
+    @staticmethod
+    def test_staged_plugin(fake_staged_plugin_config):
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator(fake_staged_plugin_config,
+                                        plugin_util.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        assert validator.warnings.items() > 0
+        assert 'Named argument mismatch in method' in message
+        assert 'Number of arguments do not match' in message
+        assert 'Implementation missing for required method' in message
+
+    @staticmethod
+    def test_direct_plugin(fake_direct_plugin_config):
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator(fake_direct_plugin_config,
+                                        plugin_util.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        assert validator.warnings.items() > 0
+        assert 'Named argument mismatch in method' in message
+        assert 'Number of arguments do not match' in message
+        assert 'Implementation missing for required method' in message

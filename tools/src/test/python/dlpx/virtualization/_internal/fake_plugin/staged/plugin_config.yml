@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+name: python_staged
+prettyName: Staged Toolkit using Python
+version: 1.0.0
+hostTypes:
+  - UNIX
+entryPoint: python_staged:staged
+srcDir: src/
+schemaFile: ./schema.json
+manualDiscovery: true
+pluginType: STAGED
+language: PYTHON27

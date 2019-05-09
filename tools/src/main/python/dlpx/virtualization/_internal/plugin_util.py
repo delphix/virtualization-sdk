@@ -40,12 +40,12 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build,
     return validator.plugin_config_content
 
 
-def validate_plugin_config_content(plugin_config_file, plugin_config_content,
-                                   stop_build):
+def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
     """
     Validates the given plugin config content using a pre-defined schema.
     Plugin config file name is used to get the absolute path of plugin source
-    directory.
+    directory. Returns a manifest which indicates method implemented in the
+    plugin module.
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
@@ -54,7 +54,7 @@ def validate_plugin_config_content(plugin_config_file, plugin_config_content,
                                                     PLUGIN_CONFIG_SCHEMA,
                                                     validation_mode)
     validator.validate()
-    return validator.plugin_module_content, validator.plugin_entry_point
+    return validator.plugin_manifest
 
 
 def read_and_validate_schema_file(schema_file, stop_build):

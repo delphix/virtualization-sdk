@@ -45,6 +45,18 @@ def plugin_config_filename():
 
 
 @pytest.fixture
+def fake_staged_plugin_config():
+    return os.path.join(os.path.dirname(__file__),
+                        'fake_plugin/staged/plugin_config.yml')
+
+
+@pytest.fixture
+def fake_direct_plugin_config():
+    return os.path.join(os.path.dirname(__file__),
+                        'fake_plugin/direct/plugin_config.yml')
+
+
+@pytest.fixture
 def src_dir(tmpdir, src_dirname):
     """
     This fixture creates a tempdir and makes a directory in it called
@@ -147,6 +159,79 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
         config['manualDiscovery'] = manual_discovery
 
     return config
+
+
+@pytest.fixture
+def plugin_entry_point_name():
+    return 'vfiles'
+
+
+@pytest.fixture
+def plugin_module_content(plugin_entry_point_name):
+    class Object(object):
+        pass
+
+    discovery = Object()
+    discovery.repository_impl = True
+    discovery.source_config_impl = True
+
+    linked = Object()
+    linked.pre_snapshot_impl = True
+    linked.post_snapshot_impl = True
+    linked.start_staging_impl = True
+    linked.stop_staging_impl = False
+    linked.status_impl = True
+    linked.worker_impl = False
+    linked.mount_specification_impl = True
+
+    virtual = Object()
+    virtual.configure_impl = True
+    virtual.unconfigure_impl = False
+    virtual.reconfigure_impl = True
+    virtual.start_impl = True
+    virtual.stop_impl = False
+    virtual.pre_snapshot_impl = True
+    virtual.post_snapshot_impl = True
+    virtual.mount_specification_impl = True
+    virtual.status_impl = False
+    virtual.initialize_impl = False
+
+    plugin_object = Object()
+    plugin_object.discovery = discovery
+    plugin_object.linked = linked
+    plugin_object.virtual = virtual
+
+    plugin_module = Object()
+    setattr(plugin_module, plugin_entry_point_name, plugin_object)
+
+    return plugin_module
+
+
+@pytest.fixture
+def plugin_manifest():
+    manifest = {
+        'type': 'ToolkitManifest',
+        'hasRepositoryDiscovery': True,
+        'hasSourceConfigDiscovery': True,
+        'hasLinkedPreSnapshot': True,
+        'hasLinkedPostSnapshot': True,
+        'hasLinkedStartStaging': True,
+        'hasLinkedStopStaging': False,
+        'hasLinkedStatus': True,
+        'hasLinkedWorker': False,
+        'hasLinkedMountSpecification': True,
+        'hasVirtualConfigure': True,
+        'hasVirtualUnconfigure': False,
+        'hasVirtualReconfigure': True,
+        'hasVirtualStart': True,
+        'hasVirtualStop': False,
+        'hasVirtualPreSnapshot': True,
+        'hasVirtualPostSnapshot': True,
+        'hasVirtualMountSpecification': True,
+        'hasVirtualStatus': False,
+        'hasInitialize': False
+    }
+    return manifest
 
 
 @pytest.fixture
@@ -343,6 +428,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'engineApi': engine_api,
         'rootSquashEnabled': True,
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
+        'manifest': {}
     }
     if virtual_source_definition:
         artifact['virtualSourceDefinition'] = {
@@ -387,7 +473,8 @@ def artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
-        'resources': {}
+        'resources': {},
+        'manifest': {}
     }
 
     if engine_api:
