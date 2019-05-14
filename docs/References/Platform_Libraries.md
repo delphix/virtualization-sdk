@@ -18,7 +18,7 @@ Executes a bash command on a remote Unix host.
 Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
-command | String | Command to run to the host.
+command | String | Command to run on the host.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 use_login_shell | boolean | **Optional**. Whether to use a login shell.
 
@@ -31,7 +31,9 @@ exit_code | Integer | Exit code from the command.
 stdout | String | Stdout from the command.
 stderr | String | Stderr from the command.
 
-### Example
+### Examples
+
+Calling bash with an inline command.
 
 ```python
 from dlpx.virtualization import libs
@@ -45,6 +47,32 @@ print response.exit_code
 print response.stdout
 print response.stderr
 ```
+
+Using parameters to construct a bash command.
+
+```python
+from dlpx.virtualization import libs
+
+name = virtual_source.parameters.username
+port = virtual_source.parameters.port
+command = "mysqldump -u {} -p {}".format(name,port)
+
+response = libs.run_bash(connection, command)
+```
+
+Running a bash script that is saved in a directory.
+
+```python
+ 
+ import pkgutil
+ from dlpx.virtualization import libs
+
+ script_content = pkgutil.get_data('resources', 'get_date.sh')
+
+ # Execute script on remote host
+ response = libs.run_bash(direct_source.connection, script_content)
+```
+For more information please go to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution/) section.
 
 ## run_expect
 
