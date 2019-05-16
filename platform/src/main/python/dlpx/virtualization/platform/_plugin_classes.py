@@ -3,6 +3,8 @@
 #
 
 import enum
+from dlpx.virtualization import common_pb2
+from dlpx.virtualization.platform.exceptions import IncorrectTypeError
 
 """Classes used for Plugin Operations
 
@@ -23,6 +25,7 @@ __all__ = [
     "Mount",
     "OwnershipSpecification",
     "MountSpecification"]
+
 
 class VirtualSource(object):
 
@@ -52,6 +55,7 @@ class VirtualSource(object):
         """list(Mount): The mounts of this VirtualSource."""
         return self._mounts
 
+
 class StagedSource(object):
 
     def __init__(self, guid, source_connection, parameters, mount, staged_connection):
@@ -74,7 +78,9 @@ class StagedSource(object):
 
     @property
     def parameters(self):
-        """LinkedSourceDefinition: The LinkedSourceDefinition for this StagedSource."""
+        """LinkedSourceDefinition: The LinkedSourceDefinition for this
+        StagedSource.
+        """
         return self._parameters
 
     @property
@@ -108,7 +114,9 @@ class DirectSource(object):
 
     @property
     def parameters(self):
-        """LinkedSourceDefinition: The LinkedSourceDefinition for this DirectSource."""
+        """LinkedSourceDefinition: The LinkedSourceDefinition for this
+        DirectSource.
+        """
         return self._parameters
 
 
@@ -120,7 +128,8 @@ class RemoteConnection(object):
 
     @property
     def environment(self):
-        """RemoteEnvironment: The RemoteEnvironment for this RemoteConnection."""
+        """RemoteEnvironment: The RemoteEnvironment for this RemoteConnection.
+        """
         return self._environment
 
     @property
@@ -133,11 +142,30 @@ class Status(enum.Enum):
     ACTIVE = 0
     INACTIVE = 1
 
+#
+# Only the next 3 classes need to have validation as the plugin writer actually
+# creates objects of these types unlike any other defined classes.
+#
+
 
 class Mount(object):
     def __init__(self, remote_environment, mount_path, shared_path=None):
+        if not isinstance(remote_environment, common_pb2.RemoteEnvironment):
+            raise IncorrectTypeError(
+                Mount,
+                'remote_environment',
+                type(remote_environment),
+                common_pb2.RemoteEnvironment)
         self._remote_environment = remote_environment
+
+        if not isinstance(mount_path, basestring):
+            raise IncorrectTypeError(
+                Mount, 'mount_path', type(mount_path), basestring)
         self._mount_path = mount_path
+
+        if shared_path and not isinstance(shared_path, basestring):
+            raise IncorrectTypeError(
+                Mount, 'shared_path', type(shared_path), basestring, False)
         self._shared_path = shared_path
 
     @property
@@ -158,7 +186,13 @@ class Mount(object):
 
 class OwnershipSpecification(object):
     def __init__(self, uid, gid):
+        if not isinstance(uid, int):
+            raise IncorrectTypeError(
+                OwnershipSpecification, 'uid', type(uid), int)
         self._uid = uid
+        if not isinstance(gid, int):
+            raise IncorrectTypeError(
+                OwnershipSpecification, 'gid', type(gid), int)
         self._gid = gid
 
     @property
@@ -174,7 +208,26 @@ class OwnershipSpecification(object):
 
 class MountSpecification(object):
     def __init__(self, mounts, ownership_specification=None):
+        if not isinstance(mounts, list):
+            raise IncorrectTypeError(
+                MountSpecification, 'mounts', type(mounts), [Mount])
+        if not all(isinstance(mount, Mount) for mount in mounts):
+            raise IncorrectTypeError(
+                MountSpecification,
+                'mounts',
+                [type(mount) for mount in mounts],
+                [Mount])
         self._mounts = mounts
+
+        if (ownership_specification and not isinstance(
+                ownership_specification, OwnershipSpecification)):
+            raise IncorrectTypeError(
+                MountSpecification,
+                'ownership_specification',
+                type(ownership_specification),
+                OwnershipSpecification,
+                False)
+
         self._ownership_specification = ownership_specification
 
     @property
@@ -184,5 +237,7 @@ class MountSpecification(object):
 
     @property
     def ownership_specification(self):
-        """OwnershipSpecification: The OwnershipSpecification for this MountSpecification."""
+        """OwnershipSpecification: The OwnershipSpecification for this
+        MountSpecification.
+        """
         return self._ownership_specification

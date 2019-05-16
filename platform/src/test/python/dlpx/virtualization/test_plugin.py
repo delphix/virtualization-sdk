@@ -4,19 +4,20 @@
 
 import json
 import pytest
+import sys
 from dlpx.virtualization import platform_pb2
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization.platform import _plugin
+from dlpx.virtualization.platform.exceptions import (
+    IncorrectReturnTypeError, OperationAlreadyDefinedError,
+    PlatformError, PluginRuntimeError)
 
 from mock import MagicMock, patch
 import fake_generated_definitions
 
 from fake_generated_definitions import SnapshotDefinition
-from fake_generated_definitions import VirtualSourceDefinition
-from fake_generated_definitions import LinkedSourceDefinition
 from fake_generated_definitions import SourceConfigDefinition
 from fake_generated_definitions import RepositoryDefinition
-
 
 TEST_BINARY_PATH = '/binary/path'
 TEST_SCRATCH_PATH = '/scratch/path'
@@ -73,7 +74,7 @@ class TestPlugin:
         def configure_impl():
             pass
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(OperationAlreadyDefinedError):
             @my_plugin.virtual.configure()
             def configure_impl():
                 pass
@@ -123,7 +124,7 @@ class TestPlugin:
 
     @staticmethod
     def test_to_dict_not_model(not_model):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(PlatformError):
             _plugin._to_dict(not_model)
 
     @staticmethod
@@ -161,7 +162,9 @@ class TestPlugin:
                 return self._sub_mount_location
 
         class TestDefinition(Model):
-            def __init__(self, name, mount_location, sub_test_definition, some_list, some_dict, model_list, model_dict):
+            def __init__(
+                self, name, mount_location, sub_test_definition, some_list,
+                        some_dict, model_list, model_dict):
                 self.swagger_types = {
                     'name': str,
                     'mount_location': str,
@@ -217,18 +220,30 @@ class TestPlugin:
             def model_dict(self):
                 return self._model_dict
 
-        sub_test_definition = SubTestDefinition('sub_test_name', '/mnt/sub_location')
-        test_definition = TestDefinition('test_name', '/mnt/location', sub_test_definition, ['list'], {'key': 'value'}, [sub_test_definition], {'key': sub_test_definition})
+        sub_test_definition = SubTestDefinition(
+            'sub_test_name', '/mnt/sub_location')
+        test_definition = TestDefinition(
+            'test_name',
+            '/mnt/location',
+            sub_test_definition,
+            ['list'],
+            {'key': 'value'},
+            [sub_test_definition],
+            {'key': sub_test_definition})
 
         expected_dict = {
             'name': 'test_name',
             'mountLocation': '/mnt/location',
-            'subTestDefinition': {'name': 'sub_test_name', 'subMountLocation': '/mnt/sub_location'},
+            'subTestDefinition': {
+                'name': 'sub_test_name',
+                'subMountLocation': '/mnt/sub_location'},
             'someList': ['list'],
             'someDict': {'key': 'value'},
             'modelList': [{'name': 'sub_test_name',
             'subMountLocation': '/mnt/sub_location'}],
-            'modelDict': {'key': {'name': 'sub_test_name', 'subMountLocation': '/mnt/sub_location'}}
+            'modelDict': {'key': {
+                'name': 'sub_test_name',
+                'subMountLocation': '/mnt/sub_location'}}
         }
 
         assert _plugin._to_dict(test_definition) == expected_dict
@@ -475,7 +490,6 @@ class TestPlugin:
         if 'direct_source' in kwargs:
             TestPlugin.assert_direct_source(kwargs['direct_source'])
 
-
         if 'virtual_source' in kwargs:
             TestPlugin.assert_virtual_source(kwargs['virtual_source'])
 
@@ -496,91 +510,161 @@ class TestPlugin:
                 kwargs['snapshot_parameters'])
 
     @staticmethod
-    def test_virtual_configure(my_plugin, virtual_source, repository, snapshot):
+    def test_virtual_configure(
+            my_plugin, virtual_source, repository, snapshot):
 
         @my_plugin.virtual.configure()
         def virtual_configure_impl(virtual_source, repository, snapshot):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                snapshot=snapshot)
+                                          repository=repository,
+                                          snapshot=snapshot)
 
             return SourceConfigDefinition(snapshot.name)
 
         configure_request = platform_pb2.ConfigureRequest()
         TestPlugin.setup_request(request=configure_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            snapshot=snapshot)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 snapshot=snapshot)
 
-        config_response = my_plugin.virtual._internal_configure(configure_request)
-
+        config_response = my_plugin.virtual._internal_configure(
+            configure_request)
+        config = config_response.return_value.source_config
         expected_source_config = TEST_SNAPSHOT_JSON
-        assert config_response.return_value.source_config.parameters.json == expected_source_config
+        assert config.parameters.json == expected_source_config
 
     @staticmethod
-    def test_virtual_unconfigure(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_configure_return_incorrect_type(
+        my_plugin, virtual_source, repository, snapshot):
+
+        @my_plugin.virtual.configure()
+        def virtual_configure_impl(virtual_source, repository, snapshot):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository,
+                                          snapshot=snapshot)
+
+            # Returns the name rather then the object.
+            return snapshot.name
+
+        configure_request = platform_pb2.ConfigureRequest()
+        TestPlugin.setup_request(request=configure_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 snapshot=snapshot)
+
+        with pytest.raises(IncorrectReturnTypeError) as err_info:
+            my_plugin.virtual._internal_configure(
+                configure_request)
+
+        message = err_info.value.message
+        assert message == (
+            "The returned object for the virtual.configure() operation was"
+            " type 'unicode' but should be of class 'dlpx.virtualization."
+            "fake_generated_definitions.SourceConfigDefinition'.")
+
+    @staticmethod
+    def test_virtual_unconfigure(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.unconfigure()
-        def virtual_unconfigure_impl(virtual_source, repository, source_config):
+        def virtual_unconfigure_impl(
+            virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
-
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         unconfigure_request = platform_pb2.UnconfigureRequest()
         TestPlugin.setup_request(request=unconfigure_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.UnconfigureResult()
 
-        unconfigure_response = my_plugin.virtual._internal_unconfigure(unconfigure_request)
+        unconfigure_response = my_plugin.virtual._internal_unconfigure(
+            unconfigure_request)
 
         # Check that the response's oneof is set to return_value and not error
         assert unconfigure_response.WhichOneof('result') == 'return_value'
         assert unconfigure_response.return_value == expected_result
 
     @staticmethod
-    def test_virtual_reconfigure(my_plugin, virtual_source, repository, source_config, snapshot):
+    def test_virtual_reconfigure(
+        my_plugin, virtual_source, repository, source_config, snapshot):
 
         @my_plugin.virtual.reconfigure()
-        def virtual_reconfigure_impl(virtual_source, repository, source_config, snapshot):
+        def virtual_reconfigure_impl(
+            virtual_source, repository, source_config, snapshot):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                source_config=source_config,
-                                                repository=repository,
-                                                snapshot=snapshot)
+                                          source_config=source_config,
+                                          repository=repository,
+                                          snapshot=snapshot)
 
             return SourceConfigDefinition(snapshot.name)
 
         reconfigure_request = platform_pb2.ReconfigureRequest()
         TestPlugin.setup_request(request=reconfigure_request,
-                                            virtual_source=virtual_source,
-                                            source_config=source_config,
-                                            repository=repository,
-                                            snapshot=snapshot)
+                                 virtual_source=virtual_source,
+                                 source_config=source_config,
+                                 repository=repository,
+                                 snapshot=snapshot)
 
-        reconfigure_response = my_plugin.virtual._internal_reconfigure(reconfigure_request)
+        reconfigure_response = my_plugin.virtual._internal_reconfigure(
+            reconfigure_request)
+
+        config = reconfigure_response.return_value.source_config
         expected_source_config = TEST_SNAPSHOT_JSON
-
-        assert reconfigure_response.return_value.source_config.parameters.json == expected_source_config
+        assert config.parameters.json == expected_source_config
 
     @staticmethod
-    def test_virtual_start(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_reconfigure_return_incorrect_type(
+        my_plugin, virtual_source, repository, source_config, snapshot):
+
+        @my_plugin.virtual.reconfigure()
+        def virtual_reconfigure_impl(
+            virtual_source, repository, source_config, snapshot):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          source_config=source_config,
+                                          repository=repository,
+                                          snapshot=snapshot)
+
+            # Returns the name rather then the object.
+            return snapshot.name
+
+        reconfigure_request = platform_pb2.ReconfigureRequest()
+        TestPlugin.setup_request(request=reconfigure_request,
+                                 virtual_source=virtual_source,
+                                 source_config=source_config,
+                                 repository=repository,
+                                 snapshot=snapshot)
+
+        with pytest.raises(IncorrectReturnTypeError) as err_info:
+            my_plugin.virtual._internal_reconfigure(
+                reconfigure_request)
+
+        message = err_info.value.message
+        assert message == (
+            "The returned object for the virtual.reconfigure() operation was"
+            " type 'unicode' but should be of class 'dlpx.virtualization."
+            "fake_generated_definitions.SourceConfigDefinition'.")
+
+    @staticmethod
+    def test_virtual_start(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.start()
         def virtual_start_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         start_request = platform_pb2.StartRequest()
         TestPlugin.setup_request(request=start_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.StartResult()
         start_response = my_plugin.virtual._internal_start(start_request)
@@ -590,20 +674,21 @@ class TestPlugin:
         assert start_response.return_value == expected_result
 
     @staticmethod
-    def test_virtual_stop(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_stop(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.stop()
         def start_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         stop_request = platform_pb2.StopRequest()
         TestPlugin.setup_request(request=stop_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.StopResult()
         stop_response = my_plugin.virtual._internal_stop(stop_request)
@@ -613,90 +698,104 @@ class TestPlugin:
         assert stop_response.return_value == expected_result
 
     @staticmethod
-    def test_virtual_pre_snapshot(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_pre_snapshot(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.pre_snapshot()
         def virtual_pre_snapshot_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         virtual_pre_snapshot_request = platform_pb2.VirtualPreSnapshotRequest()
         TestPlugin.setup_request(request=virtual_pre_snapshot_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.VirtualPreSnapshotResult()
-        virtual_pre_snapshot_response = my_plugin.virtual._internal_pre_snapshot(virtual_pre_snapshot_request)
+        virtual_pre_snapshot_response = (
+            my_plugin.virtual._internal_pre_snapshot(
+                virtual_pre_snapshot_request))
 
         # Check that the response's oneof is set to return_value and not error
-        assert virtual_pre_snapshot_response.WhichOneof('result') == 'return_value'
+        assert virtual_pre_snapshot_response.WhichOneof(
+            'result') == 'return_value'
         assert virtual_pre_snapshot_response.return_value == expected_result
 
     @staticmethod
-    def test_virtual_post_snapshot(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_post_snapshot(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.post_snapshot()
-        def virtual_post_snapshot_impl(virtual_source, repository, source_config):
+        def virtual_post_snapshot_impl(
+            virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
-        virtual_post_snapshot_request = platform_pb2.VirtualPostSnapshotRequest()
+        virtual_post_snapshot_request = (
+            platform_pb2.VirtualPostSnapshotRequest())
         TestPlugin.setup_request(request=virtual_post_snapshot_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
-        virtual_post_snapshot_response = my_plugin.virtual._internal_post_snapshot(virtual_post_snapshot_request)
+        virtual_post_snapshot_response = (
+            my_plugin.virtual._internal_post_snapshot(
+                virtual_post_snapshot_request))
         expected_snapshot = TEST_SNAPSHOT_JSON
 
-        assert virtual_post_snapshot_response.return_value.snapshot.parameters.json == expected_snapshot
+        assert (virtual_post_snapshot_response
+                .return_value.snapshot.parameters.json == expected_snapshot)
 
     @staticmethod
-    def test_virtual_status(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_status(
+        my_plugin, virtual_source, repository, source_config):
 
         from dlpx.virtualization.platform import Status
 
         @my_plugin.virtual.status()
         def virtual_status_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return Status.ACTIVE
 
         virtual_status_request = platform_pb2.VirtualStatusRequest()
         TestPlugin.setup_request(request=virtual_status_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
-        virtual_status_response = my_plugin.virtual._internal_status(virtual_status_request)
+        virtual_status_response = my_plugin.virtual._internal_status(
+            virtual_status_request)
         expected_status = platform_pb2.VirtualStatusResult().ACTIVE
 
         assert virtual_status_response.return_value.status == expected_status
 
     @staticmethod
-    def test_virtual_initialize(my_plugin, virtual_source, repository, source_config):
+    def test_virtual_initialize(
+        my_plugin, virtual_source, repository, source_config):
 
         @my_plugin.virtual.initialize()
         def virtual_initialize_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         initialize_request = platform_pb2.InitializeRequest()
         TestPlugin.setup_request(request=initialize_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository,
-                                            source_config=source_config)
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.InitializeResult()
-        initialize_response = my_plugin.virtual._internal_initialize(initialize_request)
+        initialize_response = my_plugin.virtual._internal_initialize(
+            initialize_request)
 
         # Check that the response's oneof is set to return_value and not error
         assert initialize_response.WhichOneof('result') == 'return_value'
@@ -705,33 +804,42 @@ class TestPlugin:
     @staticmethod
     def test_virtual_mount_spec(my_plugin, virtual_source, repository):
 
-        from dlpx.virtualization.platform import Mount, MountSpecification, OwnershipSpecification
+        from dlpx.virtualization.platform import (
+            Mount, MountSpecification, OwnershipSpecification)
 
         @my_plugin.virtual.mount_specification()
         def virtual_mount_spec_impl(virtual_source, repository):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
                                                 repository=repository)
 
-            primary_mount = Mount(virtual_source.connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
-            another_mount = Mount(virtual_source.connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
+            primary_mount = Mount(virtual_source.connection.environment,
+                                  TEST_MOUNT_PATH,
+                                  TEST_SHARED_PATH)
+            another_mount = Mount(virtual_source.connection.environment,
+                                  TEST_MOUNT_PATH,
+                                  TEST_SHARED_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
-            return MountSpecification([primary_mount, another_mount], ownership_spec)
+            return MountSpecification(
+                [primary_mount, another_mount], ownership_spec)
 
         virtual_mount_spec_request = platform_pb2.VirtualMountSpecRequest()
         TestPlugin.setup_request(request=virtual_mount_spec_request,
-                                            virtual_source=virtual_source,
-                                            repository=repository)
+                                 virtual_source=virtual_source,
+                                 repository=repository)
 
-        virtual_mount_spec_response = my_plugin.virtual._internal_mount_specification(virtual_mount_spec_request)
+        virtual_mount_spec_response = (
+            my_plugin.virtual._internal_mount_specification(
+                virtual_mount_spec_request))
 
         response_mounts = virtual_mount_spec_response.return_value.mounts
 
         for mount in response_mounts:
             TestPlugin.assert_mount(mount)
 
-        assert virtual_mount_spec_response.return_value.ownership_spec.uid == TEST_UID
-        assert virtual_mount_spec_response.return_value.ownership_spec.gid == TEST_GID
+        return_value = virtual_mount_spec_response.return_value
+        assert return_value.ownership_spec.uid == TEST_UID
+        assert return_value.ownership_spec.gid == TEST_GID
 
     @staticmethod
     def test_repository_discovery(my_plugin, connection):
@@ -739,15 +847,45 @@ class TestPlugin:
         @my_plugin.discovery.repository()
         def repository_discovery_impl(source_connection):
             TestPlugin.assert_connection(source_connection)
-            return [RepositoryDefinition(TEST_REPOSITORY), RepositoryDefinition(TEST_REPOSITORY)]
+            return [RepositoryDefinition(TEST_REPOSITORY),
+                    RepositoryDefinition(TEST_REPOSITORY)]
 
-        repository_discovery_request = platform_pb2.RepositoryDiscoveryRequest()
+        repository_discovery_request = (
+            platform_pb2.RepositoryDiscoveryRequest())
         repository_discovery_request.source_connection.CopyFrom(connection)
 
-        repository_discovery_response = my_plugin.discovery._internal_repository(repository_discovery_request)
-
-        for repository in repository_discovery_response.return_value.repositories:
+        repository_discovery_response = (
+            my_plugin.discovery._internal_repository(
+                repository_discovery_request))
+        repositories = repository_discovery_response.return_value.repositories
+        for repository in repositories:
             assert repository.parameters.json == TEST_REPOSITORY_JSON
+
+
+    @staticmethod
+    def test_repository_discovery_bad_return_type(my_plugin, connection):
+
+        @my_plugin.discovery.repository()
+        def repository_discovery_impl(source_connection):
+            TestPlugin.assert_connection(source_connection)
+            return ['string', RepositoryDefinition(TEST_REPOSITORY)]
+
+        repository_discovery_request = (
+            platform_pb2.RepositoryDiscoveryRequest())
+        repository_discovery_request.source_connection.CopyFrom(connection)
+
+        with pytest.raises(IncorrectReturnTypeError) as err_info:
+            my_plugin.discovery._internal_repository(
+                repository_discovery_request)
+
+        message = err_info.value.message
+        assert message == (
+            "The returned object for the discovery.repository() operation was"
+            " a list of [type 'str', class 'dlpx.virtualization"
+            ".fake_generated_definitions.RepositoryDefinition'] but should"
+            " be of type 'list of dlpx.virtualization"
+            ".fake_generated_definitions.RepositoryDefinition'.")
+
 
     @staticmethod
     def test_source_config_discovery(my_plugin, connection, repository):
@@ -759,17 +897,22 @@ class TestPlugin:
             return [SourceConfigDefinition(TEST_REPOSITORY),
                     SourceConfigDefinition(TEST_REPOSITORY)]
 
-        source_config_discovery_request = platform_pb2.SourceConfigDiscoveryRequest()
+        source_config_discovery_request = (
+            platform_pb2.SourceConfigDiscoveryRequest())
         source_config_discovery_request.source_connection.CopyFrom(connection)
         source_config_discovery_request.repository.CopyFrom(repository)
 
-        source_config_discovery_response = my_plugin.discovery._internal_source_config(source_config_discovery_request)
+        source_config_discovery_response = (
+            my_plugin.discovery._internal_source_config(
+                source_config_discovery_request))
 
-        for source_config in source_config_discovery_response.return_value.source_configs:
+        configs = source_config_discovery_response.return_value.source_configs
+        for source_config in configs:
             assert source_config.parameters.json == TEST_REPOSITORY_JSON
 
     @staticmethod
-    def test_direct_pre_snapshot(my_plugin, direct_source, repository, source_config):
+    def test_direct_pre_snapshot(
+        my_plugin, direct_source, repository, source_config):
 
         @my_plugin.linked.pre_snapshot()
         def mock_direct_pre_snapshot(direct_source, repository, source_config):
@@ -780,37 +923,44 @@ class TestPlugin:
 
         direct_pre_snapshot_request = platform_pb2.DirectPreSnapshotRequest()
         TestPlugin.setup_request(request=direct_pre_snapshot_request,
-                                    direct_source=direct_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 direct_source=direct_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.DirectPreSnapshotResult()
-        direct_pre_snapshot_response = my_plugin.linked._internal_direct_pre_snapshot(direct_pre_snapshot_request)
+        direct_pre_snapshot_response = (
+            my_plugin.linked._internal_direct_pre_snapshot(
+                direct_pre_snapshot_request))
 
         # Check that the response's oneof is set to return_value and not error
-        assert direct_pre_snapshot_response.WhichOneof('result') == 'return_value'
+        assert direct_pre_snapshot_response.WhichOneof(
+            'result') == 'return_value'
         assert direct_pre_snapshot_response.return_value == expected_result
 
     @staticmethod
-    def test_direct_post_snapshot(my_plugin, direct_source, repository, source_config):
+    def test_direct_post_snapshot(
+        my_plugin, direct_source, repository, source_config):
 
         @my_plugin.linked.post_snapshot()
-        def direct_post_snapshot_impl(direct_source, repository, source_config):
+        def direct_post_snapshot_impl(
+            direct_source, repository, source_config):
             TestPlugin.assert_plugin_args(direct_source=direct_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
         direct_post_snapshot_request = platform_pb2.DirectPostSnapshotRequest()
         TestPlugin.setup_request(request=direct_post_snapshot_request,
-                                    direct_source=direct_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 direct_source=direct_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
-        direct_post_snapshot_response = my_plugin.linked._internal_direct_post_snapshot(direct_post_snapshot_request)
+        direct_post_snapshot_response = (
+            my_plugin.linked._internal_direct_post_snapshot(
+                direct_post_snapshot_request))
         expected_snapshot = TEST_SNAPSHOT_JSON
-
-        assert direct_post_snapshot_response.return_value.snapshot.parameters.json == expected_snapshot
+        snapshot = direct_post_snapshot_response.return_value.snapshot
+        assert snapshot.parameters.json == expected_snapshot
 
     @staticmethod
     def test_staged_pre_snapshot(
@@ -877,23 +1027,25 @@ class TestPlugin:
         assert response.return_value.snapshot.parameters.json == expected
 
     @staticmethod
-    def test_start_staging(my_plugin, staged_source, repository, source_config):
+    def test_start_staging(
+        my_plugin, staged_source, repository, source_config):
 
         @my_plugin.linked.start_staging()
         def start_staging_impl(staged_source, repository, source_config):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         start_staging_request = platform_pb2.StartStagingRequest()
         TestPlugin.setup_request(request=start_staging_request,
-                                    staged_source=staged_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 staged_source=staged_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.StartStagingResult()
-        start_staging_response = my_plugin.linked._internal_start_staging(start_staging_request)
+        start_staging_response = (
+            my_plugin.linked._internal_start_staging(start_staging_request))
 
         # Check that the response's oneof is set to return_value and not error
         assert start_staging_response.WhichOneof('result') == 'return_value'
@@ -905,64 +1057,69 @@ class TestPlugin:
         @my_plugin.linked.stop_staging()
         def stop_staging_impl(staged_source, repository, source_config):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         stop_staging_request = platform_pb2.StopStagingRequest()
         TestPlugin.setup_request(request=stop_staging_request,
-                                    staged_source=staged_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 staged_source=staged_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.StopStagingResult()
-        stop_staging_response = my_plugin.linked._internal_stop_staging(stop_staging_request)
+        stop_staging_response = (
+            my_plugin.linked._internal_stop_staging(stop_staging_request))
 
         # Check that the response's oneof is set to return_value and not error
         assert stop_staging_response.WhichOneof('result') == 'return_value'
         assert stop_staging_response.return_value == expected_result
 
     @staticmethod
-    def test_staged_status(my_plugin, staged_source, repository, source_config):
+    def test_staged_status(
+        my_plugin, staged_source, repository, source_config):
 
         from dlpx.virtualization.platform import Status
 
         @my_plugin.linked.status()
         def staged_status_impl(staged_source, repository, source_config):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return Status.ACTIVE
 
         staged_status_request = platform_pb2.StagedStatusRequest()
         TestPlugin.setup_request(request=staged_status_request,
-                                    staged_source=staged_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 staged_source=staged_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
-        staged_status_response = my_plugin.linked._internal_status(staged_status_request)
+        staged_status_response = my_plugin.linked._internal_status(
+            staged_status_request)
         expected_status = platform_pb2.StagedStatusResult().ACTIVE
 
         assert staged_status_response.return_value.status == expected_status
 
     @staticmethod
-    def test_staged_worker(my_plugin, staged_source, repository, source_config):
+    def test_staged_worker(
+        my_plugin, staged_source, repository, source_config):
 
         @my_plugin.linked.worker()
         def staged_worker_impl(staged_source, repository, source_config):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
-                                                repository=repository,
-                                                source_config=source_config)
+                                          repository=repository,
+                                          source_config=source_config)
             return
 
         staged_worker_request = platform_pb2.StagedWorkerRequest()
         TestPlugin.setup_request(request=staged_worker_request,
-                                    staged_source=staged_source,
-                                    repository=repository,
-                                    source_config=source_config)
+                                 staged_source=staged_source,
+                                 repository=repository,
+                                 source_config=source_config)
 
         expected_result = platform_pb2.StagedWorkerResult()
-        staged_worker_response = my_plugin.linked._internal_worker(staged_worker_request)
+        staged_worker_response = my_plugin.linked._internal_worker(
+            staged_worker_request)
 
         # Check that the response's oneof is set to return_value and not error
         assert staged_worker_response.WhichOneof('result') == 'return_value'
@@ -971,14 +1128,16 @@ class TestPlugin:
     @staticmethod
     def test_staged_mount_spec(my_plugin, staged_source, repository):
 
-        from dlpx.virtualization.platform import Mount, MountSpecification, OwnershipSpecification
+        from dlpx.virtualization.platform import (
+            Mount, MountSpecification, OwnershipSpecification)
 
         @my_plugin.linked.mount_specification()
         def staged_mount_spec_impl(staged_source, repository):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
                                                 repository=repository)
 
-            mount = Mount(staged_source.source_connection.environment, TEST_MOUNT_PATH)
+            mount = Mount(
+                staged_source.source_connection.environment, TEST_MOUNT_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
             return MountSpecification([mount], ownership_spec)
@@ -988,7 +1147,9 @@ class TestPlugin:
                                     staged_source=staged_source,
                                     repository=repository)
 
-        staged_mount_spec_response = my_plugin.linked._internal_mount_specification(staged_mount_spec_request)
+        staged_mount_spec_response = (
+            my_plugin.linked._internal_mount_specification(
+                staged_mount_spec_request))
 
         staged_mount = staged_mount_spec_response.return_value.staged_mount
         ownership_spec = staged_mount_spec_response.return_value.ownership_spec
@@ -1011,15 +1172,21 @@ class TestPlugin:
             TestPlugin.assert_plugin_args(staged_source=staged_source,
                                                 repository=repository)
             # setting the shared_path should fail in the wrapper
-            mount = Mount(staged_source.source_connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
+            mount = Mount(
+                staged_source.source_connection.environment,
+                TEST_MOUNT_PATH,
+                TEST_SHARED_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
             return MountSpecification([mount], ownership_spec)
 
         staged_mount_spec_request = platform_pb2.StagedMountSpecRequest()
         TestPlugin.setup_request(request=staged_mount_spec_request,
-                                    staged_source=staged_source,
-                                    repository=repository)
-        with pytest.raises(RuntimeError):
+                                 staged_source=staged_source,
+                                 repository=repository)
+        with pytest.raises(PluginRuntimeError) as err_info:
             my_plugin.linked._internal_mount_specification(
                 staged_mount_spec_request)
+
+        message = err_info.value.message
+        assert message == 'Shared path is not supported for linked sources.'

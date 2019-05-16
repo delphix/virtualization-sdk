@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
 
 class LibraryError(Exception):
     """Plugin-catchable exception

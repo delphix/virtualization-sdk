@@ -8,6 +8,9 @@
 # IntelliJ config files
 .idea/
 
+# IntelliJ module files
+*.iml
+
 # Python egg details. These are outputs of building a Python distribution
 *egg-info/
 
