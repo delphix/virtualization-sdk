@@ -57,8 +57,9 @@ message SingleSubsetMount {
 
 message StagedSource {
   LinkedSource linked_source = 1;
-  RemoteConnection connection = 2;
+  RemoteConnection source_connection = 2;
   SingleEntireMount staged_mount = 3;
+  RemoteConnection staged_connection = 4;
 }
 
 message VirtualSource {

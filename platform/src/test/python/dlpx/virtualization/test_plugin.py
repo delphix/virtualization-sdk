@@ -289,9 +289,10 @@ class TestPlugin:
     @staticmethod
     def assert_staged_source(staged_source):
         assert staged_source.guid == TEST_GUID
-        TestPlugin.assert_connection(staged_source.connection)
+        TestPlugin.assert_connection(staged_source.source_connection)
         assert staged_source.parameters.name == TEST_STAGED_SOURCE
         TestPlugin.assert_staged_mount(staged_source.mount)
+        TestPlugin.assert_connection(staged_source.staged_connection)
 
     @staticmethod
     def assert_repository(repository):
@@ -352,6 +353,14 @@ class TestPlugin:
         connection.environment.CopyFrom(environment)
         connection.user.CopyFrom(user)
         return connection
+
+    @staticmethod
+    @pytest.fixture
+    def staged_connection(environment, user):
+        staged_connection = common_pb2.RemoteConnection()
+        staged_connection.environment.CopyFrom(environment)
+        staged_connection.user.CopyFrom(user)
+        return staged_connection
 
     @staticmethod
     @pytest.fixture
@@ -418,12 +427,14 @@ class TestPlugin:
 
     @staticmethod
     @pytest.fixture
-    def staged_source(connection, linked_source, staged_mount):
+    def staged_source(connection, linked_source, staged_mount,
+                      staged_connection):
         staged_source = common_pb2.StagedSource()
-        staged_source.connection.CopyFrom(connection)
+        staged_source.source_connection.CopyFrom(connection)
         staged_source.linked_source.CopyFrom(linked_source)
         staged_source.linked_source.parameters.json = TEST_STAGED_SOURCE_JSON
         staged_source.staged_mount.CopyFrom(staged_mount)
+        staged_source.staged_connection.CopyFrom(staged_connection)
         return staged_source
 
     @staticmethod
@@ -967,7 +978,7 @@ class TestPlugin:
             TestPlugin.assert_plugin_args(staged_source=staged_source,
                                                 repository=repository)
 
-            mount = Mount(staged_source.connection.environment, TEST_MOUNT_PATH)
+            mount = Mount(staged_source.source_connection.environment, TEST_MOUNT_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
             return MountSpecification([mount], ownership_spec)
@@ -1000,7 +1011,7 @@ class TestPlugin:
             TestPlugin.assert_plugin_args(staged_source=staged_source,
                                                 repository=repository)
             # setting the shared_path should fail in the wrapper
-            mount = Mount(staged_source.connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
+            mount = Mount(staged_source.source_connection.environment, TEST_MOUNT_PATH, TEST_SHARED_PATH)
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
             return MountSpecification([mount], ownership_spec)

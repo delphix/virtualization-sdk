@@ -479,9 +479,10 @@ class LinkedOperations(object):
 
             staged_source = StagedSource(
                     guid=linked_source.guid,
-                    connection=request.staged_source.connection,
+                    source_connection=request.staged_source.source_connection,
                     parameters=staged_source_definition,
-                    mount=mount)
+                    mount=mount,
+                    staged_connection=request.staged_source.staged_connection)
 
             repository = RepositoryDefinition.from_dict(
                     json.loads(request.repository.parameters.json))
@@ -541,9 +542,10 @@ class LinkedOperations(object):
                 shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
                 guid=request.staged_source.linked_source.guid,
-                connection=request.staged_source.connection,
+                source_connection=request.staged_source.source_connection,
                 parameters=staged_source_definition,
-                mount=mount)
+                mount=mount,
+                staged_connection=request.staged_source.staged_connection)
 
         repository = RepositoryDefinition.from_dict(
                 json.loads(request.repository.parameters.json))
@@ -596,9 +598,10 @@ class LinkedOperations(object):
                             mount_path=request.staged_source.staged_mount.mount_path,
                             shared_path=request.staged_source.staged_mount.shared_path)
             staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                           connection=request.staged_source.connection,
-                                           parameters=staged_source_definition,
-                                           mount=mount)
+                                         source_connection=request.staged_source.source_connection,
+                                         parameters=staged_source_definition,
+                                         mount=mount,
+                                         staged_connection=request.staged_source.staged_connection)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -641,9 +644,10 @@ class LinkedOperations(object):
                             mount_path=request.staged_source.staged_mount.mount_path,
                             shared_path=request.staged_source.staged_mount.shared_path)
             staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                           connection=request.staged_source.connection,
-                                           parameters=staged_source_definition,
-                                           mount=mount)
+                                         source_connection=request.staged_source.source_connection,
+                                         parameters=staged_source_definition,
+                                         mount=mount,
+                                         staged_connection=request.staged_source.staged_connection)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -690,9 +694,10 @@ class LinkedOperations(object):
                         mount_path=request.staged_source.staged_mount.mount_path,
                         shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
+                                     source_connection=request.staged_source.source_connection,
+                                     parameters=staged_source_definition,
+                                     mount=mount,
+                                     staged_connection=request.staged_source.staged_connection)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -735,9 +740,10 @@ class LinkedOperations(object):
                             mount_path=request.staged_source.staged_mount.mount_path,
                             shared_path=request.staged_source.staged_mount.shared_path)
             staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                           connection=request.staged_source.connection,
-                                           parameters=staged_source_definition,
-                                           mount=mount)
+                                         source_connection=request.staged_source.source_connection,
+                                         parameters=staged_source_definition,
+                                         mount=mount,
+                                         staged_connection=request.staged_source.staged_connection)
 
             repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
             source_config = SourceConfigDefinition.from_dict(json.loads(request.source_config.parameters.json))
@@ -794,9 +800,10 @@ class LinkedOperations(object):
                         mount_path=request.staged_source.staged_mount.mount_path,
                         shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(guid=request.staged_source.linked_source.guid,
-                                       connection=request.staged_source.connection,
-                                       parameters=staged_source_definition,
-                                       mount=mount)
+                                     source_connection=request.staged_source.source_connection,
+                                     parameters=staged_source_definition,
+                                     mount=mount,
+                                     staged_connection=request.staged_source.staged_connection)
 
         repository = RepositoryDefinition.from_dict(json.loads(request.repository.parameters.json))
         if not self.mount_specification_impl:

@@ -54,11 +54,12 @@ class VirtualSource(object):
 
 class StagedSource(object):
 
-    def __init__(self, guid, connection, parameters, mount):
+    def __init__(self, guid, source_connection, parameters, mount, staged_connection):
         self._guid = guid
-        self._connection = connection
+        self._source_connection = source_connection
         self._parameters = parameters
         self._mount = mount
+        self._staged_connection = staged_connection
 
     @property
     def guid(self):
@@ -66,9 +67,10 @@ class StagedSource(object):
         return self._guid
 
     @property
-    def connection(self):
-        """SourceConnection: The RemoteConnection for this StagedSource."""
-        return self._connection
+    def source_connection(self):
+        """SourceConnection: The RemoteConnection representing the source
+        environment for this StagedSource."""
+        return self._source_connection
 
     @property
     def parameters(self):
@@ -79,6 +81,12 @@ class StagedSource(object):
     def mount(self):
         """MountSpecification: The MountSpecification for this StagedSource."""
         return self._mount
+
+    @property
+    def staged_connection(self):
+        """StagedConnection: The RemoteConnection representing the staging
+        environment for this StagedSource."""
+        return self._staged_connection
 
 
 class DirectSource(object):
