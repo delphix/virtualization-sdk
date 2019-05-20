@@ -25,7 +25,8 @@ of a lib operation.
 """
 from dlpx.virtualization import libs_pb2
 from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
-                                                 LibraryError)
+                                                 LibraryError,
+                                                 PluginScriptError)
 from dlpx.virtualization import common_pb2
 
 import logging
@@ -63,7 +64,27 @@ def _handle_response(response):
     return response.return_value
 
 
-def run_bash(remote_connection, command, variables=None, use_login_shell=False):
+def _check_exit_code(response, check):
+  """
+  This functions checks the exitcode received in response and throws PluginScriptError
+  if check is True.
+
+  Args:
+    response (RunPowerShellResponse or RunBashResponse): Response received by run_bash or run_power_shell
+    check (bool): if True and non-zero exitcode is received in response, raise PluginScriptError
+  """
+  if (check and response.HasField('return_value')
+          and response.return_value.exit_code != 0):
+    raise PluginScriptError('The script failed with exit code {}.'
+                            ' stdout : {} and '
+                            ' stderr : {}'.format(
+      response.return_value.exit_code,
+      response.return_value.stdout,
+      response.return_value.stderr))
+
+
+def run_bash(remote_connection, command, variables=None, use_login_shell=False,
+             check=False):
     """run_bash operation wrapper.
 
     The run_bash function executes a shell command or script on a remote Unix
@@ -84,6 +105,7 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False):
         variables (dict of str:str): Environment variables to set before
         running the command.
         use_login_shell (bool): Whether to use login shell.
+        check (bool): if True and non-zero exitcode is received, raise PluginScriptError
 
     Returns:
         RunBashResponse: The return value of run_bash operation.
@@ -133,6 +155,7 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False):
         run_bash_request.variables[variable] = value
 
     run_bash_response = internal_libs.run_bash(run_bash_request)
+    _check_exit_code(run_bash_response, check)
     return _handle_response(run_bash_response)
 
 
@@ -215,7 +238,7 @@ def run_sync(remote_connection, source_directory, rsync_user=None,
     _handle_response(response)
 
 
-def run_powershell(remote_connection, command, variables=None):
+def run_powershell(remote_connection, command, variables=None, check=False):
     """run_powershell operation wrapper.
 
     The run_powershell function executes a powershell command or script on a
@@ -235,6 +258,7 @@ def run_powershell(remote_connection, command, variables=None):
         command (str): Powershell script to run.
         variables (dict): Environment variables to set before running the
         command.
+        check (bool): if True and non-zero exitcode is received, raise PluginScriptError
 
     Returns:
         RunPowerShellResponse: The return value of run_powershell operation.
@@ -280,6 +304,7 @@ def run_powershell(remote_connection, command, variables=None):
         run_powershell_request.variables[variable] = value
     run_powershell_response = internal_libs.run_powershell(
         run_powershell_request)
+    _check_exit_code(run_powershell_response, check)
     return _handle_response(run_powershell_response)
 
 

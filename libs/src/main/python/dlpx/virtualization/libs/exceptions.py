@@ -29,6 +29,27 @@ class LibraryError(Exception):
         super(LibraryError, self).__init__(message)
 
 
+class PluginScriptError(Exception):
+    """Plugin-catchable exception
+
+    This exception will be thrown whenever a library call is made with check=True
+    and it returns a non-zero exit code.
+
+    This can be handy for plugin author who
+    chooses to catch exceptions explicitly than checking the exit code of response.
+
+    Attributes:
+    message - A localized user-readable message.
+    """
+
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, message):
+        super(PluginScriptError, self).__init__(message)
+
+
 class IncorrectArgumentTypeError(PluginRuntimeError):
     """IncorrectArgumentTypeError is thrown when a library function gets
     called with an argument that has an incorrect type.

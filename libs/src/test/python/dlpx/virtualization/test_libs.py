@@ -8,7 +8,7 @@ import pytest
 from dlpx.virtualization import libs_pb2
 from dlpx.virtualization import libs
 from dlpx.virtualization.libs.exceptions import (
-    IncorrectArgumentTypeError, LibraryError)
+    IncorrectArgumentTypeError, LibraryError, PluginScriptError)
 from dlpx.virtualization import common_pb2
 
 
@@ -52,6 +52,67 @@ class TestLibsRunBash:
         assert actual_run_bash_result.exit_code == expected.exit_code
         assert actual_run_bash_result.stdout == expected.stdout
         assert actual_run_bash_result.stderr == expected.stderr
+
+    @staticmethod
+    def test_run_bash_check_true_success_exitcode():
+        expected_run_bash_response = libs_pb2.RunBashResponse()
+        expected_run_bash_response.return_value.exit_code = 0
+        expected_run_bash_response.return_value.stdout = "stdout"
+        expected_run_bash_response.return_value.stderr = "stderr"
+
+        expected_remote_connection = common_pb2.RemoteConnection()
+        expected_remote_connection.environment.name = "RemoteConnectionEnv"
+        expected_remote_connection.environment.reference = "remoteConnectionReference"
+        expected_command = "command"
+        expected_variables = None
+        expected_use_login_shell = False
+
+        def mock_run_bash(actual_run_bash_request):
+            assert actual_run_bash_request.command == expected_command
+            assert actual_run_bash_request.use_login_shell == expected_use_login_shell
+            assert (
+                    actual_run_bash_request.remote_connection.environment.name
+                    == expected_remote_connection.environment.name
+            )
+            assert (
+                    actual_run_bash_request.remote_connection.environment.reference
+                    == expected_remote_connection.environment.reference
+            )
+            return expected_run_bash_response
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_bash",
+                        side_effect=mock_run_bash, create=True):
+            actual_run_bash_result = libs.run_bash(expected_remote_connection,
+                                                   expected_command,
+                                                   expected_variables,
+                                                   expected_use_login_shell,
+                                                   check=True)
+
+            assert actual_run_bash_result.exit_code == expected_run_bash_response.return_value.exit_code
+            assert actual_run_bash_result.stdout == expected_run_bash_response.return_value.stdout
+            assert actual_run_bash_result.stderr == expected_run_bash_response.return_value.stderr
+
+    @staticmethod
+    def test_run_bash_with_check_true_failed_exitcode():
+        expected_message = (
+            'The script failed with exit code 1.'
+            ' stdout : stdout and  stderr : stderr'
+        )
+        response = libs_pb2.RunBashResponse()
+        response.return_value.exit_code = 1
+        response.return_value.stdout = "stdout"
+        response.return_value.stderr = "stderr"
+
+        connection = common_pb2.RemoteConnection()
+        connection.environment.name = "name"
+        connection.environment.reference = "ref"
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_bash",
+                        return_value=response, create=True):
+            with pytest.raises(PluginScriptError) as info:
+                response = libs.run_bash(connection, "test_command",
+                                         check=True)
+            assert info.value.message == expected_message
 
     @staticmethod
     def test_run_bash_with_actionable_error():
@@ -463,6 +524,64 @@ class TestLibsRunPowershell:
         assert actual_run_powershell_result.exit_code == expected.exit_code
         assert actual_run_powershell_result.stdout == expected.stdout
         assert actual_run_powershell_result.stderr == expected.stderr
+
+    @staticmethod
+    def test_run_powershell_check_true_exitcode_success():
+        expected_run_powershell_response = libs_pb2.RunPowerShellResponse()
+        expected_run_powershell_response.return_value.exit_code = 0
+        expected_run_powershell_response.return_value.stdout = "stdout"
+        expected_run_powershell_response.return_value.stderr = "stderr"
+
+        expected_remote_connection = common_pb2.RemoteConnection()
+        expected_remote_connection.environment.name = "RemoteConnectionEnv"
+        expected_remote_connection.environment.reference = "remoteConnectionReference"
+        expected_command = "command"
+        expected_variables = None
+
+        def mock_run_powershell(actual_run_powershell_request):
+            assert actual_run_powershell_request.command == expected_command
+            assert (
+                    actual_run_powershell_request.remote_connection.environment.name
+                    == expected_remote_connection.environment.name
+            )
+            assert (
+                    actual_run_powershell_request.remote_connection.environment.reference
+                    == expected_remote_connection.environment.reference
+            )
+            return expected_run_powershell_response
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
+                        side_effect=mock_run_powershell, create=True):
+            actual_run_powershell_result = libs.run_powershell(
+                expected_remote_connection,
+                expected_command, expected_variables, check=True)
+
+            assert actual_run_powershell_result.exit_code == expected_run_powershell_response.return_value.exit_code
+            assert actual_run_powershell_result.stdout == expected_run_powershell_response.return_value.stdout
+            assert actual_run_powershell_result.stderr == expected_run_powershell_response.return_value.stderr
+
+    @staticmethod
+    def test_run_powershell_check_true_exitcode_failed():
+        expected_message = (
+            'The script failed with exit code 1.'
+            ' stdout : stdout and  stderr : stderr'
+        )
+
+        response = libs_pb2.RunPowerShellResponse()
+        response.return_value.exit_code = 1
+        response.return_value.stdout = "stdout"
+        response.return_value.stderr = "stderr"
+
+        connection = common_pb2.RemoteConnection()
+        connection.environment.name = "name"
+        connection.environment.reference = "ref"
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
+                        return_value=response, create=True):
+            with pytest.raises(PluginScriptError) as info:
+                response = libs.run_powershell(connection, "test_command",
+                                               check=True)
+            assert info.value.message == expected_message
 
     @staticmethod
     def test_run_powershell_with_actionable_error():
