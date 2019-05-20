@@ -3,3 +3,5 @@ arrange:
   - Getting_Started.md
   - Building_Your_First_Plugin
   - References
+  - Best_Practices
+  - Release_Notes
