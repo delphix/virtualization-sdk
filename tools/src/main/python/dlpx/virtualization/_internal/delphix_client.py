@@ -199,7 +199,7 @@ class DelphixClient(object):
         download_zip_name = "{}/{}".format(
             directory,
             "dlpx-plugin-logs-{}-{}.tar.gz".format(plugin_name, token))
-        with open(download_zip_name, "w") as f:
+        with open(download_zip_name, "wb") as f:
             for chunk in download_zip_data:
                 f.write(chunk)
 
