@@ -161,3 +161,26 @@ Upload artifact `build/artifact.json` to `delphix-engine.domain` using the user 
 $ dvp upload -a build/artifact -e engine.example.com -u admin
 Password:
 ```
+
+***
+### download-logs
+#### Description
+Download plugin logs from a Delphix Engine to a local directory.
+#### Options
+
+|Option &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|Required|Default &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+|-------|-----------|:--------:|:-------:|
+|-e,<br>--delphix-engine<br>TEXT|Download plugin logs from the provided Delphix engine. This should be either the hostname or IP address.|Y|None|
+|-c,<br>--plugin-config FILE|Set the path to plugin config file. This file contains the plugin name to download logs for.|N|`plugin_config.yml`|
+|-u,<br>--user<br>TEXT|Authenticate to the Delphix Engine with the provided user.|Y| None |
+|-d,<br>--directory DIRECTORY|Specify the directory of where to download the plugin logs.|N|`os.cwd()`|
+|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be entered through a secure prompt.|N| None |
+
+
+#### Examples
+Download plugin logs from `engine.example.com` using the user `admin`. Since the password option is ommitted, a secure password prompt is used instead.
+
+```
+$ dvp download-logs -e engine.example.com -u admin
+Password:
+```
