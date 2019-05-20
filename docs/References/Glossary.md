@@ -74,6 +74,9 @@ Represents a snapshot of a dataset and its associated metadata represented by th
 ## Snaphot
 A point-in-time read-only copy of a dataset.
 
+## Snapshot Parameter
+User provided parameters for the snapshot operation. Currently the only properties the parameter has is resync.
+
 ## Source Config
 A collection of information that the Delphix Engine needs to interact with a dataset (whether [linked](#linked-dataset) or [virtual](#virtual-dataset) on an [environment](#environment).
 

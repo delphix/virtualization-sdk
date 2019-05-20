@@ -6,7 +6,7 @@ title: Virtualization SDK
 
 ## How Does Delphix Ingest Data?
 
-As [previously](/Building_Your_First_Plugin/Discovery.md) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
+As [previously](/Building_Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
 
 ### Linking
 
@@ -29,6 +29,11 @@ For our first plugin, we will be using the more flexible [staging](/References/G
     Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.
 
 For more details about deciding between using a direct or a staging strategy, please see (link to best practices section).
+
+###Snapshot Parameters
+When using the staging strategy, the plugin takes in [snapshot parameters](/References/Classes/#snapshotparametersdefinition) during the staged linked source [pre snapshot](/References/Plugin_Operations#staged-linked-source-pre-snapshot) and [post snapshot](/References/Plugin_Operations#staged-linked-source-post-snapshot) operations. The snapshot parameter includes a resync boolean that can be used to indicate to the plugin whether or not to initiate a full ingestion of the dSource. The snapshot parameter can only be set during a manual snapshot, when using a sync policy resync defaults to false.
+
+During the first sync right after the dSource is created, resync is set to true. After that the customer can manually trigger a resync via the UI by selecting the dSource, going to more options and selecting **Resynchronize dSource**. ![Screenshot](images/Resync.png)
 
 ### Our Syncing Strategy
 
@@ -102,7 +107,7 @@ Open up the `plugin_runner.py` file and add the following code:
 @plugin.linked.mount_specification()
 def linked_mount_specification(staged_source, repository):
     mount_location = staged_source.parameters.mount_location
-    mount = Mount(staged_source.connection.environment, mount_location)
+    mount = Mount(staged_source.staged_connection.environment, mount_location)
     return MountSpecification([mount])
 ```
 
@@ -133,7 +138,7 @@ it will contain attributes called `source_address`, `username`, and `mount_locat
 simply retrieves the user-provided mount location and saves it in a local variable.
 
 ```
-    mount = Mount(staged_source.connection.environment, mount_location)
+    mount = Mount(staged_source.staged_connection.environment, mount_location)
 ```
 
 This line constructs a new object from the [Mount class](/References/Classes/#mount). This class
@@ -160,7 +165,7 @@ Open up the `plugin_runner.py` file and add the following code:
 
 ```python
 @plugin.linked.pre_snapshot()
-def copy_data_from_source(staged_source, repository, source_config):
+def copy_data_from_source(staged_source, repository, source_config, snapshot_parameters):
     stage_mount_path = staged_source.mount.mount_path
     data_location = "{}@{}:{}".format(staged_source.parameters.username,
         staged_source.parameters.source_address,
@@ -168,7 +173,7 @@ def copy_data_from_source(staged_source, repository, source_config):
 
     rsync_command = "rsync -r {} {}".format(data_location, stage_mount_path)
 
-    result = libs.run_bash(staged_source.connection, rsync_command)
+    result = libs.run_bash(staged_source.staged_connection, rsync_command)
 
     if result.exit_code != 0:
         raise RuntimeError("Could not copy files. Please ensure that passwordless SSH works for {}.\n{}".format(staged_source.parameters.source_address, result.stderr))
@@ -176,14 +181,14 @@ def copy_data_from_source(staged_source, repository, source_config):
 
 Let's walk through this function and see what's going on
 
-```
+```python
     stage_mount_path = staged_source.mount.mount_path
 ```
 
 The `staged_source` argument contains information about the current mount location. Here we save that
 to a local variable for convenience.
 
-```
+```python
     data_location = "{}@{}:{}".format(staged_source.parameters.username,
         staged_source.parameters.source_address,
         source_config.path)
@@ -194,21 +199,21 @@ This is in the form `<user>@<host>:<path>`. For example `jdoe@sourcehost.mycompa
 before with `mountLocation`, we have defined our schemas such that these three pieces of information
 were provided by the user. Here we're just putting them into a format that `rsync` will understand.
 
-```
+```python
     rsync_command = "rsync -r {} {}".format(data_location, stage_mount_path)
 ```
 
 This line is the actual Bash command that we'll be running on the staging host. This will look something like `rsync -r user@host:/source/path /staging/mount/path`.
 
-```
-    result = libs.run_bash(staged_source.connection, rsync_command)
+```python
+    result = libs.run_bash(staged_source.source_connection, rsync_command)
 ```
 
 This is an example of a [platform library](/References/Glossary/#platform-libraries) function, where we ask the Virtualization Platform
 to do some work on our behalf. In this case, we're asking the platform to run our Bash command on the
 staging environment. For full details on the `run_bash` platfrom library function and others, see this [reference](/References/Platform_Libraries).
 
-```
+```python
     if result.exit_code != 0:
         raise RuntimeError("Could not copy files. Please ensure that passwordless SSH works for {}.\n{}".format(staged_source.parameters.source_address, result.stderr))
 ```
@@ -230,7 +235,7 @@ schema that was created by `dvp init`.
 We do still need to provide python function for the engine to call, but we don't have to do much.
 Open up the `plugin_runner.py` file and add the following code:
 
-```
+```python
 def _make_snapshot_data():
     return SnapshotDefinition()
 

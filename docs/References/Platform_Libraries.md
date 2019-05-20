@@ -17,7 +17,7 @@ Executes a bash command on a remote Unix host.
 
 Argument | Type | Description
 -------- | ---- | -----------
-remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
+remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run on the host.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 use_login_shell | boolean | **Optional**. Whether to use a login shell.
@@ -86,7 +86,7 @@ Executes a tcl command or script on a remote Unix host.
 
 Argument | Type | Description
 -------- | ---- | -----------
-remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
+remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Expect(Tcl) command to run.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 
@@ -117,7 +117,7 @@ Executes a powershell command on a remote Windows host.
 
 Argument | Type | Description
 -------- | ---- | -----------
-remote_connection | [SourceConnection](Classes.md#sourceconnection) | Connection associated with the remote host to run the command on.
+remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the remote host.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 
@@ -143,4 +143,39 @@ response = libs.run_powershell(connection, command, vars)
 print response.exit_code
 print response.stdout
 print response.stderr
+```
+
+## run_sync
+
+Copies files from the remote source host directly into the dSource, without involving a staging host.
+
+### Signature
+
+`def run_sync(remote_connection, source_directory, rsync_user=None, exclude_paths=None, sym_links_to_follow=None)`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
+source_directory | String | Directory of files to be synced.
+rsync_user | String | **Optional** User who has access to the directory to be synced.
+exclude_paths | list[String] | **Optional** Paths to be excluded.
+sym_links_to_follow | list[String] | **Optional** Sym links to follow if any.
+
+### Returns
+
+None
+
+### Example
+
+```python
+from dlpx.virtualization import libs
+
+source_directory = "sourceDirectory"
+rsync_user = "rsyncUser"
+exclude_paths = ["/path1", "/path2"]
+sym_links_to_follow = ["/path3", "/path4"]
+
+libs.run_sync(connection, source_directory, rsync_user, exclude_paths, sym_links_to_follow)
 ```
