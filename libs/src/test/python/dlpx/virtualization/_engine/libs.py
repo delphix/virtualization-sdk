@@ -3,7 +3,8 @@
 #
 
 """
-This module is mimicking what happens on the Delphix Engine to support testing internal wrappers.
+This module is mimicking what happens on the Delphix Engine to support testing
+internal wrappers.
 """
 
 

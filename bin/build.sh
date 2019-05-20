@@ -48,6 +48,7 @@ java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m py_compile dlp
 echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java > /dev/null
 
+rsync -av --progress ${ROOT}/common/src/main/python/dlpx/ dlpx/ > /dev/null
 rsync -av --progress ${ROOT}/platform/src/main/python/dlpx/ dlpx/ > /dev/null
 rsync -av --progress ${ROOT}/libs/src/main/python/dlpx/ dlpx/ > /dev/null
 rm -r bin

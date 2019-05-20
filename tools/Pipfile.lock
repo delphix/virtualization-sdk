@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d4c0da67dd1d35e4b321756db5c8820e96fd1c24814dbaca60be66e3dc87f2d5"
+            "sha256": "4c9e3a8aa301f68eb71fde4140f74e23acab8da28ec7ae5691d90d80509ac57a"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -223,7 +223,7 @@
                 "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
                 "sha256:da60d0014fd8c55eb48c1c5354352e363e2d30bbf7057e5e171a468390184c75"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version == '2.7'",
             "version": "==3.7.4"
         },
         "coverage": {
@@ -264,16 +264,16 @@
             "version": "==4.5.3"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-013.tar.gz",
-            "version": "== 0.4.0-internal-013"
+            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-014.tar.gz",
+            "version": "== 0.4.0-internal-014"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-013.tar.gz",
-            "version": "== 0.4.0-internal-013"
+            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-014.tar.gz",
+            "version": "== 0.4.0-internal-014"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-013.tar.gz",
-            "version": "== 0.4.0-internal-013"
+            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-014.tar.gz",
+            "version": "== 0.4.0-internal-014"
         },
         "entrypoints": {
             "hashes": [

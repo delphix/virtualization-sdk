@@ -20,7 +20,6 @@ __all__ = [
     "VirtualSource",
     "StagedSource",
     "DirectSource",
-    "RemoteConnection",
     "Status",
     "Mount",
     "OwnershipSpecification",
@@ -42,7 +41,8 @@ class VirtualSource(object):
 
     @property
     def connection(self):
-        """RemoteConnection: The RemoteConnection for this VirtualSource."""
+        """common_pb2.RemoteConnection: The RemoteConnection for this
+        VirtualSource. This is a protobuf generated class."""
         return self._connection
 
     @property
@@ -58,7 +58,9 @@ class VirtualSource(object):
 
 class StagedSource(object):
 
-    def __init__(self, guid, source_connection, parameters, mount, staged_connection):
+    def __init__(self, guid, source_connection, parameters, mount,
+                 staged_connection):
+
         self._guid = guid
         self._source_connection = source_connection
         self._parameters = parameters
@@ -72,8 +74,9 @@ class StagedSource(object):
 
     @property
     def source_connection(self):
-        """SourceConnection: The RemoteConnection representing the source
-        environment for this StagedSource."""
+        """common_pb2.RemoteConnection: The RemoteConnection representing the
+        source environment for this StagedSource. This is a protobuf generated
+        class."""
         return self._source_connection
 
     @property
@@ -90,8 +93,9 @@ class StagedSource(object):
 
     @property
     def staged_connection(self):
-        """StagedConnection: The RemoteConnection representing the staging
-        environment for this StagedSource."""
+        """common_pb2.RemoteConnection: The RemoteConnection representing the
+        staging environment for this StagedSource. This is a protobuf generated
+        class."""
         return self._staged_connection
 
 
@@ -109,7 +113,8 @@ class DirectSource(object):
 
     @property
     def connection(self):
-        """RemoteConnection: The RemoteConnection for this DirectSource."""
+        """common_pb2.RemoteConnection: The RemoteConnection for this
+        VirtualSource. This is a protobuf generated class."""
         return self._connection
 
     @property
@@ -118,24 +123,6 @@ class DirectSource(object):
         DirectSource.
         """
         return self._parameters
-
-
-class RemoteConnection(object):
-
-    def __init__(self, environment, user):
-        self._environment = environment
-        self._user = user
-
-    @property
-    def environment(self):
-        """RemoteEnvironment: The RemoteEnvironment for this RemoteConnection.
-        """
-        return self._environment
-
-    @property
-    def user(self):
-        """RemoteUser: The RemoteUser for this RemoteConnection."""
-        return self._user
 
 
 class Status(enum.Enum):
