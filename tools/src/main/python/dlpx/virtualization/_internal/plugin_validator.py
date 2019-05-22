@@ -5,16 +5,19 @@
 import json
 import logging
 import os
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 import yaml
 from dlpx.virtualization._internal import (exceptions, file_util,
                                            plugin_importer)
-from dlpx.virtualization._internal.util_classes import (MessageUtils,
-                                                        ValidationMode)
+from dlpx.virtualization._internal.util_classes import ValidationMode
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
+
+validation_result = namedtuple(
+    'validation_result',
+    ['plugin_config_content', 'plugin_manifest', 'warnings'])
 
 
 class PluginValidator:
@@ -45,16 +48,11 @@ class PluginValidator:
         self.__warnings = defaultdict(list)
 
     @property
-    def plugin_config_content(self):
-        return self.__plugin_config_content
-
-    @property
-    def plugin_manifest(self):
-        return self.__plugin_manifest
-
-    @property
-    def warnings(self):
-        return self.__warnings
+    def result(self):
+        return validation_result(
+            plugin_config_content=self.__plugin_config_content,
+            plugin_manifest=self.__plugin_manifest,
+            warnings=self.__warnings)
 
     @classmethod
     def from_config_content(cls, plugin_config_file, plugin_config_content,
@@ -84,11 +82,6 @@ class PluginValidator:
                                e)
             else:
                 raise e
-
-        if self.__warnings:
-            warning_msg = MessageUtils.warning_msg(self.__warnings)
-            logger.warn('{}\nFound {} issues in plugin code.'.format(
-                warning_msg, len(self.__warnings['warning'])))
 
     def __run_validations(self):
         """

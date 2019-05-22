@@ -99,12 +99,13 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
         # Read and valida the schema file
-        schemas = plugin_util.read_and_validate_schema_file(
+        result = plugin_util.read_and_validate_schema_file(
             schema_file_path, False)
 
         # Generate the definitions based on the schema file
         codegen.generate_python(pretty_name, src_dir_path,
-                                os.path.dirname(config_file_path), schemas)
+                                os.path.dirname(config_file_path),
+                                result.plugin_schemas)
 
         #
         # Create the plugin config file. The config file relies on input from

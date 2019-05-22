@@ -12,7 +12,8 @@ import StringIO
 import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           package_util, plugin_util)
+                                           package_util, plugin_util,
+                                           util_classes)
 
 logger = logging.getLogger(__name__)
 # This is hard-coded to the delphix web service api version
@@ -45,18 +46,29 @@ def build(plugin_config, upload_artifact, generate_only):
 
     # Read content of the plugin config  file provided and perform validations
     logger.info('Reading and validating plugin config file %s', plugin_config)
-    plugin_config_content = plugin_util.read_and_validate_plugin_config_file(
-        plugin_config, not generate_only, False)
+    try:
+        result = plugin_util.read_and_validate_plugin_config_file(
+            plugin_config, not generate_only, False)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
 
-    logger.debug('plugin config file content is : %s', plugin_config_content)
+    plugin_config_content = result.plugin_config_content
+    logger.debug('plugin config file content is : %s',
+                 result.plugin_config_content)
 
     schema_file = plugin_util.get_schema_file_path(
         plugin_config, plugin_config_content['schemaFile'])
 
     # Read schemas from the file provided in the config and validate them
     logger.info('Reading and validating schemas from %s', schema_file)
-    schemas = plugin_util.read_and_validate_schema_file(
-        schema_file, not generate_only)
+
+    try:
+        result = plugin_util.read_and_validate_schema_file(
+            schema_file, not generate_only)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
+
+    schemas = result.plugin_schemas
     logger.debug('schemas found: %s', schemas)
 
     # Resolve the paths for source directory and schema file
@@ -84,13 +96,25 @@ def build(plugin_config, upload_artifact, generate_only):
     # and check the entry point as well. Returns a manifest on
     # successful validation.
     #
-    manifest = plugin_util.get_plugin_manifest(plugin_config,
-                                               plugin_config_content,
-                                               not generate_only)
+    try:
+        result = plugin_util.get_plugin_manifest(plugin_config,
+                                                 plugin_config_content,
+                                                 not generate_only)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
+
+    plugin_manifest = {}
+    if result:
+        plugin_manifest = result.plugin_manifest
+        if result.warnings:
+            warning_msg = util_classes.MessageUtils.warning_msg(
+                result.warnings)
+            logger.warn('{}\n{} Warning(s). {} Error(s).'.format(
+                warning_msg, len(result.warnings['warning']), 0))
 
     # Prepare the output artifact.
     plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
-                                            schemas, manifest)
+                                            schemas, plugin_manifest)
 
     #
     # Add empty strings for plugin operations for now as API expects them.
@@ -102,6 +126,8 @@ def build(plugin_config, upload_artifact, generate_only):
     # Write it to upload_artifact as json.
     generate_upload_artifact(upload_artifact, plugin_output)
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
+
+    print('\nBUILD SUCCESSFUL.')
 
 
 def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):

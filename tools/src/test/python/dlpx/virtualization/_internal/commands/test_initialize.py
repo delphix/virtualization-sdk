@@ -74,9 +74,11 @@ class TestInitialize:
                   plugin_pretty_name)
 
         # Validate the config file is as we expect.
-        config = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.read_and_validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
             True, False)
+
+        config = result.plugin_config_content
 
         assert config['pluginType'] == ingestion_strategy
         assert config['name'] == plugin_name
@@ -123,7 +125,7 @@ class TestInitialize:
                                                      schema_file, True, True)
         validator.validate()
 
-        assert not validator.warnings
+        assert not validator.result.warnings
 
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file, plugin_name):

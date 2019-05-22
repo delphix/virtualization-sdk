@@ -37,7 +37,7 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build,
     validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
                                 validation_mode, run_all_validations)
     validator.validate()
-    return validator.plugin_config_content
+    return validator.result
 
 
 def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
@@ -54,7 +54,7 @@ def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
                                                     PLUGIN_CONFIG_SCHEMA,
                                                     validation_mode)
     validator.validate()
-    return validator.plugin_manifest
+    return validator.result
 
 
 def read_and_validate_schema_file(schema_file, stop_build):
@@ -69,16 +69,16 @@ def read_and_validate_schema_file(schema_file, stop_build):
                        if stop_build else ValidationMode.WARNING)
     validator = SchemaValidator(schema_file, PLUGIN_SCHEMA, validation_mode)
     validator.validate()
-    return validator.plugin_schemas
+    return validator.result
 
 
 def get_plugin_config_property(plugin_config_path, prop):
     """
     Returns the value for a specific property from the plugin config file.
     """
-    plugin_config_content = read_and_validate_plugin_config_file(
-        plugin_config_path, False, False)
-    return plugin_config_content[prop]
+    result = read_and_validate_plugin_config_file(plugin_config_path, False,
+                                                  False)
+    return result.plugin_config_content[prop]
 
 
 def get_schema_file_path(plugin_config, schema_file):

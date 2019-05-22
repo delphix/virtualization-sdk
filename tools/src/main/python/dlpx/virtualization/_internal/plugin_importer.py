@@ -77,6 +77,17 @@ REQUIRED_METHODS = {
     'hasVirtualMountSpecification': 'virtual.mount_specification()'
 }
 
+REQUIRED_METHODS_DESCRIPTION = {
+    'hasRepositoryDiscovery': 'Repository Discovery',
+    'hasSourceConfigDiscovery': 'Source Config Discovery',
+    'hasLinkedPostSnapshot': 'Linked Source Post Snapshot',
+    'hasLinkedMountSpecification': 'Staged Source Mount Specification',
+    'hasVirtualConfigure': 'Virtual Source Configure',
+    'hasVirtualReconfigure': 'Virtual Source Reconfigure',
+    'hasVirtualPostSnapshot': 'Virtual Source Post Snapshot',
+    'hasVirtualMountSpecification': 'Virtual Source Mount Specification'
+}
+
 
 class PluginImporter:
     """
@@ -100,10 +111,6 @@ class PluginImporter:
         self.__plugin_type = plugin_type
         self.__validate = validate
 
-    @property
-    def plugin_manifest(self):
-        return self.__plugin_manifest
-
     def import_plugin(self):
         """
         Imports the plugin module, does basic validation.
@@ -126,8 +133,9 @@ class PluginImporter:
             exception_msg = MessageUtils.exception_msg(warnings)
             exception_msg += '\n{}'.format(MessageUtils.warning_msg(warnings))
             raise exceptions.UserError(
-                '{}\nFound {} issues in plugin code.'.format(
-                    exception_msg, sum(map(len, warnings.values()))))
+                '{}\n{} Warning(s). {} Error(s).'.format(
+                    exception_msg, len(warnings['warning']),
+                    len(warnings['exception'])))
 
         return plugin_manifest, warnings
 
@@ -167,7 +175,9 @@ class PluginImporter:
             if plugin_manifest[method_key] is False:
                 warnings['warning'].append(
                     'Implementation missing '
-                    'for required method {}'.format(method_name))
+                    'for required method {}. The Plugin Operation \'{}\' '
+                    'will fail when executed.'.format(
+                        method_name, REQUIRED_METHODS_DESCRIPTION[method_key]))
         return warnings
 
     @staticmethod

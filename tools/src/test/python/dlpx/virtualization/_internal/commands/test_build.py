@@ -197,10 +197,10 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ("Unable to read plugin config file"
-                           " '/not/a/real/file/plugin_config.yml'"
-                           "\nError code: 2. Error message: No such file or"
-                           " directory")
+        assert ("Unable to read plugin config file"
+                " '/not/a/real/file/plugin_config.yml'"
+                "\nError code: 2. Error message: No such file or"
+                " directory") in message
 
         assert not mock_generate_python.called
 
@@ -216,10 +216,10 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == ('Command failed because the plugin config file '
-                           'provided as input {!r} was not valid yaml. '
-                           'Verify the file contents. '
-                           'Error position: 3:9'.format(plugin_config_file))
+        assert ('Command failed because the plugin config file '
+                'provided as input {!r} was not valid yaml. '
+                'Verify the file contents. '
+                'Error position: 3:9'.format(plugin_config_file)) in message
 
         assert not mock_generate_python.called
 
@@ -320,9 +320,9 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == (
+        assert (
             'Unable to load schemas from {!r}\nError code: 13.'
-            ' Error message: Permission denied'.format(schema_file))
+            ' Error message: Permission denied'.format(schema_file)) in message
 
         assert not mock_generate_python.called
 
@@ -337,10 +337,9 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False)
 
         message = err_info.value.message
-        assert message == (
-            'Failed to load schemas because {!r} is not a valid json file.'
-            ' Error: Extra data: line 2 column 1 - line 2 column 9'
-            ' (char 19 - 27)'.format(schema_file))
+        assert ('Failed to load schemas because {!r} is not a valid json file.'
+                ' Error: Extra data: line 2 column 1 - line 2 column 9'
+                ' (char 19 - 27)'.format(schema_file)) in message
 
         assert not mock_generate_python.called
 

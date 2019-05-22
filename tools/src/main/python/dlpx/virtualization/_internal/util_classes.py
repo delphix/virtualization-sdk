@@ -25,7 +25,7 @@ class MessageUtils:
     @staticmethod
     def exception_msg(exceptions):
         exception_msg = '\n'.join(
-            MessageUtils.__format_msg('Exception', ex)
+            MessageUtils.__format_msg('Error', ex)
             for ex in exceptions['exception'])
         return exception_msg
 

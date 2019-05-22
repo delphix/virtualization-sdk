@@ -200,7 +200,7 @@ class TestPluginValidator:
             validator.validate()
 
         message = err_info.value.message
-        assert validator.warnings.items() > 0
+        assert validator.result.warnings.items() > 0
         assert 'Named argument mismatch in method' in message
         assert 'Number of arguments do not match' in message
         assert 'Implementation missing for required method' in message
@@ -214,7 +214,7 @@ class TestPluginValidator:
             validator.validate()
 
         message = err_info.value.message
-        assert validator.warnings.items() > 0
+        assert validator.result.warnings.items() > 0
         assert 'Named argument mismatch in method' in message
         assert 'Number of arguments do not match' in message
         assert 'Implementation missing for required method' in message

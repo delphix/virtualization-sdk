@@ -5,12 +5,16 @@
 import json
 import logging
 import os
+from collections import defaultdict, namedtuple
 
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.util_classes import ValidationMode
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
+
+validation_result = namedtuple('validation_result',
+                               ['plugin_schemas', 'warnings'])
 
 
 class SchemaValidator:
@@ -33,10 +37,12 @@ class SchemaValidator:
         self.__plugin_meta_schema = plugin_meta_schema
         self.__validation_mode = validation_mode
         self.__plugin_schemas = schemas
+        self.__warnings = defaultdict(list)
 
     @property
-    def plugin_schemas(self):
-        return self.__plugin_schemas
+    def result(self):
+        return validation_result(plugin_schemas=self.__plugin_schemas,
+                                 warnings=self.__warnings)
 
     def validate(self):
         """
