@@ -1,6 +1,10 @@
-from dlpx.virtualization.platform import Plugin
+from dlpx.virtualization.platform import Mount, MountSpecification, Plugin
 
-from generated.definitions import RepositoryDefinition
+from generated.definitions import (
+    RepositoryDefinition,
+    SourceConfigDefinition,
+    SnapshotDefinition,
+)
 
 plugin = Plugin()
 
@@ -31,3 +35,30 @@ def source_config_discovery(source_connection, repository):
     #
 
     return []
+
+
+{{ linked_operations }}
+
+
+@plugin.virtual.configure()
+def configure(virtual_source, snapshot, repository):
+    return SourceConfigDefinition(name=virtual_source.guid)
+
+
+@plugin.virtual.reconfigure()
+def reconfigure(virtual_source, repository, source_config, snapshot):
+    return SourceConfigDefinition(name=virtual_source.guid)
+
+
+@plugin.virtual.post_snapshot()
+def virtual_post_snapshot(virtual_source, repository, source_config):
+    return SnapshotDefinition()
+
+
+@plugin.virtual.mount_specification()
+def virtual_mount_specification(virtual_source, repository):
+    mount_path = "/tmp/dlpx_virtual_mounts/{}".format(virtual_source.guid)
+    mounts = [Mount(virtual_source.connection.environment, mount_path)]
+
+    return MountSpecification(mounts)
+

@@ -1,0 +1,3 @@
+@plugin.linked.post_snapshot()
+def linked_post_snapshot(direct_source, repository, source_config):
+    return SnapshotDefinition()

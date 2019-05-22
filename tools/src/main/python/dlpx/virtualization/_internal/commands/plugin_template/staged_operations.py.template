@@ -1,0 +1,15 @@
+@plugin.linked.post_snapshot()
+def linked_post_snapshot(staged_source,
+                         repository,
+                         source_config,
+                         snapshot_parameters):
+    return SnapshotDefinition()
+
+
+@plugin.linked.mount_specification()
+def linked_mount_specification(staged_source, repository):
+    mount_path = "/tmp/dlpx_staged_mounts/{}".format(staged_source.guid)
+    environment = staged_source.staged_connection.environment
+    mounts = [Mount(environment, mount_path)]
+
+    return MountSpecification(mounts)

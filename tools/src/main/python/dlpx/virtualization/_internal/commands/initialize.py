@@ -25,6 +25,8 @@ DEFAULT_ENTRY_POINT = '{}:{}'.format(DEFAULT_ENTRY_POINT_FILE[:-3],
 
 # Internal constants for the template directory.
 ENTRY_POINT_TEMPLATE_NAME = 'entry_point.py.template'
+DIRECT_OPERATIONS_TEMPLATE_NAME = 'direct_operations.py.template'
+STAGED_OPERATIONS_TEMPLATE_NAME = 'staged_operations.py.template'
 INIT_FILE_ROOT = os.path.dirname(__file__)
 PLUGIN_TEMPLATE_DIR = os.path.join(INIT_FILE_ROOT, 'plugin_template')
 SCHEMA_TEMPLATE_PATH = os.path.join(PLUGIN_TEMPLATE_DIR,
@@ -127,13 +129,9 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing entry file at %r.', entry_point_file_path)
         with open(entry_point_file_path, 'w+') as f:
-            entry_point_content = _get_entry_point_contents(plugin_name)
+            entry_point_content = _get_entry_point_contents(
+                plugin_name, ingestion_strategy)
             f.write(entry_point_content)
-
-        # Validate the plugin config and the entry point
-        # This should always return something valid
-        plugin_util.read_and_validate_plugin_config_file(
-            config_file_path, False, True)
 
     except Exception as e:
         logger.debug('Attempting to cleanup after failure. %s', e)
@@ -143,7 +141,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
             'Failed to initialize plugin directory {!r}: {}.'.format(root, e))
 
 
-def _get_entry_point_contents(plugin_name):
+def _get_entry_point_contents(plugin_name, ingestion_strategy):
     """
     Creates a valid, complete entry point file from the template with the
     given parameters that is escaped correctly and ready to be written.
@@ -159,8 +157,19 @@ def _get_entry_point_contents(plugin_name):
 
     template = env.get_template(ENTRY_POINT_TEMPLATE_NAME)
 
+    if ingestion_strategy == plugin_util.DIRECT_TYPE:
+        linked_operations = env.get_template(
+            DIRECT_OPERATIONS_TEMPLATE_NAME).render()
+    elif ingestion_strategy == plugin_util.STAGED_TYPE:
+        linked_operations = env.get_template(
+            STAGED_OPERATIONS_TEMPLATE_NAME).render()
+    else:
+        raise RuntimeError('Got unrecognized ingestion strategy: {!r}'.format(
+            ingestion_strategy))
+
     # Call 'repr' to put the string in quotes and escape quotes.
-    return template.render(name=repr(plugin_name))
+    return template.render(name=repr(plugin_name),
+                           linked_operations=linked_operations)
 
 
 def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,

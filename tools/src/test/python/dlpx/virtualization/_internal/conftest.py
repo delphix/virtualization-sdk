@@ -8,7 +8,7 @@ import os
 
 import pytest
 import yaml
-from dlpx.virtualization._internal import package_util
+from dlpx.virtualization._internal import package_util, plugin_util
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
@@ -256,7 +256,7 @@ def manual_discovery():
 
 @pytest.fixture
 def plugin_type():
-    return 'DIRECT'
+    return plugin_util.DIRECT_TYPE
 
 
 @pytest.fixture
