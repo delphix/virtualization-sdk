@@ -17,7 +17,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 ---------------- | -------- | --------- | -------------------------
 [Repository<br/>Discovery](#repository-discovery) | **Yes** |`discovery.repository()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br/>[Environment Refresh](Workflows.md#environment-discovery-refresh)
 [Source Config<br/>Discovery](#source-config-discovery) | **Yes** |`discovery.source_config()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br/>[Environment Refresh](Workflows.md#environment-discovery-refresh)
-[Direct Linked Source<br/>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **Yes** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Direct Linked Source<br/>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Post-Snapshot](#direct-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Pre-Snapshot](#staged-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Post-Snapshot](#staged-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
@@ -43,7 +43,6 @@ Discovers the set of [repositories](Glossary.md#repository) for a plugin on an [
 
 ### Required / Optional
 **Required.**
-
 
 ### Delphix Engine Operations
 
@@ -166,7 +165,7 @@ def source_config_discovery(source_connection, repository):
 Sets up a [dSource](Glossary.md#dsource) to ingest data. Only applies when using a [Direct Linking](Glossary.md#direct-linking) strategy.
 
 ### Required / Optional
-**Required.**
+**Optional**
 
 ### Delphix Engine Operations
 

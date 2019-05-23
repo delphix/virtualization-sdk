@@ -11,7 +11,7 @@ Executes a bash command on a remote Unix host.
 
 ### Signature
 
-`def run_bash(remote_connection, command, variables=None, use_login_shell=False)`
+`def run_bash(remote_connection, command, variables=None, use_login_shell=False, check=False)`
 
 ### Arguments
 
@@ -21,6 +21,7 @@ remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection
 command | String | Command to run on the host.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 use_login_shell | boolean | **Optional**. Whether to use a login shell.
+check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunBashResponse` is non-zero.
 
 ### Returns
 An object of `RunBashResponse`
@@ -111,7 +112,7 @@ Executes a powershell command on a remote Windows host.
 
 ### Signature
 
-`def run_powershell(remote_connection, command, variables=None)`
+`def run_powershell(remote_connection, command, variables=None, check=False)`
 
 ### Arguments
 
@@ -120,6 +121,7 @@ Argument | Type | Description
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the remote host.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunPowershellResponse` is non-zero.
 
 ### Returns
 An object of `RunPowershellResponse`

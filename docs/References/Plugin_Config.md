@@ -18,6 +18,7 @@ The name of the file does not matter and can be specified during the build, but,
 |pluginType|Y|enum|The ingestion strategy of the plugin. Can be either `STAGED` or `DIRECT`.|
 |language|Y|enum|Must be `PYTHON27`.|
 |defaultLocale|N|enum|The locale to be used by the plugin if the Delphix user does not specify one. Plugin messages will be displayed in this locale by default. The default value is `en-us`.|
+|rootSquashEnabled|N|boolean|This dictates whether "root squash" is enabled on NFS mounts for the plugin (i.e. whether the `root` user on remote hosts has access to the NFS mounts). Setting this to `false` allows processes usually run as `root`, like Docker daemons, access to the NFS mounts. The default value is `true`.|
 
 ## Example
 Assume the following basic plugin structure:

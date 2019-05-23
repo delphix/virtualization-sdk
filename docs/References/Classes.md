@@ -75,8 +75,8 @@ connection = RemoteConnection(environment, user)
 
 Field | Type | Description
 ----- | ---- | -----------
-environment | RemoteEnvironment | Environment for the connection. Internal virtualization platform object.
-user | RemoteUser | User for the connection. Internal virtualization platform object.
+environment | [RemoteEnvironment](#remoteenvironment) | Environment for the connection. Internal virtualization platform object.
+user | [RemoteUser](#remoteuser) | User for the connection. Internal virtualization platform object.
 
 ## Status
 
@@ -109,7 +109,7 @@ mount = Mount(environment, path)
 
 Field | Type | Description
 ----- | ---- | -----------
-remote_environment | RemoteEnvironment | Environment for the connection. Internal virtualization platform object.
+remote_environment | [RemoteEnvironment](#remoteenvironment) | Environment for the connection. Internal virtualization platform object.
 mount_path | String | The path on the remote host that has the mounted data set.
 shared_path | String | **Optional.** The path of the subdirectory of the data set to mount to the remote host.
 
@@ -170,3 +170,47 @@ def linked_pre_snapshot(staged_source, repository, source_config, snapshot_param
 Field | Type | Description
 ----- | ---- | -----------
 resync | Boolean | Determines if this snapshot is ingesting the production dSource from scratch.
+
+## RemoteEnvironment
+
+Represents a remote environment.
+
+!!! warning
+    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+name | String | Name of the environment.
+host | [RemoteHost](#remotehost) | Host that belongs to the environment. Internal virtualization platform object.
+reference | String | Unique identifier for the environment.
+
+## RemoteHost
+
+Represents a remote host.
+
+!!! warning
+    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+name | String | Host address.
+binary_path | String | Path to Delphix provided binaries on the host.
+reference | String | Unique identifier for the host.
+
+## RemoteUser
+
+Represents a user on a remote host.
+
+!!! warning
+    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+name | String | User name.
+reference | String | Unique identifier for the user.

@@ -151,7 +151,7 @@ Upload the generated upload artifact (the plugin JSON file) that was built to a 
 |-e,<br>--delphix-engine<br>TEXT|Upload plugin to the provided engine. This should be either the hostname or IP address.|Y|None|
 |-u,<br>--user<br>TEXT|Authenticate to the Delphix Engine with the provided user.|Y| None |
 |-a,<br>--upload-artifact FILE|Path to the upload artifact that was generated through build.|N|`artifact.json`|
-|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be entered through a secure prompt.|N| None |
+|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be requested through a secure prompt.|N| None |
 
 
 #### Examples
@@ -168,13 +168,13 @@ Password:
 Download plugin logs from a Delphix Engine to a local directory.
 #### Options
 
-|Option &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|Required|Default &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+|Option &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|Required|Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |-------|-----------|:--------:|:-------:|
 |-e,<br>--delphix-engine<br>TEXT|Download plugin logs from the provided Delphix engine. This should be either the hostname or IP address.|Y|None|
 |-c,<br>--plugin-config FILE|Set the path to plugin config file. This file contains the plugin name to download logs for.|N|`plugin_config.yml`|
 |-u,<br>--user<br>TEXT|Authenticate to the Delphix Engine with the provided user.|Y| None |
 |-d,<br>--directory DIRECTORY|Specify the directory of where to download the plugin logs.|N|`os.cwd()`|
-|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be entered through a secure prompt.|N| None |
+|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be requested through a secure prompt.|N| None |
 
 
 #### Examples
