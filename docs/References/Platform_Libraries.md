@@ -72,7 +72,7 @@ Running a bash script that is saved in a directory.
  # Execute script on remote host
  response = libs.run_bash(direct_source.connection, script_content)
 ```
-For more information please go to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution/) section.
+For more information please go to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) section.
 
 ## run_expect
 

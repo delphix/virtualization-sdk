@@ -154,7 +154,7 @@ In this example, the UI would show "User-readable name for the provisioned datab
 
 The `identityFields` is a list of property names that, together, serve as a unique identifier for a repository or source config.
 
-When a plugin's [automatic discovery](/References/Glossary/#automatic-discovery) code is called, it will return a list of repositories (or source configs). The Delphix Engine needs to be able to compare this new list with whatever repositories it already knows about.
+When a plugin's [automatic discovery](Glossary.md#automatic-discovery) code is called, it will return a list of repositories (or source configs). The Delphix Engine needs to be able to compare this new list with whatever repositories it already knows about.
 
 For example, suppose the engine already knows about a single repository with data `{"dbname": "my_databsae", "path": "/var/db/db01"}` (note the misspelling!). And, then suppose that automatic discovery is re-run and it returns repository data `{ "dbname": "my_database", "path": "/var/db/db01"}`.
 
@@ -215,7 +215,7 @@ then the user will be able to refer to this object as `/usr/bin`.
 | Required or Optional? | Optional|
 | Where? | As the value for the `format` keyword in any string property's subschema.|
 
-The `password` keyword can be used to specify the `format` of a `string`. (Note that `format` is a standard keyword and is not Delphix-specific). If a property is tagged as a password, then the UI will never show the value on screen, and the value will be encrypted before being stored as described [here](/Best_Practices/Sensitive_Data/).
+The `password` keyword can be used to specify the `format` of a `string`. (Note that `format` is a standard keyword and is not Delphix-specific). If a property is tagged as a password, then the UI will never show the value on screen, and the value will be encrypted before being stored as described [here](/Best_Practices/Sensitive_Data.md).
 
 In this example, the `dbPass` field on any object will be treated as a password.
 

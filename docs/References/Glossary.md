@@ -38,7 +38,7 @@ The process by which the Delphix Engine connects a new [dSource](#dsource) to a 
 Logging is when a plugin writes out some human-readable information to a log file. The log file can then be examined, typically in order to debug a problem with the plugin.
 
 ## Plugin Config
-A [YAML](#yaml) file containing a list of plugin properties: What is the plugin's name? What version of the plugin is this? Etc. More details [here](/References/Plugin_Config).
+A [YAML](#yaml) file containing a list of plugin properties: What is the plugin's name? What version of the plugin is this? Etc. More details [here](Plugin_Config.md).
 
 ## Manual Discovery
 [Discovery](#discovery) which the end user does by manually entering the necessary information into the Delphix Engine.

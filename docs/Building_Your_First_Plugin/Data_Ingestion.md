@@ -6,38 +6,35 @@ title: Virtualization SDK
 
 ## How Does Delphix Ingest Data?
 
-As [previously](/Building_Your_First_Plugin/Discovery) discussed, the Delphix Engine uses the [discovery](/References/Glossary/#discovery) process to learn about datasets that live on a [source environment](/References/Glossary/#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
+As [previously](Discovery.md) discussed, the Delphix Engine uses the [discovery](/References/Glossary.md#discovery) process to learn about datasets that live on a [source environment](/References/Glossary.md#source-environment). In this section we will learn how the Delphix Engine uses a two-step process to ingest a dataset.
 
 ### Linking
 
-The first step is called [linking](/References/Glossary/#linking). This is simply the creation of a new dataset on the Delphix Engine, which is associated with the dataset on the source environment. This new linked dataset is called a [dSource](/References/Glossary/#dsource).
+The first step is called [linking](/References/Glossary.md#linking). This is simply the creation of a new dataset on the Delphix Engine, which is associated with the dataset on the source environment. This new linked dataset is called a [dSource](/References/Glossary.md#dsource).
 
 ### Syncing
 
-Immediately after linking, the new dSource is [synced](/References/Glossary/#syncing) for the first time. Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
+Immediately after linking, the new dSource is [synced](/References/Glossary.md#syncing) for the first time. Syncing is a process by which data from the source environment is copied onto the Delphix Engine. Subsequent syncs may then be periodically performed in order to keep the dSource up-to-date.
 
 The details of how this is done varies significantly from plugin to plugin. For example, some plugins will simply copy files from the filesystem. Other plugins might contact a DBMS and instruct it to send backup or replication streams. There are many possibilities here, but they all break down into two main strategies that the plugin author can choose from: direct and staging.
 
-With the [direct](/References/Glossary/#direct-linkingsyncing) strategy, the plugin is not in charge
+With the [direct](/References/Glossary.md#direct-linkingsyncing) strategy, the plugin is not in charge
 of the data copying. Instead the Delphix Engine directly pulls raw data from the source environment.
 The plugin merely provides the location of the data. This is a very simple strategy, and is also
 quite limiting.
 
-For our first plugin, we will be using the more flexible [staging](/References/Glossary/#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS for Unix environments (or iSCSI on Windows environments) to mount storage onto a [staging environment](/References/Glossary/#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this storage mount.
+For our first plugin, we will be using the more flexible [staging](/References/Glossary.md#staged-linkingsyncing) strategy. With this strategy, the Delphix Engine uses NFS for Unix environments (or iSCSI on Windows environments) to mount storage onto a [staging environment](/References/Glossary.md#staging-environment). Our plugin will then be in full control of how to get data from the source environment onto this storage mount.
+
+With the staging strategy, there are two types of syncs: sync and resync. A `sync` is used to ingestion incremental changes while a `resync` is used to re-ingest all the data for the dSource. For databases, this could mean re-ingesting from a full database backup to reset the dSource. A `sync` and a `resync` execute the same plugin operations and are differentiated by a boolean flag in the [snapshot_parameters](/References/Classes.md#snapshotparametersdefinition) argument passed into [linked.pre_snapshot](/References/Plugin_Operations.md#staged-linked-source-pre-snapshot) and [linked.post_snapshot](/References/Plugin_Operations.md#staged-linked-source-post-snapshot).
+
+A regular sync is the default and is executed as part of policy driven syncs. A resync is only executed during initial ingestion or if the Delphix user manually starts one. The customer can manually trigger a resync via the UI by selecting the dSource, going to more options and selecting **Resynchronize dSource**. ![Screenshot](images/Resync.png)
 
 !!! tip "Gotcha"
     Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.
 
-For more details about deciding between using a direct or a staging strategy, please see (link to best practices section).
-
-###Snapshot Parameters
-When using the staging strategy, the plugin takes in [snapshot parameters](/References/Classes/#snapshotparametersdefinition) during the staged linked source [pre snapshot](/References/Plugin_Operations#staged-linked-source-pre-snapshot) and [post snapshot](/References/Plugin_Operations#staged-linked-source-post-snapshot) operations. The snapshot parameter includes a resync boolean that can be used to indicate to the plugin whether or not to initiate a full ingestion of the dSource. The snapshot parameter can only be set during a manual snapshot, when using a sync policy resync defaults to false.
-
-During the first sync right after the dSource is created, resync is set to true. After that the customer can manually trigger a resync via the UI by selecting the dSource, going to more options and selecting **Resynchronize dSource**. ![Screenshot](images/Resync.png)
-
 ### Our Syncing Strategy
 
-For our purposes here in this intro plugin, we will use a simple strategy. We'll simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running the Unix tool `rsync` from our staging environment, and rely on passwordless SSH to connect to the source environment.
+For our purposes here in this intro plugin, we will use a simple strategy. We won't do anything with the resync snapshot parameter and simply copy files from the filesystem on the source environment onto the NFS mount on the staging environment. We will do this by running the Unix tool `rsync` from our staging environment, and rely on passwordless SSH to connect to the source environment.
 
 !!! info
     This plugin is assuming that `rsync` is installed on the staging host, and that the staging
@@ -116,7 +113,7 @@ Let's take this line-by-line to see what's going on here.
 ```
 @plugin.linked.mount_specification()
 ```
-This [decorator](/References/Glossary/#password-property) announces that the following function
+This [decorator](/References/Glossary.md#password-property) announces that the following function
 is the code that handles the `mount_specification` operation. This is what allows the Delphix
 Engine to know which function to call when it's time to learn where to mount. Every operation
 definition will begin with a similar decorator.
@@ -141,7 +138,7 @@ simply retrieves the user-provided mount location and saves it in a local variab
     mount = Mount(staged_source.staged_connection.environment, mount_location)
 ```
 
-This line constructs a new object from the [Mount class](/References/Classes/#mount). This class
+This line constructs a new object from the [Mount class](/References/Classes.md#mount). This class
 holds details about how Delphix Engine storage is mounted onto remote environments. Here, we
 create a mount object that says to mount onto the staging environment, at the location specified
 by the user.
@@ -151,7 +148,7 @@ by the user.
 ```
 
 On the line just before this one, we created an object that describes a *single* mount. Now, we
-must return a full [mount specification](/References/Glossary/#mount-specification). In general,
+must return a full [mount specification](/References/Glossary.md#mount-specification). In general,
 a mount specification is a collection of mounts. But, in our case, we just have one single mount.
 Therefore, we use an array with only one item it in -- namely, the one single mount object we
 created just above.
@@ -159,7 +156,7 @@ created just above.
 
 ### Data Copying
 
-As explained here (link to reference flowchart), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dsource. That means our `preSnapshot` operation has to get the NFS share into the desired state. For us, that means that's the time to do our data copy.
+As explained [here](/References/Workflows.md#linked-source-sync), the Delphix Engine will always run the plugin's `preSnapshot` operation just before taking a snapshot of the dsource. That means our `preSnapshot` operation has to get the NFS share into the desired state. For us, that means that's the time to do our data copy.
 
 Open up the `plugin_runner.py` file and add the following code:
 
@@ -206,12 +203,12 @@ were provided by the user. Here we're just putting them into a format that `rsyn
 This line is the actual Bash command that we'll be running on the staging host. This will look something like `rsync -r user@host:/source/path /staging/mount/path`.
 
 ```python
-    result = libs.run_bash(staged_source.source_connection, rsync_command)
+    result = libs.run_bash(staged_source.staged_connection, rsync_command)
 ```
 
-This is an example of a [platform library](/References/Glossary/#platform-libraries) function, where we ask the Virtualization Platform
+This is an example of a [platform library](/References/Glossary.md#platform-libraries) function, where we ask the Virtualization Platform
 to do some work on our behalf. In this case, we're asking the platform to run our Bash command on the
-staging environment. For full details on the `run_bash` platfrom library function and others, see this [reference](/References/Platform_Libraries).
+staging environment. For full details on the `run_bash` platfrom library function and others, see this [reference](/References/Platform_Libraries.md).
 
 ```python
     if result.exit_code != 0:
@@ -223,7 +220,7 @@ message, and describe one possible problem for the user to investigate.
 
 ### Saving Snapshot Data
 
-Whenever the Delphix Engine takes a [snapshot](/References/Glossary/#snapshot) of a dSource or VDB,
+Whenever the Delphix Engine takes a [snapshot](/References/Glossary.md#snapshot) of a dSource or VDB,
 the plugin has the chance to save any information it likes alongside that snapshot. Later, if the
 snapshot is ever used to provision a new VDB, the plugin can use the previously-saved information
 to help get the new VDB ready for use.

@@ -6,18 +6,18 @@ To keep track of this, plugins must specify a version string. There are rules ab
 
 ## Problems With Data Format Mismatches
 
-Plugins supply [schemas](/References/Glossary/#schema) to define their own datatypes. Data that conforms to these schemas is saved by the Delphix Engine. Later, the Delphix Engine may read back that saved data, and provide it to plugin code.
+Plugins supply [schemas](Glossary.md#schema) to define their own datatypes. Data that conforms to these schemas is saved by the Delphix Engine. Later, the Delphix Engine may read back that saved data, and provide it to plugin code.
 
 Imagine this sequence of events:
 
 1. A plugin is initially released. In its snapshot schema, it defines two properties, `date` and `time`, that together specify when the snapshot was taken.
 2. A user installs the initial release of the plugin on their Delphix Engine.
-3. The user takes a snapshot of a [dSource](/References/Glossary/#dsource). Along with this snapshot is stored the `date` and `time`.
+3. The user takes a snapshot of a [dSource](Glossary.md#dsource). Along with this snapshot is stored the `date` and `time`.
 4. A new version of the same plugin is released. In this new version, the snapshot schema now only defines a single property called `timestamp`, which specified both the date and the time together in a single property.
 5. The user installs the new plugin version.
-6. The user attempts to [provision](/References/Glossary/#provisioning) a new [VDB](/References/Glossary/#vdb) from the snapshot they took in step 3.
+6. The user attempts to [provision](Glossary.md#provisioning) a new [VDB](Glossary.md#vdb) from the snapshot they took in step 3.
 
-Now, when provision-related plugin code is called (for example the [configure](/References/Plugin_Operations/#virtual-source-configure) operation), it is going to be handed the snapshot data that was stored in step 2.
+Now, when provision-related plugin code is called (for example the [configure](Plugin_Operations.md#virtual-source-configure) operation), it is going to be handed the snapshot data that was stored in step 2.
 
 The problem here is that we'll have a data format mismatch. The previously-saved snapshot data will have separate `date` and `time` fields, but the new plugin code will be expecting instead a single field called `timestamp`.
 

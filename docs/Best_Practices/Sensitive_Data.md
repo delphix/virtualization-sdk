@@ -12,7 +12,7 @@ Each of these tips are explained below.
 
 # Marking Your Data As Sensitive
 
-Because the Delphix Engine manages the storing and retrieving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](/References/Glossary/#schema), by using the special [`password`](/References/Schemas/#password) keyword.
+Because the Delphix Engine manages the storing and retrieving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](/References/Glossary.md#schema), by using the special [`password`](/References/Schemas.md#password) keyword.
 
 The following example of a schema defines an object with three properties, one of which is sensitive and tagged with the `password` keyword:
 
@@ -36,7 +36,7 @@ This tells the Delphix Engine to take special precautions with this password pro
 
 # Using Environment Variables For Remote Data Passing
 
-Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary/#staging-environment), and that database command will need to use a password.
+Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary.md#staging-environment), and that database command will need to use a password.
 
 ## Example
 Let us take a look at a very simple example where we need to shutdown a database called "inventory" on a target environment by using the `db_cmd shutdown inventory` command. This command will ask for a password on `stdin`, and for our example our password is "hunter2".

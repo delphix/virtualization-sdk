@@ -9,9 +9,9 @@ The name of the file does not matter and can be specified during the build, but,
 |----------|:------:|:--:|-----------|
 |name|Y|string|The name of the plugin. This is the plugin's identifier and must be unique.|
 |prettyName|Y|string|The display name of the plugin. This will be used in the UI.|
-|version|Y|string|The [plugin's version](Plugin_Versioning) in the format `x.y.z`.
+|version|Y|string|The [plugin's version](Plugin_Versioning.md) in the format `x.y.z`.
 |hostTypes|Y|list|The host type that the plugin supports. Either `UNIX` or `WINDOWS`.|
-|schemaFile|Y|string|The path to the JSON file that contains the [plugin's schema definitions](Schemas).<br><br>This path can be absolute or relative to the directory containing the plugin config file.|
+|schemaFile|Y|string|The path to the JSON file that contains the [plugin's schema definitions](Schemas.md).<br><br>This path can be absolute or relative to the directory containing the plugin config file.|
 |srcDir|Y|string|The path to the directory that contains the source code for the plugin. During execution of a plugin operation, this directory will be the current working directory of the Python interpreter. Any modules or resources defined outside of this directory will be inaccessible at runtime.<br><br>This path can be absolute or relative to the directory containing the plugin config file.|
 |entryPoint|Y|string|A fully qualified Python symbol that points to the `dlpx.virtualization.platform.Plugin` object that defines the plugin.<br><br>It must be in the form `importable.module:object_name` where `importable.module` is in `srcDir`.|
 |manualDiscovery|Y|boolean|True if the plugin supports manual discovery of source config objects.|

@@ -5,7 +5,7 @@ title: Virtualization SDK
 # Provisioning
 
 ## What is Provisioning?
-Once Delphix has a [snapshot](/References/Glossary/#snapshot) of a dataset (for example of a dSource), it is possible to quickly clone that snapshot to create a new [virtual dataset](/References/Glossary/#virtual-dataset). This new virtual dataset will be made available for use on a [target environment](/References/Glossary/#target-environment). This process is called [provisioning](/References/Glossary/#provisioning).
+Once Delphix has a [snapshot](/References/Glossary.md#snapshot) of a dataset (for example of a dSource), it is possible to quickly clone that snapshot to create a new [virtual dataset](/References/Glossary.md#virtual-dataset). This new virtual dataset will be made available for use on a [target environment](/References/Glossary.md#target-environment). This process is called [provisioning](/References/Glossary.md#provisioning).
 
 ## Our Provisioning Strategy
 For many plugins, there is a lot of work that needs to be done before a newly-provisioned virtual dataset can be made useful. For example, it might need to be registered with a running DBMS. Or, maybe some data inside the dataset needs to be changed so it behaves properly on the target environment.
@@ -15,7 +15,7 @@ In our case, however, there is very little to do. All we really require is that 
 ## Defining our Provision-Related Data Formats
 
 We have already seen four custom data formats: for repositories, source configs, snapshots and
-linked sources. The final one is used for [virtual sources](/References/Glossary/#virtual-source).
+linked sources. The final one is used for [virtual sources](/References/Glossary.md#virtual-source).
 
 Recall that, for our plugin, a VDB is just a directory full of files. There is no special
 procedure needed to enable it, no DBMS to coordinate with, etc. All we need to do is make the files
@@ -46,9 +46,8 @@ property, and it represents the mount location on the target environment.
 
 ## Implementing Provisioning
 
-There are numerous ways for a plugin to customize the provisioning process. For full details see (link to reference).
-
-For our simple plugin, we just need to do a few things:
+There are numerous ways for a plugin to customize the provisioning process.
+For our example plugin, we just need to do a few things:
 
 1. Tell Delphix where to mount the virtual dataset.
 2. Create a `sourceConfig` to represent each newly-provisioned virtual dataset.
@@ -73,7 +72,7 @@ and return it to Delphix.
 
 ### Creating a Source Config for a new VDB
 
-Just like we saw earlier with [linked datasets](/References/Glossary/#linked-dataset), each virtual dataset will need its own source config so that the Delphix Engine can interact with it. Our plugin is in charge of creating that source config at provision time
+Just like we saw earlier with [linked datasets](/References/Glossary.md#linked-dataset), each virtual dataset will need its own source config so that the Delphix Engine can interact with it. Our plugin is in charge of creating that source config at provision time
 
 As a reminder, here is what our schema looks like for source configs:
 

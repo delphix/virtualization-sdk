@@ -4,7 +4,7 @@ title: Virtualization SDK
 
 # Decorators
 
-The Virtualization SDK exposes decorators to be able to annotate functions that correspond to each [Plugin Operation](Plugin_Operations.md). 
+The Virtualization SDK exposes decorators to be able to annotate functions that correspond to each [Plugin Operation](Plugin_Operations.md).
 In the example below, it first instantiates a `Plugin()` object, that can then be used to tag plugin operations.
 
 

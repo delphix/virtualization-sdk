@@ -62,7 +62,7 @@ logger.error('error')
 Imagine you notice that your plugin is taking a very long time to do discovery. Everything works, it just takes much longer than expected. You'd like to figure out why.
 
 !!! info
-    Refer to [Managing Scripts for Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) for how remote scripts can be stored and retrieved.
+    Refer to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for how remote scripts can be stored and retrieved.
 
 Suppose your plugin has a source config discovery operation that looks like this (code is abbreviated to be easier to follow):
 ```python

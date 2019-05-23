@@ -1,6 +1,6 @@
 # CLI
 
-The CLI is installed with the SDK. To install the SDK, refer to the [Getting Started](../Getting_Started) section.
+The CLI is installed with the SDK. To install the SDK, refer to the [Getting Started](/Getting_Started.md) section.
 
 ## Help
 Every command has a `-h` flag including the CLI itself. This will print the help menu.

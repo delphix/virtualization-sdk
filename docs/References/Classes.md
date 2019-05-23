@@ -150,7 +150,7 @@ ownership_specification | [OwnershipSpecification](#ownershipspecification) | **
 
 ## SnapshotParametersDefinition
 
-User provided parameters for the snapshot operation.
+User provided parameters for the snapshot operation. The snapshot parameter includes a resync boolean that can be used to indicate to the plugin whether or not to initiate a full ingestion of the dSource. The snapshot parameter can only be set during a manual snapshot, when using a sync policy resync defaults to false.
 
 ```python
 from dlpx.virtualization.platform import Plugin

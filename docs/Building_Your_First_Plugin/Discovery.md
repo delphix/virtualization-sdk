@@ -7,10 +7,10 @@ title: Virtualization SDK
 ## What is Discovery?
 In order to ingest data from a source environment, the Delphix Engine first needs to learn information about the data: Where does it live? How can it be accessed? What is it called?
 
-[Discovery](/References/Glossary/#discovery) is the process by which the Delphix Engine learns about remote data. Discovery can be either:
+[Discovery](/References/Glossary.md#discovery) is the process by which the Delphix Engine learns about remote data. Discovery can be either:
 
-- [automatic](/References/Glossary/#automatic-discovery) — where the plugin finds the remote data on its own
-- [manual](/References/Glossary/#manual-discovery) — where the user tells us about the remote data
+- [automatic](/References/Glossary.md#automatic-discovery) — where the plugin finds the remote data on its own
+- [manual](/References/Glossary.md#manual-discovery) — where the user tells us about the remote data
 
 For our first plugin, we will be using a mix of these two techniques.
 
@@ -18,9 +18,9 @@ For our first plugin, we will be using a mix of these two techniques.
 
 ### What are Source Configs and Repositories?
 
-A [source config](/References/Glossary/#source-config) is a collection of information that Delphix uses to represent a dataset. Different plugins will have different ideas about what a "dataset" is (an entire database? a set of config files? an application?). For our first plugin, it is simply a directory tree on the filesystem of the remote environment.
+A [source config](/References/Glossary.md#source-config) is a collection of information that Delphix uses to represent a dataset. Different plugins will have different ideas about what a "dataset" is (an entire database? a set of config files? an application?). For our first plugin, it is simply a directory tree on the filesystem of the remote environment.
 
-A [repository](/References/Glossary/#repository) represents what you might call "data dependencies" -- anything installed on the remote host that the dataset depends on. For example, if you are working with a Postgres database, then your repository will represent an installation of a particular version of the Postgres DBMS. In this plugin, we do not have any special dependencies, except for the simple existence of the unix system on which the directory lives.
+A [repository](/References/Glossary.md#repository) represents what you might call "data dependencies" -- anything installed on the remote host that the dataset depends on. For example, if you are working with a Postgres database, then your repository will represent an installation of a particular version of the Postgres DBMS. In this plugin, we do not have any special dependencies, except for the simple existence of the unix system on which the directory lives.
 
 We will be using automatic discovery for our repositories, and manual discovery for our source configs.
 
@@ -35,9 +35,9 @@ Because each plugin will have different ideas about what a repository or source 
 
 Delphix needs to know the format of this information. How many pieces of information are collected? What are they called? Are they strings? Numbers?
 
-For our first plugin, we do not need a lot of information,  refer to (link to advanced example) for a more complicated example. We use no special information about our repositories (except some way for the user to identify them). For source configs, all we need to know is the path to the directory from which we will be ingesting data.
+For our first plugin, we do not need a lot of information. We use no special information about our repositories (except some way for the user to identify them). For source configs, all we need to know is the path to the directory from which we will be ingesting data.
 
-The plugin needs to describe all of this to the Delphix Engine, and it does so using [schemas](/References/Glossary/#schema).  Recall that when we ran `dvp init`, a file full of bare-bones schemas was created. As we build up our first toolkit, we will be augmenting these schemas to serve our needs.
+The plugin needs to describe all of this to the Delphix Engine, and it does so using [schemas](/References/Glossary.md#schema).  Recall that when we ran `dvp init`, a file full of bare-bones schemas was created. As we build up our first toolkit, we will be augmenting these schemas to serve our needs.
 
 #### Repository Schema
 Open up the `schema.json` file in your editor/IDE and locate `repositoryDefinition`, it should look like this:
@@ -112,7 +112,7 @@ Right now, we are concerned with discovery. There are two customizable operation
 
 
 ### Repository Discovery
-For repositories, we will need to write a [repository discovery](/References/Plugin_Operations/#repository-discovery) operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
+For repositories, we will need to write a [repository discovery](/References/Plugin_Operations.md#repository-discovery) operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
 
 As a reminder, our only external dependency on the remote environment is simply the existence of a filesystem. Since every Unix host has a filesystem, that means we will have exactly one repository per remote environment. Therefore, our repository discovery operation can be very simple.
 
@@ -166,7 +166,7 @@ def repository_discovery(source_connection):
 ```
 This begins the definition of a function we have elected to call `repository_discovery`.
 
-We are using a Python [decorator](/References/Glossary/#decorator) which signals to the Delphix Engine that this is the function which should be called when it is time to do repository discovery. Note that we are using our `plugin` variable here as part of the decorator.
+We are using a Python [decorator](/References/Glossary.md#decorator) which signals to the Delphix Engine that this is the function which should be called when it is time to do repository discovery. Note that we are using our `plugin` variable here as part of the decorator.
 
 The Delphix Engine will pass us information about the source environment in an argument called `source_connection`. As it happens, we will not need to use this information at all in our case.
 
