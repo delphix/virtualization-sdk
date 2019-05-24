@@ -163,7 +163,7 @@ remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection
 source_directory | String | Directory of files to be synced.
 rsync_user | String | **Optional** User who has access to the directory to be synced.
 exclude_paths | list[String] | **Optional** Paths to be excluded.
-sym_links_to_follow | list[String] | **Optional** Sym links to follow if any.
+sym_links_to_follow | list[String] | **Optional** Symbollic links to follow if any.
 
 ### Returns
 

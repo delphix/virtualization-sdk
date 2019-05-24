@@ -27,7 +27,7 @@ For our first plugin, we will be using the more flexible [staging](/References/G
 
 With the staging strategy, there are two types of syncs: sync and resync. A `sync` is used to ingestion incremental changes while a `resync` is used to re-ingest all the data for the dSource. For databases, this could mean re-ingesting from a full database backup to reset the dSource. A `sync` and a `resync` execute the same plugin operations and are differentiated by a boolean flag in the [snapshot_parameters](/References/Classes.md#snapshotparametersdefinition) argument passed into [linked.pre_snapshot](/References/Plugin_Operations.md#staged-linked-source-pre-snapshot) and [linked.post_snapshot](/References/Plugin_Operations.md#staged-linked-source-post-snapshot).
 
-A regular sync is the default and is executed as part of policy driven syncs. A resync is only executed during initial ingestion or if the Delphix user manually starts one. The customer can manually trigger a resync via the UI by selecting the dSource, going to more options and selecting **Resynchronize dSource**. ![Screenshot](images/Resync.png)
+A regular `sync` is the default and is executed as part of policy driven syncs. A `resync` is only executed during initial ingestion or if the Delphix user manually starts one. The customer can manually trigger a `resync` via the UI by selecting the dSource, going to more options and selecting **Resynchronize dSource**. ![Screenshot](images/Resync.png)
 
 !!! tip "Gotcha"
     Although it is not common, it is entirely possible that the staging environment is the same as the source environment. Be careful not to assume otherwise in your plugins.
@@ -237,7 +237,7 @@ def _make_snapshot_data():
     return SnapshotDefinition()
 
 @plugin.linked.post_snapshot()
-def dsource_post_snapshot(staged_source, repository, source_config):
+def dsource_post_snapshot(staged_source, repository, source_config, snapshot_parameters):
     return _make_snapshot_data()
 ```
 

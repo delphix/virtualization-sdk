@@ -16,7 +16,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - Java 7+
 
 ## Installation
-To install the latest version of our SDK run:
+To install the latest version of our SDK (0.4.0) run:
 
 ```
 $ pip install dvp
@@ -33,6 +33,12 @@ To install a specific version of the SDK run:
 
 ```
 $ pip install dvp==<version>
+```
+
+To upgrade an existing installation of the SDK run:
+
+```
+$ pip install dvp --upgrade
 ```
 
 !!! note "API Build Version"
