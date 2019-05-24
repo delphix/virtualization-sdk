@@ -27,28 +27,14 @@ postgres
         └── execution_util.py
 ```
 
+Any module in the plugin could import `execution_util.py` with `from utils import exception_util.py`.
+
 !!! warning "Gotcha"
 	Since the platform uses Python 2.7, every directory needs to have an `__init__.py` file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on `__init__.py` files refer to Python's [documentation on packages](https://docs.python.org/2/tutorial/modules.html#packages).
 	
 	Note that the `srcDir` in the plugin config file (`src` in this example) does _not_ need an `__init__.py` file.
 
-`plugin_config.yml` contains:
-
-```
-name: postgres
-prettyName: PostgreSQL
-version: 0.1.0
-language: PYTHON27
-hostTypes:
-- UNIX
-pluginType: DIRECT
-manualDiscovery: true
-entryPoint: plugin_runner:plugin
-srcDir: src
-schemaFile: schema.json
-```
-
-and `schema.json` contains:
+Assume `schema.json` contains:
 
 ```
 {
@@ -69,21 +55,6 @@ and `schema.json` contains:
         },
         "nameField": "name",
         "identityFields": ["name"]
-    },
-    "virtualSourceDefinition": {
-        "type": "object",
-        "additionalProperties" : false,
-        "properties" : {}
-    },
-    "linkedSourceDefinition": {
-        "type": "object",
-        "additionalProperties" : false,
-        "properties" : {}
-    },
-    "snapshotDefinition": {
-        "type" : "object",
-        "additionalProperties" : false,
-        "properties" : {}
     }
 }
 ```
@@ -147,3 +118,33 @@ def find_schemas(source_connection, repository):
 ```
 !!! note
 	Even though `discovery.py` is in the `operations` package, the import for `execution_util` is still relative to the `srcDir` specified in the plugin config file. `execution_util` is in the `utils` package so it is imported with `from utils import execution_util`. 
+	
+### exception_util.py
+
+`exception_util.py` has two methods `execute_sql` and `execute_shell`. `execute_sql` takes the name of a SQL script in `resources/` and executes it with `resources/execute_sql.sh`. `execute_shell` takes the name of a shell script in `resources/` and executes it.
+
+```python
+import pkgutil
+
+from dlpx.virtualization import libs
+
+
+def execute_sql(source_connection, install_name, script_name):
+    psql_script = pkgutil.get_data("resources", "execute_sql.sh")
+    sql_script = pkgutil.get_data("resources", script_name)
+
+    result = libs.run_bash(
+        source_connection, psql_script, variables={"SCRIPT": sql_script}, check=True
+    )
+    return result.stdout
+
+
+def execute_shell(source_connection, script_name):
+    script = pkgutil.get_data("resources", script_name)
+
+    result = libs.run_bash(source_connection, script, check=True)
+    return result.stdout
+```
+
+!!! note
+	Both `execute_sql` and `execute_shell` use the `check` parameter which will cause an error to be raised if the exit code is non-zero. For more information refer to the `run_bash` [documentation](/References/Platform_Libraries.md#run_bash).
