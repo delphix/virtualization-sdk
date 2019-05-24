@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5437552cc7aeb68a2bd92ad36ed1cf6d782ea4e460d783fd07cffaf8e42ee021"
+            "sha256": "3fce5a7674e47871972816581bb4ae7b60ace6b5acfb5004d9406aa1aa0e8b61"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -189,10 +189,10 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:a53063d8b9210a7bdec15e7b272776b9d42b2fd6816401a0d43006ad2f9902db",
-                "sha256:d363e3607d8de0c220d31950a8f38b18d5ba7c0830facd71a1c6b1036b7ce06c"
+                "sha256:b246607a25ac80bedac05c6f282e3cdaf3afb65420fd024ac94435cabe6e18d1",
+                "sha256:dbe59173209418ae49d485b87d1681aefa36252ee85884c31346debd19463232"
             ],
-            "version": "==1.25.2"
+            "version": "==1.25.3"
         }
     },
     "develop": {
@@ -223,7 +223,7 @@
                 "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
                 "sha256:da60d0014fd8c55eb48c1c5354352e363e2d30bbf7057e5e171a468390184c75"
             ],
-            "markers": "python_version == '2.7'",
+            "markers": "python_version < '3.2'",
             "version": "==3.7.4"
         },
         "coverage": {
@@ -264,16 +264,16 @@
             "version": "==4.5.3"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-0.4.0-internal-018.tar.gz",
-            "version": "== 0.4.0-internal-018"
+            "path": "../common/build/python-dist/dvp-common-0.4.0.tar.gz",
+            "version": "== 0.4.0"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-0.4.0-internal-018.tar.gz",
-            "version": "== 0.4.0-internal-018"
+            "path": "../libs/build/python-dist/dvp-libs-0.4.0.tar.gz",
+            "version": "== 0.4.0"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-0.4.0-internal-018.tar.gz",
-            "version": "== 0.4.0-internal-018"
+            "path": "../platform/build/python-dist/dvp-platform-0.4.0.tar.gz",
+            "version": "== 0.4.0"
         },
         "entrypoints": {
             "hashes": [
