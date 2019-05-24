@@ -1,5 +1,5 @@
 # Getting Started
-The Virtualization SDK is a Python package on [PyPI](https://pypi.org/user/delphix/). Install it in your local development environment so that you can build and upload a plugin.
+The Virtualization SDK is a Python package on [PyPI](https://pypi.org/project/dvp/). Install it in your local development environment so that you can build and upload a plugin.
 
 The SDK consists of three parts:
 
