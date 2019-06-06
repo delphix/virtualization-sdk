@@ -5,11 +5,14 @@
 import importlib
 import inspect
 import logging
+import os
+import subprocess
 import sys
 from collections import defaultdict
 from multiprocessing import Process, Queue
 
 from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
 from dlpx.virtualization._internal.util_classes import MessageUtils
 
 logger = logging.getLogger(__name__)
@@ -122,22 +125,19 @@ class PluginImporter:
         """
         logger.debug('Importing plugin module : %s', self.__plugin_module)
 
+        self.__pre_import_checks()
         plugin_manifest, warnings = self.__import_plugin()
-
-        # Check if any of the required methods are not implemented
-        check_warnings = self.__check_for_required_methods(plugin_manifest)
-        if check_warnings and 'warning' in check_warnings:
-            warnings['warning'].extend(check_warnings['warning'])
-
-        if warnings and 'exception' in warnings:
-            exception_msg = MessageUtils.exception_msg(warnings)
-            exception_msg += '\n{}'.format(MessageUtils.warning_msg(warnings))
-            raise exceptions.UserError(
-                '{}\n{} Warning(s). {} Error(s).'.format(
-                    exception_msg, len(warnings['warning']),
-                    len(warnings['exception'])))
+        self.__post_import_checks(plugin_manifest, warnings)
 
         return plugin_manifest, warnings
+
+    def __pre_import_checks(self):
+        """
+        Performs checks of the plugin code that should take place prior to
+        importing.
+        """
+        warnings = PluginImporter.__check_for_undefined_names(self.__src_dir)
+        PluginImporter.__report_warnings_and_exceptions(warnings)
 
     def __import_plugin(self):
         """
@@ -161,6 +161,18 @@ class PluginImporter:
             warnings['exception'].append(exception_msg)
 
         return plugin_manifest, warnings
+
+    def __post_import_checks(self, plugin_manifest, warnings):
+        """
+        Performs checks of the plugin code that should take place after
+        importing.
+        """
+        check_warnings = self.__check_for_required_methods(plugin_manifest)
+
+        if check_warnings and 'warning' in check_warnings:
+            warnings['warning'].extend(check_warnings['warning'])
+
+        self.__report_warnings_and_exceptions(warnings)
 
     @staticmethod
     def __check_for_required_methods(plugin_manifest):
@@ -389,3 +401,42 @@ class PluginImporter:
                                 str(actual_args)))
 
         return warnings
+
+    @staticmethod
+    def __check_for_undefined_names(src_dir):
+        """
+        Checks the plugin module for undefined names. This catches
+        missing imports, references to nonexistent variables, etc.
+        """
+        warnings = defaultdict(list)
+        exclude_dir = os.path.sep.join([src_dir, CODEGEN_PACKAGE])
+        err_format = '%(text)s on line %(row)d in %(path)s'
+
+        proc = subprocess.Popen([
+            'flake8', src_dir, '--select=F821',
+            '--exclude={}'.format(exclude_dir),
+            '--format="{}"'.format(err_format)
+        ],
+                                stdout=subprocess.PIPE)
+        stdout, _ = proc.communicate()
+        retcode = proc.returncode
+
+        if retcode != 0:
+            for line in stdout.splitlines():
+                warnings['exception'].append(exceptions.UserError(line))
+
+        return warnings
+
+    @staticmethod
+    def __report_warnings_and_exceptions(warnings):
+        """
+        Prints the warnings and errors that were found in the plugin code, if
+        the warnings dictionary contains the 'exception' key.
+        """
+        if warnings and 'exception' in warnings:
+            exception_msg = MessageUtils.exception_msg(warnings)
+            exception_msg += '\n{}'.format(MessageUtils.warning_msg(warnings))
+            raise exceptions.UserError(
+                '{}\n{} Warning(s). {} Error(s).'.format(
+                    exception_msg, len(warnings['warning']),
+                    len(warnings['exception'])))

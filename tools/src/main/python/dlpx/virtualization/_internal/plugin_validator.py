@@ -235,7 +235,6 @@ class PluginValidator:
             callers of validator. To avoid such issues, perform the import in
             in a sub-process and on completion return the output.
         """
-        warnings = defaultdict(list)
         importer = plugin_importer.PluginImporter(src_dir, entry_point_module,
                                                   entry_point_object,
                                                   plugin_type, True)
