@@ -92,10 +92,17 @@ command | String | Expect(Tcl) command to run.
 variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
 
 ### Returns
+An object of `RunExpectResponse`
 
-None
+Field | Type | Description
+----- | ---- | -----------
+exit_code | Integer | Exit code from the command.
+stdout | String | Stdout from the command.
+stderr | String | Stderr from the command.
 
 ### Example
+
+Calling expect  with an inline command.
 
 ```python
 from dlpx.virtualization import libs
@@ -103,7 +110,11 @@ from dlpx.virtualization import libs
 command = "puts 'Hi'"
 vars = {"var": "val"}
 
-libs.run_expect(connection, command, vars)
+repsonse = libs.run_expect(connection, command, vars)
+
+print response.exit_code
+print response.stdout
+print response.stderr
 ```
 
 ## run_powershell
@@ -133,6 +144,8 @@ stdout | String | Stdout from the command.
 stderr | String | Stderr from the command.
 
 ### Example
+
+Calling powershell with an inline command.
 
 ```python
 from dlpx.virtualization import libs

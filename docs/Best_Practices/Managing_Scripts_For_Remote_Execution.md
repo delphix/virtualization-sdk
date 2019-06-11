@@ -1,6 +1,6 @@
 # Managing Scripts for Remote Execution
 
-To execute a PowerShell or Bash script on a remote host, you must provide the script as a string to `run_powershell` or `run_bash`. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with `pkgutil`.
+To execute a PowerShell or Bash script or Expect script on a remote host, you must provide the script as a string to `run_powershell` or `run_bash` or `run_expect`. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with `pkgutil`.
 
 [pkgutil](https://docs.python.org/2/library/pkgutil.html) is part of the standard Python library. The method that is applicable to resources is [pkgutil.get_data](https://docs.python.org/2/library/pkgutil.html#pkgutil.get_data).
 
