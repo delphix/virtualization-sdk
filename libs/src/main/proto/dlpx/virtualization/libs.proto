@@ -89,7 +89,11 @@ message RunExpectRequest {
   map<string, string> variables = 3;
 }
 
-message RunExpectResult { }
+message RunExpectResult {
+  int32 exit_code = 1;
+  string stdout = 2;
+  string stderr = 3;
+}
 
 message RunExpectResponse {
   oneof result {

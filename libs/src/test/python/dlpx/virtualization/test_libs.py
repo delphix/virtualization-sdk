@@ -693,6 +693,9 @@ class TestLibsRunExpect:
     @staticmethod
     def test_run_expect():
         expected_run_expect_response = libs_pb2.RunExpectResponse()
+        expected_run_expect_response.return_value.exit_code = 0
+        expected_run_expect_response.return_value.stdout = 'stdout'
+        expected_run_expect_response.return_value.stderr = 'stderr'
 
         expected_remote_connection = common_pb2.RemoteConnection()
         expected_remote_connection.environment.name = 'RemoteConnectionEnv'
@@ -712,14 +715,75 @@ class TestLibsRunExpect:
                     expected_remote_connection.environment.reference)
             return expected_run_expect_response
 
-        with mock.patch("dlpx.virtualization._engine.libs.run_expect",
+        with mock.patch('dlpx.virtualization._engine.libs.run_expect',
                         side_effect=mock_run_expect, create=True):
-            actual_run_expect_response = libs.run_expect(
+            actual_run_expect_result = libs.run_expect(
                 expected_remote_connection,
                 expected_command,
                 expected_variables)
 
-        assert actual_run_expect_response is None
+        expected = expected_run_expect_response.return_value
+        assert actual_run_expect_result.exit_code == expected.exit_code
+        assert actual_run_expect_result.stdout == expected.stdout
+        assert actual_run_expect_result.stderr == expected.stderr
+
+    @staticmethod
+    def test_run_expect_check_true_exitcode_success():
+        expected_run_expect_response = libs_pb2.RunPowerShellResponse()
+        expected_run_expect_response.return_value.exit_code = 0
+        expected_run_expect_response.return_value.stdout = "stdout"
+        expected_run_expect_response.return_value.stderr = "stderr"
+
+        expected_remote_connection = common_pb2.RemoteConnection()
+        expected_remote_connection.environment.name = "RemoteConnectionEnv"
+        expected_remote_connection.environment.reference = "remoteConnectionReference"
+        expected_command = "command"
+        expected_variables = None
+
+        def mock_run_expect(actual_run_expect_request):
+            assert actual_run_expect_request.command == expected_command
+            assert (
+                actual_run_expect_request.remote_connection.environment.name
+                == expected_remote_connection.environment.name
+            )
+            assert (
+                actual_run_expect_request.remote_connection.environment.reference
+                == expected_remote_connection.environment.reference
+            )
+            return expected_run_expect_response
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_expect",
+                        side_effect=mock_run_expect, create=True):
+            actual_run_expect_result = libs.run_expect(
+                expected_remote_connection,
+                expected_command, expected_variables, check=True)
+
+            assert actual_run_expect_result.exit_code == expected_run_expect_response.return_value.exit_code
+            assert actual_run_expect_result.stdout == expected_run_expect_response.return_value.stdout
+            assert actual_run_expect_result.stderr == expected_run_expect_response.return_value.stderr
+
+    @staticmethod
+    def test_run_expect_check_true_exitcode_failed():
+        expected_message = (
+            'The script failed with exit code 1.'
+            ' stdout : stdout and  stderr : stderr'
+        )
+
+        response = libs_pb2.RunExpectResponse()
+        response.return_value.exit_code = 1
+        response.return_value.stdout = "stdout"
+        response.return_value.stderr = "stderr"
+
+        connection = common_pb2.RemoteConnection()
+        connection.environment.name = "name"
+        connection.environment.reference = "ref"
+
+        with mock.patch("dlpx.virtualization._engine.libs.run_expect",
+                        return_value=response, create=True):
+            with pytest.raises(PluginScriptError) as info:
+                response = libs.run_expect(connection, "test_command",
+                                               check=True)
+            assert info.value.message == expected_message
 
     @staticmethod
     def test_run_expect_with_actionable_error():

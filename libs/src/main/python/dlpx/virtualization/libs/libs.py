@@ -70,7 +70,8 @@ def _check_exit_code(response, check):
   if check is True.
 
   Args:
-    response (RunPowerShellResponse or RunBashResponse): Response received by run_bash or run_power_shell
+    response (RunPowerShellResponse or RunBashResponse or RunExpectResponse): Response received by run_bash or
+    run_powershell or run_expect
     check (bool): if True and non-zero exitcode is received in response, raise PluginScriptError
   """
   if (check and response.HasField('return_value')
@@ -308,7 +309,7 @@ def run_powershell(remote_connection, command, variables=None, check=False):
     return _handle_response(run_powershell_response)
 
 
-def run_expect(remote_connection, command, variables=None):
+def run_expect(remote_connection, command, variables=None, check=False):
     """run_expect operation wrapper.
 
     The run_expect function executes a tcl command or script on a remote Unix
@@ -368,8 +369,9 @@ def run_expect(remote_connection, command, variables=None):
     for variable, value in variables.items():
         run_expect_request.variables[variable] = value
 
-    response = internal_libs.run_expect(run_expect_request)
-    _handle_response(response)
+    run_expect_response = internal_libs.run_expect(run_expect_request)
+    _check_exit_code(run_expect_response, check)
+    return _handle_response(run_expect_response)
 
 
 def _log_request(message, log_level):
