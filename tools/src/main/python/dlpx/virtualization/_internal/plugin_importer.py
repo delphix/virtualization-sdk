@@ -1,12 +1,10 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-
 import importlib
 import inspect
 import logging
 import os
-import subprocess
 import sys
 from collections import defaultdict
 from multiprocessing import Process, Queue
@@ -14,6 +12,7 @@ from multiprocessing import Process, Queue
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
 from dlpx.virtualization._internal.util_classes import MessageUtils
+from flake8.api import legacy as flake8
 
 logger = logging.getLogger(__name__)
 
@@ -407,23 +406,29 @@ class PluginImporter:
         """
         Checks the plugin module for undefined names. This catches
         missing imports, references to nonexistent variables, etc.
+
+        ..note::
+            We are using the legacy flake8 api, because there is currently
+            no public, stable api for flake8 >= 3.0.0
+
+            For more info, see
+            https://flake8.pycqa.org/en/latest/user/python-api.html
         """
         warnings = defaultdict(list)
         exclude_dir = os.path.sep.join([src_dir, CODEGEN_PACKAGE])
-        err_format = '%(text)s on line %(row)d in %(path)s'
-
-        proc = subprocess.Popen([
-            'flake8', src_dir, '--select=F821',
-            '--exclude={}'.format(exclude_dir),
-            '--format="{}"'.format(err_format)
-        ],
-                                stdout=subprocess.PIPE)
-        stdout, _ = proc.communicate()
-        retcode = proc.returncode
-
-        if retcode != 0:
-            for line in stdout.splitlines():
-                warnings['exception'].append(exceptions.UserError(line))
+        style_guide = flake8.get_style_guide(select=["F821"],
+                                             exclude=[exclude_dir],
+                                             quiet=1)
+        style_guide.check_files(paths=[src_dir])
+        file_checkers = style_guide._application.file_checker_manager.checkers
+        for checker in file_checkers:
+            for result in checker.results:
+                # From the api code, result is a tuple defined as: error =
+                # (error_code, line_number, column, text, physical_line)
+                if result[0] == 'F821':
+                    msg = "{} on line {} in {}".format(result[3], result[1],
+                                                       checker.filename)
+                    warnings['exception'].append(exceptions.UserError(msg))
 
         return warnings
 
