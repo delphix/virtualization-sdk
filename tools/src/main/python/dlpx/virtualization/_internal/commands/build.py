@@ -16,17 +16,13 @@ from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            util_classes)
 
 logger = logging.getLogger(__name__)
-# This is hard-coded to the delphix web service api version
-# against which the plugin is built. This enables backwards compatibility
-# of plugins to work for future versions of delphix engine.
-ENGINE_API = {'type': 'APIVersion', 'major': 1, 'minor': 10, 'micro': 4}
 
-TYPE = 'Toolkit'
+TYPE = 'Plugin'
 LOCALE_DEFAULT = 'en-us'
-VIRTUAL_SOURCE_TYPE = 'ToolkitVirtualSource'
-DISCOVERY_DEFINITION_TYPE = 'ToolkitDiscoveryDefinition'
-STAGED_LINKED_SOURCE_TYPE = 'ToolkitLinkedStagedSource'
-DIRECT_LINKED_SOURCE_TYPE = 'ToolkitLinkedDirectSource'
+VIRTUAL_SOURCE_TYPE = 'PluginVirtualSourceDefinition'
+DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
+STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
+DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
 
 
 def build(plugin_config, upload_artifact, generate_only):
@@ -116,13 +112,6 @@ def build(plugin_config, upload_artifact, generate_only):
     plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
                                             schemas, plugin_manifest)
 
-    #
-    # Add empty strings for plugin operations for now as API expects them.
-    # This can be removed when Delphix API changes in future.
-    #
-    add_empty_plugin_operations_to_plugin_output(plugin_output,
-                                                 plugin_config_content)
-
     # Write it to upload_artifact as json.
     generate_upload_artifact(upload_artifact, plugin_output)
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
@@ -158,7 +147,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'buildApi':
         package_util.get_build_api_version(),
         'engineApi':
-        ENGINE_API,
+        package_util.get_engine_api_version(),
         'rootSquashEnabled':
         plugin_config_content.get('rootSquashEnabled', True),
         'sourceCode':
@@ -234,42 +223,6 @@ def prepare_discovery_definition(config_content, schemas):
         'sourceConfigSchema':
         schema_source_config_def
     }
-
-
-def add_empty_plugin_operations_to_plugin_output(plugin_output,
-                                                 plugin_config_content):
-    """
-    Delphix API needs some of the these fields to be present.
-    So adding empty values for now. We should remove these
-    once the API changes in future.
-    """
-    plugin_output['resources'] = {}
-    virtual_source_plugin_operations = {
-        'configure': '',
-        'unconfigure': '',
-        'reconfigure': '',
-        'initialize': '',
-        'start': '',
-        'stop': '',
-        'preSnapshot': '',
-        'postSnapshot': ''
-    }
-    discovery_plugin_operations = {
-        'sourceConfigDiscovery': '',
-        'repositoryDiscovery': ''
-    }
-    linked_source_plugin_operations = {'preSnapshot': '', 'postSnapshot': ''}
-    if plugin_util.STAGED_TYPE == plugin_config_content['pluginType'].upper():
-        linked_source_plugin_operations.update({
-            'resync': '',
-            'startStaging': '',
-            'stopStaging': ''
-        })
-    plugin_output['virtualSourceDefinition'].update(
-        virtual_source_plugin_operations)
-    plugin_output['discoveryDefinition'].update(discovery_plugin_operations)
-    plugin_output['linkedSourceDefinition'].update(
-        linked_source_plugin_operations)
 
 
 def generate_upload_artifact(upload_artifact, plugin_output):

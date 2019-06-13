@@ -287,7 +287,7 @@ class PluginImporter:
         # Check which methods on the plugin object have been implemented.
         manifest = {
             'type':
-            'ToolkitManifest',
+            'PluginManifest',
             'hasRepositoryDiscovery':
             bool(plugin_object.discovery.repository_impl),
             'hasSourceConfigDiscovery':

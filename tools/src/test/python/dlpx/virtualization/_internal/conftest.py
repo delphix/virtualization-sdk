@@ -210,7 +210,7 @@ def plugin_module_content(plugin_entry_point_name):
 @pytest.fixture
 def plugin_manifest():
     manifest = {
-        'type': 'ToolkitManifest',
+        'type': 'PluginManifest',
         'hasRepositoryDiscovery': True,
         'hasSourceConfigDiscovery': True,
         'hasLinkedPreSnapshot': True,
@@ -380,43 +380,11 @@ def additional_definition():
 
 
 @pytest.fixture
-def plugin_output_empty_operations(plugin_type):
-    plugin_output = {
-        'resources': {},
-        'virtualSourceDefinition': {
-            'configure': '',
-            'unconfigure': '',
-            'reconfigure': '',
-            'initialize': '',
-            'start': '',
-            'stop': '',
-            'preSnapshot': '',
-            'postSnapshot': ''
-        },
-        'discoveryDefinition': {
-            'sourceConfigDiscovery': '',
-            'repositoryDiscovery': ''
-        },
-        'linkedSourceDefinition': {
-            'preSnapshot': '',
-            'postSnapshot': ''
-        }
-    }
-    if plugin_type == 'STAGED':
-        plugin_output['linkedSourceDefinition'].update({
-            'resync': '',
-            'startStaging': '',
-            'stopStaging': ''
-        })
-    return plugin_output
-
-
-@pytest.fixture
 def basic_artifact_content(engine_api, virtual_source_definition,
-                           linked_source_definition,
-                           discovery_definition_basic, snapshot_definition):
+                           linked_source_definition, discovery_definition,
+                           snapshot_definition):
     artifact = {
-        'type': 'Toolkit',
+        'type': 'Plugin',
         'name': 'python_vfiles',
         'prettyName': 'Unstructured Files using Python',
         'version': '2.0.0',
@@ -432,18 +400,18 @@ def basic_artifact_content(engine_api, virtual_source_definition,
     }
     if virtual_source_definition:
         artifact['virtualSourceDefinition'] = {
-            'type': 'ToolkitVirtualSource',
+            'type': 'PluginVirtualSourceDefinition',
             'parameters': virtual_source_definition
         }
 
     if linked_source_definition:
         artifact['linkedSourceDefinition'] = {
-            'type': 'ToolkitLinkedDirectSource',
+            'type': 'PluginLinkedDirectSourceDefinition',
             'parameters': linked_source_definition
         }
 
-    if discovery_definition_basic:
-        artifact['discoveryDefinition'] = discovery_definition_basic
+    if discovery_definition:
+        artifact['discoveryDefinition'] = discovery_definition
 
     if snapshot_definition:
         artifact['snapshotSchema'] = snapshot_definition
@@ -462,7 +430,7 @@ def artifact_content(engine_api, virtual_source_definition,
     this function.
     """
     artifact = {
-        'type': 'Toolkit',
+        'type': 'Plugin',
         'name': 'python_vfiles',
         'prettyName': 'Unstructured Files using Python',
         'version': '2.0.0',
@@ -473,7 +441,6 @@ def artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
-        'resources': {},
         'manifest': {}
     }
 
@@ -482,24 +449,14 @@ def artifact_content(engine_api, virtual_source_definition,
 
     if virtual_source_definition:
         artifact['virtualSourceDefinition'] = {
-            'type': 'ToolkitVirtualSource',
+            'type': 'PluginVirtualSourceDefinition',
             'parameters': virtual_source_definition,
-            'configure': '',
-            'unconfigure': '',
-            'reconfigure': '',
-            'initialize': '',
-            'start': '',
-            'stop': '',
-            'preSnapshot': '',
-            'postSnapshot': ''
         }
 
     if linked_source_definition:
         artifact['linkedSourceDefinition'] = {
-            'type': 'ToolkitLinkedDirectSource',
+            'type': 'PluginLinkedDirectSourceDefinition',
             'parameters': linked_source_definition,
-            'preSnapshot': '',
-            'postSnapshot': '',
         }
 
     if discovery_definition:
@@ -513,23 +470,13 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 10, 'micro': 4}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 0}
 
 
 @pytest.fixture
-def discovery_definition(discovery_definition_basic):
-    discovery_definition = {
-        'sourceConfigDiscovery': '',
-        'repositoryDiscovery': ''
-    }
-    discovery_definition.update(discovery_definition_basic)
-    return discovery_definition
-
-
-@pytest.fixture
-def discovery_definition_basic(repository_definition, source_config_definition,
-                               manual_discovery):
-    discovery_definition = {'type': 'ToolkitDiscoveryDefinition'}
+def discovery_definition(repository_definition, source_config_definition,
+                         manual_discovery):
+    discovery_definition = {'type': 'PluginDiscoveryDefinition'}
 
     if manual_discovery:
         discovery_definition['manualSourceConfigDiscovery'] = manual_discovery
@@ -562,9 +509,9 @@ def discovery_definition_basic(repository_definition, source_config_definition,
 @pytest.fixture
 def linked_source_def_type(plugin_type):
     if plugin_type == 'DIRECT':
-        return 'ToolkitLinkedDirectSource'
+        return 'PluginLinkedDirectSourceDefinition'
     else:
-        return 'ToolkitLinkedStagedSource'
+        return 'PluginLinkedStagedSourceDefinition'
 
 
 @pytest.fixture

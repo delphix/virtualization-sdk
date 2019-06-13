@@ -109,23 +109,10 @@ class TestBuild:
     @staticmethod
     def test_prepare_discovery_definition(plugin_config_content,
                                           schema_content,
-                                          discovery_definition_basic):
+                                          discovery_definition):
         actual_discovery_definition = build.prepare_discovery_definition(
             plugin_config_content, schema_content)
-        assert actual_discovery_definition == discovery_definition_basic
-
-    @staticmethod
-    @pytest.mark.parametrize('plugin_type', ['DIRECT', 'STAGED'])
-    def test_add_empty_plugin_operations_to_plugin_output_direct(
-            plugin_config_content, plugin_output_empty_operations):
-        plugin_output = {
-            'virtualSourceDefinition': {},
-            'discoveryDefinition': {},
-            'linkedSourceDefinition': {}
-        }
-        build.add_empty_plugin_operations_to_plugin_output(
-            plugin_output, plugin_config_content)
-        assert plugin_output == plugin_output_empty_operations
+        assert actual_discovery_definition == discovery_definition
 
     @staticmethod
     def test_prepare_upload_artifact_success(basic_artifact_content,
