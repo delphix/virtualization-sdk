@@ -27,6 +27,9 @@ class RepositoryDefinition(Model):
   def from_dict(input_dict):
     return RepositoryDefinition(input_dict['name'])
 
+  def to_dict(self):
+    return { "name": self._name }
+
 
 class SourceConfigDefinition(Model):
   def __init__(self, name):
@@ -46,6 +49,9 @@ class SourceConfigDefinition(Model):
   @staticmethod
   def from_dict(input_dict):
     return SourceConfigDefinition(input_dict['name'])
+
+  def to_dict(self):
+    return { "name": self._name }
 
 
 class LinkedSourceDefinition(Model):
@@ -87,6 +93,9 @@ class VirtualSourceDefinition(Model):
   def from_dict(input_dict):
     return VirtualSourceDefinition(input_dict['name'])
 
+  def to_dict(self):
+    return { "name": self._name }
+
 
 class SnapshotDefinition(Model):
   def __init__(self, name):
@@ -106,6 +115,9 @@ class SnapshotDefinition(Model):
   @staticmethod
   def from_dict(input_dict):
     return SnapshotDefinition(input_dict['name'])
+
+  def to_dict(self):
+    return { "name": self._name }
 
 
 class SnapshotParametersDefinition(Model):
@@ -134,3 +146,6 @@ class SnapshotParametersDefinition(Model):
   @staticmethod
   def from_dict(input_dict):
     return SnapshotParametersDefinition(input_dict['resync'])
+
+  def to_dict(self):
+    return { "resync": self._resync }

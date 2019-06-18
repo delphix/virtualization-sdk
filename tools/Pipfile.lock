@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3713b58386c5fb748b021e6d42657d07a998bdda52da46179e470b64ba304b3f"
+            "sha256": "88ca7c22af0dd8c2df9dd390be6c8b6542df8b617d914bc67d39345fe290d04e"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -23,10 +23,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:59b7658e26ca9c7339e00f8f4636cdfe59d34fa37b9b04f6f9e9926b3cece1a5",
-                "sha256:b26104d6835d1f5e49452a26eb2ff87fe7090b89dfcaee5ea2212697e1e1d7ae"
+                "sha256:046832c04d4e752f37383b628bc601a7ea7211496b4638f6514d0e5b9acc4939",
+                "sha256:945e3ba63a0b9f577b1395204e13c3a231f9bc0223888be653286534e5873695"
             ],
-            "version": "==2019.3.9"
+            "version": "==2019.6.16"
         },
         "chardet": {
             "hashes": [
@@ -317,16 +317,16 @@
             "version": "==4.5.3"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-004-grant.tar.gz",
-            "version": "== 1.0.0-internal-004-grant"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-005.tar.gz",
+            "version": "== 1.0.0-internal-005"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-004-grant.tar.gz",
-            "version": "== 1.0.0-internal-004-grant"
+            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-005.tar.gz",
+            "version": "== 1.0.0-internal-005"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-004-grant.tar.gz",
-            "version": "== 1.0.0-internal-004-grant"
+            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-005.tar.gz",
+            "version": "== 1.0.0-internal-005"
         },
         "entrypoints": {
             "hashes": [
@@ -359,7 +359,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "functools32": {
@@ -436,7 +436,7 @@
                 "sha256:25199318e8cc3c25dcb45cbe084cc061051336d5a9ea2a12448d3d8cb748f742",
                 "sha256:5887121d7f7df3603bca2f710e7219f3eca0eb69e0b7cc6e0a022e155ac931a7"
             ],
-            "markers": "python_version == '3.4.*' or python_version < '3'",
+            "markers": "python_version < '3.6'",
             "version": "==2.3.3"
         },
         "pluggy": {

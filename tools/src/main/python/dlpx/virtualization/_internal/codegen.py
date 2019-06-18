@@ -50,6 +50,7 @@ CODEGEN_PACKAGE = 'generated'
 CODEGEN_MODULE = 'definitions'
 SWAGGER_JAR = 'codegen/swagger-codegen-cli-2.3.1.jar'
 CODEGEN_CONFIG = 'codegen/codegen-config.json'
+CODEGEN_TEMPLATE_DIR = 'codegen/templates'
 CODEGEN_COPY_FILES = ['__init__.py', 'util.py', CODEGEN_MODULE]
 
 
@@ -150,13 +151,47 @@ def _write_swagger_file(name, schema_dict, output_dir):
 def _execute_swagger_codegen(swagger_file, output_dir):
     jar = os.path.join(os.path.dirname(__file__), SWAGGER_JAR)
     codegen_config = os.path.join(os.path.dirname(__file__), CODEGEN_CONFIG)
-
+    codegen_template = os.path.join(os.path.dirname(__file__),
+                                    CODEGEN_TEMPLATE_DIR)
+    #
     # Create the process that runs the jar putting stdout / stderr into pipes.
+    #
+    # The parameters to this execution include:
+    # -DsupportPython2=true    - says we want to generate the python classes to
+    #                            be runnable with python 2.
+    # -i <swagger_file>        - specifies the file swagger will use to find
+    #                            the schema definitions.
+    # -l python-flask          - specifies the language we want the generated
+    #                            classes to be. python-flask unlike python has
+    #                            both the to_dict and from_dict methods.
+    # -c <codegen_config>      - specifies the config file which we use to set
+    #                            the outer package to be 'generated'
+    # -t <codegen_template>    - specifies the folder of mustache templates
+    #                            used to generate the classes. The swagger code
+    #                            passes in tags such as 'datatype' or 'name'
+    #                            that then gets used to create the models. If
+    #                            a specific mustache file doesn't exist then
+    #                            the default template written by swagger is
+    #                            used. model.mustache is the template for the
+    #                            actual generated class. base_model_.mustache
+    #                            becomes base_model_.py (We added some specific
+    #                            exceptions here.) util.mustache becomes the
+    #                            util.py file inside the outer package. and
+    #                            __init__model.mustache is the __init__.py file
+    #                            inside the module (definitions).
+    # --model-package <module> - The module name to use, in this case
+    #                            'definitions'. With the -c + --model-package
+    #                            option the dir structure created is:
+    #                            'generated/definitions'
+    # -o <output_dir>          - The location the files outputed from this jar
+    #                            will be placed.
+    #
     try:
         process_inputs = [
             'java', '-jar', jar, 'generate', '-DsupportPython2=true', '-i',
-            swagger_file, '-l', 'python-flask', '-c', codegen_config,
-            '--model-package', CODEGEN_MODULE, '-o', output_dir
+            swagger_file, '-l', 'python-flask', '-c', codegen_config, '-t',
+            codegen_template, '--model-package', CODEGEN_MODULE, '-o',
+            output_dir
         ]
 
         logger.info('Running process with arguments: {!r}'.format(

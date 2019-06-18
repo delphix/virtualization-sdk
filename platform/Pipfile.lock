@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f7b80706d8fa9711273abcd053297f6e08e912908138cd9745498020362e3f66"
+            "sha256": "59ea454cacbb96c28ae46058b12201d4352f0b5ad2ebda72a168c8c1e4a96c10"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,8 +15,8 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-004-grant.tar.gz",
-            "version": "== 1.0.0-internal-004-grant"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-005.tar.gz",
+            "version": "== 1.0.0-internal-005"
         },
         "enum34": {
             "hashes": [
@@ -95,7 +95,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.0'",
+            "markers": "python_version < '3.3'",
             "version": "==1.0.2"
         },
         "importlib-metadata": {
@@ -134,7 +134,7 @@
                 "sha256:25199318e8cc3c25dcb45cbe084cc061051336d5a9ea2a12448d3d8cb748f742",
                 "sha256:5887121d7f7df3603bca2f710e7219f3eca0eb69e0b7cc6e0a022e155ac931a7"
             ],
-            "markers": "python_version < '3.6'",
+            "markers": "python_version == '3.4.*' or python_version < '3'",
             "version": "==2.3.3"
         },
         "pluggy": {

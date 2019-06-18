@@ -61,7 +61,7 @@ class TestCodegen:
                     assert False, 'Fake Popen output or err must be set.'
 
                 (_, _, self.jar, _, _, _, self.swagger_file, _, _, _,
-                 codegen_config_file, _, self.module_name, _,
+                 codegen_config_file, _, _, _, self.module_name, _,
                  self.output_dir) = args
 
                 with open(codegen_config_file, 'r') as f:

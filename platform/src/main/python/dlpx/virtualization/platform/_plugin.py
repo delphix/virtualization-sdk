@@ -80,10 +80,10 @@ imports, the import for dlpx.virtualization.platform.Plugin will more likely
 fail. The internal methods should only be called by the platform so it's safe
 to have the import in the methods as the objects will exist at runtime.
 """
-import six
 import json
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.common.exceptions import PluginRuntimeError
 from dlpx.virtualization.platform import VirtualSource
 from dlpx.virtualization.platform import DirectSource
 from dlpx.virtualization.platform import StagedSource
@@ -93,97 +93,10 @@ from dlpx.virtualization.platform import MountSpecification
 from dlpx.virtualization.platform.operation import Operation as Op
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationNotDefinedError,
-    OperationAlreadyDefinedError, PlatformError, PluginRuntimeError)
+    OperationAlreadyDefinedError)
 
 
 __all__ = ['Plugin']
-
-
-def _to_dict(obj):
-    """Operates on Swagger generated model classes and returns the model's
-    attributes as a dictionary such that they are composable with from_dict.
-    i.e. from_dict(_to_dict(obj)) == obj
-
-    The flask generated to_dict() method is not composable and does not work
-    with 'camelCase' attributes as it replaces them with 'snake_case'.
-    For example if an attribute in a JSON object is 'mountLocation' with a
-    value '/mnt/location', the swaggger generated to_dict will incorrectly
-    return the dictionary:
-    {'mount_location': '/mnt/location'}
-
-    The swagger generated to_dict() below was modified to return the attribute
-    name instead of the python variable name:
-
-    def to_dict(self):
-        result = {}
-
-        for attr, _ in six.iteritems(self.swagger_types): <-- attr = snake_case
-            value = getattr(self, attr)
-            if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
-            elif hasattr(value, "to_dict"):
-                result[attr] = value.to_dict()
-            elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
-            else:
-                result[attr] = value
-
-        return result
-
-    Args:
-        obj (extends Model): A Swagger generated model.
-
-    Returns:
-        dict: A dictonary representation of the model.
-    """
-    if not _is_swagger_model(obj):
-        raise PlatformError(
-            'class {} is not a swagger class'.format(obj.__class__.__name__))
-
-    result = {}
-
-    for attr, _ in six.iteritems(obj.swagger_types):
-        value = getattr(obj, attr)
-        attr = obj.attribute_map[attr]
-        if isinstance(value, list):
-            result[attr] = list(map(
-                lambda x: _to_dict(x) if _is_swagger_model(x) else x, value
-            ))
-        elif _is_swagger_model(value):
-            result[attr] = _to_dict(value)
-        elif isinstance(value, dict):
-            result[attr] = dict(map(
-                lambda item: (item[0], _to_dict(item[1]))
-                if _is_swagger_model(item[1]) else item, value.items()))
-        else:
-            result[attr] = value
-    return result
-
-
-def _is_swagger_model(obj):
-    """Checks if the object passed in is an instance of a Swagger generated
-    model.
-
-    Args:
-        obj (extends Model): object to check if it is an instance of a swagger
-        generated model.
-
-    Returns:
-        bool: True if the class was generated via Swagger, false otherwise.
-    """
-    bases = obj.__class__.__bases__
-    if len(bases) == 0:
-        return False
-    return (bases[0].__name__ == 'Model'
-            and hasattr(obj, 'swagger_types')
-            and hasattr(obj, 'attribute_map'))
 
 
 class DiscoveryOperations(object):
@@ -230,7 +143,7 @@ class DiscoveryOperations(object):
 
         def to_protobuf(repository):
             parameters = common_pb2.PluginDefinedObject()
-            parameters.json = json.dumps(_to_dict(repository))
+            parameters.json = json.dumps(repository.to_dict())
             repository_protobuf = common_pb2.Repository()
             repository_protobuf.parameters.CopyFrom(parameters)
             return repository_protobuf
@@ -288,7 +201,7 @@ class DiscoveryOperations(object):
 
         def to_protobuf(source_config):
             parameters = common_pb2.PluginDefinedObject()
-            parameters.json = json.dumps(_to_dict(source_config))
+            parameters.json = json.dumps(source_config.to_dict())
             source_config_protobuf = common_pb2.SourceConfig()
             source_config_protobuf.parameters.CopyFrom(parameters)
             return source_config_protobuf
@@ -469,7 +382,7 @@ class LinkedOperations(object):
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
-            parameters.json = json.dumps(_to_dict(snapshot))
+            parameters.json = json.dumps(snapshot.to_dict())
             snapshot_protobuf = common_pb2.Snapshot()
             snapshot_protobuf.parameters.CopyFrom(parameters)
             return snapshot_protobuf
@@ -594,7 +507,7 @@ class LinkedOperations(object):
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
-            parameters.json = json.dumps(_to_dict(snapshot))
+            parameters.json = json.dumps(snapshot.to_dict())
             snapshot_protobuf = common_pb2.Snapshot()
             snapshot_protobuf.parameters.CopyFrom(parameters)
             return snapshot_protobuf
@@ -1133,7 +1046,7 @@ class VirtualOperations(object):
 
         configure_response = platform_pb2.ConfigureResponse()
         configure_response.return_value.source_config.parameters.json = (
-            json.dumps(_to_dict(config)))
+            json.dumps(config.to_dict()))
         return configure_response
 
     def _internal_unconfigure(self, request):
@@ -1241,7 +1154,7 @@ class VirtualOperations(object):
 
         reconfigure_response = platform_pb2.ReconfigureResponse()
         reconfigure_response.return_value.source_config.parameters.json = (
-            json.dumps(_to_dict(config)))
+            json.dumps(config.to_dict()))
         return reconfigure_response
 
     def _internal_start(self, request):
@@ -1421,7 +1334,7 @@ class VirtualOperations(object):
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
-            parameters.json = json.dumps(_to_dict(snapshot))
+            parameters.json = json.dumps(snapshot.to_dict())
             snapshot_protobuf = common_pb2.Snapshot()
             snapshot_protobuf.parameters.CopyFrom(parameters)
             return snapshot_protobuf

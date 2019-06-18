@@ -55,14 +55,17 @@ class PluginRuntimeError(Exception):
         two strings that are then used to generate the output message.
 
         Args:
-            actual_type (Type or List[Type]): type(s) that was actually passed
-            in for the parameter. this will either take the type and make it a
-            str or join the types as a string and put it in brackets.
-            expected_type (Type or List[Type]): The type of the parameter that
-            was expected. Or if this is a list then we assume there is one
-            element in the list and that type is the expected type in a list.
-            ie if expected_type = [str] then the returned expected string with
-            be something like <type 'list of str'>
+            actual_type (Type, List[Type], Set[Type],
+                        or Set[Tuple[Type, Type]]):
+            type(s) that was actually passed in for the parameter. This will
+            either take the type and make it a str or join the types as a
+            string and put it in brackets.
+            expected_type (Type or List[Type], Dict[Type, Type]):
+            The type of the parameter that was expected. Or if this is a
+            container then we assume there is one element in it and that type
+            is the expected type of the container.
+            ie: if expected_type = [str] then the returned expected string with
+            be something like "type 'list of str'"
 
         Returns:
             tuple (str, str): the actual and expected strings used for the

@@ -14,12 +14,23 @@ package com.delphix.virtualization.platform;
  * NOTE:
  * Currently, there are some operations that do not expect a return value -
  * e.g - pre-snapshot (direct and staged), start staging, stop staging etc.
- * So this file contains empty result types for all such operations as a placeholder.
- * Defining a valid return type as a placeholder and still return empty message helps
- * if something needs to be added as part of the result in future.
+ * So this file contains empty result types for all such operations as a
+ * placeholder. Defining a valid return type as a placeholder and still return
+ * empty message helps if something needs to be added as part of the result in
+ * future.
  */
 
 /* ERROR REPORTING */
+
+/*
+ * This indicates that a generic problem has been detected.
+ * These include syntax errors and any other kind of errors.
+ */
+message GenericPluginError {
+  string message = 1;
+  string type = 2;
+  string call_stack = 3;
+}
 
 /*
  * This indicates that a plugin elected not to handle an error raised by a
@@ -36,16 +47,6 @@ message UnhandledLibraryError {
 }
 
 /*
- * This indicates that a generic problem has been detected.
- * These include syntax errors and any other kind of errors.
- */
-message GenericPluginError {
-  string message = 1;
-  string type = 2;
-  string call_stack = 3;
-}
-
-/*
  * This indicates that there was a Plugin runtime error for example if the
  * implemented operation returns incorrect typed object back.
  */
@@ -54,12 +55,28 @@ message PluginRuntimeError {
   string call_stack = 2;
 }
 
-/* More error types will get inserted here in future */
+/*
+ * This indicates that one of our generated classes raised an error. For
+ * example, such an error will happen if the schema defines a string property,
+ * but the plugin code tries to set it to an integer.
+ */
+message GeneratedClassesError {
+  string message = 1;
+  string call_stack = 2;
+}
+
+/*
+ * More error types will get inserted here as more specific errors are created.
+ * When a new error is added, they should be put to the end of the list,
+ * incrementing the field tag by one. The number should never be modified to
+ * guarantee backwards compatibility.
+ */
 message PluginErrorResult {
   oneof error {
-    UnhandledLibraryError unhandled_library_error = 1;
-    PluginRuntimeError plugin_runtime_error = 2;
-    GenericPluginError generic_plugin_error = 3;
+    GenericPluginError generic_plugin_error = 1;
+    UnhandledLibraryError unhandled_library_error = 2;
+    PluginRuntimeError plugin_runtime_error = 3;
+    GeneratedClassesError generated_classes_error = 4;
   }
 }
 

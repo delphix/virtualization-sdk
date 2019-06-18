@@ -1,0 +1,11 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
+from __future__ import absolute_import
+# import exceptions
+from {{modelPackage}}.base_model_ import GeneratedClassesError, GeneratedClassesTypeError
+import sys
+# import models into model package
+{{#models}}{{#model}}from {{modelPackage}}.{{classFilename}} import {{classname}}{{/model}}
+{{/models}}
