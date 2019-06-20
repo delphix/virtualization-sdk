@@ -3,6 +3,7 @@
 #
 
 import importlib
+import itertools
 import json
 import os
 import subprocess
@@ -65,6 +66,37 @@ def execute_swagger_codegen(swagger_file, config_file, output_dir):
     #
     if process.wait():
         assert False, 'stdout: {}, stderr: {}'.format(stdout, stderr)
+
+
+def create_possible_expected_messages(message_template, expected_types):
+    """
+    Some error messages contain dictionaries with error types. Dictionaries
+    in Python are unordered so it makes testing unpredictable. This
+    function takes in a message template and a list of types and returns
+    a list that contains error messages for every permutation of the types.
+
+    Args:
+        message_template (str): A string with a single format argument ({}).
+        expected_types (list): A list of types. Ex: [str, int]
+    Returns:
+        list: A list of the given error message formatted with all permutations
+              of the given type list.
+    """
+    # Create an iterable of all the permutations of the types.
+    # Can roughly be thought of as a list of tuples
+    type_premutations = itertools.permutations(expected_types)
+
+    # For each permutation, map each type in the permutation to a string
+    # and remove '<' and '>' since this is how our exceptions format them.
+    formatted_string_types = [
+        map(lambda s: str(s).replace('<', '').replace('>', ''), t)
+        for t in type_premutations
+    ]
+
+    # Finally, create an error message with each permutation.
+    return [
+        message_template.format(', '.join(f)) for f in formatted_string_types
+    ]
 
 
 class TestTemplateStringProperty:
@@ -722,11 +754,19 @@ class TestTemplateObjectProperty:
                 True: 't'
             })
 
-        message = err_info.value.message
-        assert message == (
+        expected_msg_template = (
             "TestDefinition's parameter 'required_object_property' was a dict"
-            " with keys of {type 'str', type 'int', type 'bool'} but should be"
+            " with keys of {{{}}} but should be"
             " of a dict with keys type 'basestring'.")
+        possible_messages = create_possible_expected_messages(
+            expected_msg_template, [str, int, bool])
+
+        assertion_error_message = (
+            "\n\tExpected:\t{}(One possible permutation of types)"
+            "\n\tActual:\t{}")
+        message = err_info.value.message
+        assert message in possible_messages,\
+            assertion_error_message.format(possible_messages[0], message)
 
     @staticmethod
     def test_object_dict_with_bad_key_type_setter(module):
@@ -740,11 +780,19 @@ class TestTemplateObjectProperty:
                 True: 't'
             }
 
-        message = err_info.value.message
-        assert message == (
+        expected_msg_template = (
             "TestDefinition's parameter 'required_object_property' was a dict"
-            " with keys of {type 'str', type 'int', type 'bool'} but should be"
+            " with keys of {{{}}} but should be"
             " of a dict with keys type 'basestring'.")
+        possible_messages = create_possible_expected_messages(
+            expected_msg_template, [str, int, bool])
+
+        assertion_error_message = (
+            "\n\tExpected (One possible permutation of types):\t{}"
+            "\n\tActual:\t{}")
+        message = err_info.value.message
+        assert message in possible_messages,\
+            assertion_error_message.format(possible_messages[0], message)
 
     @staticmethod
     def test_semi_defined_dict_not_bool_value_type(module):
