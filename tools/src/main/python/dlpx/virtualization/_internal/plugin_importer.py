@@ -205,130 +205,13 @@ class PluginImporter:
             in a sub-process and on completion return the output.
         """
         queue = Queue()
-        process = Process(target=PluginImporter.__get_manifest,
+        process = Process(target=_get_manifest,
                           args=(queue, src_dir, module, entry_point,
                                 plugin_type, validate))
         process.start()
         process.join()
         manifest, warnings = PluginImporter.__parse_queue(queue)
         return manifest, warnings
-
-    @staticmethod
-    def __get_manifest(queue, src_dir, module, entry_point, plugin_type,
-                       validate):
-        manifest = {}
-        sys.path.append(src_dir)
-        try:
-            module_content = importlib.import_module(module)
-            manifest = PluginImporter.__validate_and_get_manifest(
-                module, module_content, entry_point)
-
-            if validate:
-                #
-                # Validated methods args against expected args and add any
-                # resulting warnings to the queue for caller to process.
-                # These warnings should be treated as an exception to make
-                # sure build fails.
-                #
-                warnings = PluginImporter.__validate_named_args(
-                    module_content, entry_point, plugin_type)
-                if warnings:
-                    map(lambda warning: queue.put({'exception': warning}),
-                        warnings)
-        except ImportError as err:
-            queue.put({'exception': err})
-        except exceptions.UserError as user_err:
-            queue.put({'exception': user_err})
-        except RuntimeError as rt_err:
-            queue.put({'exception': rt_err})
-        finally:
-            sys.path.remove(src_dir)
-
-        queue.put({'manifest': manifest})
-
-    @staticmethod
-    def __validate_and_get_manifest(module, module_content, entry_point):
-        """
-        Creates a plugin manifest indicating which plugin operations have
-        been implemented by a plugin developer. Plugin_module_content is a
-        module object which must have plugin_entry_point_name as one of its
-        attributes.
-        Args:
-            module: name of the module imported
-            module_content: plugin module content from import
-            entry_point: name of entry point to the above plugin module
-
-        Returns:
-            dict: dictionary that represents plugin's manifest
-        """
-        # This should never happen and if it does, flag a run time error.
-        if module_content is None:
-            raise RuntimeError('Plugin module content is None.')
-
-        #
-        # Schema validation on plugin config file would have ensured entry
-        # is a string and should never happen its none - so raise a run time
-        # error if it does.
-        #
-        if entry_point is None:
-            raise RuntimeError('Plugin entry point object is None.')
-
-        if not hasattr(module_content, entry_point):
-            raise exceptions.UserError(
-                'Entry point \'{}:{}\' does not exist. \'{}\' is not a symbol'
-                ' in module \'{}\'.'.format(module, entry_point, entry_point,
-                                            module))
-        plugin_object = getattr(module_content, entry_point)
-
-        if plugin_object is None:
-            raise exceptions.UserError('Plugin object retrieved from the entry'
-                                       ' point {} is None'.format(entry_point))
-
-        # Check which methods on the plugin object have been implemented.
-        manifest = {
-            'type':
-            'PluginManifest',
-            'hasRepositoryDiscovery':
-            bool(plugin_object.discovery.repository_impl),
-            'hasSourceConfigDiscovery':
-            bool(plugin_object.discovery.source_config_impl),
-            'hasLinkedPreSnapshot':
-            bool(plugin_object.linked.pre_snapshot_impl),
-            'hasLinkedPostSnapshot':
-            bool(plugin_object.linked.post_snapshot_impl),
-            'hasLinkedStartStaging':
-            bool(plugin_object.linked.start_staging_impl),
-            'hasLinkedStopStaging':
-            bool(plugin_object.linked.stop_staging_impl),
-            'hasLinkedStatus':
-            bool(plugin_object.linked.status_impl),
-            'hasLinkedWorker':
-            bool(plugin_object.linked.worker_impl),
-            'hasLinkedMountSpecification':
-            bool(plugin_object.linked.mount_specification_impl),
-            'hasVirtualConfigure':
-            bool(plugin_object.virtual.configure_impl),
-            'hasVirtualUnconfigure':
-            bool(plugin_object.virtual.unconfigure_impl),
-            'hasVirtualReconfigure':
-            bool(plugin_object.virtual.reconfigure_impl),
-            'hasVirtualStart':
-            bool(plugin_object.virtual.start_impl),
-            'hasVirtualStop':
-            bool(plugin_object.virtual.stop_impl),
-            'hasVirtualPreSnapshot':
-            bool(plugin_object.virtual.pre_snapshot_impl),
-            'hasVirtualPostSnapshot':
-            bool(plugin_object.virtual.post_snapshot_impl),
-            'hasVirtualMountSpecification':
-            bool(plugin_object.virtual.mount_specification_impl),
-            'hasVirtualStatus':
-            bool(plugin_object.virtual.status_impl),
-            'hasInitialize':
-            bool(plugin_object.virtual.initialize_impl)
-        }
-
-        return manifest
 
     @staticmethod
     def __parse_queue(queue):
@@ -343,63 +226,6 @@ class PluginImporter:
                 warnings[key].append(q_item[key])
 
         return manifest, warnings
-
-    @staticmethod
-    def __validate_named_args(module_content, entry_point, plugin_type):
-        """
-        Does named argument validation based on the plugin type.
-        """
-        warnings = []
-
-        plugin_object = getattr(module_content, entry_point)
-
-        # Iterate over attributes objects of the Plugin object
-        for plugin_attrib in plugin_object.__dict__.values():
-            #
-            # For each plugin attribute object, its __dict__.keys will give
-            # us the name of the plugin implemntation method name. That name
-            # is useful in looking up named arguments expected and what is
-            # actually in the plugin code. And plugin_op_type can be, for e.g.
-            # LinkedOperations, DiscoveryOperations, VirtualOperations
-            #
-            plugin_op_type = plugin_attrib.__class__.__name__
-            for op_name_key, op_name in plugin_attrib.__dict__.items():
-                if op_name is None:
-                    continue
-                actual_args = inspect.getargspec(op_name)
-                warnings.extend(
-                    PluginImporter.__check_args(
-                        method_name=op_name.__name__,
-                        expected_args=PluginImporter.__lookup_expected_args(
-                            plugin_type, plugin_op_type, op_name_key),
-                        actual_args=actual_args.args))
-
-        return warnings
-
-    @staticmethod
-    def __lookup_expected_args(plugin_type, plugin_op_type, plugin_op_name):
-        if plugin_type == 'DIRECT':
-            return EXPECTED_DIRECT_ARGS_BY_OP[plugin_op_type][plugin_op_name]
-        else:
-            return EXPECTED_STAGED_ARGS_BY_OP[plugin_op_type][plugin_op_name]
-
-    @staticmethod
-    def __check_args(method_name, expected_args, actual_args):
-        warnings = []
-
-        if len(expected_args) != len(actual_args):
-            warnings.append('Number of arguments do not match in method {}.'
-                            ' Expected: {}, Found: {}.'.format(
-                                method_name, list(expected_args),
-                                str(actual_args)))
-
-        if not all(arg in expected_args for arg in actual_args):
-            warnings.append('Named argument mismatch in method {}.'
-                            ' Expected: {}, Found: {}.'.format(
-                                method_name, list(expected_args),
-                                str(actual_args)))
-
-        return warnings
 
     @staticmethod
     def __check_for_undefined_names(src_dir):
@@ -445,3 +271,175 @@ class PluginImporter:
                 '{}\n{} Warning(s). {} Error(s).'.format(
                     exception_msg, len(warnings['warning']),
                     len(warnings['exception'])))
+
+
+def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
+    manifest = {}
+    sys.path.append(src_dir)
+    try:
+        module_content = importlib.import_module(module)
+        manifest = _validate_and_get_manifest(module, module_content,
+                                              entry_point)
+
+        if validate:
+            #
+            # Validated methods args against expected args and add any
+            # resulting warnings to the queue for caller to process.
+            # These warnings should be treated as an exception to make
+            # sure build fails.
+            #
+            warnings = _validate_named_args(module_content, entry_point,
+                                            plugin_type)
+            if warnings:
+                map(lambda warning: queue.put({'exception': warning}),
+                    warnings)
+    except ImportError as err:
+        queue.put({'exception': err})
+    except exceptions.UserError as user_err:
+        queue.put({'exception': user_err})
+    except RuntimeError as rt_err:
+        queue.put({'exception': rt_err})
+    finally:
+        sys.path.remove(src_dir)
+
+    queue.put({'manifest': manifest})
+
+
+def _validate_and_get_manifest(module, module_content, entry_point):
+    """
+    Creates a plugin manifest indicating which plugin operations have
+    been implemented by a plugin developer. Plugin_module_content is a
+    module object which must have plugin_entry_point_name as one of its
+    attributes.
+    Args:
+        module: name of the module imported
+        module_content: plugin module content from import
+        entry_point: name of entry point to the above plugin module
+
+    Returns:
+        dict: dictionary that represents plugin's manifest
+    """
+    # This should never happen and if it does, flag a run time error.
+    if module_content is None:
+        raise RuntimeError('Plugin module content is None.')
+
+    #
+    # Schema validation on plugin config file would have ensured entry
+    # is a string and should never happen its none - so raise a run time
+    # error if it does.
+    #
+    if entry_point is None:
+        raise RuntimeError('Plugin entry point object is None.')
+
+    if not hasattr(module_content, entry_point):
+        raise exceptions.UserError(
+            'Entry point \'{}:{}\' does not exist. \'{}\' is not a symbol'
+            ' in module \'{}\'.'.format(module, entry_point, entry_point,
+                                        module))
+    plugin_object = getattr(module_content, entry_point)
+
+    if plugin_object is None:
+        raise exceptions.UserError('Plugin object retrieved from the entry'
+                                   ' point {} is None'.format(entry_point))
+
+    # Check which methods on the plugin object have been implemented.
+    manifest = {
+        'type':
+        'PluginManifest',
+        'hasRepositoryDiscovery':
+        bool(plugin_object.discovery.repository_impl),
+        'hasSourceConfigDiscovery':
+        bool(plugin_object.discovery.source_config_impl),
+        'hasLinkedPreSnapshot':
+        bool(plugin_object.linked.pre_snapshot_impl),
+        'hasLinkedPostSnapshot':
+        bool(plugin_object.linked.post_snapshot_impl),
+        'hasLinkedStartStaging':
+        bool(plugin_object.linked.start_staging_impl),
+        'hasLinkedStopStaging':
+        bool(plugin_object.linked.stop_staging_impl),
+        'hasLinkedStatus':
+        bool(plugin_object.linked.status_impl),
+        'hasLinkedWorker':
+        bool(plugin_object.linked.worker_impl),
+        'hasLinkedMountSpecification':
+        bool(plugin_object.linked.mount_specification_impl),
+        'hasVirtualConfigure':
+        bool(plugin_object.virtual.configure_impl),
+        'hasVirtualUnconfigure':
+        bool(plugin_object.virtual.unconfigure_impl),
+        'hasVirtualReconfigure':
+        bool(plugin_object.virtual.reconfigure_impl),
+        'hasVirtualStart':
+        bool(plugin_object.virtual.start_impl),
+        'hasVirtualStop':
+        bool(plugin_object.virtual.stop_impl),
+        'hasVirtualPreSnapshot':
+        bool(plugin_object.virtual.pre_snapshot_impl),
+        'hasVirtualPostSnapshot':
+        bool(plugin_object.virtual.post_snapshot_impl),
+        'hasVirtualMountSpecification':
+        bool(plugin_object.virtual.mount_specification_impl),
+        'hasVirtualStatus':
+        bool(plugin_object.virtual.status_impl),
+        'hasInitialize':
+        bool(plugin_object.virtual.initialize_impl)
+    }
+
+    return manifest
+
+
+def _validate_named_args(module_content, entry_point, plugin_type):
+    """
+    Does named argument validation based on the plugin type.
+    """
+    warnings = []
+
+    plugin_object = getattr(module_content, entry_point)
+
+    # Iterate over attributes objects of the Plugin object
+    for plugin_attrib in plugin_object.__dict__.values():
+        #
+        # For each plugin attribute object, its __dict__.keys will give
+        # us the name of the plugin implemntation method name. That name
+        # is useful in looking up named arguments expected and what is
+        # actually in the plugin code. And plugin_op_type can be, for e.g.
+        # LinkedOperations, DiscoveryOperations, VirtualOperations
+        #
+        plugin_op_type = plugin_attrib.__class__.__name__
+        for op_name_key, op_name in plugin_attrib.__dict__.items():
+            if op_name is None:
+                continue
+            actual_args = inspect.getargspec(op_name)
+            warnings.extend(
+                _check_args(method_name=op_name.__name__,
+                            expected_args=_lookup_expected_args(
+                                plugin_type, plugin_op_type, op_name_key),
+                            actual_args=actual_args.args))
+
+    return warnings
+
+
+def _check_args(method_name, expected_args, actual_args):
+    warnings = []
+
+    if len(expected_args) != len(actual_args):
+        warnings.append('Number of arguments do not match in method {}.'
+                        ' Expected: {}, Found: {}.'.format(
+                            method_name, list(expected_args),
+                            str(actual_args)))
+
+    if not all(arg in expected_args for arg in actual_args):
+        warnings.append('Named argument mismatch in method {}.'
+                        ' Expected: {}, Found: {}.'.format(
+                            method_name, list(expected_args),
+                            str(actual_args)))
+
+    return warnings
+
+
+def _lookup_expected_args(plugin_type, plugin_op_type, plugin_op_name):
+    if plugin_type == 'DIRECT':
+        return EXPECTED_DIRECT_ARGS_BY_OP[plugin_op_type][plugin_op_name]
+    else:
+        return EXPECTED_STAGED_ARGS_BY_OP[plugin_op_type][plugin_op_name]
