@@ -5,6 +5,34 @@ from dlpx.virtualization.common.exceptions import (
     PlatformError, PluginRuntimeError)
 
 
+class UserError(Exception):
+    """Plugin-raisable user exception
+
+    Plugin authors can raise this exception in their code to fail the
+    plugin operation. The message, action and output supplied by the
+    plugin author will be shown in Delphix UI.
+
+    All user-visible plugin raised exceptions should extend this.
+
+    Args:
+        message (str): A user-readable message describing the exception.
+        action (str): Suggested action to be taken.
+        output (str): Output to be shown.
+
+    Attributes:
+        message (str): A user-readable message describing the exception.
+        action (str): Suggested action to be taken.
+        output (str): Output to be shown.
+    """
+
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, message, action='', output=''):
+        super(UserError, self).__init__(message, action, output)
+
+
 class IncorrectReturnTypeError(PluginRuntimeError):
     """IncorrectReturnTypeError gets thrown when an operation that was
     implemented by the plugin author returns an object type that is incorrect.

@@ -255,6 +255,7 @@ def zip_and_encode_source_files(source_code_dir):
     try:
         os.chdir(source_code_dir)
         ret_val = compileall.compile_dir(source_code_dir,
+                                         ddir='.',
                                          force=True,
                                          quiet=True)
         if ret_val == 0:
