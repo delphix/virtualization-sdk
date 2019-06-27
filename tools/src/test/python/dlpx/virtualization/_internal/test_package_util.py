@@ -12,7 +12,7 @@ class TestPackageUtil:
 
     @staticmethod
     def test_get_engine_api_version():
-        assert package_util.get_engine_api_version_from_settings() == '1.11.0'
+        assert package_util.get_engine_api_version_from_settings() == '1.10.5'
 
     @staticmethod
     def test_get_build_api_version_json():
@@ -29,8 +29,8 @@ class TestPackageUtil:
         engine_api_version = {
             'type': 'APIVersion',
             'major': 1,
-            'minor': 11,
-            'micro': 0
+            'minor': 10,
+            'micro': 5
         }
         assert package_util.get_engine_api_version() == engine_api_version
 

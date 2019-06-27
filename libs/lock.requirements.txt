@@ -1,4 +1,4 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/
-./../common/build/python-dist/dvp-common-1.0.0-internal-008.tar.gz
+./../common/build/python-dist/dvp-common-1.0.0-internal-009.tar.gz
 protobuf==3.6.1
 six==1.12.0

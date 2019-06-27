@@ -8,7 +8,7 @@ importlib-metadata==0.18
 mock==3.0.5
 more-itertools==5.0.0 ; python_version <= '2.7'
 packaging==19.0
-pathlib2==2.3.3 ; python_version < '3.6'
+pathlib2==2.3.4 ; python_version < '3.6'
 pluggy==0.12.0
 py==1.8.0
 pyparsing==2.4.0

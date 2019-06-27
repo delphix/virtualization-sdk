@@ -25,7 +25,7 @@ class TestDelphixClient:
     SES_RESP_SUCCESS = ((
         '{"type":"OKResult","status":"OK","result":{'
         '"type":"APISession","version":{'
-        '"type":"APIVersion","major":1,"minor":11,"micro":0},'
+        '"type":"APIVersion","major":1,"minor":10,"micro":5},'
         '"locale":null,"client":null},"job":null,"action":null}'), {
             'Set-Cookie':
             'JSESSIONID=8F075FBEC53E8413BC2D5EEF29EAA721;'
@@ -227,7 +227,7 @@ class TestDelphixClient:
         '"namespace": null, "name": "python_vfiles",'
         '"prettyName": "Unstructured Files", "language": "LUA",'
         '"version": "1.0.0", "buildApi": {"type": "APIVersion",'
-        '"major": 1, "minor": 11, "micro": 0}, "hostTypes": ['
+        '"major": 1, "minor": 10, "micro": 5}, "hostTypes": ['
         '"UNIX", "WINDOWS"], "rootSquashEnabled": true, '
         '"sourceCode": null, "entryPoint": null}], "job": null,'
         '"action": null, "total": 1, "overflow": false}')
