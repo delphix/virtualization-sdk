@@ -11,7 +11,9 @@ from multiprocessing import Process, Queue
 
 from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
-from dlpx.virtualization._internal.util_classes import MessageUtils
+from dlpx.virtualization._internal.util_classes import (DIRECT_TYPE,
+                                                        STAGED_TYPE,
+                                                        MessageUtils)
 from flake8.api import legacy as flake8
 
 logger = logging.getLogger(__name__)
@@ -68,7 +70,17 @@ EXPECTED_DIRECT_ARGS_BY_OP = {
     'VirtualOperations': EXPECTED_VIRTUAL_ARGS
 }
 
-REQUIRED_METHODS = {
+REQUIRED_METHODS_DIRECT = {
+    'hasRepositoryDiscovery': 'discovery.repository()',
+    'hasSourceConfigDiscovery': 'discovery.source_config()',
+    'hasLinkedPostSnapshot': 'linked.post_snapshot()',
+    'hasVirtualConfigure': 'virtual.configure()',
+    'hasVirtualReconfigure': 'virtual.reconfigure()',
+    'hasVirtualPostSnapshot': 'virtual.post_snapshot()',
+    'hasVirtualMountSpecification': 'virtual.mount_specification()'
+}
+
+REQUIRED_METHODS_STAGED = {
     'hasRepositoryDiscovery': 'discovery.repository()',
     'hasSourceConfigDiscovery': 'discovery.source_config()',
     'hasLinkedPostSnapshot': 'linked.post_snapshot()',
@@ -77,6 +89,11 @@ REQUIRED_METHODS = {
     'hasVirtualReconfigure': 'virtual.reconfigure()',
     'hasVirtualPostSnapshot': 'virtual.post_snapshot()',
     'hasVirtualMountSpecification': 'virtual.mount_specification()'
+}
+
+REQUIRED_METHODS_BY_PLUGIN_TYPE = {
+    DIRECT_TYPE: REQUIRED_METHODS_DIRECT,
+    STAGED_TYPE: REQUIRED_METHODS_STAGED
 }
 
 REQUIRED_METHODS_DESCRIPTION = {
@@ -166,7 +183,8 @@ class PluginImporter:
         Performs checks of the plugin code that should take place after
         importing.
         """
-        check_warnings = self.__check_for_required_methods(plugin_manifest)
+        check_warnings = self.__check_for_required_methods(
+            plugin_manifest, self.__plugin_type)
 
         if check_warnings and 'warning' in check_warnings:
             warnings['warning'].extend(check_warnings['warning'])
@@ -174,7 +192,7 @@ class PluginImporter:
         self.__report_warnings_and_exceptions(warnings)
 
     @staticmethod
-    def __check_for_required_methods(plugin_manifest):
+    def __check_for_required_methods(plugin_manifest, plugin_type):
         """
         Checks for required methods in the manifest and adds warnings for any
         missing methods.
@@ -182,7 +200,8 @@ class PluginImporter:
         warnings = defaultdict(list)
         if not plugin_manifest:
             return warnings
-        for method_key, method_name in REQUIRED_METHODS.items():
+        for method_key, method_name in REQUIRED_METHODS_BY_PLUGIN_TYPE[
+                plugin_type].items():
             if plugin_manifest[method_key] is False:
                 warnings['warning'].append(
                     'Implementation missing '

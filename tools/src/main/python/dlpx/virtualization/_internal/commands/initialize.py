@@ -10,7 +10,7 @@ from collections import OrderedDict
 import jinja2
 import yaml
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           plugin_util)
+                                           plugin_util, util_classes)
 
 logger = logging.getLogger(__name__)
 
@@ -158,10 +158,10 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy):
 
     template = env.get_template(ENTRY_POINT_TEMPLATE_NAME)
 
-    if ingestion_strategy == plugin_util.DIRECT_TYPE:
+    if ingestion_strategy == util_classes.DIRECT_TYPE:
         linked_operations = env.get_template(
             DIRECT_OPERATIONS_TEMPLATE_NAME).render()
-    elif ingestion_strategy == plugin_util.STAGED_TYPE:
+    elif ingestion_strategy == util_classes.STAGED_TYPE:
         linked_operations = env.get_template(
             STAGED_OPERATIONS_TEMPLATE_NAME).render()
     else:

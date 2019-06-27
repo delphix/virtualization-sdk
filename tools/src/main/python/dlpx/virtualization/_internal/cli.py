@@ -11,7 +11,7 @@ from contextlib import contextmanager
 import click
 from dlpx.virtualization._internal import (click_util, exceptions,
                                            logging_util, package_util,
-                                           plugin_util)
+                                           util_classes)
 from dlpx.virtualization._internal.commands import build as build_internal
 from dlpx.virtualization._internal.commands import \
     download_logs as download_logs_internal
@@ -103,9 +103,9 @@ def delphix_sdk(verbose, quiet):
 @click.option(
     '-s',
     '--ingestion-strategy',
-    default=plugin_util.DIRECT_TYPE,
+    default=util_classes.DIRECT_TYPE,
     show_default=True,
-    type=click.Choice([plugin_util.DIRECT_TYPE, plugin_util.STAGED_TYPE],
+    type=click.Choice([util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE],
                       case_sensitive=False),
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '

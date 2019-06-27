@@ -2,6 +2,7 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import json
 import os
 from collections import OrderedDict
 
@@ -24,6 +25,31 @@ def src_dir(tmpdir):
 
 
 class TestPluginValidator:
+    @staticmethod
+    @pytest.mark.parametrize(
+        'schema_content',
+        ['{}\nNOT JSON'.format(json.dumps({'random': 'json'}))])
+    def test_plugin_bad_schema(plugin_config_file, schema_file):
+        plugin_config_content = OrderedDict([
+            ('name', 'staged'.encode('utf-8')),
+            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('version', '0.1.0'), ('language', 'PYTHON27'),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('manualDiscovery', True),
+            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
+            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
+        ])
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content, schema_file,
+                ValidationMode.ERROR)
+            validator.validate()
+
+        message = err_info.value.message
+        assert ('Failed to load schemas because {!r} is not a valid json file.'
+                ' Error: Extra data: line 2 column 1 - line 2 column 9'
+                ' (char 19 - 27)'.format(schema_file)) in message
+
     @staticmethod
     def test_plugin_bad_config_file(plugin_config_file):
         with pytest.raises(exceptions.UserError) as err_info:
@@ -218,3 +244,59 @@ class TestPluginValidator:
         assert 'Named argument mismatch in method' in message
         assert 'Number of arguments do not match' in message
         assert 'Implementation missing for required method' in message
+
+    @staticmethod
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
+    @pytest.mark.parametrize('plugin_name, expected', [
+        pytest.param('Staged_plugin', "'Staged_plugin' does not match"),
+        pytest.param('staged_Plugin', "'staged_Plugin' does not match"),
+        pytest.param('STAGED', "'STAGED' does not match"),
+        pytest.param('staged_plugin', None)
+    ])
+    def test_plugin_name(mock_import_plugin, src_dir, plugin_config_file,
+                         plugin_name, expected):
+        plugin_config_content = OrderedDict([
+            ('name', plugin_name.encode('utf-8')),
+            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('version', '1.0.0'), ('language', 'PYTHON27'),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('manualDiscovery', True),
+            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
+            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
+        ])
+
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+            validator.validate()
+            mock_import_plugin.assert_called()
+        except exceptions.SchemaValidationError as err_info:
+            message = err_info.message
+            assert expected in message
+
+    @staticmethod
+    @pytest.mark.parametrize('validation_mode',
+                             [ValidationMode.INFO, ValidationMode.WARNING])
+    def test_plugin_info_warn_mode(plugin_config_file, validation_mode):
+        plugin_config_content = OrderedDict([
+            ('name', 'staged'.encode('utf-8')),
+            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('version', '0.1.0'), ('language', 'PYTHON27'),
+            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('manualDiscovery', True),
+            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
+            ('schemaFile', 'schema.json'.encode('utf-8'))
+        ])
+        err_info = None
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                plugin_util.PLUGIN_CONFIG_SCHEMA, validation_mode)
+            validator.validate()
+        except Exception as e:
+            err_info = e
+
+        assert err_info is None

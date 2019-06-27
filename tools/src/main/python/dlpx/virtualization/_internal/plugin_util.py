@@ -12,9 +12,6 @@ from dlpx.virtualization._internal.util_classes import ValidationMode
 
 logger = logging.getLogger(__name__)
 
-STAGED_TYPE = 'STAGED'
-DIRECT_TYPE = 'DIRECT'
-
 PLUGIN_SCHEMAS_DIR = os.path.join(os.path.dirname(__file__),
                                   'validation_schemas')
 PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,

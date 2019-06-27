@@ -4,6 +4,9 @@
 
 import enum
 
+STAGED_TYPE = 'STAGED'
+DIRECT_TYPE = 'DIRECT'
+
 
 class ValidationMode(enum.Enum):
     """

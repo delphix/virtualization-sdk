@@ -8,7 +8,7 @@ import click.testing as click_testing
 import mock
 import pytest
 import yaml
-from dlpx.virtualization._internal import cli, exceptions, plugin_util
+from dlpx.virtualization._internal import cli, exceptions, util_classes
 
 
 class TestCli:
@@ -107,7 +107,7 @@ class TestInitCli:
 
         # 'DIRECT' and os.getcwd() are the expected defaults
         mock_init.assert_called_once_with(os.getcwd(), plugin_name,
-                                          plugin_util.DIRECT_TYPE, None)
+                                          util_classes.DIRECT_TYPE, None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
@@ -115,13 +115,13 @@ class TestInitCli:
         runner = click_testing.CliRunner()
 
         result = runner.invoke(cli.delphix_sdk, [
-            'init', '-s', plugin_util.STAGED_TYPE, '-r', '.', '-n',
+            'init', '-s', util_classes.STAGED_TYPE, '-r', '.', '-n',
             plugin_name, '--pretty-name', plugin_pretty_name
         ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_init.assert_called_once_with(os.getcwd(), plugin_name,
-                                          plugin_util.STAGED_TYPE,
+                                          util_classes.STAGED_TYPE,
                                           plugin_pretty_name)
 
     @staticmethod

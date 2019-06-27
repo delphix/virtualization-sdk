@@ -48,9 +48,9 @@ def format_entry_point_template(entry_point_template):
     template = jinja2.Environment().from_string(entry_point_template)
 
     def format_template(plugin_name, ingestion_strategy):
-        if ingestion_strategy == plugin_util.DIRECT_TYPE:
+        if ingestion_strategy == util_classes.DIRECT_TYPE:
             operations = direct_operations_template()
-        elif ingestion_strategy == plugin_util.STAGED_TYPE:
+        elif ingestion_strategy == util_classes.STAGED_TYPE:
             operations = staged_operations_template()
         else:
             raise RuntimeError(
@@ -66,7 +66,7 @@ class TestInitialize:
     @staticmethod
     @pytest.mark.parametrize(
         'ingestion_strategy',
-        [plugin_util.DIRECT_TYPE, plugin_util.STAGED_TYPE])
+        [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
     def test_init(tmpdir, ingestion_strategy, schema_template, plugin_name,
                   plugin_pretty_name, format_entry_point_template):
         # Initialize an empty directory.
@@ -108,13 +108,9 @@ class TestInitialize:
     @staticmethod
     @pytest.mark.parametrize(
         'ingestion_strategy',
-        [plugin_util.DIRECT_TYPE, plugin_util.STAGED_TYPE])
+        [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
     def test_plugin_from_init_is_valid(tmpdir, ingestion_strategy, plugin_name,
                                        plugin_pretty_name):
-        # This test will fail with a DIRECT ingestion strategy due to PYT-486.
-        # Once PYT-486 is fixed, remove this check.
-        if ingestion_strategy == plugin_util.DIRECT_TYPE:
-            pytest.skip('Skipping DIRECT ingestion strategy due to PYT-486.')
         init.init(tmpdir.strpath, plugin_name, ingestion_strategy,
                   plugin_pretty_name)
 
@@ -131,19 +127,19 @@ class TestInitialize:
     def test_invalid_with_config_file(plugin_config_file, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
             init.init(os.path.dirname(plugin_config_file), plugin_name,
-                      plugin_util.DIRECT_TYPE, None)
+                      util_classes.DIRECT_TYPE, None)
 
     @staticmethod
     def test_invalid_with_schema_file(schema_file, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
             init.init(os.path.dirname(schema_file), plugin_name,
-                      plugin_util.DIRECT_TYPE, None)
+                      util_classes.DIRECT_TYPE, None)
 
     @staticmethod
     def test_invalid_with_src_dir(src_dir, plugin_name):
         with pytest.raises(exceptions.PathExistsError):
             init.init(os.path.dirname(src_dir), plugin_name,
-                      plugin_util.DIRECT_TYPE, None)
+                      util_classes.DIRECT_TYPE, None)
 
     @staticmethod
     @mock.patch('yaml.dump')
@@ -153,7 +149,7 @@ class TestInitialize:
                                            plugin_pretty_name):
         mock_yaml_dump.side_effect = RuntimeError()
         with pytest.raises(exceptions.UserError):
-            init.init(tmpdir.strpath, plugin_name, plugin_util.STAGED_TYPE,
+            init.init(tmpdir.strpath, plugin_name, util_classes.STAGED_TYPE,
                       plugin_pretty_name)
 
         src_dir_path = os.path.join(tmpdir.strpath, init.DEFAULT_SRC_DIRECTORY)
@@ -204,7 +200,7 @@ class TestInitialize:
     @staticmethod
     def test_default_entry_point(plugin_name):
         entry_point_contents = init._get_entry_point_contents(
-            plugin_name, plugin_util.DIRECT_TYPE)
+            plugin_name, util_classes.DIRECT_TYPE)
         tree = ast.parse(entry_point_contents)
         for stmt in ast.walk(tree):
             if isinstance(stmt, ast.Assign):

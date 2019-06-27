@@ -23,6 +23,9 @@ of a lib operation.
    http://google.github.io/styleguide/pyguide.html
 
 """
+
+import sys
+
 from dlpx.virtualization import libs_pb2
 from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
                                                  LibraryError,
@@ -58,7 +61,7 @@ def _handle_response(response):
             raise LibraryError(actionable.id, actionable.message)
 
         # Nothing the plugin can do, so quit ASAP
-        exit()
+        sys.exit()
 
     # Unpack the return value from the response
     return response.return_value

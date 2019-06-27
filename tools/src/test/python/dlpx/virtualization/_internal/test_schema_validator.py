@@ -2,6 +2,7 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import json
 import os
 
 import pytest
@@ -11,6 +12,20 @@ from dlpx.virtualization._internal.util_classes import ValidationMode
 
 
 class TestSchemaValidator:
+    @staticmethod
+    def test_bad_meta_schema(schema_file, tmpdir, schema_filename):
+        meta_schema = '{}\nNOT JSON'.format(json.dumps({'random': 'json'}))
+        f = tmpdir.join(schema_filename)
+        f.write(meta_schema)
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = SchemaValidator(schema_file, f, ValidationMode.ERROR)
+            validator.validate()
+
+        message = err_info.value.message
+        assert ('Failed to load schemas because {!r} is not a valid json file.'
+                ' Error: Extra data: line 2 column 1 - line 2 column 9'
+                ' (char 19 - 27)'.format(schema_file)) in message
+
     @staticmethod
     def test_bad_schema_file(schema_file):
         os.remove(schema_file)
@@ -236,7 +251,6 @@ class TestSchemaValidator:
         assert "4 is not valid under any of the given schemas" in message
 
     @staticmethod
-    @pytest.mark.skip(reason="required fields validation is not working yet")
     @pytest.mark.parametrize('source_config_definition',
                              [{
                                  'type': 'object',
@@ -251,6 +265,11 @@ class TestSchemaValidator:
                                  'identityFields': ['name']
                              }])
     def test_missing_required_field(schema_file):
+        #
+        # This test will fail since required fields validation does not work
+        # for some cases. Once PYT-382 is fixed, re-enable this test.
+        #
+        pytest.skip("required fields validation is not working yet")
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
@@ -284,3 +303,33 @@ class TestSchemaValidator:
         message = err_info.value.message
         assert "'x' is not valid under any of the given schemas" in message
         assert "'identityFields' is a required property" in message
+
+    @staticmethod
+    @pytest.mark.parametrize('validation_mode',
+                             [ValidationMode.INFO, ValidationMode.WARNING])
+    @pytest.mark.parametrize('source_config_definition',
+                             [{
+                                 'type': 'object',
+                                 'required': ['name', 'path'],
+                                 'additionalProperties': False,
+                                 'properties': {
+                                     'name': {
+                                         'type': 'x'
+                                     },
+                                     'path': {
+                                         'type': 'string'
+                                     }
+                                 },
+                                 'nameField': 'name',
+                                 'identityFields': ['name']
+                             }])
+    def test_bad_sub_type_info_warn_mode(schema_file, validation_mode):
+        err_info = None
+        try:
+            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+                                        validation_mode)
+            validator.validate()
+        except Exception as e:
+            err_info = e
+
+        assert err_info is None
