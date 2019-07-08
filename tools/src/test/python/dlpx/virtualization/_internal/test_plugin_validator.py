@@ -4,6 +4,7 @@
 
 import json
 import os
+import uuid
 from collections import OrderedDict
 
 import mock
@@ -70,8 +71,7 @@ class TestPluginValidator:
     def test_plugin_valid_content(mock_import_plugin, src_dir,
                                   plugin_config_file):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -89,10 +89,9 @@ class TestPluginValidator:
     @staticmethod
     def test_plugin_missing_field(plugin_config_file):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
+            ('name', 'staged'.encode('utf-8')), ('version', '0.1.0'),
+            ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
+            ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
             ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
             ('schemaFile', 'schema.json'.encode('utf-8'))
@@ -118,8 +117,7 @@ class TestPluginValidator:
     def test_plugin_version_format(mock_import_plugin, src_dir,
                                    plugin_config_file, version, expected):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', version), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -154,8 +152,7 @@ class TestPluginValidator:
     def test_plugin_entry_point(mock_import_plugin, src_dir,
                                 plugin_config_file, entry_point, expected):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -176,8 +173,7 @@ class TestPluginValidator:
     @staticmethod
     def test_plugin_additional_properties(src_dir, plugin_config_file):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -199,8 +195,7 @@ class TestPluginValidator:
     @staticmethod
     def test_multiple_validation_errors(plugin_config_file):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['xxx']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -249,17 +244,17 @@ class TestPluginValidator:
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    @pytest.mark.parametrize('plugin_name, expected', [
+    @pytest.mark.parametrize('plugin_id , expected', [
         pytest.param('Staged_plugin', "'Staged_plugin' does not match"),
         pytest.param('staged_Plugin', "'staged_Plugin' does not match"),
         pytest.param('STAGED', "'STAGED' does not match"),
-        pytest.param('staged_plugin', None)
+        pytest.param('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
+        pytest.param('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)
     ])
-    def test_plugin_name(mock_import_plugin, src_dir, plugin_config_file,
-                         plugin_name, expected):
+    def test_plugin_id(mock_import_plugin, src_dir, plugin_config_file,
+                       plugin_id, expected):
         plugin_config_content = OrderedDict([
-            ('name', plugin_name.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', plugin_id.encode('utf-8')), ('name', 'python_vfiles'),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),
@@ -282,8 +277,7 @@ class TestPluginValidator:
                              [ValidationMode.INFO, ValidationMode.WARNING])
     def test_plugin_info_warn_mode(plugin_config_file, validation_mode):
         plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
+            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
             ('manualDiscovery', True),

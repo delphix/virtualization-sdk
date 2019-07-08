@@ -122,12 +122,11 @@ def artifact_file_created():
 
 
 @pytest.fixture
-def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
-                          schema_file, language, manual_discovery,
-                          plugin_type):
+def plugin_config_content(plugin_id, plugin_name, src_dir, schema_file,
+                          language, manual_discovery, plugin_type):
     """
     This fixutre creates the dict expected in the properties yaml file the
-    customer most provide for the build and compile commands.
+    customer must provide for the build and compile commands.
     """
     config = {
         'version': '2.0.0',
@@ -136,12 +135,11 @@ def plugin_config_content(plugin_name, plugin_pretty_name, src_dir,
         'defaultLocale': 'en-us',
         'rootSquashEnabled': True,
     }
+    if id:
+        config['id'] = plugin_id
 
     if plugin_name:
         config['name'] = plugin_name
-
-    if plugin_pretty_name:
-        config['prettyName'] = plugin_pretty_name
 
     if plugin_type:
         config['pluginType'] = plugin_type
@@ -235,13 +233,13 @@ def plugin_manifest():
 
 
 @pytest.fixture
-def plugin_name():
-    return 'python_vfiles'
+def plugin_id():
+    return '16bef554-9470-11e9-b2e3-8c8590d4a42c'
 
 
 @pytest.fixture
-def plugin_pretty_name():
-    return 'Unstructured Files using Python'
+def plugin_name():
+    return 'python_vfiles'
 
 
 @pytest.fixture
@@ -385,8 +383,8 @@ def basic_artifact_content(engine_api, virtual_source_definition,
                            snapshot_definition):
     artifact = {
         'type': 'Plugin',
-        'name': 'python_vfiles',
-        'prettyName': 'Unstructured Files using Python',
+        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
+        'prettyName': 'python_vfiles',
         'version': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
@@ -431,8 +429,8 @@ def artifact_content(engine_api, virtual_source_definition,
     """
     artifact = {
         'type': 'Plugin',
-        'name': 'python_vfiles',
-        'prettyName': 'Unstructured Files using Python',
+        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
+        'prettyName': 'python_vfiles',
         'version': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
@@ -515,8 +513,8 @@ def linked_source_def_type(plugin_type):
 
 
 @pytest.fixture
-def codegen_gen_py_inputs(plugin_config_file, plugin_pretty_name, src_dir,
-                          tmpdir, schema_content):
+def codegen_gen_py_inputs(plugin_config_file, plugin_name, src_dir, tmpdir,
+                          schema_content):
     class CodegenInput:
         def __init__(self, name, source_dir, plugin_content_dir, schema_dict):
             self.name = name
@@ -524,5 +522,4 @@ def codegen_gen_py_inputs(plugin_config_file, plugin_pretty_name, src_dir,
             self.plugin_content_dir = plugin_content_dir
             self.schema_dict = schema_dict
 
-    return CodegenInput(plugin_pretty_name, src_dir, tmpdir.strpath,
-                        schema_content)
+    return CodegenInput(plugin_name, src_dir, tmpdir.strpath, schema_content)

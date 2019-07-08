@@ -5,6 +5,7 @@
 import logging
 import os
 import shutil
+import uuid
 from collections import OrderedDict
 
 import jinja2
@@ -33,7 +34,7 @@ SCHEMA_TEMPLATE_PATH = os.path.join(PLUGIN_TEMPLATE_DIR,
                                     'schema_template.json')
 
 
-def init(root, plugin_name, ingestion_strategy, pretty_name):
+def init(root, ingestion_strategy, name):
     """
     Creates a valid plugin in a given directory. The plugin created will be
     able to be built and uploaded immediately.
@@ -45,18 +46,15 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
 
     Args:
         root (str): The path of the plugin's root directory
-        plugin_name (str): The name of the new plugin
         ingestion_strategy (str): The plugin type. Either DIRECT or STAGED
-        pretty_name (str): The name of the plugin to display.
+        name (str): The name of the plugin to display.
     """
     logger.info('Initializing directory: %s', root)
-    logger.debug(
-        'init parameters: %s', {
-            'Root': root,
-            'Plugin Name': plugin_name,
-            'Ingestion Strategy': ingestion_strategy,
-            'Pretty Name': pretty_name
-        })
+    logger.debug('init parameters: %s', {
+        'Root': root,
+        'Ingestion Strategy': ingestion_strategy,
+        'Name': name
+    })
 
     # Files paths based on 'root' to be used throughout
     src_dir_path = os.path.join(root, DEFAULT_SRC_DIRECTORY)
@@ -69,9 +67,13 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
     file_util.validate_paths_do_not_exist(config_file_path, schema_file_path,
                                           src_dir_path)
 
-    # If the pretty name isn't provided, use the plugin name
-    pretty_name = pretty_name or plugin_name
-    logger.debug("Using %r as the plugin's pretty name.", pretty_name)
+    # Make an UUID for the plugin
+    plugin_id = str(uuid.uuid4())
+    logger.debug("Using % r as the plugin id.", plugin_id)
+
+    # if name is not provided the name will be equal to plugin_id.
+    if not name:
+        name = plugin_id
 
     #
     # Some magic to get the yaml module to maintain the order when dumping
@@ -103,7 +105,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
             schema_file_path, False)
 
         # Generate the definitions based on the schema file
-        codegen.generate_python(pretty_name, src_dir_path,
+        codegen.generate_python(name, src_dir_path,
                                 os.path.dirname(config_file_path),
                                 result.plugin_schemas)
 
@@ -115,10 +117,8 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         #
         logger.info('Writing config file at %r.', config_file_path)
         with open(config_file_path, 'w+') as f:
-            config = _get_default_plugin_config(plugin_name,
-                                                ingestion_strategy,
-                                                pretty_name,
-                                                DEFAULT_ENTRY_POINT,
+            config = _get_default_plugin_config(plugin_id, ingestion_strategy,
+                                                name, DEFAULT_ENTRY_POINT,
                                                 DEFAULT_SRC_DIRECTORY,
                                                 DEFAULT_SCHEMA_FILE)
             yaml.dump(config, f, default_flow_style=False)
@@ -131,7 +131,7 @@ def init(root, plugin_name, ingestion_strategy, pretty_name):
         logger.info('Writing entry file at %r.', entry_point_file_path)
         with open(entry_point_file_path, 'w+') as f:
             entry_point_content = _get_entry_point_contents(
-                plugin_name, ingestion_strategy)
+                plugin_id, ingestion_strategy)
             f.write(entry_point_content)
 
     except Exception as e:
@@ -173,16 +173,16 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy):
                            linked_operations=linked_operations)
 
 
-def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
+def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
                                entry_point, src_dir_path, schema_file_path):
     """
     Returns a valid plugin configuration as an OrderedDict.
 
     Args:
-         plugin_name (str): The name of the plugin this configuration is for.
+        plugin_id (str): The unique id of the plugin this configuration is for.
         ingestion_strategy (str): Used as the plugin type.
             Either 'DIRECT' or 'STAGED'.
-        pretty_name (str): The name of the plugin that will be used in the UI.
+        name (str): The name of the plugin that will be used in the UI.
         entry_point (str): The full entry point for the plugin, including both
             the module and symbol.
         src_dir_path (str): The path to the source directory of the plugin.
@@ -193,12 +193,10 @@ def _get_default_plugin_config(plugin_name, ingestion_strategy, pretty_name,
     """
     # Ensure values are type 'str'. If they are type unicode yaml prints
     # them with '!!python/unicode' prepended to the value.
-    config = OrderedDict([('name', plugin_name.encode('utf-8')),
-                          ('prettyName', pretty_name.encode('utf-8')),
-                          ('version', '0.1.0'), ('language', 'PYTHON27'),
-                          ('hostTypes', ['UNIX']),
+    config = OrderedDict([('id', plugin_id.encode('utf-8')),
+                          ('name', name.encode('utf-8')), ('version', '0.1.0'),
+                          ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
                           ('pluginType', ingestion_strategy.encode('utf-8')),
-                          ('manualDiscovery', True),
                           ('entryPoint', entry_point.encode('utf-8')),
                           ('srcDir', src_dir_path.encode('utf-8')),
                           ('schemaFile', schema_file_path.encode('utf-8'))])

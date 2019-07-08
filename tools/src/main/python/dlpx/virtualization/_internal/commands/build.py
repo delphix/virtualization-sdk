@@ -76,7 +76,7 @@ def build(plugin_config, upload_artifact, generate_only):
     # Call directly into codegen to generate the python classes and make sure
     # the ones we zip up are up to date with the schemas.
     #
-    codegen.generate_python(plugin_config_content['prettyName'], src_dir,
+    codegen.generate_python(plugin_config_content['name'], src_dir,
                             os.path.dirname(plugin_config), schemas)
 
     if generate_only:
@@ -128,10 +128,17 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         # Hard code the type to a set default.
         'type':
         TYPE,
+        #
+        # Delphix Engine still accepts only name and prettyName and
+        # hence name is mapped to id and prettyName to name.
+        # Delphix Engine does not accept upper case letters for name field,
+        # so we convert the name to lowercase letters.
+        # This will be changed as part of POST GA task PYT-628
+        #
         'name':
-        plugin_config_content['name'],
+        plugin_config_content['id'].lower(),
         'prettyName':
-        plugin_config_content['prettyName'],
+        plugin_config_content['name'],
         'version':
         plugin_config_content['version'],
         # set default value of locale to en-us

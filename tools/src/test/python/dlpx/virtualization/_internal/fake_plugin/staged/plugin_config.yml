@@ -1,8 +1,8 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-name: python_staged
-prettyName: Staged Toolkit using Python
+id: 16bef554-9470-11e9-b2e3-8c8590d4a42c
+name: Staged Toolkit using Python
 version: 1.0.0
 hostTypes:
   - UNIX

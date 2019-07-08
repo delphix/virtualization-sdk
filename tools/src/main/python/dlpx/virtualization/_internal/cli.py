@@ -94,12 +94,11 @@ def delphix_sdk(verbose, quiet):
                               resolve_path=True),
               callback=click_util.validate_option_exists,
               help='Set the plugin root directory.')
-@click.option(
-    '-n',
-    '--plugin-name',
-    'name',
-    callback=click_util.validate_option_exists,
-    help='Set the name of the plugin that will be used to identify it.')
+@click.option('-n',
+              '--plugin-name',
+              'name',
+              help='Set the name of the plugin that will be displayed '
+              'to the Delphix user.')
 @click.option(
     '-s',
     '--ingestion-strategy',
@@ -110,15 +109,13 @@ def delphix_sdk(verbose, quiet):
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '
           'requires a staging server.'))
-@click.option('--pretty-name',
-              help='Set the pretty name of the plugin that will be displayed.')
-def init(root, name, ingestion_strategy, pretty_name):
+def init(root, ingestion_strategy, name):
     """
     Create a plugin in the root directory. The plugin will be valid
     but have no functionality.
     """
     with command_error_handler():
-        init_internal.init(root, name, ingestion_strategy, pretty_name)
+        init_internal.init(root, ingestion_strategy, name)
 
 
 @delphix_sdk.command()

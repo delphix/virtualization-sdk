@@ -139,8 +139,8 @@ class PluginValidator:
         Validates the given plugin configuration is valid.
 
         The plugin configuration should include:
-        name            the plugin name
-        prettyName      the plugin's displayed name
+        id              the plugin id
+        name            the plugin's displayed name
         version         the plugin version
         hostTypes       the list of supported hostTypes (UNIX and/or WINDOWS)
         entryPoint      the entry point of the plugin defined by the decorator

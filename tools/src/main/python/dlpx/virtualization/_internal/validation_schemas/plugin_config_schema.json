@@ -1,11 +1,11 @@
 {
   "type": "object",
   "properties":  {
-      "name":  {
+      "id":  {
           "type": "string",
-          "pattern": "^[a-z0-9_:-]+$"
+          "pattern": "[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
       },
-      "prettyName":  {
+      "name":  {
           "type": "string"
       },
       "version":  {
@@ -50,5 +50,5 @@
       }
     },
     "additionalProperties": false,
-    "required": ["name", "prettyName", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
+    "required": ["id", "name", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language"]
 }

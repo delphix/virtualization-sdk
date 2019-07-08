@@ -68,10 +68,9 @@ class TestInitialize:
         'ingestion_strategy',
         [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
     def test_init(tmpdir, ingestion_strategy, schema_template, plugin_name,
-                  plugin_pretty_name, format_entry_point_template):
+                  format_entry_point_template):
         # Initialize an empty directory.
-        init.init(tmpdir.strpath, plugin_name, ingestion_strategy,
-                  plugin_pretty_name)
+        init.init(tmpdir.strpath, ingestion_strategy, plugin_name)
 
         # Validate the config file is as we expect.
         result = plugin_util.read_and_validate_plugin_config_file(
@@ -82,7 +81,6 @@ class TestInitialize:
 
         assert config['pluginType'] == ingestion_strategy
         assert config['name'] == plugin_name
-        assert config['prettyName'] == plugin_pretty_name
         assert config['entryPoint'] == init.DEFAULT_ENTRY_POINT
         assert config['srcDir'] == init.DEFAULT_SRC_DIRECTORY
         assert config['schemaFile'] == init.DEFAULT_SCHEMA_FILE
@@ -103,16 +101,28 @@ class TestInitialize:
         with open(entry_file_path, 'r') as f:
             contents = f.read()
             assert contents == format_entry_point_template(
-                plugin_name, ingestion_strategy)
+                config['id'], ingestion_strategy)
+
+    @staticmethod
+    def test_init_without_plugin_name(tmpdir):
+        init.init(tmpdir.strpath, util_classes.DIRECT_TYPE, "")
+
+        result = plugin_util.read_and_validate_plugin_config_file(
+            os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
+            True, False)
+
+        config = result.plugin_config_content
+
+        # Validate that the plugin name is equal to plugin id
+        assert config['name'] == config['id']
 
     @staticmethod
     @pytest.mark.parametrize(
         'ingestion_strategy',
         [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
-    def test_plugin_from_init_is_valid(tmpdir, ingestion_strategy, plugin_name,
-                                       plugin_pretty_name):
-        init.init(tmpdir.strpath, plugin_name, ingestion_strategy,
-                  plugin_pretty_name)
+    def test_plugin_from_init_is_valid(tmpdir, ingestion_strategy,
+                                       plugin_name):
+        init.init(tmpdir.strpath, ingestion_strategy, plugin_name)
 
         plugin_config_file = os.path.join(tmpdir.strpath,
                                           init.DEFAULT_PLUGIN_CONFIG_FILE)
@@ -124,33 +134,30 @@ class TestInitialize:
         assert not validator.result.warnings
 
     @staticmethod
-    def test_invalid_with_config_file(plugin_config_file, plugin_name):
+    def test_invalid_with_config_file(plugin_config_file):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(plugin_config_file), plugin_name,
+            init.init(os.path.dirname(plugin_config_file),
                       util_classes.DIRECT_TYPE, None)
 
     @staticmethod
-    def test_invalid_with_schema_file(schema_file, plugin_name):
+    def test_invalid_with_schema_file(schema_file):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(schema_file), plugin_name,
-                      util_classes.DIRECT_TYPE, None)
+            init.init(os.path.dirname(schema_file), util_classes.DIRECT_TYPE,
+                      None)
 
     @staticmethod
-    def test_invalid_with_src_dir(src_dir, plugin_name):
+    def test_invalid_with_src_dir(src_dir):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(src_dir), plugin_name,
-                      util_classes.DIRECT_TYPE, None)
+            init.init(os.path.dirname(src_dir), util_classes.DIRECT_TYPE, None)
 
     @staticmethod
     @mock.patch('yaml.dump')
     @mock.patch('dlpx.virtualization._internal.file_util.delete_paths')
     def test_init_calls_cleanup_on_failure(mock_cleanup, mock_yaml_dump,
-                                           tmpdir, plugin_name,
-                                           plugin_pretty_name):
+                                           tmpdir, plugin_name):
         mock_yaml_dump.side_effect = RuntimeError()
         with pytest.raises(exceptions.UserError):
-            init.init(tmpdir.strpath, plugin_name, util_classes.STAGED_TYPE,
-                      plugin_pretty_name)
+            init.init(tmpdir.strpath, util_classes.STAGED_TYPE, plugin_name)
 
         src_dir_path = os.path.join(tmpdir.strpath, init.DEFAULT_SRC_DIRECTORY)
         config_file_path = os.path.join(tmpdir.strpath,
@@ -198,9 +205,9 @@ class TestInitialize:
         assert schema_template['snapshotDefinition']['properties'] == {}
 
     @staticmethod
-    def test_default_entry_point(plugin_name):
+    def test_default_entry_point(plugin_id):
         entry_point_contents = init._get_entry_point_contents(
-            plugin_name, util_classes.DIRECT_TYPE)
+            plugin_id, util_classes.DIRECT_TYPE)
         tree = ast.parse(entry_point_contents)
         for stmt in ast.walk(tree):
             if isinstance(stmt, ast.Assign):

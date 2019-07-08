@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2f9d6a6599f527c9e9ab1117b0384f07e0258fa97b90db2454ad7a6ddc9c3759"
+            "sha256": "639eb68ff6a16be042053f089604ff1a0b2f00aee647e4e29b1480630e8281fd"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -48,7 +48,7 @@
                 "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
                 "sha256:da60d0014fd8c55eb48c1c5354352e363e2d30bbf7057e5e171a468390184c75"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version == '2.7'",
             "version": "==3.7.4"
         },
         "entrypoints": {
@@ -268,7 +268,7 @@
                 "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
                 "sha256:da60d0014fd8c55eb48c1c5354352e363e2d30bbf7057e5e171a468390184c75"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version == '2.7'",
             "version": "==3.7.4"
         },
         "contextlib2": {
@@ -317,16 +317,16 @@
             "version": "==4.5.3"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-009.tar.gz",
-            "version": "== 1.0.0-internal-009"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-010.tar.gz",
+            "version": "== 1.0.0-internal-010"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-009.tar.gz",
-            "version": "== 1.0.0-internal-009"
+            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-010.tar.gz",
+            "version": "== 1.0.0-internal-010"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-009.tar.gz",
-            "version": "== 1.0.0-internal-009"
+            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-010.tar.gz",
+            "version": "== 1.0.0-internal-010"
         },
         "entrypoints": {
             "hashes": [
@@ -436,7 +436,7 @@
                 "sha256:2156525d6576d21c4dcaddfa427fae887ef89a7a9de5cbfe0728b3aafa78427e",
                 "sha256:446014523bb9be5c28128c4d2a10ad6bb60769e78bd85658fe44a450674e0ef8"
             ],
-            "markers": "python_version < '3.6'",
+            "markers": "python_version == '3.4.*' or python_version < '3'",
             "version": "==2.3.4"
         },
         "pluggy": {
@@ -476,11 +476,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:4a784f1d4f2ef198fe9b7aef793e9fa1a3b2f84e822d9b3a64a181293a572d45",
-                "sha256:926855726d8ae8371803f7b2e6ec0a69953d9c6311fa7c3b6c1b929ff92d27da"
+                "sha256:6aa9bc2f6f6504d7949e9df2a756739ca06e58ffda19b5e53c725f7b03fb4aae",
+                "sha256:b77ae6f2d1a760760902a7676887b665c086f71e3461c64ed2a312afcedc00d6"
             ],
             "index": "delphix",
-            "version": "==4.6.3"
+            "version": "==4.6.4"
         },
         "pytest-cov": {
             "hashes": [

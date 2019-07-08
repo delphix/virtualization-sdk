@@ -106,23 +106,24 @@ class TestInitCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
-                                          util_classes.DIRECT_TYPE, None)
+        mock_init.assert_called_once_with(os.getcwd(),
+                                          util_classes.DIRECT_TYPE,
+                                          plugin_name)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
-    def test_non_default_params(mock_init, plugin_name, plugin_pretty_name):
+    def test_non_default_params(mock_init, plugin_name):
         runner = click_testing.CliRunner()
 
         result = runner.invoke(cli.delphix_sdk, [
             'init', '-s', util_classes.STAGED_TYPE, '-r', '.', '-n',
-            plugin_name, '--pretty-name', plugin_pretty_name
+            plugin_name
         ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(), plugin_name,
+        mock_init.assert_called_once_with(os.getcwd(),
                                           util_classes.STAGED_TYPE,
-                                          plugin_pretty_name)
+                                          plugin_name)
 
     @staticmethod
     def test_invalid_ingestion_strategy(plugin_name):
