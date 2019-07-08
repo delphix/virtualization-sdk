@@ -197,6 +197,7 @@ def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
                           ('name', name.encode('utf-8')), ('version', '0.1.0'),
                           ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
                           ('pluginType', ingestion_strategy.encode('utf-8')),
+                          ('manualDiscovery', True),
                           ('entryPoint', entry_point.encode('utf-8')),
                           ('srcDir', src_dir_path.encode('utf-8')),
                           ('schemaFile', schema_file_path.encode('utf-8'))])

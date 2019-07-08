@@ -248,7 +248,6 @@ class TestPluginValidator:
         pytest.param('Staged_plugin', "'Staged_plugin' does not match"),
         pytest.param('staged_Plugin', "'staged_Plugin' does not match"),
         pytest.param('STAGED', "'STAGED' does not match"),
-        pytest.param('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
         pytest.param('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)
     ])
     def test_plugin_id(mock_import_plugin, src_dir, plugin_config_file,
