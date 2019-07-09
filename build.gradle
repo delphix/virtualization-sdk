@@ -8,7 +8,7 @@ plugins {
 }
 
 subprojects {
-  version = "1.0.0-internal-011"
+  version = "1.0.0-internal-012"
 }
 
 def binDir = "${rootProject.projectDir}/bin"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "628dd01fb07b7ba9255694239baf3e5d9d1a716562789f059e53958e7a402044"
+            "sha256": "3b933037ff5b9e0d9f1daf90976befbbf102b91fd52f056c7c0d303baa0d8a43"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,8 +15,8 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-011.tar.gz",
-            "version": "== 1.0.0-internal-011"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-012.tar.gz",
+            "version": "== 1.0.0-internal-012"
         },
         "protobuf": {
             "hashes": [
@@ -123,7 +123,7 @@
                 "sha256:2156525d6576d21c4dcaddfa427fae887ef89a7a9de5cbfe0728b3aafa78427e",
                 "sha256:446014523bb9be5c28128c4d2a10ad6bb60769e78bd85658fe44a450674e0ef8"
             ],
-            "markers": "python_version == '3.4.*' or python_version < '3'",
+            "markers": "python_version < '3.6'",
             "version": "==2.3.4"
         },
         "pluggy": {

@@ -153,7 +153,9 @@ def plugin_config_content(plugin_id, plugin_name, src_dir, schema_file,
     if language:
         config['language'] = language
 
-    if manual_discovery:
+    # Here we do is not None check because we will be passing in
+    # booleans as a parameter in tests.
+    if manual_discovery is not None:
         config['manualDiscovery'] = manual_discovery
 
     return config
@@ -249,6 +251,11 @@ def language():
 
 @pytest.fixture
 def manual_discovery():
+    return None
+
+
+@pytest.fixture
+def artifact_manual_discovery():
     return True
 
 
@@ -473,11 +480,12 @@ def engine_api():
 
 @pytest.fixture
 def discovery_definition(repository_definition, source_config_definition,
-                         manual_discovery):
+                         artifact_manual_discovery):
     discovery_definition = {'type': 'PluginDiscoveryDefinition'}
 
-    if manual_discovery:
-        discovery_definition['manualSourceConfigDiscovery'] = manual_discovery
+    if artifact_manual_discovery:
+        discovery_definition[
+            'manualSourceConfigDiscovery'] = artifact_manual_discovery
 
     if repository_definition:
         old_repository_def = copy.deepcopy(repository_definition)

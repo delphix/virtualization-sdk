@@ -209,9 +209,9 @@ def prepare_discovery_definition(config_content, schemas):
     return {
         'type':
         DISCOVERY_DEFINITION_TYPE,
-        # set manualSourceConfigDiscovery provided in config
+        # set manualSourceConfigDiscovery to default value
         'manualSourceConfigDiscovery':
-        config_content['manualDiscovery'],
+        config_content.get('manualDiscovery', True),
         # identityFields in schema becomes repositoryIdentityFields
         'repositoryIdentityFields':
         schema_repo_def.pop('identityFields'),
