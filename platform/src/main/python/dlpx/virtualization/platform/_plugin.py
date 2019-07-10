@@ -81,6 +81,7 @@ fail. The internal methods should only be called by the platform so it's safe
 to have the import in the methods as the objects will exist at runtime.
 """
 import json
+from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization import platform_pb2
 from dlpx.virtualization.common.exceptions import PluginRuntimeError
@@ -152,7 +153,7 @@ class DiscoveryOperations(object):
             raise OperationNotDefinedError(Op.DISCOVERY_REPOSITORY)
 
         repositories = self.repository_impl(
-            source_connection=request.source_connection)
+            source_connection=RemoteConnection.from_proto(request.source_connection))
 
         # Validate that this is a list of Repository objects
         if not isinstance(repositories, list):
@@ -213,7 +214,7 @@ class DiscoveryOperations(object):
             json.loads(request.repository.parameters.json))
 
         source_configs = self.source_config_impl(
-            source_connection=request.source_connection,
+            source_connection=RemoteConnection.from_proto(request.source_connection),
             repository=repository_definition)
 
         # Validate that this is a list of SourceConfigDefinition objects
@@ -339,7 +340,7 @@ class LinkedOperations(object):
             json.loads(request.direct_source.linked_source.parameters.json))
         direct_source = DirectSource(
             guid=request.direct_source.linked_source.guid,
-            connection=request.direct_source.connection,
+            connection=RemoteConnection.from_proto(request.direct_source.connection),
             parameters=direct_source_definition)
 
         repository = RepositoryDefinition.from_dict(
@@ -394,7 +395,7 @@ class LinkedOperations(object):
             json.loads(request.direct_source.linked_source.parameters.json))
         direct_source = DirectSource(
             guid=request.direct_source.linked_source.guid,
-            connection=request.direct_source.connection,
+            connection=RemoteConnection.from_proto(request.direct_source.connection),
             parameters=direct_source_definition)
 
         repository = RepositoryDefinition.from_dict(
@@ -453,15 +454,15 @@ class LinkedOperations(object):
                 json.loads(linked_source.parameters.json)))
         staged_mount = request.staged_source.staged_mount
         mount = Mount(
-            remote_environment=staged_mount.remote_environment,
+            remote_environment=RemoteEnvironment.from_proto(staged_mount.remote_environment),
             mount_path=staged_mount.mount_path,
             shared_path=staged_mount.shared_path)
         staged_source = StagedSource(
             guid=linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
                 json.loads(request.repository.parameters.json))
@@ -520,15 +521,15 @@ class LinkedOperations(object):
                         request.staged_source.linked_source.parameters.json))
         mount = Mount(
                 remote_environment=
-                request.staged_source.staged_mount.remote_environment,
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment),
                 mount_path=request.staged_source.staged_mount.mount_path,
                 shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
                 guid=request.staged_source.linked_source.guid,
-                source_connection=request.staged_source.source_connection,
+                source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
                 parameters=staged_source_definition,
                 mount=mount,
-                staged_connection=request.staged_source.staged_connection)
+                staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
                 json.loads(request.repository.parameters.json))
@@ -586,15 +587,15 @@ class LinkedOperations(object):
                 request.staged_source.linked_source.parameters.json))
         mount = Mount(
             remote_environment=(
-                request.staged_source.staged_mount.remote_environment),
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -645,15 +646,15 @@ class LinkedOperations(object):
                 request.staged_source.linked_source.parameters.json))
         mount = Mount(
             remote_environment=(
-                request.staged_source.staged_mount.remote_environment),
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -703,15 +704,15 @@ class LinkedOperations(object):
             json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
             remote_environment=(
-                request.staged_source.staged_mount.remote_environment),
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -766,15 +767,15 @@ class LinkedOperations(object):
                 request.staged_source.linked_source.parameters.json))
         mount = Mount(
             remote_environment=(
-                request.staged_source.staged_mount.remote_environment),
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -822,7 +823,7 @@ class LinkedOperations(object):
             single_mount_protobuf = common_pb2.SingleEntireMount()
             single_mount_protobuf.mount_path = single_mount.mount_path
             single_mount_protobuf.remote_environment.CopyFrom(
-                single_mount.remote_environment)
+                single_mount.remote_environment.to_proto())
             return single_mount_protobuf
 
         def to_protobuf_ownership_spec(ownership_spec):
@@ -838,15 +839,15 @@ class LinkedOperations(object):
             json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
             remote_environment=(
-                request.staged_source.staged_mount.remote_environment),
+                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=request.staged_source.source_connection,
+            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=request.staged_source.staged_connection)
+            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -983,7 +984,7 @@ class VirtualOperations(object):
     @staticmethod
     def _from_protobuf_single_subset_mount(single_subset_mount):
             return Mount(
-                remote_environment=single_subset_mount.remote_environment,
+                remote_environment=RemoteEnvironment.from_proto(single_subset_mount.remote_environment),
                 mount_path=single_subset_mount.mount_path,
                 shared_path=single_subset_mount.shared_path)
 
@@ -1025,7 +1026,7 @@ class VirtualOperations(object):
 
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1083,7 +1084,7 @@ class VirtualOperations(object):
 
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1130,7 +1131,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1188,7 +1189,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1236,7 +1237,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1289,7 +1290,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1348,7 +1349,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1406,7 +1407,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1458,7 +1459,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 
@@ -1499,17 +1500,7 @@ class VirtualOperations(object):
         def to_protobuf_single_mount(single_mount):
             single_mount_protobuf = common_pb2.SingleSubsetMount()
 
-            remote_env = single_mount.remote_environment
-            host_protobuf = common_pb2.RemoteHost()
-            host_protobuf.name = remote_env.host.name
-            host_protobuf.reference = remote_env.host.reference
-            host_protobuf.binary_path = remote_env.host.binary_path
-            host_protobuf.scratch_path = remote_env.host.scratch_path
-
-            environment_protobuf = common_pb2.RemoteEnvironment()
-            environment_protobuf.name = remote_env.name
-            environment_protobuf.reference = remote_env.reference
-            environment_protobuf.host.CopyFrom(host_protobuf)
+            environment_protobuf = single_mount.remote_environment.to_proto()
 
             single_mount_protobuf.remote_environment.CopyFrom(
                 environment_protobuf)
@@ -1535,7 +1526,7 @@ class VirtualOperations(object):
                   for m in request.virtual_source.mounts]
         virtual_source = VirtualSource(
             guid=request.virtual_source.guid,
-            connection=request.virtual_source.connection,
+            connection=RemoteConnection.from_proto(request.virtual_source.connection),
             parameters=virtual_source_definition,
             mounts=mounts)
 

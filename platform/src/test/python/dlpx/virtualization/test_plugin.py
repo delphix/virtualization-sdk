@@ -6,6 +6,7 @@ import json
 import pytest
 import sys
 from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization.platform import _plugin
 from dlpx.virtualization.platform.exceptions import (
@@ -124,11 +125,21 @@ class TestPlugin:
 
     @staticmethod
     def assert_user(user):
+        assert isinstance(user, RemoteUser)
         assert user.name == TEST_USER_NAME
         assert user.reference == TEST_USER_REFERENCE
 
     @staticmethod
     def assert_host(host):
+        assert isinstance(host, RemoteHost)
+        assert host.name == TEST_HOST_NAME
+        assert host.reference == TEST_HOST_REFERENCE
+        assert host.binary_path == TEST_BINARY_PATH
+        assert host.scratch_path == TEST_SCRATCH_PATH
+
+    @staticmethod
+    def assert_host_protobuf(host):
+        assert isinstance(host, common_pb2.RemoteHost)
         assert host.name == TEST_HOST_NAME
         assert host.reference == TEST_HOST_REFERENCE
         assert host.binary_path == TEST_BINARY_PATH
@@ -136,18 +147,33 @@ class TestPlugin:
 
     @staticmethod
     def assert_environment(environment):
+        assert isinstance(environment, RemoteEnvironment)
         assert environment.name == TEST_ENVIRONMENT_NAME
         assert environment.reference == TEST_ENVIRONMENT_REFERENCE
         TestPlugin.assert_host(environment.host)
 
     @staticmethod
+    def assert_environment_protobuf(environment):
+        assert isinstance(environment, common_pb2.RemoteEnvironment)
+        assert environment.name == TEST_ENVIRONMENT_NAME
+        assert environment.reference == TEST_ENVIRONMENT_REFERENCE
+        TestPlugin.assert_host_protobuf(environment.host)
+
+    @staticmethod
     def assert_connection(connection):
+        assert isinstance(connection, RemoteConnection)
         TestPlugin.assert_environment(connection.environment)
         TestPlugin.assert_user(connection.user)
 
     @staticmethod
     def assert_mount(mount):
         TestPlugin.assert_environment(mount.remote_environment)
+        assert mount.mount_path == TEST_MOUNT_PATH
+        assert mount.shared_path == TEST_SHARED_PATH
+
+    @staticmethod
+    def assert_mount_protobuf(mount):
+        TestPlugin.assert_environment_protobuf(mount.remote_environment)
         assert mount.mount_path == TEST_MOUNT_PATH
         assert mount.shared_path == TEST_SHARED_PATH
 
@@ -709,7 +735,7 @@ class TestPlugin:
         response_mounts = virtual_mount_spec_response.return_value.mounts
 
         for mount in response_mounts:
-            TestPlugin.assert_mount(mount)
+            TestPlugin.assert_mount_protobuf(mount)
 
         return_value = virtual_mount_spec_response.return_value
         assert return_value.ownership_spec.uid == TEST_UID
@@ -1028,7 +1054,7 @@ class TestPlugin:
         staged_mount = staged_mount_spec_response.return_value.staged_mount
         ownership_spec = staged_mount_spec_response.return_value.ownership_spec
 
-        TestPlugin.assert_environment(staged_mount.remote_environment)
+        TestPlugin.assert_environment_protobuf(staged_mount.remote_environment)
         assert staged_mount.mount_path == TEST_MOUNT_PATH
         # shared_path is not supported and must be empty
         assert staged_mount.shared_path == ''

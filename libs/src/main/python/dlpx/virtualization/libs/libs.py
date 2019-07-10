@@ -30,7 +30,7 @@ from dlpx.virtualization import libs_pb2
 from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
                                                  LibraryError,
                                                  PluginScriptError)
-from dlpx.virtualization import common_pb2
+from dlpx.virtualization.common._common_classes import RemoteConnection
 
 import logging
 
@@ -124,11 +124,11 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False,
         variables = {}
 
     # Validate all the arguments passed in are the right types based on docs.
-    if not isinstance(remote_connection, common_pb2.RemoteConnection):
+    if not isinstance(remote_connection, RemoteConnection):
         raise IncorrectArgumentTypeError(
             'remote_connection',
             type(remote_connection),
-            common_pb2.RemoteConnection)
+            RemoteConnection)
     if not isinstance(command, basestring):
         raise IncorrectArgumentTypeError('command', type(command), basestring)
     if variables and not isinstance(variables, dict):
@@ -152,7 +152,7 @@ def run_bash(remote_connection, command, variables=None, use_login_shell=False,
             'use_login_shell', type(use_login_shell), bool, False)
 
     run_bash_request = libs_pb2.RunBashRequest()
-    run_bash_request.remote_connection.CopyFrom(remote_connection)
+    run_bash_request.remote_connection.CopyFrom(remote_connection.to_proto())
     run_bash_request.command = command
     run_bash_request.use_login_shell = use_login_shell
     for variable, value in variables.items():
@@ -187,11 +187,11 @@ def run_sync(remote_connection, source_directory, rsync_user=None,
     from dlpx.virtualization._engine import libs as internal_libs
 
     # Validate all the arguments passed in are the right types based on docs.
-    if not isinstance(remote_connection, common_pb2.RemoteConnection):
+    if not isinstance(remote_connection, RemoteConnection):
         raise IncorrectArgumentTypeError(
             'remote_connection',
             type(remote_connection),
-            common_pb2.RemoteConnection)
+            RemoteConnection)
     if not isinstance(source_directory, basestring):
         raise IncorrectArgumentTypeError(
             'source_directory', type(source_directory), basestring)
@@ -229,7 +229,7 @@ def run_sync(remote_connection, source_directory, rsync_user=None,
             False)
 
     run_sync_request = libs_pb2.RunSyncRequest()
-    run_sync_request.remote_connection.CopyFrom(remote_connection)
+    run_sync_request.remote_connection.CopyFrom(remote_connection.to_proto())
     run_sync_request.source_directory = source_directory
     if rsync_user is not None:
         run_sync_request.rsync_user = rsync_user
@@ -277,11 +277,11 @@ def run_powershell(remote_connection, command, variables=None, check=False):
         variables = {}
 
     # Validate all the arguments passed in are the right types based on docs.
-    if not isinstance(remote_connection, common_pb2.RemoteConnection):
+    if not isinstance(remote_connection, RemoteConnection):
         raise IncorrectArgumentTypeError(
             'remote_connection',
             type(remote_connection),
-            common_pb2.RemoteConnection)
+            RemoteConnection)
     if not isinstance(command, basestring):
         raise IncorrectArgumentTypeError('command', type(command), basestring)
     if variables and not isinstance(variables, dict):
@@ -302,7 +302,7 @@ def run_powershell(remote_connection, command, variables=None, check=False):
             False)
 
     run_powershell_request = libs_pb2.RunPowerShellRequest()
-    run_powershell_request.remote_connection.CopyFrom(remote_connection)
+    run_powershell_request.remote_connection.CopyFrom(remote_connection.to_proto())
     run_powershell_request.command = command
     for variable, value in variables.items():
         run_powershell_request.variables[variable] = value
@@ -342,11 +342,11 @@ def run_expect(remote_connection, command, variables=None, check=False):
         variables = {}
 
     # Validate all the arguments passed in are the right types based on docs.
-    if not isinstance(remote_connection, common_pb2.RemoteConnection):
+    if not isinstance(remote_connection, RemoteConnection):
         raise IncorrectArgumentTypeError(
             'remote_connection',
             type(remote_connection),
-            common_pb2.RemoteConnection)
+            RemoteConnection)
     if not isinstance(command, basestring):
         raise IncorrectArgumentTypeError('command', type(command), basestring)
     if variables and not isinstance(variables, dict):
@@ -367,7 +367,7 @@ def run_expect(remote_connection, command, variables=None, check=False):
             False)
 
     run_expect_request = libs_pb2.RunExpectRequest()
-    run_expect_request.remote_connection.CopyFrom(remote_connection)
+    run_expect_request.remote_connection.CopyFrom(remote_connection.to_proto())
     run_expect_request.command = command
     for variable, value in variables.items():
         run_expect_request.variables[variable] = value
