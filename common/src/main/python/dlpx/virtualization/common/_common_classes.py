@@ -34,7 +34,7 @@ class RemoteConnection(object):
     """
     def __init__(self, environment, user):
         if isinstance(environment, RemoteEnvironment):
-            self.environment = environment
+            self.__environment = environment
         else:
             raise IncorrectTypeError(
                 RemoteConnection,
@@ -43,13 +43,21 @@ class RemoteConnection(object):
                 RemoteEnvironment)
 
         if isinstance(user, RemoteUser):
-            self.user = user
+            self.__user = user
         else:
             raise IncorrectTypeError(
                 RemoteConnection,
                 'user',
                 type(user),
                 RemoteUser)
+
+    @property
+    def environment(self):
+        return self.__environment
+
+    @property
+    def user(self):
+        return self.__user
 
     def to_proto(self):
         """Converts plugin class RemoteConnection to protobuf class common_pb2.RemoteConnection
@@ -94,14 +102,14 @@ class RemoteEnvironment(object):
                 'name',
                 type(name),
                 basestring)
-        self.name = name
+        self.__name = name
         if not isinstance(reference, basestring):
             raise IncorrectTypeError(
                 RemoteEnvironment,
                 'reference',
                 type(reference),
                 basestring)
-        self.reference = reference
+        self.__reference = reference
 
         if isinstance(host, RemoteHost):
             self.host = host
@@ -111,6 +119,14 @@ class RemoteEnvironment(object):
                 'host',
                 type(host),
                 RemoteHost)
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def reference(self):
+        return self.__reference
 
     def to_proto(self):
         """Converts plugin class RemoteEnvironment to protobuf class common_pb2.RemoteEnvironment
@@ -157,28 +173,44 @@ class RemoteHost(object):
                 'name',
                 type(name),
                 basestring)
-        self.name = name
+        self.__name = name
         if not isinstance(reference, basestring):
             raise IncorrectTypeError(
                 RemoteHost,
                 'reference',
                 type(reference),
                 basestring)
-        self.reference = reference
+        self.__reference = reference
         if not isinstance(binary_path, basestring):
             raise IncorrectTypeError(
                 RemoteHost,
                 'binary_path',
                 type(binary_path),
                 basestring)
-        self.binary_path = binary_path
+        self.__binary_path = binary_path
         if not isinstance(scratch_path, basestring):
             raise IncorrectTypeError(
                 RemoteHost,
                 'scratch_path',
                 type(scratch_path),
                 basestring)
-        self.scratch_path = scratch_path
+        self.__scratch_path = scratch_path
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def reference(self):
+        return self.__reference
+
+    @property
+    def binary_path(self):
+        return self.__binary_path
+
+    @property
+    def scratch_path(self):
+        return self.__scratch_path
 
     def to_proto(self):
         """Converts plugin class RemoteHost to protobuf class common_pb2.RemoteHost
@@ -224,14 +256,22 @@ class RemoteUser(object):
                 'name',
                 type(name),
                 basestring)
-        self.name = name
+        self.__name = name
         if not isinstance(reference, basestring):
             raise IncorrectTypeError(
                 RemoteUser,
                 'reference',
                 type(reference),
                 basestring)
-        self.reference = reference
+        self.__reference = reference
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def reference(self):
+        return self.__reference
 
     def to_proto(self):
         """Converts plugin class RemoteUser to protobuf class common_pb2.RemoteUser
