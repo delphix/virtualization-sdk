@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3b933037ff5b9e0d9f1daf90976befbbf102b91fd52f056c7c0d303baa0d8a43"
+            "sha256": "9c1619576ad81263dcbf5e0235d7676373c64cdc041323b731080e37fe57243e"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,8 +15,8 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-012.tar.gz",
-            "version": "== 1.0.0-internal-012"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-013.tar.gz",
+            "version": "== 1.0.0-internal-013"
         },
         "protobuf": {
             "hashes": [
@@ -84,7 +84,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "importlib-metadata": {

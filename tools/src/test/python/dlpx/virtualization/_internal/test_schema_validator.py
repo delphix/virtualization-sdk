@@ -6,7 +6,7 @@ import json
 import os
 
 import pytest
-from dlpx.virtualization._internal import exceptions, plugin_util
+from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode
 
@@ -30,7 +30,8 @@ class TestSchemaValidator:
     def test_bad_schema_file(schema_file):
         os.remove(schema_file)
         with pytest.raises(exceptions.UserError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -41,7 +42,7 @@ class TestSchemaValidator:
 
     @staticmethod
     def test_valid_schema(schema_file):
-        validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
                                     ValidationMode.ERROR)
         validator.validate()
 
@@ -67,7 +68,7 @@ class TestSchemaValidator:
         # this test will not raise validation errors even though type
         # is not specified and will pass.
         #
-        validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
                                     ValidationMode.ERROR)
         validator.validate()
 
@@ -90,7 +91,8 @@ class TestSchemaValidator:
                              }])
     def test_bad_root_type_num(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -116,7 +118,8 @@ class TestSchemaValidator:
                              }])
     def test_bad_root_type(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -141,7 +144,8 @@ class TestSchemaValidator:
                              }])
     def test_missing_identity_fields(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -166,7 +170,8 @@ class TestSchemaValidator:
                              }])
     def test_missing_name_field(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -194,7 +199,7 @@ class TestSchemaValidator:
         # this test will not raise validation errors even though type
         # is not specified and will pass.
         #
-        validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
                                     ValidationMode.ERROR)
         validator.validate()
 
@@ -217,7 +222,8 @@ class TestSchemaValidator:
                              }])
     def test_bad_sub_type(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -243,7 +249,8 @@ class TestSchemaValidator:
                              }])
     def test_bad_sub_type_num(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -271,7 +278,8 @@ class TestSchemaValidator:
         #
         pytest.skip("required fields validation is not working yet")
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -296,7 +304,8 @@ class TestSchemaValidator:
                              }])
     def test_multiple_validation_errors(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         ValidationMode.ERROR)
             validator.validate()
 
@@ -326,7 +335,8 @@ class TestSchemaValidator:
     def test_bad_sub_type_info_warn_mode(schema_file, validation_mode):
         err_info = None
         try:
-            validator = SchemaValidator(schema_file, plugin_util.PLUGIN_SCHEMA,
+            validator = SchemaValidator(schema_file,
+                                        util_classes.PLUGIN_SCHEMA,
                                         validation_mode)
             validator.validate()
         except Exception as e:

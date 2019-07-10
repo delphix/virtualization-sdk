@@ -116,7 +116,7 @@ def build(plugin_config, upload_artifact, generate_only):
     generate_upload_artifact(upload_artifact, plugin_output)
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
-    print('\nBUILD SUCCESSFUL.')
+    logger.warn('\nBUILD SUCCESSFUL.')
 
 
 def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):

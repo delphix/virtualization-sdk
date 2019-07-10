@@ -10,7 +10,7 @@ import os
 import shutil
 import subprocess
 
-from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal import exceptions, file_util, util_classes
 
 logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
@@ -45,7 +45,6 @@ SNAPSHOT_PARAMS_JSON = {
 }
 
 SWAGGER_FILE_NAME = 'swagger.json'
-OUTPUT_DIR_NAME = '.delphix-compile'
 CODEGEN_PACKAGE = 'generated'
 CODEGEN_MODULE = 'definitions'
 SWAGGER_JAR = 'codegen/swagger-codegen-cli-2.3.1.jar'
@@ -69,19 +68,18 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
             code should be put into.
         plugin_config_dir (str): The directory that the plugin config was found
         schema_content (dict): The dict that is used to generate the swagger
-            json input file. This is then used to generate the python paths
-        final_dirname (str): The directory we want
+            json input file. This is then used to generate the python paths.
 
     """
     #
     # Create the output dir that we're writting the swagger generated files to.
-    # the dir will be a hidden directory because most the files are not
+    # The dir will be a hidden directory because most the files are not
     # relevant to the plugin writer. We want to always force this to be
     # recreated.
     #
-    output_dir = os.path.join(plugin_config_dir, OUTPUT_DIR_NAME)
+    output_dir = os.path.join(plugin_config_dir, util_classes.OUTPUT_DIR_NAME)
     logger.info('Creating new output directory: {!r}'.format(output_dir))
-    _make_dir(output_dir)
+    file_util.make_dir(output_dir, True)
 
     #
     # Create the json with the correct Swagger JSON specification required to
@@ -108,24 +106,6 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     logger.info('Copying generated python files to'
                 ' source directory {!r}'.format(source_dir))
     _copy_generated_to_dir(output_dir, source_dir)
-
-
-def _make_dir(path):
-
-    #
-    # Delete the folder if it is there to clear the location. Ignore errors in
-    # case the folder didn't exist. Since we'll be creating another dir at
-    # that location, we should handle any errors when creating the dir.
-    #
-    shutil.rmtree(path, ignore_errors=True)
-    try:
-        os.mkdir(path)
-        logger.debug('Successfully created directory {!r}'.format(path))
-    except OSError as err:
-        raise exceptions.UserError(
-            'Unable to create new directory {!r}'
-            '\nError code: {}. Error message: {}'.format(
-                path, err.errno, os.strerror(err.errno)))
 
 
 def _write_swagger_file(name, schema_dict, output_dir):
@@ -240,7 +220,7 @@ def _copy_generated_to_dir(src_location, dst_location):
     #
     source_dir = os.path.join(src_location, CODEGEN_PACKAGE)
     destination_dir = os.path.join(dst_location, CODEGEN_PACKAGE)
-    _make_dir(destination_dir)
+    file_util.make_dir(destination_dir, True)
 
     logger.info('Copying generated files {} from {!r} to {!r}.'.format(
         CODEGEN_COPY_FILES, source_dir, destination_dir))

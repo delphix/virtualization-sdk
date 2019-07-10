@@ -1,0 +1,169 @@
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+EXPECTED_STAGED_ARGS_BY_OP:
+  DiscoveryOperations:
+    repository_impl:
+      - source_connection
+    source_config_impl:
+      - source_connection
+      - repository
+  LinkedOperations:
+    pre_snapshot_impl:
+      - staged_source
+      - repository
+      - source_config
+      - snapshot_parameters
+    post_snapshot_impl:
+      - staged_source
+      - repository
+      - source_config
+      - snapshot_parameters
+    start_staging_impl:
+      - staged_source
+      - repository
+      - source_config
+    stop_staging_impl:
+      - staged_source
+      - repository
+      - source_config
+    status_impl:
+      - staged_source
+      - repository
+      - source_config
+    worker_impl:
+      - staged_source
+      - repository
+      - source_config
+    mount_specification_impl:
+      - staged_source
+      - repository
+  VirtualOperations:
+    configure_impl:
+      - virtual_source
+      - repository
+      - snapshot
+    unconfigure_impl:
+      - virtual_source
+      - repository
+      - source_config
+    reconfigure_impl:
+      - virtual_source
+      - repository
+      - source_config
+      - snapshot
+    start_impl:
+      - virtual_source
+      - repository
+      - source_config
+    stop_impl:
+      - virtual_source
+      - repository
+      - source_config
+    pre_snapshot_impl:
+      - virtual_source
+      - repository
+      - source_config
+    post_snapshot_impl:
+      - virtual_source
+      - repository
+      - source_config
+    status_impl:
+      - virtual_source
+      - repository
+      - source_config
+    initialize_impl:
+      - virtual_source
+      - repository
+      - source_config
+    mount_specification_impl:
+      - virtual_source
+      - repository
+
+
+EXPECTED_DIRECT_ARGS_BY_OP:
+  DiscoveryOperations:
+    repository_impl:
+      - source_connection
+    source_config_impl:
+      - source_connection
+      - repository
+  LinkedOperations:
+    pre_snapshot_impl:
+      - direct_source
+      - repository
+      - source_config
+    post_snapshot_impl:
+      - direct_source
+      - repository
+      - source_config
+  VirtualOperations:
+    configure_impl:
+      - virtual_source
+      - repository
+      - snapshot
+    unconfigure_impl:
+      - virtual_source
+      - repository
+      - source_config
+    reconfigure_impl:
+      - virtual_source
+      - repository
+      - source_config
+      - snapshot
+    start_impl:
+      - virtual_source
+      - repository
+      - source_config
+    stop_impl:
+      - virtual_source
+      - repository
+      - source_config
+    pre_snapshot_impl:
+      - virtual_source
+      - repository
+      - source_config
+    post_snapshot_impl:
+      - virtual_source
+      - repository
+      - source_config
+    status_impl:
+      - virtual_source
+      - repository
+      - source_config
+    initialize_impl:
+      - virtual_source
+      - repository
+      - source_config
+    mount_specification_impl:
+      - virtual_source
+      - repository
+
+REQUIRED_METHODS_BY_PLUGIN_TYPE:
+  DIRECT:
+    hasRepositoryDiscovery: discovery.repository(),
+    hasSourceConfigDiscovery: discovery.source_config(),
+    hasLinkedPostSnapshot: linked.post_snapshot(),
+    hasVirtualConfigure: virtual.configure(),
+    hasVirtualReconfigure: virtual.reconfigure(),
+    hasVirtualPostSnapshot: virtual.post_snapshot(),
+    hasVirtualMountSpecification: virtual.mount_specification()
+  STAGED:
+    hasRepositoryDiscovery: discovery.repository(),
+    hasSourceConfigDiscovery: discovery.source_config(),
+    hasLinkedPostSnapshot: linked.post_snapshot(),
+    hasLinkedMountSpecification: linked.mount_specification(),
+    hasVirtualConfigure: virtual.configure(),
+    hasVirtualReconfigure: virtual.reconfigure(),
+    hasVirtualPostSnapshot: virtual.post_snapshot(),
+    hasVirtualMountSpecification: virtual.mount_specification()
+
+REQUIRED_METHODS_DESCRIPTION:
+  hasRepositoryDiscovery: Repository Discovery,
+  hasSourceConfigDiscovery: Source Config Discovery,
+  hasLinkedPostSnapshot: Linked Source Post Snapshot,
+  hasLinkedMountSpecification: Staged Source Mount Specification,
+  hasVirtualConfigure: Virtual Source Configure,
+  hasVirtualReconfigure: Virtual Source Reconfigure,
+  hasVirtualPostSnapshot: Virtual Source Post Snapshot,
+  hasVirtualMountSpecification: Virtual Source Mount Specification

@@ -9,7 +9,7 @@ from collections import OrderedDict
 
 import mock
 import pytest
-from dlpx.virtualization._internal import exceptions, plugin_util
+from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode
 
@@ -55,7 +55,7 @@ class TestPluginValidator:
     def test_plugin_bad_config_file(plugin_config_file):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
-                                        plugin_util.PLUGIN_CONFIG_SCHEMA,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
                                         ValidationMode.ERROR, True)
             validator.validate()
 
@@ -81,7 +81,7 @@ class TestPluginValidator:
 
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
-            plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+            util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
         validator.validate()
 
         mock_import_plugin.assert_called()
@@ -100,7 +100,7 @@ class TestPluginValidator:
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
@@ -128,7 +128,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
@@ -163,7 +163,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
@@ -185,7 +185,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
@@ -206,7 +206,7 @@ class TestPluginValidator:
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
@@ -216,7 +216,7 @@ class TestPluginValidator:
     def test_staged_plugin(fake_staged_plugin_config):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_staged_plugin_config,
-                                        plugin_util.PLUGIN_CONFIG_SCHEMA,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
                                         ValidationMode.ERROR, True)
             validator.validate()
 
@@ -230,7 +230,7 @@ class TestPluginValidator:
     def test_direct_plugin(fake_direct_plugin_config):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_direct_plugin_config,
-                                        plugin_util.PLUGIN_CONFIG_SCHEMA,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
                                         ValidationMode.ERROR, True)
             validator.validate()
 
@@ -264,7 +264,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
+                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
             validator.validate()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
@@ -287,7 +287,7 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                plugin_util.PLUGIN_CONFIG_SCHEMA, validation_mode)
+                util_classes.PLUGIN_CONFIG_SCHEMA, validation_mode)
             validator.validate()
         except Exception as e:
             err_info = e

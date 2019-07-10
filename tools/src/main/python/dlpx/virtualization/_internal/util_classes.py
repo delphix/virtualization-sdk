@@ -3,9 +3,17 @@
 #
 
 import enum
+import os
 
 STAGED_TYPE = 'STAGED'
 DIRECT_TYPE = 'DIRECT'
+
+OUTPUT_DIR_NAME = '.delphix-compile'
+PLUGIN_SCHEMAS_DIR = os.path.join(os.path.dirname(__file__),
+                                  'validation_schemas')
+PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
+                                    'plugin_config_schema.json')
+PLUGIN_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR, 'plugin_schema.json')
 
 
 class ValidationMode(enum.Enum):

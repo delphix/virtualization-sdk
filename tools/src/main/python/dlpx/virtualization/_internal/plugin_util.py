@@ -5,18 +5,12 @@
 import logging
 import os
 
-from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode
 
 logger = logging.getLogger(__name__)
-
-PLUGIN_SCHEMAS_DIR = os.path.join(os.path.dirname(__file__),
-                                  'validation_schemas')
-PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
-                                    'plugin_config_schema.json')
-PLUGIN_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR, 'plugin_schema.json')
 
 
 def read_and_validate_plugin_config_file(plugin_config, stop_build,
@@ -31,7 +25,8 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = PluginValidator(plugin_config, PLUGIN_CONFIG_SCHEMA,
+    validator = PluginValidator(plugin_config,
+                                util_classes.PLUGIN_CONFIG_SCHEMA,
                                 validation_mode, run_all_validations)
     validator.validate()
     return validator.result
@@ -46,10 +41,9 @@ def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = PluginValidator.from_config_content(plugin_config_file,
-                                                    plugin_config_content,
-                                                    PLUGIN_CONFIG_SCHEMA,
-                                                    validation_mode)
+    validator = PluginValidator.from_config_content(
+        plugin_config_file, plugin_config_content,
+        util_classes.PLUGIN_CONFIG_SCHEMA, validation_mode)
     validator.validate()
     return validator.result
 
@@ -64,7 +58,8 @@ def read_and_validate_schema_file(schema_file, stop_build):
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = SchemaValidator(schema_file, PLUGIN_SCHEMA, validation_mode)
+    validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
+                                validation_mode)
     validator.validate()
     return validator.result
 

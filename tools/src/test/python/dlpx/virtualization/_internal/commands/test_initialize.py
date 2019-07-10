@@ -171,8 +171,8 @@ class TestInitialize:
     @staticmethod
     def test_default_schema_definition(schema_template):
         validator = schema_validator.SchemaValidator(
-            None, plugin_util.PLUGIN_SCHEMA, util_classes.ValidationMode.ERROR,
-            schema_template)
+            None, util_classes.PLUGIN_SCHEMA,
+            util_classes.ValidationMode.ERROR, schema_template)
         validator.validate()
 
         # Validate the repository schema only has the 'name' property.

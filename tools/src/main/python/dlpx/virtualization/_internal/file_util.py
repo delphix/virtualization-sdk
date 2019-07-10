@@ -67,3 +67,22 @@ def get_src_dir_path(file_name, src_dir):
     if not os.path.isdir(src_dir):
         raise exceptions.PathTypeError(src_dir, 'directory')
     return src_dir
+
+
+def make_dir(path, force_remove):
+
+    #
+    # Delete the folder if it is there to clear the location. Ignore errors in
+    # case the folder didn't exist. Since we'll be creating another dir at
+    # that location, we should handle any errors when creating the dir.
+    #
+    if force_remove:
+        shutil.rmtree(path, ignore_errors=True)
+    try:
+        os.mkdir(path)
+        logger.debug('Successfully created directory {!r}'.format(path))
+    except OSError as err:
+        raise exceptions.UserError(
+            'Unable to create new directory {!r}'
+            '\nError code: {}. Error message: {}'.format(
+                path, err.errno, os.strerror(err.errno)))

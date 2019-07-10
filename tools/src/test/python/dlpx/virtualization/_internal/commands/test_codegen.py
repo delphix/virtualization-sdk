@@ -8,7 +8,8 @@ import os
 import subprocess
 
 import pytest
-from dlpx.virtualization._internal import codegen, exceptions
+from dlpx.virtualization._internal import (codegen, exceptions, file_util,
+                                           util_classes)
 
 
 class TestCodegen:
@@ -139,7 +140,7 @@ class TestCodegen:
         assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
         assert popen_helper.module_name == codegen.CODEGEN_MODULE
         expected_output_dir = os.path.join(gen_py.plugin_content_dir,
-                                           codegen.OUTPUT_DIR_NAME)
+                                           util_classes.OUTPUT_DIR_NAME)
         assert popen_helper.output_dir == expected_output_dir
 
         # Validate that the "generated" file were copied.
@@ -157,17 +158,17 @@ class TestCodegen:
         assert os.path.exists(gen_file)
 
     @staticmethod
-    def test_make_dir_success(tmpdir):
-        testdir = os.path.join(tmpdir.strpath, 'test_dir')
-        codegen._make_dir(testdir)
+    def test_get_build_dir_success(tmpdir):
+        testdir = os.path.join(tmpdir.strpath, util_classes.OUTPUT_DIR_NAME)
+        file_util.make_dir(testdir, True)
         assert os.path.exists(testdir)
         assert os.path.isdir(testdir)
 
     @staticmethod
-    def test_make_dir_fail():
+    def test_get_build_dir_fail():
         testdir = '/dir/that/does/not/exist/test_dir'
         with pytest.raises(exceptions.UserError) as err_info:
-            codegen._make_dir(testdir)
+            file_util.make_dir(testdir, True)
 
         message = err_info.value.message
         assert message == ("Unable to create new directory"

@@ -9,103 +9,25 @@ import sys
 from collections import defaultdict
 from multiprocessing import Process, Queue
 
-from dlpx.virtualization._internal import exceptions
+import yaml
+from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
-from dlpx.virtualization._internal.util_classes import (DIRECT_TYPE,
-                                                        STAGED_TYPE,
-                                                        MessageUtils)
+from dlpx.virtualization._internal.util_classes import MessageUtils
 from flake8.api import legacy as flake8
 
 logger = logging.getLogger(__name__)
 
-EXPECTED_DISCOVERY_ARGS = {
-    'repository_impl': ['source_connection'],
-    'source_config_impl': ['source_connection', 'repository']
-}
+PLUGIN_IMPORTER_YAML = os.path.join(util_classes.PLUGIN_SCHEMAS_DIR,
+                                    'plugin_importer.yaml')
 
-VIRTUAL_BASE_ARGS = ['virtual_source', 'repository']
-VIRTUAL_COMMON_ARGS = VIRTUAL_BASE_ARGS + ['source_config']
-EXPECTED_VIRTUAL_ARGS = {
-    'configure_impl': VIRTUAL_BASE_ARGS + ['snapshot'],
-    'unconfigure_impl': VIRTUAL_COMMON_ARGS,
-    'reconfigure_impl': VIRTUAL_COMMON_ARGS + ['snapshot'],
-    'start_impl': VIRTUAL_COMMON_ARGS,
-    'stop_impl': VIRTUAL_COMMON_ARGS,
-    'pre_snapshot_impl': VIRTUAL_COMMON_ARGS,
-    'post_snapshot_impl': VIRTUAL_COMMON_ARGS,
-    'status_impl': VIRTUAL_COMMON_ARGS,
-    'initialize_impl': VIRTUAL_COMMON_ARGS,
-    'mount_specification_impl': VIRTUAL_BASE_ARGS
-}
 
-STAGED_BASE_ARGS = ['staged_source', 'repository']
-STAGED_COMMON_ARGS = STAGED_BASE_ARGS + ['source_config']
-STAGED_SNAPSHOT_ARGS = STAGED_COMMON_ARGS + ['snapshot_parameters']
-
-EXPECTED_STAGED_ARGS = {
-    'pre_snapshot_impl': STAGED_SNAPSHOT_ARGS,
-    'post_snapshot_impl': STAGED_SNAPSHOT_ARGS,
-    'start_staging_impl': STAGED_COMMON_ARGS,
-    'stop_staging_impl': STAGED_COMMON_ARGS,
-    'status_impl': STAGED_COMMON_ARGS,
-    'worker_impl': STAGED_COMMON_ARGS,
-    'mount_specification_impl': STAGED_BASE_ARGS
-}
-
-EXPECTED_STAGED_ARGS_BY_OP = {
-    'DiscoveryOperations': EXPECTED_DISCOVERY_ARGS,
-    'LinkedOperations': EXPECTED_STAGED_ARGS,
-    'VirtualOperations': EXPECTED_VIRTUAL_ARGS
-}
-
-DIRECT_COMMON_ARGS = ['direct_source', 'repository', 'source_config']
-EXPECTED_DIRECT_ARGS = {
-    'pre_snapshot_impl': DIRECT_COMMON_ARGS,
-    'post_snapshot_impl': DIRECT_COMMON_ARGS
-}
-
-EXPECTED_DIRECT_ARGS_BY_OP = {
-    'DiscoveryOperations': EXPECTED_DISCOVERY_ARGS,
-    'LinkedOperations': EXPECTED_DIRECT_ARGS,
-    'VirtualOperations': EXPECTED_VIRTUAL_ARGS
-}
-
-REQUIRED_METHODS_DIRECT = {
-    'hasRepositoryDiscovery': 'discovery.repository()',
-    'hasSourceConfigDiscovery': 'discovery.source_config()',
-    'hasLinkedPostSnapshot': 'linked.post_snapshot()',
-    'hasVirtualConfigure': 'virtual.configure()',
-    'hasVirtualReconfigure': 'virtual.reconfigure()',
-    'hasVirtualPostSnapshot': 'virtual.post_snapshot()',
-    'hasVirtualMountSpecification': 'virtual.mount_specification()'
-}
-
-REQUIRED_METHODS_STAGED = {
-    'hasRepositoryDiscovery': 'discovery.repository()',
-    'hasSourceConfigDiscovery': 'discovery.source_config()',
-    'hasLinkedPostSnapshot': 'linked.post_snapshot()',
-    'hasLinkedMountSpecification': 'linked.mount_specification()',
-    'hasVirtualConfigure': 'virtual.configure()',
-    'hasVirtualReconfigure': 'virtual.reconfigure()',
-    'hasVirtualPostSnapshot': 'virtual.post_snapshot()',
-    'hasVirtualMountSpecification': 'virtual.mount_specification()'
-}
-
-REQUIRED_METHODS_BY_PLUGIN_TYPE = {
-    DIRECT_TYPE: REQUIRED_METHODS_DIRECT,
-    STAGED_TYPE: REQUIRED_METHODS_STAGED
-}
-
-REQUIRED_METHODS_DESCRIPTION = {
-    'hasRepositoryDiscovery': 'Repository Discovery',
-    'hasSourceConfigDiscovery': 'Source Config Discovery',
-    'hasLinkedPostSnapshot': 'Linked Source Post Snapshot',
-    'hasLinkedMountSpecification': 'Staged Source Mount Specification',
-    'hasVirtualConfigure': 'Virtual Source Configure',
-    'hasVirtualReconfigure': 'Virtual Source Reconfigure',
-    'hasVirtualPostSnapshot': 'Virtual Source Post Snapshot',
-    'hasVirtualMountSpecification': 'Virtual Source Mount Specification'
-}
+def load_validation_maps():
+    """
+    Reads a plugin config file and raises UserError if there is an issue
+    reading the file.
+    """
+    with open(PLUGIN_IMPORTER_YAML, 'rb') as f:
+        return yaml.safe_load(f)
 
 
 class PluginImporter:
@@ -117,6 +39,13 @@ class PluginImporter:
     issues with validation of module content and entry points- will save
     errors/warnings in a dict that callers can access.
     """
+    validation_maps = load_validation_maps()
+    expected_staged_args_by_op = validation_maps['EXPECTED_STAGED_ARGS_BY_OP']
+    expected_direct_args_by_op = validation_maps['EXPECTED_DIRECT_ARGS_BY_OP']
+    required_methods_by_plugin_type = \
+        validation_maps['REQUIRED_METHODS_BY_PLUGIN_TYPE']
+    required_methods_description = \
+        validation_maps['REQUIRED_METHODS_DESCRIPTION']
 
     def __init__(self,
                  src_dir,
@@ -200,14 +129,16 @@ class PluginImporter:
         warnings = defaultdict(list)
         if not plugin_manifest:
             return warnings
-        for method_key, method_name in REQUIRED_METHODS_BY_PLUGIN_TYPE[
+        for method_key, method_name in \
+                PluginImporter.required_methods_by_plugin_type[
                 plugin_type].items():
             if plugin_manifest[method_key] is False:
                 warnings['warning'].append(
                     'Implementation missing '
                     'for required method {}. The Plugin Operation \'{}\' '
                     'will fail when executed.'.format(
-                        method_name, REQUIRED_METHODS_DESCRIPTION[method_key]))
+                        method_name, PluginImporter.
+                        required_methods_description[method_key]))
         return warnings
 
     @staticmethod
@@ -458,7 +389,9 @@ def _check_args(method_name, expected_args, actual_args):
 
 
 def _lookup_expected_args(plugin_type, plugin_op_type, plugin_op_name):
-    if plugin_type == 'DIRECT':
-        return EXPECTED_DIRECT_ARGS_BY_OP[plugin_op_type][plugin_op_name]
+    if plugin_type == util_classes.DIRECT_TYPE:
+        return PluginImporter.expected_direct_args_by_op[plugin_op_type][
+            plugin_op_name]
     else:
-        return EXPECTED_STAGED_ARGS_BY_OP[plugin_op_type][plugin_op_name]
+        return PluginImporter.expected_staged_args_by_op[plugin_op_type][
+            plugin_op_name]
