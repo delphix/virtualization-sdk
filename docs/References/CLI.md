@@ -89,21 +89,27 @@ Create a plugin in the root directory. The plugin will be valid but have no func
 |Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|Required|Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |------|-----------|:--------:|:-------:|
 |-r,<br>--root-dir<br>DIRECTORY|Set the plugin root directory.|N|`os.cwd()`|
-|-n,<br>--plugin-name<br>TEXT|Set the name of the plugin that will be used to identify it.|Y| None |
+|-n,<br>--plugin-name<br>TEXT|Set the name of the plugin that will be used to identify it.|N|id|
 |-s,<br>--ingestion-strategy<br>[DIRECT\|STAGED]|Set the ingestion strategy of the plugin. A "direct" plugin ingests without a staging server while a "staged" plugin requires a staging server.|N|`DIRECT`|
-|--pretty-name<br>TEXT|Set the pretty name of the plugin that will be displayed.|N|`--plugin-name`|
+
 
 #### Examples
-Create a plugin called `postgres` in the current working directory with the `DIRECT` ingestion strategy.
+Create a plugin in the current working directory with the `DIRECT` ingestion strategy. Here the name of the plugin will be equal to the id that is generated.
+
+```
+$ dvp init
+```
+
+Create a plugin in the current working directory with the `DIRECT` ingestion strategy and use `postgres` as the display name.
 
 ```
 $ dvp init -n postgres
 ```
 
-Create a plugin called `mongodb` in a custom location with the `STAGED` ingestion strategy and use `MongoDB` as the display name.
+Create a plugin called `mongodb` in a custom location with the `STAGED` ingestion strategy.
 
 ```
-$ dvp init -n mongodb -s STAGED --pretty-name MongoDB
+$ dvp init -n mongodb -s STAGED
 ```
 
 ***

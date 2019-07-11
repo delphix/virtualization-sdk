@@ -22,13 +22,7 @@ A [source config](/References/Glossary.md#source-config) is a collection of info
 
 A [repository](/References/Glossary.md#repository) represents what you might call "data dependencies" -- anything installed on the remote host that the dataset depends on. For example, if you are working with a Postgres database, then your repository will represent an installation of a particular version of the Postgres DBMS. In this plugin, we do not have any special dependencies, except for the simple existence of the unix system on which the directory lives.
 
-We will be using automatic discovery for our repositories, and manual discovery for our source configs.
-
-Earlier when we ran `dvp init`a file named `plugin_config.yml` was created, if you open this file, you will see a line like this:
-```
-manualDiscovery: true
-```
-This enables manual source config discovery, which is what we want.
+We will be using automatic discovery for our repositories, and manual discovery for our source configs. This is the default configuration that is created by `dvp init`, so there is nothing further we need to do here.
 
 ### Defining Your Data Formats
 Because each plugin will have different ideas about what a repository or source config represents, different plugins will have different sets of information that they need to collect and store.
