@@ -356,6 +356,58 @@ class TestUploadCli:
                                  u' does not exist.'
                                  u'\n')
 
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
+    def test_with_config_file_success(mock_upload, artifact_file,
+                                      dvp_config_file):
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(artifact_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, ['upload'])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_upload.assert_called_once_with(None, None, artifact_file, None)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
+    def test_with_config_file_override(mock_upload, artifact_file,
+                                       dvp_config_file):
+        user = "fake_admin"
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(artifact_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, ['upload', '-u', user])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_upload.assert_called_once_with(None, user, artifact_file, None)
+
+    @staticmethod
+    def test_with_config_file_fail(artifact_file, dvp_config_file_no_engine):
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(artifact_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, ['upload'])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 2
+        assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]\n'
+                                 u'\n'
+                                 u'Error: Invalid value for "-e" / '
+                                 u'"--engine": Option is required '
+                                 u'and must be specified via the command line.'
+                                 u'\n')
+
 
 class TestDownloadCli:
     @staticmethod
@@ -417,7 +469,7 @@ class TestDownloadCli:
             u'Usage: delphix-sdk download-logs [OPTIONS]\n'
             u'\n'
             u'Error: Invalid value for "-e" / '
-            u'"--delphix-engine": Option is required '
+            u'"--engine": Option is required '
             u'and must be specified via the command line.'
             u'\n')
 
@@ -501,4 +553,63 @@ class TestDownloadCli:
             u' "--plugin-config": File'
             u' "/not/a/real/file/plugin_config.yml"'
             u' does not exist.'
+            u'\n')
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    def test_with_config_file_success(mock_download_logs, plugin_config_file,
+                                      dvp_config_file):
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(plugin_config_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, ['download-logs'])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_download_logs.assert_called_once_with(None, plugin_config_file,
+                                                   None, None, cwd)
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    def test_with_config_file_override(mock_download_logs, plugin_config_file,
+                                       dvp_config_file):
+        user = 'fake_admin'
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(plugin_config_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk,
+                                   ['download-logs', '-u', user])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_download_logs.assert_called_once_with(None, plugin_config_file,
+                                                   user, None, cwd)
+
+    @staticmethod
+    def test_with_config_file_fail(plugin_config_file,
+                                   dvp_config_file_no_engine):
+        cwd = os.getcwd()
+
+        try:
+            os.chdir(os.path.dirname(plugin_config_file))
+            runner = click_testing.CliRunner()
+            result = runner.invoke(cli.delphix_sdk, ['download-logs'])
+        finally:
+            os.chdir(cwd)
+
+        assert result.exit_code == 2
+        assert result.output == (
+            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
+            u'\n'
+            u'Error: Invalid value for "-e" / '
+            u'"--engine": Option is required '
+            u'and must be specified via the command line.'
             u'\n')

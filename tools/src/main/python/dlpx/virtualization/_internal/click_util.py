@@ -2,13 +2,41 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import os
+
 import click
+from click_configfile import (ConfigFileReader, Param, SectionSchema,
+                              matches_section)
+
+
+class ConfigSectionSchema(object):
+    """
+    Describes all possible properties of the configuration file, which will be
+    limited to command line options that relate to the delphix engine such as:
+    engine, user, and password.
+    """
+
+    @matches_section("default")
+    class DvpProperties(SectionSchema):
+        engine = Param(type=str)
+        user = Param(type=str)
+        password = Param(type=str)
+
+
+class ConfigFileProcessor(ConfigFileReader):
+    """
+    The config file processor will search for a config file in the current
+    user's home directory.
+    """
+    config_files = [os.path.join(os.path.expanduser('~'), ".dvp")]
+    config_section_schemas = [ConfigSectionSchema.DvpProperties]
 
 
 def validate_option_exists(ctx, param, value):
     """
     A callback to be used to validate a Click option. Raises a
-    click.BadParameter exception if the value is not setself.
+    click.BadParameter exception if the value is not set or if
+    the property name does not exist in the config file.
 
     This should be used when we want a required optional, but do not want an
     argument. Arguments are ordered and do not come with flags making them
@@ -20,7 +48,7 @@ def validate_option_exists(ctx, param, value):
     this sort of functionality then we are stuck with Click optionals which are
     always optional out of the box.
     """
-    if not value:
+    if not value and param.name not in ctx.obj.keys():
         # Let the user know if there is an environment variable for this param
         if param.envvar:
             raise click.BadParameter(
@@ -76,4 +104,23 @@ class MutuallyExclusiveOption(click.Option):
                     self.name, ', '.join(self.mutually_exclusive)))
 
         return super(MutuallyExclusiveOption,
+                     self).handle_parse_result(ctx, opts, args)
+
+
+class PasswordPromptIf(click.Option):
+    """
+    Remove the need for a prompt if a parameter is already specified via the
+    configuration file. This is done by building a custom class derived from
+    click.Option and overriding click.Option.handle_parse_result().
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordPromptIf, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        # remove prompt if password exists in configuration file
+        if 'password' in ctx.obj.keys():
+            self.prompt = None
+
+        return super(PasswordPromptIf,
                      self).handle_parse_result(ctx, opts, args)

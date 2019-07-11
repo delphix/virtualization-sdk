@@ -59,17 +59,26 @@ class TestClickUtil:
 
     @staticmethod
     def test_validate_option_exists_without_value():
+        class Context:
+            def __init__(self):
+                self.obj = {}
+
         with pytest.raises(click.BadParameter):
-            click_util.validate_option_exists(None,
+            click_util.validate_option_exists(Context(),
                                               click.Option(param_decls=['-a']),
                                               None)
 
     @staticmethod
     def test_validate_option_exists_without_value_with_envvar_option():
+        class Context:
+            def __init__(self):
+                self.obj = {}
+
         envvar = 'DELPHIX_ENVVAR'
         with pytest.raises(click.BadParameter) as excinfo:
             click_util.validate_option_exists(
-                None, click.Option(param_decls=['-a'], envvar=envvar), None)
+                Context(), click.Option(param_decls=['-a'], envvar=envvar),
+                None)
 
         # Check that the exception message includes the environment variable
         assert envvar in str(excinfo.value)

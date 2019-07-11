@@ -154,6 +154,10 @@ dlpxPython {
       version = ">= 7.0"
     }
 
+    "click-configfile" {
+        version = "== 0.2.3"
+    }
+
     flake8 {
       version = ">= 3.6"
     }

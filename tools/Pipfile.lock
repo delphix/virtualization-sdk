@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7d487b00b40a5368ec5187ac1650bf8992b7ada476ba0ef456649b2391bb0ca0"
+            "sha256": "c204d28bbf761688b6314a260403609d620daf86b9ae2bb56f08ba70bdc219b1"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -43,6 +43,14 @@
             "index": "delphix",
             "version": "==7.0"
         },
+        "click-configfile": {
+            "hashes": [
+                "sha256:95beec13bee950e98f43c81dcdabef4f644091559ea66298f9dadf59351d90d1",
+                "sha256:af2ae7123af57d850cd18edd915893e655b6b1bc30d1302fd040b1059bec073d"
+            ],
+            "index": "delphix",
+            "version": "==0.2.3"
+        },
         "configparser": {
             "hashes": [
                 "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
@@ -82,7 +90,7 @@
                 "sha256:89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0",
                 "sha256:f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d"
             ],
-            "markers": "python_version < '3'",
+            "markers": "python_version < '3.2'",
             "version": "==3.2.3.post2"
         },
         "idna": {
@@ -317,16 +325,16 @@
             "version": "==4.5.3"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-015.tar.gz",
-            "version": "== 1.0.0-internal-015"
+            "path": "../common/build/python-dist/dvp-common-1.0.0-internal-016.tar.gz",
+            "version": "== 1.0.0-internal-016"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-015.tar.gz",
-            "version": "== 1.0.0-internal-015"
+            "path": "../libs/build/python-dist/dvp-libs-1.0.0-internal-016.tar.gz",
+            "version": "== 1.0.0-internal-016"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-015.tar.gz",
-            "version": "== 1.0.0-internal-015"
+            "path": "../platform/build/python-dist/dvp-platform-1.0.0-internal-016.tar.gz",
+            "version": "== 1.0.0-internal-016"
         },
         "entrypoints": {
             "hashes": [
@@ -359,7 +367,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "functools32": {
@@ -367,7 +375,7 @@
                 "sha256:89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0",
                 "sha256:f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d"
             ],
-            "markers": "python_version < '3'",
+            "markers": "python_version < '3.2'",
             "version": "==3.2.3.post2"
         },
         "futures": {

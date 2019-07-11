@@ -2,13 +2,15 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import configparser
 import copy
 import json
 import os
 
 import pytest
 import yaml
-from dlpx.virtualization._internal import package_util, util_classes
+from dlpx.virtualization._internal import (cli, click_util, package_util,
+                                           util_classes)
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
@@ -91,6 +93,58 @@ def schema_file(tmpdir, schema_filename, schema_content):
 @pytest.fixture
 def schema_filename():
     return 'schema.json'
+
+
+@pytest.fixture
+def dvp_config_file(tmpdir):
+    dvp_config_filepath = os.path.join(tmpdir.strpath, ".dvp")
+
+    parser = configparser.ConfigParser()
+    parser['default'] = {
+        'engine': 'engine.delphix.com',
+        'user': 'user',
+        'password': 'password'
+    }
+    with open(dvp_config_filepath, 'wb') as config_file:
+        parser.write(config_file)
+
+    #
+    # Add temp_dir to list of config files the ConfigFileProcessor will
+    # check to ensure the fixture is cleaned up after the test completes.
+    #
+    click_util.ConfigFileProcessor.config_files = []
+    click_util.ConfigFileProcessor.config_files.append(dvp_config_filepath)
+
+    #
+    # Context settings are initialized before the pytest fixture object
+    # is created, so read the config file before the command is invoked
+    #
+    cli.CONTEXT_SETTINGS['obj'] = {}
+    cli.CONTEXT_SETTINGS['obj'] = click_util.ConfigFileProcessor.read_config()
+
+
+@pytest.fixture
+def dvp_config_file_no_engine(tmpdir):
+    dvp_config_filepath = os.path.join(tmpdir.strpath, ".dvp")
+
+    parser = configparser.ConfigParser()
+    parser['default'] = {'user': 'user', 'password': 'password'}
+    with open(dvp_config_filepath, 'wb') as config_file:
+        parser.write(config_file)
+
+    #
+    # Add temp_dir to list of config files the ConfigFileProcessor will
+    # check to ensure the fixture is cleaned up after the test completes.
+    #
+    click_util.ConfigFileProcessor.config_files = []
+    click_util.ConfigFileProcessor.config_files.append(dvp_config_filepath)
+
+    #
+    # Context settings are initialized before the pytest fixture object
+    # is created, so read the config file before the command is invoked
+    #
+    cli.CONTEXT_SETTINGS['obj'] = {}
+    cli.CONTEXT_SETTINGS['obj'] = click_util.ConfigFileProcessor.read_config()
 
 
 @pytest.fixture

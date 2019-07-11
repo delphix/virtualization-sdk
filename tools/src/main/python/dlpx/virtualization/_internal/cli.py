@@ -30,7 +30,10 @@ logger = logging.getLogger(__name__)
 __version__ = package_util.get_version()
 
 # This is needed to add -h as an option for the help menu.
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
+                        obj=click_util.ConfigFileProcessor.read_config())
+
+DVP_CONFIG_MAP = CONTEXT_SETTINGS['obj']
 
 
 @contextmanager
@@ -173,13 +176,16 @@ def build(plugin_config, upload_artifact, generate_only):
 
 @delphix_sdk.command()
 @click.option('-e',
-              '--delphix-engine',
-              'engine',
+              '--engine',
+              default=DVP_CONFIG_MAP.get('engine'),
+              show_default=True,
               callback=click_util.validate_option_exists,
               help='Upload plugin to the provided Delphix engine.'
               ' This should be either the hostname or IP address.')
 @click.option('-u',
               '--user',
+              default=DVP_CONFIG_MAP.get('user'),
+              show_default=True,
               callback=click_util.validate_option_exists,
               help='Authenticate to the Delphix Engine with the provided user.'
               )
@@ -195,7 +201,9 @@ def build(plugin_config, upload_artifact, generate_only):
                     resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Path to the upload artifact that was generated through build.')
-@click.password_option(confirmation_prompt=False,
+@click.password_option(cls=click_util.PasswordPromptIf,
+                       default=DVP_CONFIG_MAP.get('password'),
+                       confirmation_prompt=False,
                        help='Authenticate using the provided password.')
 def upload(engine, user, upload_artifact, password):
     """
@@ -210,8 +218,9 @@ def upload(engine, user, upload_artifact, password):
 
 @delphix_sdk.command()
 @click.option('-e',
-              '--delphix-engine',
-              'engine',
+              '--engine',
+              default=DVP_CONFIG_MAP.get('engine'),
+              show_default=True,
               callback=click_util.validate_option_exists,
               help='Download plugin logs from the provided Delphix engine.'
               ' This should be either the hostname or IP address.')
@@ -228,6 +237,8 @@ def upload(engine, user, upload_artifact, password):
               'This file contains the plugin name to download logs for.')
 @click.option('-u',
               '--user',
+              default=DVP_CONFIG_MAP.get('user'),
+              show_default=True,
               callback=click_util.validate_option_exists,
               help='Authenticate to the Delphix Engine with the provided user.'
               )
@@ -243,13 +254,13 @@ def upload(engine, user, upload_artifact, password):
                     resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Specify the directory of where to download the plugin logs.')
-@click.password_option(confirmation_prompt=False,
+@click.password_option(cls=click_util.PasswordPromptIf,
+                       default=DVP_CONFIG_MAP.get('password'),
+                       confirmation_prompt=False,
                        help='Authenticate using the provided password.')
 def download_logs(engine, plugin_config, user, password, directory):
     """
     Download plugin logs from a target Delphix Engine to a local directory.
-    Note: Plugin logs must exist after running the plugin scripts, otherwise
-    the download will fail.
     """
     with command_error_handler():
         download_logs_internal.download_logs(engine, plugin_config, user,
