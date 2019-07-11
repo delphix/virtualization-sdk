@@ -76,8 +76,11 @@ def build(plugin_config, upload_artifact, generate_only):
     # Call directly into codegen to generate the python classes and make sure
     # the ones we zip up are up to date with the schemas.
     #
-    codegen.generate_python(plugin_config_content['name'], src_dir,
-                            os.path.dirname(plugin_config), schemas)
+    try:
+        codegen.generate_python(plugin_config_content['name'], src_dir,
+                                os.path.dirname(plugin_config), schemas)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
 
     if generate_only:
         #
@@ -109,11 +112,18 @@ def build(plugin_config, upload_artifact, generate_only):
                 warning_msg, len(result.warnings['warning']), 0))
 
     # Prepare the output artifact.
-    plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
-                                            schemas, plugin_manifest)
+    try:
+        plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
+                                                schemas, plugin_manifest)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
 
     # Write it to upload_artifact as json.
-    generate_upload_artifact(upload_artifact, plugin_output)
+    try:
+        generate_upload_artifact(upload_artifact, plugin_output)
+    except exceptions.UserError as err:
+        raise exceptions.BuildFailedError(err)
+
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
     logger.warn('\nBUILD SUCCESSFUL.')

@@ -82,6 +82,148 @@ class TestBuild:
         assert content == artifact_content
 
     @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_build_codegen_fail(mock_generate_python, mock_plugin_manifest,
+                                plugin_config_file, artifact_file,
+                                codegen_gen_py_inputs):
+        gen_py = codegen_gen_py_inputs
+
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        # Raise UserError when codegen is called
+        mock_generate_python.side_effect =\
+            exceptions.UserError("codegen_error")
+
+        with pytest.raises(exceptions.BuildFailedError) as err_info:
+            build.build(plugin_config_file, artifact_file, False)
+
+        message = err_info.value.message
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+
+        # After running build this file should not exist.
+        assert not os.path.exists(artifact_file)
+        assert not mock_plugin_manifest.called
+        assert "codegen_error" in message
+        assert "BUILD FAILED" in message
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_build_manifest_fail(mock_generate_python, mock_plugin_manifest,
+                                 plugin_config_file, artifact_file,
+                                 codegen_gen_py_inputs):
+        gen_py = codegen_gen_py_inputs
+
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        # Raise UserError when codegen is called
+        mock_plugin_manifest.side_effect =\
+            exceptions.UserError("manifest_error")
+
+        with pytest.raises(exceptions.BuildFailedError) as err_info:
+            build.build(plugin_config_file, artifact_file, False)
+
+        message = err_info.value.message
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+        mock_plugin_manifest.assert_called()
+
+        # After running build this file should not exist.
+        assert not os.path.exists(artifact_file)
+        assert "manifest_error" in message
+        assert "BUILD FAILED" in message
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build'
+                '.prepare_upload_artifact')
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_build_prepare_artifact_fail(mock_generate_python,
+                                         mock_plugin_manifest,
+                                         mock_prep_artifact,
+                                         plugin_config_file, artifact_file,
+                                         codegen_gen_py_inputs):
+        gen_py = codegen_gen_py_inputs
+
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        # Raise UserError when codegen is called
+        mock_prep_artifact.side_effect =\
+            exceptions.UserError("prepare_artifact_error")
+
+        with pytest.raises(exceptions.BuildFailedError) as err_info:
+            build.build(plugin_config_file, artifact_file, False)
+
+        message = err_info.value.message
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+        mock_plugin_manifest.assert_called()
+        mock_prep_artifact.assert_called()
+
+        # After running build this file should not exist.
+        assert not os.path.exists(artifact_file)
+        assert "prepare_artifact_error" in message
+        assert "BUILD FAILED" in message
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build'
+                '.generate_upload_artifact')
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_build_generate_artifact_fail(mock_generate_python,
+                                          mock_plugin_manifest,
+                                          mock_gen_artifact,
+                                          plugin_config_file, artifact_file,
+                                          codegen_gen_py_inputs):
+        gen_py = codegen_gen_py_inputs
+
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        # Raise UserError when codegen is called
+        mock_gen_artifact.side_effect =\
+            exceptions.UserError("generate_artifact_error")
+
+        with pytest.raises(exceptions.BuildFailedError) as err_info:
+            build.build(plugin_config_file, artifact_file, False)
+
+        message = err_info.value.message
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+        mock_plugin_manifest.assert_called()
+        mock_gen_artifact.assert_called()
+
+        # After running build this file should not exist.
+        assert not os.path.exists(artifact_file)
+        assert "generate_artifact_error" in message
+        assert "BUILD FAILED" in message
+
+    @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build'
                 '.prepare_upload_artifact')
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
