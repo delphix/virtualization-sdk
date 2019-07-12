@@ -32,7 +32,6 @@ class PluginValidator:
         back if validation mode is error, otherwise warnings or info based
         on validation mode.
     """
-
     def __init__(self,
                  plugin_config,
                  plugin_config_schema,

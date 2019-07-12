@@ -15,7 +15,6 @@ class ConfigSectionSchema(object):
     limited to command line options that relate to the delphix engine such as:
     engine, user, and password.
     """
-
     @matches_section("default")
     class DvpProperties(SectionSchema):
         engine = Param(type=str)
@@ -92,7 +91,6 @@ class MutuallyExclusiveOption(click.Option):
     to build the plugin before it is uploaded as a convenience. These two
     should not be specified together.
     """
-
     def __init__(self, *args, **kwargs):
         self.mutually_exclusive = set(kwargs.pop('mutually_exclusive', []))
         super(MutuallyExclusiveOption, self).__init__(*args, **kwargs)
@@ -113,7 +111,6 @@ class PasswordPromptIf(click.Option):
     configuration file. This is done by building a custom class derived from
     click.Option and overriding click.Option.handle_parse_result().
     """
-
     def __init__(self, *args, **kwargs):
         super(PasswordPromptIf, self).__init__(*args, **kwargs)
 

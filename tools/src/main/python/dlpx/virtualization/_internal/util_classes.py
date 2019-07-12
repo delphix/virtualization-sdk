@@ -32,7 +32,6 @@ class MessageUtils:
     """
     Defines helpers methods to format warning and exception messages.
     """
-
     @staticmethod
     def exception_msg(exceptions):
         exception_msg = '\n'.join(

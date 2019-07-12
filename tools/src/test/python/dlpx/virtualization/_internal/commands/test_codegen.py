@@ -35,7 +35,6 @@ class TestCodegen:
             A popen helper that keeps track of the popen calls and defines what
             the call should return.
             """
-
             def __init__(self):
                 self.fake_popen_output = None
                 self.jar = None

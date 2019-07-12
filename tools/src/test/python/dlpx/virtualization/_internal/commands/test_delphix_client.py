@@ -224,8 +224,8 @@ class TestDelphixClient:
     PLUGIN_RESP_SUCCESS = (
         '{"type": "ListResult", "status": "OK", "result": ['
         '{"type": "Toolkit", "reference": "APPDATA_TOOLKIT-1",'
-        '"namespace": null, "name": "python_vfiles",'
-        '"prettyName": "Unstructured Files", "language": "LUA",'
+        '"namespace": null, "prettyName": "python_vfiles",'
+        '"name": "16bef554-9470-11e9-b2e3-8c8590d4a42c", "language": "LUA",'
         '"version": "1.0.0", "buildApi": {"type": "APIVersion",'
         '"major": 1, "minor": 10, "micro": 5}, "hostTypes": ['
         '"UNIX", "WINDOWS"], "rootSquashEnabled": true, '

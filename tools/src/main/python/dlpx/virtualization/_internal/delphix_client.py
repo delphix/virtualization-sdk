@@ -165,7 +165,7 @@ class DelphixClient(object):
                 pass
             raise exceptions.HttpError(response.status_code, response_error)
 
-    def __get_plugin_ref_from_name(self, plugin_name):
+    def __get_plugin_ref_from_id(self, plugin_name, plugin_id):
 
         logger.info('Getting plugin object ref for {}'.format(plugin_name))
 
@@ -177,8 +177,12 @@ class DelphixClient(object):
                                              plugin_response.text)
 
         for p in plugins['result']:
-            # Make sure the plugin hasn't been replicated.
-            if p['name'] == plugin_name and p['namespace'] is None:
+            #
+            # Compare the plugin id to the name field from each plugin
+            # and make sure the plugin hasn't been replicated.
+            # The 'name' field will be converted to 'id' in the future.
+            #
+            if p['name'] == plugin_id and p['namespace'] is None:
                 return p['reference']
 
         raise exceptions.MissingPluginError(plugin_name, self.__engine)
@@ -229,12 +233,13 @@ class DelphixClient(object):
         Can raise HttpPostError and UnexpectedError.
         """
 
-        # Get the name of the plugin from the plugin config.
+        # Get the name and id of the plugin from the plugin config.
         plugin_name = plugin_util.get_plugin_config_property(
             plugin_config, 'name')
+        plugin_id = plugin_util.get_plugin_config_property(plugin_config, 'id')
 
-        # Convert plugin name to object reference id.
-        plugin_ref = self.__get_plugin_ref_from_name(plugin_name)
+        # Convert plugin id to object reference id.
+        plugin_ref = self.__get_plugin_ref_from_id(plugin_name, plugin_id)
 
         # Get the download token.
         logger.info(

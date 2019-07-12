@@ -13,7 +13,6 @@ class FakeDelphixClient(object):
     fake is used to test the upload function by raising client results when
     failure occurs without having to do actual http requests.
     """
-
     def __init__(self, engine):
         self.__users = {'admin': 'delphix'}
         self.engine = engine
@@ -81,7 +80,6 @@ class TestDownloadLogs:
         allowing us to mock the results of the client methods login and
         upload_plugin.
         """
-
         def create_client(_):
             return fake_client
 
