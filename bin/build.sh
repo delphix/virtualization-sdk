@@ -39,18 +39,22 @@ cp -r ./../bin .
 echo "Compiling protobuf definitions to Java and Python classes..."
 bin/protoc-3.6.1-osx-x86_64/bin/protoc -I=. --java_out=. --python_out=. dlpx/virtualization/common.proto dlpx/virtualization/platform.proto dlpx/virtualization/libs.proto
 
+echo "Copying virtualization-sdk modules to the jar directory..."
+rsync -av --progress ${ROOT}/common/src/main/python/dlpx/ dlpx/ > /dev/null
+rsync -av --progress ${ROOT}/platform/src/main/python/dlpx/ dlpx/ > /dev/null
+rsync -av --progress ${ROOT}/libs/src/main/python/dlpx/ dlpx/ > /dev/null
+
 echo "Pre-compiling the Python Virtualization Platform protobuf module..."
 
 # The command below assumes that there's "python" on the PATH and it resolves to Python 2.7 (CPython).
-java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m compileall -l -f -d dlpx/virtualization dlpx/virtualization/platform_pb2.py
-java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m compileall -l -f -d dlpx/virtualization dlpx/virtualization/libs_pb2.py
+# We compile dlpx/virtualization modules to Jython classes and prepend each file name with dlpx/virtualization.
+java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m compileall -f -d dlpx/virtualization dlpx/virtualization
+java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m compileall -l -f -d dlpx/virtualization six.py
+java -jar bin/jython-standalone-2.7.1.jar -Dcpython_cmd=python -m compileall -l -f -d dlpx/virtualization typing.py
 
 echo "Compiling Java source files to Java classes..."
 javac -d . -classpath bin/protobuf-java-3.6.1.jar com/delphix/virtualization/common/*java com/delphix/virtualization/platform/*java com/delphix/virtualization/libs/*java > /dev/null
 
-rsync -av --progress ${ROOT}/common/src/main/python/dlpx/ dlpx/ > /dev/null
-rsync -av --progress ${ROOT}/platform/src/main/python/dlpx/ dlpx/ > /dev/null
-rsync -av --progress ${ROOT}/libs/src/main/python/dlpx/ dlpx/ > /dev/null
 rm -r bin
 
 VERSION=`cat "${ROOT}/build.gradle" | grep '^\s*version\s*=\s*"*"'| sed -E 's/.*"(.*)".*/\1/g'`
