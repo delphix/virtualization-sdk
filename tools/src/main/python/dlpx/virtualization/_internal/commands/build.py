@@ -25,7 +25,7 @@ STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
 
 
-def build(plugin_config, upload_artifact, generate_only):
+def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
     """This builds the plugin using the configurations provided in config yaml
     file provided as input. It reads schemas and source code from the files
     given in yaml file, generates an encoded string of zip of source code,
@@ -35,6 +35,7 @@ def build(plugin_config, upload_artifact, generate_only):
         plugin_config: Plugin config file used for building plugin.
         upload_artifact: The file to which output of build  is written to.
         generate_only: Only generate python classes from schema definitions.
+        skip_id_validation: Skip validation of the plugin id.
     """
     logger.debug(
         'Build parameters include plugin_config: %s, upload_artifact: %s,'
@@ -44,7 +45,7 @@ def build(plugin_config, upload_artifact, generate_only):
     logger.info('Reading and validating plugin config file %s', plugin_config)
     try:
         result = plugin_util.read_and_validate_plugin_config_file(
-            plugin_config, not generate_only, False)
+            plugin_config, not generate_only, False, skip_id_validation)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -98,7 +99,8 @@ def build(plugin_config, upload_artifact, generate_only):
     try:
         result = plugin_util.get_plugin_manifest(plugin_config,
                                                  plugin_config_content,
-                                                 not generate_only)
+                                                 not generate_only,
+                                                 skip_id_validation)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 

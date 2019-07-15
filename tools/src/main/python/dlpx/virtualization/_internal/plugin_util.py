@@ -13,8 +13,10 @@ from dlpx.virtualization._internal.util_classes import ValidationMode
 logger = logging.getLogger(__name__)
 
 
-def read_and_validate_plugin_config_file(plugin_config, stop_build,
-                                         run_all_validations):
+def read_and_validate_plugin_config_file(plugin_config,
+                                         stop_build,
+                                         run_all_validations,
+                                         skip_id_validation=False):
     """
     Reads a plugin config file and validates the contents using a
     pre-defined schema. If stop_build is True, will report exception
@@ -25,14 +27,19 @@ def read_and_validate_plugin_config_file(plugin_config, stop_build,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = PluginValidator(plugin_config,
-                                util_classes.PLUGIN_CONFIG_SCHEMA,
+    plugin_config_schema_file = (
+        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
+        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
+    validator = PluginValidator(plugin_config, plugin_config_schema_file,
                                 validation_mode, run_all_validations)
     validator.validate()
     return validator.result
 
 
-def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
+def get_plugin_manifest(plugin_config_file,
+                        plugin_config_content,
+                        stop_build,
+                        skip_id_validation=False):
     """
     Validates the given plugin config content using a pre-defined schema.
     Plugin config file name is used to get the absolute path of plugin source
@@ -41,9 +48,13 @@ def get_plugin_manifest(plugin_config_file, plugin_config_content, stop_build):
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = PluginValidator.from_config_content(
-        plugin_config_file, plugin_config_content,
-        util_classes.PLUGIN_CONFIG_SCHEMA, validation_mode)
+    plugin_config_schema_file = (
+        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
+        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
+    validator = PluginValidator.from_config_content(plugin_config_file,
+                                                    plugin_config_content,
+                                                    plugin_config_schema_file,
+                                                    validation_mode)
     validator.validate()
     return validator.result
 

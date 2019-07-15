@@ -8,7 +8,7 @@ import os
 import mock
 import pytest
 import yaml
-from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.commands import build
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 
@@ -36,7 +36,7 @@ class TestBuild:
         # Before running build assert that the artifact file does not exist.
         assert not os.path.exists(artifact_file)
 
-        build.build(plugin_config_file, artifact_file, False)
+        build.build(plugin_config_file, artifact_file, False, False)
 
         mock_generate_python.assert_called_once_with(gen_py.name,
                                                      gen_py.source_dir,
@@ -65,7 +65,7 @@ class TestBuild:
         # Before running build assert that the artifact file does not exist.
         assert not os.path.exists(artifact_file)
 
-        build.build(plugin_config_file, artifact_file, False)
+        build.build(plugin_config_file, artifact_file, False, False)
 
         mock_generate_python.assert_called_once_with(gen_py.name,
                                                      gen_py.source_dir,
@@ -99,7 +99,7 @@ class TestBuild:
             exceptions.UserError("codegen_error")
 
         with pytest.raises(exceptions.BuildFailedError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
 
@@ -132,7 +132,7 @@ class TestBuild:
             exceptions.UserError("manifest_error")
 
         with pytest.raises(exceptions.BuildFailedError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
 
@@ -169,7 +169,7 @@ class TestBuild:
             exceptions.UserError("prepare_artifact_error")
 
         with pytest.raises(exceptions.BuildFailedError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
 
@@ -207,7 +207,7 @@ class TestBuild:
             exceptions.UserError("generate_artifact_error")
 
         with pytest.raises(exceptions.BuildFailedError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
 
@@ -231,7 +231,7 @@ class TestBuild:
                                    plugin_config_file, artifact_file,
                                    codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
-        build.build(plugin_config_file, artifact_file, True)
+        build.build(plugin_config_file, artifact_file, True, False)
 
         mock_generate_python.assert_called_once_with(gen_py.name,
                                                      gen_py.source_dir,
@@ -314,6 +314,29 @@ class TestBuild:
                            ' directory {}. Error message: {}'
                            ''.format(src_dir, 'something'))
 
+    @staticmethod
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
+    @pytest.mark.parametrize(('plugin_id', 'skip_id_validation'),
+                             [('77f18ce4-4425-4cd6-b9a7-23653254d660', False),
+                              ('77f18ce4-4425-4cd6-b9a7-23653254d660', True),
+                              ('mongo', True)])
+    def test_id_validation_positive(mock_import_plugin, plugin_config_file,
+                                    artifact_file, skip_id_validation):
+        build.build(plugin_config_file, artifact_file, False,
+                    skip_id_validation)
+
+    @staticmethod
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
+    @pytest.mark.parametrize('plugin_id', ['mongo'])
+    def test_id_validation_negative(mock_import_plugin, plugin_config_file,
+                                    artifact_file):
+        with pytest.raises(exceptions.UserError):
+            build.build(plugin_config_file, artifact_file, False, False)
+
 
 class TestPluginUtil:
     @staticmethod
@@ -323,7 +346,7 @@ class TestPluginUtil:
     def test_no_plugin_file(mock_generate_python, plugin_config_file,
                             artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert ("Unable to read plugin config file"
@@ -342,7 +365,7 @@ class TestPluginUtil:
     def test_plugin_bad_format(mock_generate_python, plugin_config_file,
                                artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert ('Command failed because the plugin config file '
@@ -358,7 +381,7 @@ class TestPluginUtil:
     def test_plugin_missing_fields(mock_generate_python, plugin_config_file,
                                    artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
@@ -371,7 +394,7 @@ class TestPluginUtil:
     def test_plugin_bad_language(mock_generate_python, plugin_config_file,
                                  artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "'BAD_LANGUAGE' is not one of ['PYTHON27']" in message
@@ -384,7 +407,7 @@ class TestPluginUtil:
     def test_plugin_no_src_dir(mock_generate_python, plugin_config_file,
                                artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert message == "The path '/not/a/real/dir/src' does not exist."
@@ -399,7 +422,7 @@ class TestPluginUtil:
         os.remove(schema_file)
         os.mkdir(schema_file)
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert message == 'The path {!r} should be a file but is not.'.format(
@@ -416,7 +439,7 @@ class TestPluginUtil:
         with open(src_dir, 'w') as f:
             f.write('writing to create file')
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert message == ('The path {!r} should be a'
@@ -430,7 +453,7 @@ class TestPluginUtil:
     def test_no_schema_file(mock_generate_python, plugin_config_file,
                             artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert message == ("The path '/not/a/real/file/schema.json'"
@@ -446,7 +469,7 @@ class TestPluginUtil:
         # Make it so we can't read the file
         os.chmod(schema_file, 0000)
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert (
@@ -463,7 +486,7 @@ class TestPluginUtil:
     def test_schema_bad_format(mock_generate_python, plugin_config_file,
                                artifact_file, schema_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert ('Failed to load schemas because {!r} is not a valid json file.'
@@ -478,7 +501,7 @@ class TestPluginUtil:
     def test_plugin_missing_schema_def(mock_generate_python,
                                        plugin_config_file, artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "'virtualSourceDefinition' is a required property" in message
@@ -495,7 +518,7 @@ class TestPluginUtil:
     def test_plugin_extra_schema_def(mock_generate_python, plugin_config_file,
                                      artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "Additional properties are not allowed " \
@@ -524,7 +547,7 @@ class TestPluginUtil:
                                                     plugin_config_file,
                                                     artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "'identityFields' is a required property" in message
@@ -547,7 +570,7 @@ class TestPluginUtil:
                                                  plugin_config_file,
                                                  artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
-            build.build(plugin_config_file, artifact_file, False)
+            build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
         assert "'nameField' is a required property" in message
@@ -568,3 +591,16 @@ class TestPluginUtil:
 
         assert expected == upload_artifact['discoveryDefinition'][
             'manualSourceConfigDiscovery']
+
+    @staticmethod
+    def test_plugin_config_schemas_diff():
+        with open(util_classes.PLUGIN_CONFIG_SCHEMA) as f:
+            config_schema = json.load(f)
+
+        with open(util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
+            config_schema_no_id = json.load(f)
+
+        # Only the id's pattern should be different so remove it.
+        config_schema['properties']['id'].pop('pattern')
+
+        assert config_schema == config_schema_no_id

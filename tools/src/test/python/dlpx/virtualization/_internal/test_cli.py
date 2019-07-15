@@ -172,7 +172,7 @@ class TestBuildCli:
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
             mock_build.assert_called_once_with(plugin_config_file,
-                                               artifact_file, False)
+                                               artifact_file, False, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -190,7 +190,8 @@ class TestBuildCli:
             result = runner.invoke(cli.delphix_sdk, ['build', '-g'])
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
-            mock_build.assert_called_once_with(plugin_config_file, None, True)
+            mock_build.assert_called_once_with(plugin_config_file, None, True,
+                                               False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -202,7 +203,7 @@ class TestBuildCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_build.assert_called_once_with(plugin_config_file, artifact_file,
-                                           False)
+                                           False, False)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
@@ -216,7 +217,21 @@ class TestBuildCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_build.assert_called_once_with(
             plugin_config_file, os.path.join(os.getcwd(), artifact_filename),
-            False)
+            False, False)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_skip_id_validation(mock_build, plugin_config_file, artifact_file):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, [
+            'build', '-c', plugin_config_file, '-a', artifact_file,
+            '--skip-id-validation'
+        ])
+
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
+                                           False, True)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',

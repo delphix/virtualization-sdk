@@ -13,6 +13,15 @@ PLUGIN_SCHEMAS_DIR = os.path.join(os.path.dirname(__file__),
                                   'validation_schemas')
 PLUGIN_CONFIG_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR,
                                     'plugin_config_schema.json')
+
+#
+# This is a temporary file. Once blackbox has made the transition to 'id'
+# instead of 'name' and uses UUIDs for the id, this, and everything
+# associated with it can be removed.
+#
+PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION = os.path.join(
+    PLUGIN_SCHEMAS_DIR, 'plugin_config_schema_no_id_validation.json')
+
 PLUGIN_SCHEMA = os.path.join(PLUGIN_SCHEMAS_DIR, 'plugin_schema.json')
 
 

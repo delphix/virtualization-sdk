@@ -162,7 +162,12 @@ def init(root, ingestion_strategy, name):
     mutually_exclusive=['upload_artifact'],
     help=('Only generate the Python classes from the schema definitions. '
           'Do not do a full build or create an upload artifact.'))
-def build(plugin_config, upload_artifact, generate_only):
+@click.option('--skip-id-validation',
+              is_flag=True,
+              hidden=True,
+              help=('An internal flag that does not enforce the format '
+                    'of the id. Use of this flag is unsupported.'))
+def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
     """
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
@@ -171,7 +176,8 @@ def build(plugin_config, upload_artifact, generate_only):
     if generate_only:
         upload_artifact = None
     with command_error_handler():
-        build_internal.build(plugin_config, upload_artifact, generate_only)
+        build_internal.build(plugin_config, upload_artifact, generate_only,
+                             skip_id_validation)
 
 
 @delphix_sdk.command()
