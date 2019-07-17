@@ -11,12 +11,12 @@ The platform and libs modules expose objects and methods needed to develop a plu
 
 ## Requirements
 
-- macOS 10.10+ or Ubuntu 14.04+
+- macOS 10.14+, Ubuntu 16.04+, or Windows 10
 - Python 2.7 (Python 3 is not supported)
 - Java 7+
 
 ## Installation
-To install the latest version of our SDK (0.4.0) run:
+To install the latest version of the SDK run:
 
 ```
 $ pip install dvp
@@ -43,24 +43,6 @@ $ pip install dvp --upgrade
 
 !!! note "API Build Version"
     The version of the SDK defines the version of the Virtualization Platform API your plugin will be built against.
-
-## Enable the Delphix Engine Feature Flag
-
-Login to the Delphix Engine CLI as the `sysadmin` user:
-
-```
-$ ssh sysadmin@<delphix-engine-hostname>
-> system
-> enableFeatureFlag
-> set name=PYTHON_TOOLKITS
-> ls
-Properties
-    type: FeatureFlagParameters
-    name: PYTHON_TOOLKITS (*)
-> commit
-    Feature flag "PYTHON_TOOLKITS" enabled. If using the CLI, log out and log back in to use the feature.
-Warning: This feature is only supported for specific configurations. If you do not have explicit permission from your account representative to use this feature, disable it and contact them.
-```
 
 ## Basic Usage
 
@@ -92,6 +74,3 @@ This is likely caused by an out of date `setuptools` version (minimum version `3
 ```
 $ pip install setuptools --upgrade
 ```
-
-!!! question "[Survey](https://forms.gle/pMZSzbU6tAkaHxLt8)"
-    Please fill out this [survey](https://forms.gle/pMZSzbU6tAkaHxLt8) to give us feedback about this section.
