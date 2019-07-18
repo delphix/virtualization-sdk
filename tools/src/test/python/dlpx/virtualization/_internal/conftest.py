@@ -122,6 +122,8 @@ def dvp_config_file(tmpdir):
     cli.CONTEXT_SETTINGS['obj'] = {}
     cli.CONTEXT_SETTINGS['obj'] = click_util.ConfigFileProcessor.read_config()
 
+    reload(cli)
+
 
 @pytest.fixture
 def dvp_config_file_no_engine(tmpdir):
@@ -145,6 +147,8 @@ def dvp_config_file_no_engine(tmpdir):
     #
     cli.CONTEXT_SETTINGS['obj'] = {}
     cli.CONTEXT_SETTINGS['obj'] = click_util.ConfigFileProcessor.read_config()
+
+    reload(cli)
 
 
 @pytest.fixture

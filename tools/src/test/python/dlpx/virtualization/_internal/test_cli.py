@@ -375,6 +375,9 @@ class TestUploadCli:
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
     def test_with_config_file_success(mock_upload, artifact_file,
                                       dvp_config_file):
+        engine = 'engine.delphix.com'
+        user = 'user'
+        password = 'password'
         cwd = os.getcwd()
 
         try:
@@ -385,13 +388,16 @@ class TestUploadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_upload.assert_called_once_with(None, None, artifact_file, None)
+        mock_upload.assert_called_once_with(engine, user, artifact_file,
+                                            password)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
     def test_with_config_file_override(mock_upload, artifact_file,
                                        dvp_config_file):
-        user = "fake_admin"
+        engine = 'engine.delphix.com'
+        user = 'fake_admin'
+        password = 'password'
         cwd = os.getcwd()
 
         try:
@@ -402,7 +408,8 @@ class TestUploadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_upload.assert_called_once_with(None, user, artifact_file, None)
+        mock_upload.assert_called_once_with(engine, user, artifact_file,
+                                            password)
 
     @staticmethod
     def test_with_config_file_fail(artifact_file, dvp_config_file_no_engine):
@@ -575,6 +582,9 @@ class TestDownloadCli:
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
     def test_with_config_file_success(mock_download_logs, plugin_config_file,
                                       dvp_config_file):
+        engine = 'engine.delphix.com'
+        user = 'user'
+        password = 'password'
         cwd = os.getcwd()
 
         try:
@@ -585,15 +595,17 @@ class TestDownloadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_download_logs.assert_called_once_with(None, plugin_config_file,
-                                                   None, None, cwd)
+        mock_download_logs.assert_called_once_with(engine, plugin_config_file,
+                                                   user, password, cwd)
 
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
     def test_with_config_file_override(mock_download_logs, plugin_config_file,
                                        dvp_config_file):
+        engine = 'engine.delphix.com'
         user = 'fake_admin'
+        password = 'password'
         cwd = os.getcwd()
 
         try:
@@ -605,8 +617,8 @@ class TestDownloadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_download_logs.assert_called_once_with(None, plugin_config_file,
-                                                   user, None, cwd)
+        mock_download_logs.assert_called_once_with(engine, plugin_config_file,
+                                                   user, password, cwd)
 
     @staticmethod
     def test_with_config_file_fail(plugin_config_file,
