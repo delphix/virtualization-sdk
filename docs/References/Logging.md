@@ -106,7 +106,7 @@ from generated.definitions import RepositoryDefinition
 # of the plugin's entry point file. It is here for simplicity.
 def _setup_logger():
 	# This will log the time, level, filename, line number, and log message.
-        log_message_format = '[%(asctime)s] [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s'
+    log_message_format = '[%(asctime)s] [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s'
 	log_message_date_format = '%Y-%m-%d %H:%M:%S'
 
 	# Create a custom formatter. This will help with diagnosability.
