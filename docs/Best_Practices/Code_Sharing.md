@@ -1,6 +1,6 @@
 # Code Sharing
 
-All Python modules inside of `srcDir` can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed `srcDir` is the current working directory so all imports need to be relative to `srcDir` regardless of the path of the the module doing the import.
+All Python modules inside of `srcDir` can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed `srcDir` is the current working directory so all imports need to be relative to `srcDir` regardless of the path of the module doing the import.
 
 Please refer to Python's [documentation on modules](https://docs.python.org/2/tutorial/modules.html#modules) to learn more about modules and imports.
 
@@ -27,7 +27,7 @@ postgres
         └── execution_util.py
 ```
 
-Any module in the plugin could import `execution_util.py` with `from utils import exception_util.py`.
+Any module in the plugin could import `execution_util.py` with `from utils import execution_util`.
 
 !!! warning "Gotcha"
 	Since the platform uses Python 2.7, every directory needs to have an `__init__.py` file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on `__init__.py` files refer to Python's [documentation on packages](https://docs.python.org/2/tutorial/modules.html#packages).
@@ -61,7 +61,7 @@ Assume `schema.json` contains:
 
 To keep the code cleaner, this plugin does two things:
 
-1. Splits discovery logic into its own module: `discover.py`.
+1. Splits discovery logic into its own module: `discovery.py`.
 2. Uses two helper funtions `execute_sql` and `execute_shell` in `utils/execution_util.py` to abstract all remote execution.
 
 ### plugin_runner.py
@@ -119,9 +119,9 @@ def find_schemas(source_connection, repository):
 !!! note
 	Even though `discovery.py` is in the `operations` package, the import for `execution_util` is still relative to the `srcDir` specified in the plugin config file. `execution_util` is in the `utils` package so it is imported with `from utils import execution_util`. 
 	
-### exception_util.py
+### execution_util.py
 
-`exception_util.py` has two methods `execute_sql` and `execute_shell`. `execute_sql` takes the name of a SQL script in `resources/` and executes it with `resources/execute_sql.sh`. `execute_shell` takes the name of a shell script in `resources/` and executes it.
+`execution_util.py ` has two methods `execute_sql` and `execute_shell`. `execute_sql` takes the name of a SQL script in `resources/` and executes it with `resources/execute_sql.sh`. `execute_shell` takes the name of a shell script in `resources/` and executes it.
 
 ```python
 import pkgutil
