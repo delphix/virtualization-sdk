@@ -104,24 +104,90 @@ As described in the overview section, plugins customize the behavior of the Delp
 
 Right now, we are concerned with discovery. There are two customizable operations related to automatic discovery, one for repositories and one for source configs. In both cases, the job of the Python method is to automatically collect whatever information the schemas (see above) require, and to return that information to the Delphix Engine. The Delphix Engine will run these customized operations whenever a new environment is added, or when an existing environment is rediscovered.
 
+### A Look at the Generated Code
+Recall that the `dvp init` command we ran created a file called `src/plugin_runner.py`. Open this file in your editor/IDE. You will see that this file already contains a bunch of Python code. Let's take a look at the first three blocks of code in this file.
+
+```python
+from dlpx.virtualization.platform import Mount, MountSpecification, Plugin
+
+from generated.definitions import (
+    RepositoryDefinition,
+    SourceConfigDefinition,
+    SnapshotDefinition,
+)
+```
+These `import` lines make certain functionality available to our Python code. Some of this functionality will
+be used just below, as we implement discovery. Others will be used later on, as we implement
+ingestion and provisioning. Later, you'll add more `import`s to unlock more functionality.
+
+```python
+plugin = Plugin()
+```
+
+This line creates a Python object which allows us to define our plugin types. We have the ability to do this because of the `import Plugin` statement above.
+
+This object is stored in a variable we have elected to call `plugin`. We are free to call this variable anything we want, so long as we also change the `entryPoint` line in the `plugin_config.yml` file. For this example, we will just leave it as `plugin`.
+
+```python
+#
+# Below is an example of the repository discovery operation.
+#
+# NOTE: The decorators are defined on the 'plugin' object created above.
+#
+# Mark the function below as the operation that does repository discovery.
+@plugin.discovery.repository()
+def repository_discovery(source_connection):
+    #
+    # This is an object generated from the repositoryDefinition schema.
+    # In order to use it locally you must run the 'build -g' command provided
+    # by the SDK tools from the plugin's root directory.
+    #
+
+    return [RepositoryDefinition(name='1e87dc30-3cdb-4f0a-9634-07ce017d20d1')]
+```
+
+This is our first [plugin operation](/References/Plugin_Operations.md). In this case, it's defining what will happen when the Delphix Engine wants to discover repositories on an environment.  Let's take a look at this code line-by-line
+
+```python
+@plugin.discovery.repository()
+def repository_discovery(source_connection):
+```
+
+This begins the definition of a function called `repository_discovery`.
+
+We are using a Python [decorator](/References/Glossary.md#decorator) which signals to the Delphix Engine that this is the function which should be called when it is time to do repository discovery. The actual name of the function doesn't matter here. Note that we are using our `plugin` variable here as part of the decorator.
+
+The Delphix Engine will pass us information about the source environment in an argument called `source_connection`.
+
+!!! warning
+    The name of this input argument matters. That is, you'll always need to have an argument called
+    `source_connection` here. Each plugin operation has its own set of required argument names. For
+    details on which arguments apply to which operations, see the [reference section](/References/Plugin_Operations.md).
+
+```python
+    return [RepositoryDefinition(name='1e87dc30-3cdb-4f0a-9634-07ce017d20d1')]
+```
+
+This creates and returns a Python object that corresponds to the format defined by our repository schema. Because out repository has exactly one string property called `name`, therefore this Python object has one property called `name`.
+
+Notice that the code generator has filled in the value of `name` with a random string. This results in a plugin operation that works, but which will not be very helpful for the user. We'll change this later.
+
+
+The rest of the file contains more plugin operations, and we'll be modifying them later.
+
 
 ### Repository Discovery
-For repositories, we will need to write a [repository discovery](/References/Plugin_Operations.md#repository-discovery) operation in Python. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
+
+Now, we need to modify the provided [repository discovery](/References/Plugin_Operations.md#repository-discovery) operation. This operation will examine a remote environment, find any repositories, and return information about them to the Delphix Engine.
 
 As a reminder, our only external dependency on the remote environment is simply the existence of a filesystem. Since every Unix host has a filesystem, that means we will have exactly one repository per remote environment. Therefore, our repository discovery operation can be very simple.
 
-Recall that the `dvp init` command we ran created a file called `src/plugin_runner.py`. Open this file in your editor/IDE. Change the content so that it looks like this:
+In fact, as we saw above, the default-generated `repository_discovery` function does almost exactly what we want -- it returns one single repository for any Unix host that it is asked to work with. The only problem with it is that it uses
+unhelpful name.  That's really easy to change!
 
+Replace or modify `repository_discovery` so it looks like this:
 
 ```python
-from dlpx.virtualization import libs
-from dlpx.virtualization.platform import Plugin
-from dlpx.virtualization.platform import Mount
-from dlpx.virtualization.platform import MountSpecification
-from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
-
-plugin = Plugin()
-
 @plugin.discovery.repository()
 def repository_discovery(source_connection):
     repository = RepositoryDefinition('Repository for our First Plugin')
@@ -131,76 +197,25 @@ def repository_discovery(source_connection):
 !!! tip
     Be careful to always use consistent indentation in Python code!
 
-Taking this line-by-line, here is what's happening in our new method::
-
-```python
-from dlpx.virtualization import libs
-from dlpx.virtualization.platform import Plugin
-from dlpx.virtualization.platform import Mount
-from dlpx.virtualization.platform import MountSpecification
-from generated.definitions import RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition
-```
-These lines make certain functionality available to our Python code. Some of this functionality will
-be used just below, as we implement discovery. Others will be used later on, as we implement
-ingestion and provisioning.
-
-```python
-plugin = Plugin()
-```
-
-The python expression `Plugin()` creates a Python object which allows us to define our plugin types. We have the ability to do this because of the `import Plugin` statement above.
-
-This object is stored in a variable we have elected to call `plugin`. We are free to call this variable anything we want, so long as we also change the `entryPoint` line in the `plugin_config.yml` file. We will just leave it as `plugin`.
-
-
-
-```python
-@plugin.discovery.repository()
-def repository_discovery(source_connection):
-```
-This begins the definition of a function we have elected to call `repository_discovery`.
-
-We are using a Python [decorator](/References/Glossary.md#decorator) which signals to the Delphix Engine that this is the function which should be called when it is time to do repository discovery. Note that we are using our `plugin` variable here as part of the decorator.
-
-The Delphix Engine will pass us information about the source environment in an argument called `source_connection`. As it happens, we will not need to use this information at all in our case.
-
-!!! warning
-    The name of this input argument matters. That is, you'll always need to have an argumentcalled
-    `source_connection` here. Each plugin operation has its own set of required argument names. For
-    details on which arguments apply to which operations, see the [reference section](/References/Plugin_Operations.md).
-
-
-```python
-    repository = RepositoryDefinition('Repository for our First Plugin')
-```
-
-This creates a Python object that corresponds to the format defined by our repository schema. That is to say, this object will have exactly one string property called `name`. Here, we are setting this `name` property to be the string `Repository for our First Plugin`.
-
-We have access to this datatype because of the `import RepositoryDefinition` statement from above.
-
-
-```python
-    return [repository]
-```
-Finally, we return a list that contains just this one object.
-
-Recall that we must return information about **all** of the repositories we discover. Since we are only discovering one repository, our list only has one object in it.
 
 ### Source Config Discovery
 
-For source configs, we will rely solely on manual discovery -- the user will tell us which directories they want to ingest from. We still have to write a source config discovery function, but it will not do anything.
+For source configs, we will rely solely on manual discovery. Therefore, the user will tell us which directories they want to ingest from. We still have to define a source config discovery operation -- it just won't need to do much.
 
-Add the following code to the bottom of `plugin_runner.py`.
-```
+The job of this operation is to return only source configs associated with the given `repository`. This function will be called once per repository. In our case, that means it will only be called once.
+
+Because we want to supply **no** automatically-discovered source configs, this function should simply returns an empty list.
+
+In fact, `dvp init` has already generated a function for us that does exactly this.
+
+```python
 @plugin.discovery.source_config()
 def source_config_discovery(source_connection, repository):
     return []
 ```
-Notice that for this function, there are now two arguments.  A `source_connection` argument and a `repository` argument.
 
-The job of this function is to return only source configs associated with the given `repository`. This function will be called once per repository. In our case, that means it will only be called once.
+If we wanted to do automatic discovery of source configs, we'd modify this function. But, for our purposes now, the existing code is fine and we don't need to change anything.
 
-Because we want to supply **no** automatically-discovered source configs, this function simply returns an empty list.
 
 
 ## How to Run Discovery in the Delphix Engine
@@ -231,12 +246,12 @@ For example, in the above screenshot, we are specifying that we want to sync the
 from the remote host, and we want to call it `Binaries`. You can pick any directory and name that
 you want.
 
-Once you have added one or more source configs, you will be able to sync, this is covered on the next page.
+Once you have added one or more source configs, you will be able to sync. This is covered on the next page.
 
 
 !!! warning
     Once you have automatically or manually created source configs, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema:
-    
+
     - You will have to delete any source configs you have manually added.
     - Delete the plugin and its corresponding objects (dSources, Virtual Sources, etc) if the source configs were manually discovered.
 

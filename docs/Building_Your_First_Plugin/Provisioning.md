@@ -57,7 +57,8 @@ For our example plugin, we just need to do a few things:
 ### Controlling Mounting
 
 As we saw previously with linked sources, we need to tell Delphix where to mount the dataset. Open
-up `plugin_runner.py` and add the following:
+up `plugin_runner.py` and find the `plugin.virtual.mount_specification` decorator. Change that function so that
+it looks like this:
 
 ```python
 @plugin.virtual.mount_specification()
@@ -107,6 +108,8 @@ the newly-cloned dataset ready for use on the target environment. What this mean
 from plugin to plugin. For our simple plugin, the dataset does not require any setup work, and so we
 only have to worry about the source config.
 
+Find the `plugin.virtual.configure` decorator and change the function to look like this:
+
 ```python
 @plugin.virtual.configure()
 def configure_new_vdb(virtual_source, snapshot, repository):
@@ -126,7 +129,7 @@ The main difference between the two is that `configure` must *create* a source c
 
 In our simple plugin, there is no special work to do at reconfigure time, and there is no reason
 to modify anything about the source config. We just need to write a `reconfigure` operation that
-returns the existing source config without making any changes.
+returns the existing source config without making any changes. Find the `plugin.virtual.reconfigure` decorator and modify the function as follows.
 
 ```python
 @plugin.virtual.reconfigure()
@@ -137,13 +140,12 @@ def reconfigure_existing_vdb(virtual_source, repository, source_config, snapshot
 ### Saving Snapshot Data
 
 As with our linked sources, we don't actually have anything we need to save when VDB snapshots are
-taken. Recall that we already wrote a helper function called `_make_snapshot_data` that takes care
-of creating the empty snapshot object for us. All we need to do is call that function.
+taken. And, again, `dvp init` has created a post-snapshot operation that will work just fine for us without modification:
 
 ```python
 @plugin.virtual.post_snapshot()
-def vdb_post_snapshot(virtual_source, repository, source_config):
-    return _make_snapshot_data()
+def virtual_post_snapshot(virtual_source, repository, source_config):
+    return SnapshotDefinition()
 ```
 
 ## How To Provision in the Delphix Engine
