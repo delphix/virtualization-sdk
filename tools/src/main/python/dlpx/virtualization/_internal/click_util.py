@@ -8,6 +8,9 @@ import click
 from click_configfile import (ConfigFileReader, Param, SectionSchema,
                               matches_section)
 
+CONFIG_DIR_NAME = '.dvp'
+CONFIG_FILE_NAME = 'config'
+
 
 class ConfigSectionSchema(object):
     """
@@ -27,7 +30,10 @@ class ConfigFileProcessor(ConfigFileReader):
     The config file processor will search for a config file in the current
     user's home directory.
     """
-    config_files = [os.path.join(os.path.expanduser('~'), ".dvp")]
+    config_files = [
+        os.path.expanduser(os.path.join('~', CONFIG_DIR_NAME,
+                                        CONFIG_FILE_NAME))
+    ]
     config_section_schemas = [ConfigSectionSchema.DvpProperties]
 
 

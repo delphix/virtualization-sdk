@@ -96,15 +96,12 @@ def schema_filename():
 
 
 @pytest.fixture
-def dvp_config_file(tmpdir):
-    dvp_config_filepath = os.path.join(tmpdir.strpath, ".dvp")
-
+def dvp_config_file(tmpdir, dvp_config_properties):
+    dvp_dir = tmpdir.join(click_util.CONFIG_DIR_NAME).strpath
+    os.mkdir(dvp_dir)
+    dvp_config_filepath = os.path.join(dvp_dir, click_util.CONFIG_FILE_NAME)
     parser = configparser.ConfigParser()
-    parser['default'] = {
-        'engine': 'engine.delphix.com',
-        'user': 'user',
-        'password': 'password'
-    }
+    parser['default'] = dvp_config_properties
     with open(dvp_config_filepath, 'wb') as config_file:
         parser.write(config_file)
 
@@ -126,29 +123,12 @@ def dvp_config_file(tmpdir):
 
 
 @pytest.fixture
-def dvp_config_file_no_engine(tmpdir):
-    dvp_config_filepath = os.path.join(tmpdir.strpath, ".dvp")
-
-    parser = configparser.ConfigParser()
-    parser['default'] = {'user': 'user', 'password': 'password'}
-    with open(dvp_config_filepath, 'wb') as config_file:
-        parser.write(config_file)
-
-    #
-    # Add temp_dir to list of config files the ConfigFileProcessor will
-    # check to ensure the fixture is cleaned up after the test completes.
-    #
-    click_util.ConfigFileProcessor.config_files = []
-    click_util.ConfigFileProcessor.config_files.append(dvp_config_filepath)
-
-    #
-    # Context settings are initialized before the pytest fixture object
-    # is created, so read the config file before the command is invoked
-    #
-    cli.CONTEXT_SETTINGS['obj'] = {}
-    cli.CONTEXT_SETTINGS['obj'] = click_util.ConfigFileProcessor.read_config()
-
-    reload(cli)
+def dvp_config_properties():
+    return {
+        'engine': 'engine.delphix.com',
+        'user': 'user',
+        'password': 'password'
+    }
 
 
 @pytest.fixture

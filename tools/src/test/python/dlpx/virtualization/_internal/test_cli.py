@@ -373,11 +373,12 @@ class TestUploadCli:
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
+    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_upload, artifact_file,
-                                      dvp_config_file):
-        engine = 'engine.delphix.com'
-        user = 'user'
-        password = 'password'
+                                      dvp_config_properties):
+        engine = dvp_config_properties['engine']
+        user = dvp_config_properties['user']
+        password = dvp_config_properties['password']
         cwd = os.getcwd()
 
         try:
@@ -393,11 +394,12 @@ class TestUploadCli:
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
+    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_upload, artifact_file,
-                                       dvp_config_file):
-        engine = 'engine.delphix.com'
+                                       dvp_config_properties):
+        engine = dvp_config_properties['engine']
         user = 'fake_admin'
-        password = 'password'
+        password = dvp_config_properties['password']
         cwd = os.getcwd()
 
         try:
@@ -412,7 +414,12 @@ class TestUploadCli:
                                             password)
 
     @staticmethod
-    def test_with_config_file_fail(artifact_file, dvp_config_file_no_engine):
+    @pytest.mark.parametrize('dvp_config_properties', [{
+        'user': 'user',
+        'password': 'password'
+    }])
+    @pytest.mark.usefixtures('dvp_config_file')
+    def test_with_config_file_fail(artifact_file):
         cwd = os.getcwd()
 
         try:
@@ -580,11 +587,12 @@ class TestDownloadCli:
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_download_logs, plugin_config_file,
-                                      dvp_config_file):
-        engine = 'engine.delphix.com'
-        user = 'user'
-        password = 'password'
+                                      dvp_config_properties):
+        engine = dvp_config_properties['engine']
+        user = dvp_config_properties['user']
+        password = dvp_config_properties['password']
         cwd = os.getcwd()
 
         try:
@@ -601,11 +609,12 @@ class TestDownloadCli:
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
+    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_download_logs, plugin_config_file,
-                                       dvp_config_file):
-        engine = 'engine.delphix.com'
+                                       dvp_config_properties):
+        engine = dvp_config_properties['engine']
         user = 'fake_admin'
-        password = 'password'
+        password = dvp_config_properties['password']
         cwd = os.getcwd()
 
         try:
@@ -621,8 +630,12 @@ class TestDownloadCli:
                                                    user, password, cwd)
 
     @staticmethod
-    def test_with_config_file_fail(plugin_config_file,
-                                   dvp_config_file_no_engine):
+    @pytest.mark.parametrize('dvp_config_properties', [{
+        'user': 'user',
+        'password': 'password'
+    }])
+    @pytest.mark.usefixtures('dvp_config_file')
+    def test_with_config_file_fail(plugin_config_file):
         cwd = os.getcwd()
 
         try:

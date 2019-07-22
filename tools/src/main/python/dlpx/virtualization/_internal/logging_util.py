@@ -7,7 +7,7 @@ import os
 import sys
 import time
 
-LOGGING_DIRECTORY = os.path.expanduser('~/.delphix/logs')
+LOGGING_DIRECTORY = os.path.expanduser(os.path.join('~', '.dvp', 'logs'))
 DEBUG_FILE_NAME = 'debug.log'
 
 

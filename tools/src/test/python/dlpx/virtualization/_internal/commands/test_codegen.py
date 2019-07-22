@@ -127,7 +127,7 @@ class TestCodegen:
             '[main] INFO io.swagger.parser.Swagger20Parser - reading from'
             ' swagger.json'
             '[main] INFO io.swagger.codegen.AbstractGenerator - writing file'
-            ' .delphix-compile/swagger_server/generated/test_gen_file.py')
+            ' .dvp-gen-output/swagger_server/generated/test_gen_file.py')
         popen_helper.set_popen_output(0, stderr=stderr_ret)
 
         codegen.generate_python(gen_py.name, gen_py.source_dir,
@@ -201,7 +201,7 @@ class TestCodegen:
             '[main] INFO io.swagger.parser.Swagger20Parser - reading from'
             ' swagger.json'
             '[main] INFO io.swagger.codegen.AbstractGenerator - writing file'
-            ' .delphix-compile/swagger_server/generated/test_gen_file.py')
+            ' .dvp-gen-output/swagger_server/generated/test_gen_file.py')
         popen_helper.set_popen_output(0, stderr=stderr_ret)
         codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
 
