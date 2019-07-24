@@ -256,6 +256,13 @@ task "testDelphixBin_python2.7"(type: Exec) {
   dependsOn "testInstallation_python2.7"
 }
 
+task wheel(type: SetupPyTask) {
+  setupPyCommand "bdist_wheel"
+  distFile String.format("%s-%s-%s-%s-%s.whl", dist.name.get().replace("-", "_"), "$project.version".replace("-", "_"), "py2", "none", "any")
+
+  dependsOn makeSetupPy
+}
+
 // sdist and the python tests depend on the generated python libraries
 // from the protoc plugin. Must manually specify as plugins are not aware
 // of each other.

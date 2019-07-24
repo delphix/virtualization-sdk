@@ -52,17 +52,22 @@ RESPONSE=`curl --silent --write-out "%{http_code}" -H "X-JFrog-Art-Api: ${ARTIFA
 
 echo "Uploading 'common' Python distribution..."
 twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/common/build/python-dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/common/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'platform' Python distribution..."
 twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/platform/build/python-dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/platform/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'libs' Python distribution..."
 twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/libs/build/python-dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/libs/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'tools' Python distribution..."
 twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/tools/build/python-dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/tools/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'dvp' Python distribution..."
 twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/dvp/build/python-dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/dvp/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
 
 exit 0

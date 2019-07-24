@@ -98,6 +98,13 @@ task removeEggInfo(type: Delete) {
   delete "${projectDir}/src/main/python/dvp_platform.egg-info"
 }
 
+task wheel(type: SetupPyTask) {
+  setupPyCommand "bdist_wheel"
+  distFile String.format("%s-%s-%s-%s-%s.whl", dist.name.get().replace("-", "_"), "$project.version".replace("-", "_"), "py2", "none", "any")
+
+  dependsOn makeSetupPy
+}
+
 clean.dependsOn('removeProtobufJava')
 clean.dependsOn('removeEggInfo')
 

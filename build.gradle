@@ -4,7 +4,7 @@
 
 plugins {
   id "com.google.protobuf" version "0.8.7" apply false
-  id "delphix.python" version "0.0.5" apply false
+  id "delphix.python" version "0.0.7" apply false
 }
 
 subprojects {
@@ -39,6 +39,23 @@ task check {
     dependsOn 'checkVersionBump'
 }
 
+task buildPython {
+    dependsOn ':common:sdist'
+    dependsOn ':common:wheel'
+    dependsOn ':platform:sdist'
+    dependsOn ':platform:wheel'
+    dependsOn ':libs:sdist'
+    dependsOn ':libs:wheel'
+    dependsOn ':tools:sdist'
+    dependsOn ':tools:wheel'
+    dependsOn ':dvp:sdist'
+    dependsOn ':dvp:wheel'
+}
+
+task build {
+    dependsOn 'buildPython'
+}
+
 /*
  * This task publishes the final version of the jar and all Python distributions to our internal production PyPI
  * repository. This should be executed immediately before a change is pushed.
@@ -47,12 +64,7 @@ task check {
  */
 task publishProd(type: Exec) {
     dependsOn 'check'
-    dependsOn 'jar'
-    dependsOn ':common:sdist'
-    dependsOn ':libs:sdist'
-    dependsOn ':platform:sdist'
-    dependsOn ':tools:sdist'
-    dependsOn ':dvp:sdist'
+    dependsOn 'build'
 
     executable "${binDir}/upload.sh"
     args "--prod"
@@ -67,11 +79,7 @@ task publishProd(type: Exec) {
 task publishDebug(type: Exec) {
     dependsOn 'checkVersionBump'
     dependsOn 'jar'
-    dependsOn ':common:sdist'
-    dependsOn ':libs:sdist'
-    dependsOn ':platform:sdist'
-    dependsOn ':tools:sdist'
-    dependsOn ':dvp:sdist'
+    dependsOn 'buildPython'
 
     executable "${binDir}/upload.sh"
 }
