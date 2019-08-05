@@ -66,7 +66,7 @@ mounts | list[[Mount](#mount)] | Mount points associated with the source.
 Represents a connection to a source.
 
 ```python
-from dlpx.virtualization.platform import RemoteConnection
+from dlpx.virtualization.common import RemoteConnection
 
 connection = RemoteConnection(environment, user)
 ```
@@ -75,8 +75,8 @@ connection = RemoteConnection(environment, user)
 
 Field | Type | Description
 ----- | ---- | -----------
-environment | [RemoteEnvironment](#remoteenvironment) | Environment for the connection. Internal virtualization platform object.
-user | [RemoteUser](#remoteuser) | User for the connection. Internal virtualization platform object.
+environment | [RemoteEnvironment](#remoteenvironment) | Environment for the connection.
+user | [RemoteUser](#remoteuser) | User for the connection.
 
 ## Status
 
@@ -175,38 +175,49 @@ resync | Boolean | Determines if this snapshot should ingest the dSource from sc
 
 Represents a remote environment.
 
-!!! warning
-    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+```python
+from dlpx.virtualization.common import RemoteEnvironment
+
+environment = RemoteEnvironment(name, reference, host)
+```
 
 ### Fields
 
 Field | Type | Description
 ----- | ---- | -----------
 name | String | Name of the environment.
-host | [RemoteHost](#remotehost) | Host that belongs to the environment. Internal virtualization platform object.
 reference | String | Unique identifier for the environment.
+host | [RemoteHost](#remotehost) | Host that belongs to the environment.
+
 
 ## RemoteHost
 
 Represents a remote host, can we Unix or Windows.
 
-!!! warning
-    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+```python
+from dlpx.virtualization.common import RemoteHost
+
+host = RemoteHost(name, reference, binary_path, scratch_path)
+```
 
 ### Fields
 
 Field | Type | Description
 ----- | ---- | -----------
 name | String | Host address.
-binary_path | String | Path to Delphix provided binaries on the host, which are present in the toolkit pushed to the remote host like `dlpx_db_exec`, `dlpx_pfexec`, etc. This property is only available for Unix hosts.
 reference | String | Unique identifier for the host.
+binary_path | String | Path to Delphix provided binaries on the host, which are present in the toolkit pushed to the remote host like `dlpx_db_exec`, `dlpx_pfexec`, etc. This property is only available for Unix hosts.
+scratch_path | String | Path to scratch path on the host.
 
 ## RemoteUser
 
 Represents a user on a remote host.
 
-!!! warning
-    Objects of this class are instantiated by the platform. They should always be treated as read-only by the plugin, and their properties should only be accessed, but never modified.
+```python
+from dlpx.virtualization.common import RemoteUser
+
+user = RemoteUser(name, reference)
+```
 
 ### Fields
 
