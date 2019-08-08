@@ -46,6 +46,7 @@ import pkgutil
 
 from dlpx.virtualization import libs
 from dlpx.virtualization.platform import Plugin
+from dlpx.virtualization.platform.exceptions import UserError
 
 from generated.definitions import SnapshotDefinition
 
@@ -62,7 +63,10 @@ def post_snapshot(direct_source, repository, source_config):
 
 	# Fail operation if the timestamp couldn't be retrieved
 	if response.exit_code != 0:
-		raise RuntimeError('Failed to get date: {}'.format(response.stdout))
+		raise UserError(
+		'Failed to get date',
+		'Make sure the user has the required permissions',
+		'{}\n{}'.format(response.stdout, rsponse.stderr))
 
 	return SnapshotDefinition(name='Snapshot', date=response.stdout)
 ```

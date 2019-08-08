@@ -254,6 +254,3 @@ Once you have added one or more source configs, you will be able to sync. This i
 
     - You will have to delete any source configs you have manually added.
     - Delete the plugin and its corresponding objects (dSources, Virtual Sources, etc) if the source configs were manually discovered.
-
-!!! question "[Survey](https://forms.gle/cEWzdTnvi6vNeMT58)"
-    Please fill out this [survey](https://forms.gle/cEWzdTnvi6vNeMT58) to give us feedback about this section.

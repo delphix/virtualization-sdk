@@ -40,9 +40,9 @@ Calling bash with an inline command.
 from dlpx.virtualization import libs
 
 command = "echo 'Hi' >> /tmp/debug.log"
-vars = {"var": "val"}
+variables = {"var": "val"}
 
-response = libs.run_bash(connection, command, vars)
+response = libs.run_bash(connection, command, variables)
 
 print response.exit_code
 print response.stdout
@@ -108,9 +108,9 @@ Calling expect  with an inline command.
 from dlpx.virtualization import libs
 
 command = "puts 'Hi'"
-vars = {"var": "val"}
+variables = {"var": "val"}
 
-repsonse = libs.run_expect(connection, command, vars)
+repsonse = libs.run_expect(connection, command, variables)
 
 print response.exit_code
 print response.stdout
@@ -151,9 +151,9 @@ Calling powershell with an inline command.
 from dlpx.virtualization import libs
 
 command = "Write-Output 'Hi'"
-vars = {"var": "val"}
+variables = {"var": "val"}
 
-response = libs.run_powershell(connection, command, vars)
+response = libs.run_powershell(connection, command, variables)
 
 print response.exit_code
 print response.stdout

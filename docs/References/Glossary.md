@@ -25,6 +25,9 @@ See [Linked Dataset](#linked-dataset)
 ## Environment
 A remote system that the Delphix Engine can interact with. An environment can be used as a [source](#source-environment), [staging](#staging-environment) or [target](#target-environment) environment (or any combination of those).  For example, a Linux machine that the Delphix Engine can connect to is an environment.
 
+## Environment User
+A set of user credentials that the Delphix Engine can use to interact with an [Environmnet](#environment). For example, a username and password to login to a Linux machine.
+
 ## Linked Dataset
 A dataset on the Delphix Engine which holds an ingested copy of a pre-existing external dataset from a source environment. A linked dataset is often called a [dSource](#dsource).
 

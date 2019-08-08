@@ -1,46 +1,43 @@
 # CLI Configuration File
 
-Save frequently used configuration settings and credentials in a file which is used by the `dvp` CLI.
+The CLI configuration file can be used to set default values for CLI command options.
 
-## Where is the Configuration File Stored?
+## Location
 
-The `dvp` CLI uses the settings specified in a local file named `config`, in a folder named `.dvp`, which is located in your user's home directory. Your user's home directory will depend on the operating system, but can be referred to using `~` in Unix-based operating systems or `%UserProfile%` in Windows.
+The configuration file is located in the user's home directory under `.dvp/config`.
 
-For example, the following commands will list files and directories in the `.dvp` folder.
-Linux, macOS, or Unix
 ```
-$ ls ~/.dvp
-```
-Windows
-```
-C:\> dir "%UserProfile%\.dvp"
+<USER_HOME>
+    └── .dvp
+        └── config
 ```
 
-## Supported config File Settings
+Your user's home directory will depend on the operating system, but can be referred to using `~` in Unix-based operating systems or `%UserProfile%` in Windows.
 
-!!! note
+## Supported Options
+
+!!! note "Use `default` profile"
+
 	Only the values listed in the `default` profile are used unless they are overridden by values passed in from a command line option with the same name.
 
-### Settings
+The CLI configuration file supports the following options:
 
-The `dvp` configuration file supports the following settings:
-
-#### engine
-Specifies the Delphix Engine which is used as part of any `dvp upload` or `dvp download-logs` command request.
+### engine
+Specifies the Delphix Engine which can be used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
 
 ```
 engine = engine.example.com
 ```
 
-#### user
-Specifies the user to a Delphix Engine which is used as part of any `dvp upload` or `dvp download-logs` command request.
+### user
+Specifies the user to a Delphix Engine which is used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
 
 ```
 user = admin
 ```
 
-#### password
-Specifies the password for the user to a Delphix Engine which is used as part of any `dvp upload` or `dvp download-logs` command request.
+### password
+Specifies the password for the user to a Delphix Engine which is used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
 
 ```
 password = userpassword
@@ -48,7 +45,7 @@ password = userpassword
 
 ### Example
 
-The following example uses all of the supported settings for the `dvp` configuration file:
+The following example uses all of the supported options for the CLI configuration file:
 ```
 [default]
 engine = engine.example.com

@@ -28,8 +28,6 @@ Once Delphix mounts the storage share onto the staging environment, the plugin n
 
 When this initial copy is complete, Delphix will take a snapshot of the backing storage.
 
-(**Diagram coming soon!**)
-
 This same basic operation will be repeated when Delphix mounts an NFS share: The plugin copies data onto it, then Delphix snapshots the result.
 
 ### Provisioning
@@ -40,8 +38,6 @@ First the snapshot is cloned onto the Delphix Engine, then this newly-cloned dat
  - Provision other virtual datasets from it
  - Rewind the virtual dataset back to the state it represents
  - Create a physical database from it in what we call V2P: Virtual to Physical
-
-(**Diagram coming soon!**)
 
 ## Parts of a Plugin
 A plugin consists of three main parts. We will cover them briefly here, and then fill in more details later in the tutorial.
@@ -66,6 +62,3 @@ To complete the tutorial that follows, make sure you check off the things on thi
 - A running Delphix Engine, version x.y.z or above.
 - Add at least one Unix host—but preferably three—to the Delphix Engine as remote environments
 - Have a tool at hand for editing text files—mostly Python and JSON. A simple text editor would work fine, or you can use a full-fledged IDE.
-
-!!! question "[Survey](https://forms.gle/26APvZq7Lm6nEQ8q8)"
-    Please fill out this [survey](https://forms.gle/26APvZq7Lm6nEQ8q8) to give us feedback about this section.

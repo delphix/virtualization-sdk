@@ -23,7 +23,7 @@ The problem here is that we'll have a data format mismatch. The previously-saved
 
 ## Data Upgrading
 
-**Coming Soon!**
+This is not currently supported. We will be supporting this in an upcoming release.
 
 ## Versioning Rules
 

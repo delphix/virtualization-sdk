@@ -14,6 +14,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
 - Python 2.7 (Python 3 is not supported)
 - Java 7+
+- Delphix Engine 5.3.5.0 or above
 
 ## Installation
 To install the latest version of the SDK run:
@@ -60,17 +61,6 @@ This will generate an upload artifact at `<artifact_file>`. That file can then b
 $ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_file>
 ```
 
-You will be prompt for the Delphix Engine user's password.
+You will be prompted for the Delphix Engine user's password.
 
-## Troubleshooting
-
-#### Installation fails with incorrect version spec
-
-!!! error
-    `'install_requires' must be a string or list of strings containing valid project version requirement specifiers; Expected version spec in enum34;python_version < '3.4' at ;python_version < '3.4'`
-
-This is likely caused by an out of date `setuptools` version (minimum version `38.0.0`) which is often due to not installing the SDK into a virtual environment. To fix this, first setup a virtual environment and attempt to install the SDK there. If you are already using a virtual environment you can update `setuptools` with:
-
-```
-$ pip install setuptools --upgrade
-```
+You can also use a [CLI Configuration File](/Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](/References/CLI.md) command options.
