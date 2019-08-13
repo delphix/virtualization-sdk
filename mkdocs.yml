@@ -1,4 +1,4 @@
-site_name: Delphix Virtualization SDK
+site_name: Delphix Virtualization SDK 1.0.0
 theme: 
   name: material
   custom_dir: 'material/'
