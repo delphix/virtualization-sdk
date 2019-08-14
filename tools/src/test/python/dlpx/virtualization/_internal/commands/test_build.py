@@ -369,7 +369,7 @@ class TestPluginUtil:
 
         message = err_info.value.message
         assert ('Command failed because the plugin config file '
-                'provided as input {!r} was not valid yaml. '
+                'provided as input \'{}\' was not valid yaml. '
                 'Verify the file contents. '
                 'Error position: 3:9'.format(plugin_config_file)) in message
 
@@ -425,7 +425,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert message == 'The path {!r} should be a file but is not.'.format(
+        assert message == 'The path {} should be a file but is not.'.format(
             schema_file)
 
         assert not mock_generate_python.called
@@ -442,7 +442,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert message == ('The path {!r} should be a'
+        assert message == ('The path {} should be a'
                            ' directory but is not.'.format(src_dir))
 
         assert not mock_generate_python.called
@@ -473,7 +473,7 @@ class TestPluginUtil:
 
         message = err_info.value.message
         assert (
-            'Unable to load schemas from {!r}\nError code: 13.'
+            'Unable to load schemas from \'{}\'\nError code: 13.'
             ' Error message: Permission denied'.format(schema_file)) in message
 
         assert not mock_generate_python.called
@@ -489,9 +489,10 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert ('Failed to load schemas because {!r} is not a valid json file.'
-                ' Error: Extra data: line 2 column 1 - line 2 column 9'
-                ' (char 19 - 27)'.format(schema_file)) in message
+        assert (
+            'Failed to load schemas because \'{}\' is not a valid json file.'
+            ' Error: Extra data: line 2 column 1 - line 2 column 9'
+            ' (char 19 - 27)'.format(schema_file)) in message
 
         assert not mock_generate_python.called
 

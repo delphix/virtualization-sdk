@@ -69,7 +69,7 @@ def init(root, ingestion_strategy, name):
 
     # Make an UUID for the plugin
     plugin_id = str(uuid.uuid4())
-    logger.debug("Using % r as the plugin id.", plugin_id)
+    logger.debug("Using %s as the plugin id.", plugin_id)
 
     # if name is not provided the name will be equal to plugin_id.
     if not name:
@@ -83,7 +83,7 @@ def init(root, ingestion_strategy, name):
         OrderedDict, lambda dumper, data: dumper.represent_mapping(
             'tag:yaml.org,2002:map', data.items()))
 
-    logger.debug("Using %r as the plugin's entry point.", DEFAULT_ENTRY_POINT)
+    logger.debug("Using %s as the plugin's entry point.", DEFAULT_ENTRY_POINT)
     try:
         #
         # Create the source directory. We've already validated that this
@@ -97,7 +97,7 @@ def init(root, ingestion_strategy, name):
         # file is static and doesn't depend on any input so it can just be
         # copied. By copying we can also avoid dealing with ordering issues.
         #
-        logger.info('Writing schema file at %r.', schema_file_path)
+        logger.info('Writing schema file at %s.', schema_file_path)
         shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
         # Read and valida the schema file
@@ -115,7 +115,7 @@ def init(root, ingestion_strategy, name):
         # must be done only after both the schema file and src dir have been
         # created since the paths need to exist.
         #
-        logger.info('Writing config file at %r.', config_file_path)
+        logger.info('Writing config file at %s.', config_file_path)
         with open(config_file_path, 'w+') as f:
             config = _get_default_plugin_config(plugin_id, ingestion_strategy,
                                                 name, DEFAULT_ENTRY_POINT,
@@ -128,7 +128,7 @@ def init(root, ingestion_strategy, name):
         # point file is static and doesn't depend on any input so it can just
         # be copied.
         #
-        logger.info('Writing entry file at %r.', entry_point_file_path)
+        logger.info('Writing entry file at %s.', entry_point_file_path)
         with open(entry_point_file_path, 'w+') as f:
             entry_point_content = _get_entry_point_contents(
                 plugin_id, ingestion_strategy)
@@ -139,7 +139,7 @@ def init(root, ingestion_strategy, name):
         file_util.delete_paths(config_file_path, schema_file_path,
                                src_dir_path)
         raise exceptions.UserError(
-            'Failed to initialize plugin directory {!r}: {}.'.format(root, e))
+            'Failed to initialize plugin directory {}: {}.'.format(root, e))
 
 
 def _get_entry_point_contents(plugin_name, ingestion_strategy):
@@ -165,7 +165,7 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy):
         linked_operations = env.get_template(
             STAGED_OPERATIONS_TEMPLATE_NAME).render()
     else:
-        raise RuntimeError('Got unrecognized ingestion strategy: {!r}'.format(
+        raise RuntimeError('Got unrecognized ingestion strategy: {}'.format(
             ingestion_strategy))
 
     # Call 'repr' to put the string in quotes and escape quotes.

@@ -44,6 +44,10 @@ def command_error_handler():
         logger.error(err.message)
         logger.debug(traceback.format_exc())
         exit(1)
+    except Exception as err:
+        logger.debug(err)
+        logger.error('Internal error, please contact Delphix.')
+        exit(2)
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)

@@ -122,14 +122,14 @@ class PluginValidator:
                         mark = err.problem_mark
                         raise exceptions.UserError(
                             'Command failed because the plugin config file '
-                            'provided as input {!r} was not valid yaml. '
+                            'provided as input \'{}\' was not valid yaml. '
                             'Verify the file contents. '
                             'Error position: {}:{}'.format(
                                 self.__plugin_config, mark.line + 1,
                                 mark.column + 1))
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to read plugin config file {!r}'
+                'Unable to read plugin config file \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__plugin_config, err.errno, os.strerror(err.errno)))
 
@@ -164,13 +164,13 @@ class PluginValidator:
                     plugin_schema = json.load(f)
                 except ValueError as err:
                     raise exceptions.UserError(
-                        'Failed to load schemas because {!r} is not a '
+                        'Failed to load schemas because {} is not a '
                         'valid json file. Error: {}'.format(
                             self.__plugin_config_schema, err))
 
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to read plugin config schema file {!r}'
+                'Unable to read plugin config schema file {}'
                 '\nError code: {}. Error message: {}'.format(
                     self.__plugin_config_schema, err.errno,
                     os.strerror(err.errno)))

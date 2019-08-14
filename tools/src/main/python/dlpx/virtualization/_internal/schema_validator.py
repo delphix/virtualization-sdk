@@ -84,12 +84,12 @@ class SchemaValidator:
                     return json.load(f)
                 except ValueError as err:
                     raise exceptions.UserError(
-                        'Failed to load schemas because {!r} is not a '
+                        'Failed to load schemas because \'{}\' is not a '
                         'valid json file. Error: {}'.format(
                             self.__schema_file, err))
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to load schemas from {!r}'
+                'Unable to load schemas from \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__schema_file, err.errno, os.strerror(err.errno)))
 
@@ -106,13 +106,13 @@ class SchemaValidator:
                     plugin_meta_schema = json.load(f)
                 except ValueError as err:
                     raise exceptions.UserError(
-                        'Failed to load schemas because {!r} is not a '
+                        'Failed to load schemas because \'{}\' is not a '
                         'valid json file. Error: {}'.format(
                             self.__plugin_meta_schema, err))
 
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to read plugin schema file {!r}'
+                'Unable to read plugin schema file \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__plugin_meta_schema, err.errno,
                     os.strerror(err.errno)))
@@ -125,7 +125,7 @@ class SchemaValidator:
         # validation errors and report everything wrong with the schema.
         #
         validation_errors = sorted(v.iter_errors(self.__plugin_schemas),
-                                   key=str)
+                                   key=lambda e: e.path)
 
         if validation_errors:
             raise exceptions.SchemaValidationError(self.__schema_file,

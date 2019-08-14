@@ -24,14 +24,14 @@ class UserError(Exception):
 class PathDoesNotExistError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path {!r} does not exist.'.format(path)
+        message = 'The path \'{}\' does not exist.'.format(path)
         super(PathDoesNotExistError, self).__init__(message)
 
 
 class PathExistsError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path {!r} already exists.'.format(path)
+        message = 'The path \'{}\' already exists.'.format(path)
         super(PathExistsError, self).__init__(message)
 
 
@@ -39,7 +39,7 @@ class PathTypeError(UserError):
     def __init__(self, path, path_type):
         self.path = path
         self.path_type = path_type
-        message = 'The path {!r} should be a {} but is not.'.format(
+        message = 'The path {} should be a {} but is not.'.format(
             path, path_type)
         super(PathTypeError, self).__init__(message)
 
@@ -147,12 +147,35 @@ class SchemaValidationError(UserError):
     def __init__(self, schema_file, validation_errors):
         self.schema_file = schema_file
         self.validation_errors = validation_errors
-        error_msg = "\n\n".join(
-            map(lambda err: self.__format_error(err), validation_errors))
+
+        formatted_errors = self.__format_errors(validation_errors)
+        error_msg = "\n".join(formatted_errors)
+
         message = (
-            '{}\nValidation failed on {}. \n{} Warning(s). {} Error(s)'.format(
-                error_msg, self.schema_file, 0, len(validation_errors)))
+            '{}\n\nValidation failed on {}. \n{} Warning(s). {} Error(s)'.
+            format(error_msg, self.schema_file, 0, len(formatted_errors)))
         super(SchemaValidationError, self).__init__(message)
+
+    @staticmethod
+    def __format_errors(validation_errors):
+        """
+        Formats the validation errors by extracting out relevant parts of the
+        object and also check for errros on nested schemas, if any.
+        """
+        all_errors = []
+        for err in validation_errors:
+            all_errors.append(SchemaValidationError.__format_error(err))
+
+            #
+            # Check if sub/nested schema errors are reported as well. If so,
+            # get the error string based on those errors.
+            #
+            if err.context:
+                nested_errors = SchemaValidationError.__format_errors(
+                    err.context)
+                all_errors.extend(nested_errors)
+
+        return all_errors
 
     @staticmethod
     def __format_error(err):
@@ -164,6 +187,8 @@ class SchemaValidationError(UserError):
         message - error message from validation failure
         path - path of the schema that failed validation
         instance - instance on which validation failed
+        context - if there are errors on nested/sub-schemas, context object
+                  contains validations errors from those schemas.
         e.g.
         Validation Error:
             'identityFields' is a required property
@@ -182,17 +207,16 @@ class SchemaValidationError(UserError):
                  'properties': {'name': {'type': 'string'}},
                  'type': 'object'}
         """
-        err_instance = json.dumps(err.instance, indent=2)
-
         #
         # Validation error message could be unicode encoded string. Strip out
         # any leading unicode characters for proper display and logging.
         #
         err_msg = re.compile(r'\bu\b', re.IGNORECASE)
         err_msg = err_msg.sub("", err.message)
-        error_string = 'Error: {} on {}\n{}'.format(err_msg,
-                                                    map(str, list(err.path)),
-                                                    err_instance)
+
+        error_string = 'Error: {} on {}'.format(
+            err_msg, map(str, list(err.schema_path)))
+
         return error_string
 
 

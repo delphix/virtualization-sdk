@@ -54,7 +54,7 @@ def format_entry_point_template(entry_point_template):
             operations = staged_operations_template()
         else:
             raise RuntimeError(
-                'Got unrecognized ingestion strategy: {!r}'.format(
+                'Got unrecognized ingestion strategy: {}'.format(
                     ingestion_strategy))
         return template.render(name=repr(plugin_name),
                                linked_operations=operations)

@@ -80,9 +80,9 @@ def make_dir(path, force_remove):
         shutil.rmtree(path, ignore_errors=True)
     try:
         os.mkdir(path)
-        logger.debug('Successfully created directory {!r}'.format(path))
+        logger.debug('Successfully created directory \'{}\''.format(path))
     except OSError as err:
         raise exceptions.UserError(
-            'Unable to create new directory {!r}'
+            'Unable to create new directory \'{}\''
             '\nError code: {}. Error message: {}'.format(
                 path, err.errno, os.strerror(err.errno)))

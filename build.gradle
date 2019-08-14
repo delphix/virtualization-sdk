@@ -8,7 +8,7 @@ plugins {
 }
 
 subprojects {
-  version = "1.0.0"
+  version = "1.0.1-internal-001"
 }
 
 def binDir = "${rootProject.projectDir}/bin"
@@ -36,7 +36,7 @@ task checkVersionBump(type: Exec) {
 
 // 'check' is ran as part of the pre-checkin checklist. It should validate that the version has been bumped.
 task check {
-    dependsOn 'checkVersionBump'
+   dependsOn 'checkVersionBump'
 }
 
 task buildPython {
