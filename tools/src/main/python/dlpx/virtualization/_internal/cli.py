@@ -116,13 +116,21 @@ def delphix_sdk(verbose, quiet):
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '
           'requires a staging server.'))
-def init(root, ingestion_strategy, name):
+@click.option('-t',
+              '--host-type',
+              default=util_classes.UNIX_HOST_TYPE,
+              show_default=True,
+              type=click.Choice([
+                  util_classes.UNIX_HOST_TYPE, util_classes.WINDOWS_HOST_TYPE
+              ]),
+              help='Set the host platform supported by the plugin.')
+def init(root, ingestion_strategy, name, host_type):
     """
     Create a plugin in the root directory. The plugin will be valid
     but have no functionality.
     """
     with command_error_handler():
-        init_internal.init(root, ingestion_strategy, name)
+        init_internal.init(root, ingestion_strategy, name, host_type)
 
 
 @delphix_sdk.command()

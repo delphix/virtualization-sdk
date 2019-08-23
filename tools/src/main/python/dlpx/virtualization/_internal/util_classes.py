@@ -5,6 +5,8 @@
 import enum
 import os
 
+UNIX_HOST_TYPE = 'UNIX'
+WINDOWS_HOST_TYPE = 'WINDOWS'
 STAGED_TYPE = 'STAGED'
 DIRECT_TYPE = 'DIRECT'
 

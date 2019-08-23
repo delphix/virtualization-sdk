@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b57813ed9b9701c8cbe976e2180faa354cc8eafa3cd7246f94dfc54b41e96ba9"
+            "sha256": "c5b133a57dbfcbf754277d2f436bbf8381668569135cf09849e92348081c5d2b"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,20 +15,20 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.0.1-internal-001.tar.gz",
-            "version": "== 1.0.1-internal-001"
+            "path": "../common/build/python-dist/dvp-common-1.0.1-internal-002.tar.gz",
+            "version": "== 1.0.1-internal-002"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.0.1-internal-001.tar.gz",
-            "version": "== 1.0.1-internal-001"
+            "path": "../libs/build/python-dist/dvp-libs-1.0.1-internal-002.tar.gz",
+            "version": "== 1.0.1-internal-002"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.0.1-internal-001.tar.gz",
-            "version": "== 1.0.1-internal-001"
+            "path": "../platform/build/python-dist/dvp-platform-1.0.1-internal-002.tar.gz",
+            "version": "== 1.0.1-internal-002"
         },
         "dvp-tools": {
-            "path": "../tools/build/python-dist/dvp-tools-1.0.1-internal-001.tar.gz",
-            "version": "== 1.0.1-internal-001"
+            "path": "../tools/build/python-dist/dvp-tools-1.0.1-internal-002.tar.gz",
+            "version": "== 1.0.1-internal-002"
         }
     },
     "develop": {
@@ -48,11 +48,11 @@
         },
         "configparser": {
             "hashes": [
-                "sha256:8be81d89d6e7b4c0d4e44bcc525845f6da25821de80cb5e06e7e0238a2899e32",
-                "sha256:da60d0014fd8c55eb48c1c5354352e363e2d30bbf7057e5e171a468390184c75"
+                "sha256:45d1272aad6cfd7a8a06cf5c73f2ceb6a190f6acc1fa707e7f82a4c053b28b18",
+                "sha256:bc37850f0cc42a1725a796ef7d92690651bf1af37d744cc63161dac62cabee17"
             ],
             "markers": "python_version < '3'",
-            "version": "==3.7.4"
+            "version": "==3.8.1"
         },
         "contextlib2": {
             "hashes": [

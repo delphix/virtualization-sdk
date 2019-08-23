@@ -57,7 +57,7 @@ def virtual_post_snapshot(virtual_source, repository, source_config):
 
 @plugin.virtual.mount_specification()
 def virtual_mount_specification(virtual_source, repository):
-    mount_path = "/tmp/dlpx_virtual_mounts/{}".format(virtual_source.guid)
+    mount_path = "{{ default_mount_path }}".format(virtual_source.guid)
     mounts = [Mount(virtual_source.connection.environment, mount_path)]
 
     return MountSpecification(mounts)

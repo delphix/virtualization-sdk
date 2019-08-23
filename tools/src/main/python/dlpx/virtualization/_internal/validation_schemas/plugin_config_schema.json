@@ -18,7 +18,7 @@
               "type": "string",
               "enum": [ "UNIX", "WINDOWS" ]
           },
-          "maxItems": 2
+          "maxItems": 1
       },
       "entryPoint":  {
           "type": "string",
