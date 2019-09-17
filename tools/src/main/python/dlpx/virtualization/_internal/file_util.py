@@ -55,17 +55,45 @@ def validate_paths_do_not_exist(*args):
         logger.debug('SUCCESS: Path %r does not exist.', path)
 
 
-def get_src_dir_path(file_name, src_dir):
-    """Get the absolute path if the srcDir provided is relative path and
-    validate that srcDir is a valid directory and that it exists.
-    """
-    if not os.path.isabs(src_dir):
-        src_dir = os.path.join(os.path.dirname(file_name), src_dir)
+def standardize_path(path):
+    standardized_path = os.path.expanduser(path)
+    if standardized_path == '.':
+        standardized_path = os.path.realpath(standardized_path)
+    standardized_path = os.path.normcase(standardized_path)
+    return standardized_path
 
-    if not os.path.exists(src_dir):
-        raise exceptions.PathDoesNotExistError(src_dir)
-    if not os.path.isdir(src_dir):
-        raise exceptions.PathTypeError(src_dir, 'directory')
+
+def get_src_dir_path(file_name, src_dir):
+    """
+    Validates 3 requirements of the src_dir before setting the src_dir path:
+    - src_dir cannot be an absolute path
+    - src_dir must exist
+    - src_dir be a valid directory.
+    """
+    directory_path = str(src_dir)
+    if os.path.isabs(directory_path):
+        raise exceptions.PathIsAbsoluteError(directory_path)
+    if not os.path.exists(directory_path):
+        raise exceptions.PathDoesNotExistError(directory_path)
+    if not os.path.isdir(directory_path):
+        raise exceptions.PathTypeError(directory_path, 'directory')
+
+    #
+    # Standardizes the plugin_root_dir and src_dir formats before
+    # checking if src_dir is a subdirectory of the plugin's root.
+    #
+    plugin_root_dir = os.path.dirname(file_name)
+    plugin_root_dir = standardize_path(plugin_root_dir)
+    src_dir = standardize_path(src_dir)
+
+    src_dir = os.path.join(plugin_root_dir, src_dir)
+
+    if not os.path.abspath(src_dir).startswith(
+            plugin_root_dir) or src_dir == plugin_root_dir:
+        file_name_abs_path = os.path.abspath(plugin_root_dir)
+        raise exceptions.UserError(
+            "The src directory {} is not a subdirectory "
+            "of the plugin root at {}".format(src_dir, file_name_abs_path))
     return src_dir
 
 

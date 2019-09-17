@@ -4,6 +4,7 @@
 
 import os
 
+import mock
 import pytest
 from dlpx.virtualization._internal import exceptions, file_util
 
@@ -24,20 +25,83 @@ class TestFileUtil:
         assert not os.path.exists(plugin_config_file)
 
     @staticmethod
-    def test_get_src_dir_path(tmpdir):
-        test_file = os.path.join(tmpdir.strpath, 'test_file')
-        src_dir = file_util.get_src_dir_path(test_file, tmpdir.strpath)
-        assert src_dir == tmpdir.strpath
-
-    @staticmethod
-    def test_get_src_dir_path_fail(tmpdir):
-        test_file = os.path.join(tmpdir.strpath, 'test_file')
-        expected_message = 'The path \'{}\' does not exist'.format(test_file)
+    def test_get_src_dir_path_is_abs_fail():
+        expected_message = "The path '{}' should be a relative path, but is " \
+                           "not.".format('/absolute/path')
         with pytest.raises(exceptions.UserError) as err_info:
-            file_util.get_src_dir_path(test_file, test_file)
-
+            file_util.get_src_dir_path('/absolute/path', '/absolute/path')
         message = err_info.value.message
         assert expected_message in message
+
+    @staticmethod
+    def test_get_src_dir_path_exists_fail():
+        expected_message = "The path '{}' does not exist.".format(
+            'nonexistent/path')
+        with pytest.raises(exceptions.UserError) as err_info:
+            file_util.get_src_dir_path('nonexistent/path', 'nonexistent/path')
+        message = err_info.value.message
+        assert expected_message in message
+
+    @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch('os.path.exists', return_value=True)
+    def test_get_src_dir_path_is_dir_fail(mock_existing_path,
+                                          mock_relative_path):
+        expected_message = "The path '{}' should be a {} but is not.".format(
+            'path/to/a/file', 'directory')
+        with pytest.raises(exceptions.UserError) as err_info:
+            file_util.get_src_dir_path('path/to/a/file', 'path/to/a/file')
+        message = err_info.value.message
+        assert expected_message in message
+
+    @staticmethod
+    @mock.patch('os.path.isdir', return_value=True)
+    @mock.patch('os.path.exists', return_value=True)
+    @mock.patch('os.path.isabs', return_value=False)
+    @pytest.mark.parametrize(
+        'plugin_config_file_path, src_dir_path',
+        [(os.path.join(os.getenv('HOME'), 'plugin/file_name'), '.'),
+         ('/mongo/file_name', '/src'), ('/plugin/mongo/file_name', '/plugin'),
+         ('/plugin/file_name', '/plugin/src/../..')])
+    def test_get_src_dir_path_fail(mock_relative_path, mock_existing_path,
+                                   mock_directory_path,
+                                   plugin_config_file_path, src_dir_path):
+        expected_plugin_root_dir = os.path.dirname(plugin_config_file_path)
+
+        expected_plugin_root_dir = file_util.standardize_path(
+            expected_plugin_root_dir)
+        expected_src_dir = file_util.standardize_path(src_dir_path)
+
+        expected_src_dir = os.path.join(expected_plugin_root_dir,
+                                        expected_src_dir)
+
+        expected_message = "The src directory {} is not a subdirectory of " \
+                           "the plugin root at {}"\
+            .format(expected_src_dir,
+                    os.path.dirname(expected_plugin_root_dir))
+        with pytest.raises(exceptions.UserError) as err_info:
+            file_util.get_src_dir_path(plugin_config_file_path, src_dir_path)
+        message = err_info.value.message
+        assert expected_message in message
+
+    @staticmethod
+    @mock.patch('os.path.isdir', return_value=True)
+    @mock.patch('os.path.exists', return_value=True)
+    @mock.patch('os.path.isabs', return_value=False)
+    @pytest.mark.parametrize(
+        'plugin_config_file_path, src_dir_path',
+        [(os.path.join(os.path.dirname(os.getcwd()),
+                       'plugin/filename'), '../plugin/src'),
+         (os.path.join(os.getenv('HOME'), 'plugin/file_name'), '~/plugin/src'),
+         (os.path.join(os.getcwd(), 'plugin/file_name'), './plugin/src'),
+         ('/UPPERCASE/file_name', '/UPPERCASE/src'),
+         ('/mongo/file_name', '/mongo/src/main/python'),
+         ('~/plugin/file_name', '~/plugin/src'),
+         (r'windows\path\some_file', r'windows\path')])
+    def test_get_src_dir_path_success(mock_relative_path, mock_existing_path,
+                                      mock_directory_path,
+                                      plugin_config_file_path, src_dir_path):
+        file_util.get_src_dir_path(plugin_config_file_path, src_dir_path)
 
     @staticmethod
     def test_make_dir_success(tmpdir):

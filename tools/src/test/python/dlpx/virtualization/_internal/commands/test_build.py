@@ -28,8 +28,10 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_success(mock_generate_python, mock_plugin_manifest,
-                           plugin_config_file, artifact_file, artifact_content,
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_success(mock_relative_path, mock_generate_python,
+                           mock_plugin_manifest, plugin_config_file,
+                           artifact_file, artifact_content,
                            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
@@ -57,9 +59,11 @@ class TestBuild:
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    @mock.patch('os.path.isabs', return_value=False)
     def test_build_success_non_default_output_file(
-            mock_generate_python, mock_import_plugin, plugin_config_file,
-            artifact_file, artifact_content, codegen_gen_py_inputs):
+            mock_relative_path, mock_generate_python, mock_import_plugin,
+            plugin_config_file, artifact_file, artifact_content,
+            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -86,9 +90,10 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_codegen_fail(mock_generate_python, mock_plugin_manifest,
-                                plugin_config_file, artifact_file,
-                                codegen_gen_py_inputs):
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_codegen_fail(mock_relative_path, mock_generate_python,
+                                mock_plugin_manifest, plugin_config_file,
+                                artifact_file, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -119,9 +124,10 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_manifest_fail(mock_generate_python, mock_plugin_manifest,
-                                 plugin_config_file, artifact_file,
-                                 codegen_gen_py_inputs):
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_manifest_fail(mock_relative_path, mock_generate_python,
+                                 mock_plugin_manifest, plugin_config_file,
+                                 artifact_file, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -154,7 +160,9 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_prepare_artifact_fail(mock_generate_python,
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_prepare_artifact_fail(mock_relative_path,
+                                         mock_generate_python,
                                          mock_plugin_manifest,
                                          mock_prep_artifact,
                                          plugin_config_file, artifact_file,
@@ -192,7 +200,9 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_build_generate_artifact_fail(mock_generate_python,
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_generate_artifact_fail(mock_relative_path,
+                                          mock_generate_python,
                                           mock_plugin_manifest,
                                           mock_gen_artifact,
                                           plugin_config_file, artifact_file,
@@ -227,9 +237,10 @@ class TestBuild:
     @mock.patch('dlpx.virtualization._internal.commands.build'
                 '.prepare_upload_artifact')
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_generate_only_success(mock_generate_python, mock_prep_artifact,
-                                   plugin_config_file, artifact_file,
-                                   codegen_gen_py_inputs):
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_generate_only_success(mock_relative_path, mock_generate_python,
+                                   mock_prep_artifact, plugin_config_file,
+                                   artifact_file, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
         build.build(plugin_config_file, artifact_file, True, False)
 
@@ -322,8 +333,10 @@ class TestBuild:
                              [('77f18ce4-4425-4cd6-b9a7-23653254d660', False),
                               ('77f18ce4-4425-4cd6-b9a7-23653254d660', True),
                               ('mongo', True)])
-    def test_id_validation_positive(mock_import_plugin, plugin_config_file,
-                                    artifact_file, skip_id_validation):
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_id_validation_positive(mock_relative_path, mock_import_plugin,
+                                    plugin_config_file, artifact_file,
+                                    skip_id_validation):
         build.build(plugin_config_file, artifact_file, False,
                     skip_id_validation)
 
@@ -403,9 +416,10 @@ class TestPluginUtil:
 
     @staticmethod
     @pytest.mark.parametrize('src_dir', ['/not/a/real/dir/src'])
+    @mock.patch('os.path.isabs', return_value=False)
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_no_src_dir(mock_generate_python, plugin_config_file,
-                               artifact_file):
+    def test_plugin_no_src_dir(mock_generate_python, mock_path_is_relative,
+                               plugin_config_file, artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False, False)
 
@@ -425,15 +439,16 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert message == 'The path {} should be a file but is not.'.format(
+        assert message == "The path '{}' should be a file but is not.".format(
             schema_file)
 
         assert not mock_generate_python.called
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_plugin_src_not_dir(mock_generate_python, plugin_config_file,
-                                artifact_file, src_dir):
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_plugin_src_not_dir(mock_relative_path, mock_generate_python,
+                                plugin_config_file, artifact_file, src_dir):
         # Delete the src dir folder and create a file there instead
         os.rmdir(src_dir)
         with open(src_dir, 'w') as f:
@@ -442,8 +457,8 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert message == ('The path {} should be a'
-                           ' directory but is not.'.format(src_dir))
+        assert message == ("The path '{}' should be a"
+                           " directory but is not.".format(src_dir))
 
         assert not mock_generate_python.called
 

@@ -21,17 +21,25 @@ class UserError(Exception):
         super(UserError, self).__init__(message)
 
 
+class PathIsAbsoluteError(UserError):
+    def __init__(self, path):
+        self.path = path
+        message = "The path '{}' should be a relative path, but is not."\
+            .format(path)
+        super(PathIsAbsoluteError, self).__init__(message)
+
+
 class PathDoesNotExistError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path \'{}\' does not exist.'.format(path)
+        message = "The path '{}' does not exist.".format(path)
         super(PathDoesNotExistError, self).__init__(message)
 
 
 class PathExistsError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path \'{}\' already exists.'.format(path)
+        message = "The path '{}' already exists.".format(path)
         super(PathExistsError, self).__init__(message)
 
 
@@ -39,7 +47,7 @@ class PathTypeError(UserError):
     def __init__(self, path, path_type):
         self.path = path
         self.path_type = path_type
-        message = 'The path {} should be a {} but is not.'.format(
+        message = "The path '{}' should be a {} but is not.".format(
             path, path_type)
         super(PathTypeError, self).__init__(message)
 

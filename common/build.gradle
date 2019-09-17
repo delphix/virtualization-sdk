@@ -85,6 +85,7 @@ task removeEggInfo(type: Delete) {
 }
 
 task wheel(type: SetupPyTask) {
+    println("ANDREA $project.version".replace("-", "_"))
     setupPyCommand "bdist_wheel"
     distFile String.format("%s-%s-%s-%s-%s.whl", dist.name.get().replace("-", "_"), "$project.version".replace("-", "_"), "py2", "none", "any")
 

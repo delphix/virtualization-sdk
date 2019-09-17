@@ -65,11 +65,12 @@ class TestPluginValidator:
                            " directory".format(plugin_config_file))
 
     @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    def test_plugin_valid_content(mock_import_plugin, src_dir,
-                                  plugin_config_file):
+    def test_plugin_valid_content(mock_import_plugin, mock_relative_path,
+                                  src_dir, plugin_config_file):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
@@ -106,6 +107,7 @@ class TestPluginValidator:
         assert "'srcDir' is a required property" in message
 
     @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
@@ -114,8 +116,9 @@ class TestPluginValidator:
         pytest.param('1.0.0', None),
         pytest.param('1.0.0_HF', None)
     ])
-    def test_plugin_version_format(mock_import_plugin, src_dir,
-                                   plugin_config_file, version, expected):
+    def test_plugin_version_format(mock_import_plugin, mock_path_is_relative,
+                                   src_dir, plugin_config_file, version,
+                                   expected):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', version), ('language', 'PYTHON27'),
@@ -136,6 +139,7 @@ class TestPluginValidator:
             assert expected in message
 
     @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
@@ -149,8 +153,9 @@ class TestPluginValidator:
                      "':staged_plugin:staged:' does not match"),
         pytest.param('staged_plugin:staged', None)
     ])
-    def test_plugin_entry_point(mock_import_plugin, src_dir,
-                                plugin_config_file, entry_point, expected):
+    def test_plugin_entry_point(mock_import_plugin, mock_relative_path,
+                                src_dir, plugin_config_file, entry_point,
+                                expected):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
@@ -213,7 +218,10 @@ class TestPluginValidator:
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
 
     @staticmethod
-    def test_staged_plugin(fake_staged_plugin_config):
+    @mock.patch('os.path.exists', return_value=True)
+    @mock.patch('os.path.isdir', return_value=True)
+    def test_staged_plugin(mock_directory, mock_real_plugin,
+                           fake_staged_plugin_config):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_staged_plugin_config,
                                         util_classes.PLUGIN_CONFIG_SCHEMA,
@@ -227,7 +235,10 @@ class TestPluginValidator:
         assert 'Implementation missing for required method' in message
 
     @staticmethod
-    def test_direct_plugin(fake_direct_plugin_config):
+    @mock.patch('os.path.exists', return_value=True)
+    @mock.patch('os.path.isdir', return_value=True)
+    def test_direct_plugin(mock_directory, mock_real_plugin,
+                           fake_direct_plugin_config):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_direct_plugin_config,
                                         util_classes.PLUGIN_CONFIG_SCHEMA,
@@ -241,6 +252,7 @@ class TestPluginValidator:
         assert 'Implementation missing for required method' in message
 
     @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
@@ -251,8 +263,8 @@ class TestPluginValidator:
         pytest.param('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
         pytest.param('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)
     ])
-    def test_plugin_id(mock_import_plugin, src_dir, plugin_config_file,
-                       plugin_id, expected):
+    def test_plugin_id(mock_import_plugin, mock_relative_path, src_dir,
+                       plugin_config_file, plugin_id, expected):
         plugin_config_content = OrderedDict([
             ('id', plugin_id.encode('utf-8')), ('name', 'python_vfiles'),
             ('version', '1.0.0'), ('language', 'PYTHON27'),

@@ -1,10 +1,10 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/
 attrs==19.1.0
-certifi==2019.6.16
+certifi==2019.9.11
 chardet==3.0.4
 click-configfile==0.2.3
 click==7.0
-configparser==3.8.1 ; python_version < '3.2'
+configparser==4.0.2 ; python_version < '3.2'
 entrypoints==0.3
 enum34==1.1.6
 flake8==3.7.8
@@ -21,5 +21,5 @@ pyrsistent==0.15.4
 pyyaml==5.1.2
 requests==2.22.0
 six==1.12.0
-typing==3.7.4 ; python_version < '3.5'
+typing==3.7.4.1 ; python_version < '3.5'
 urllib3==1.25.3
