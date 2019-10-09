@@ -94,22 +94,28 @@ Create a plugin in the root directory. The plugin will be valid but have no func
 
 
 #### Examples
-Create a plugin in the current working directory with the `DIRECT` ingestion strategy. Here the name of the plugin will be equal to the id that is generated.
+Create a `UNIX` plugin in the current working directory with the `DIRECT` ingestion strategy. Here the name of the plugin will be equal to the id that is generated.
 
 ```
 $ dvp init
 ```
 
-Create a plugin in the current working directory with the `DIRECT` ingestion strategy and use `postgres` as the display name.
+Create a `UNIX` plugin in the current working directory with the `DIRECT` ingestion strategy and use `postgres` as the display name.
 
 ```
 $ dvp init -n postgres
 ```
 
-Create a plugin called `mongodb` in a custom location with the `STAGED` ingestion strategy.
+Create a `UNIX` plugin called `mongodb` in a custom location with the `STAGED` ingestion strategy.
 
 ```
-$ dvp init -n mongodb -s STAGED
+$ dvp init -n mongodb -s STAGED -r /our/plugin/directory
+```
+
+Create a `WINDOWS` plugin called `mssql` in the current working directory with the `DIRECT` ingestion strategy.
+
+```
+$ dvp init -n mssql -p WINDOWS
 ```
 
 ***
