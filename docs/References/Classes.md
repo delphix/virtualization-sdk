@@ -80,7 +80,7 @@ user | [RemoteUser](#remoteuser) | User for the connection.
 
 ## Status
 
-An enum used to represent the state of a linked or virtual source and whether is functioning as expected.
+An enum used to represent the state of a linked or virtual source and whether it is functioning as expected.
 
 ```python
 from dlpx.virtualization.platform import Status
@@ -109,14 +109,14 @@ mount = Mount(environment, path)
 
 Field | Type | Description
 ----- | ---- | -----------
-remote_environment | [RemoteEnvironment](#remoteenvironment) | Environment for the connection.
+remote_environment | [RemoteEnvironment](#remoteenvironment) or [Reference](Schemas/#reference) | Environment for the connection.
 mount_path | String | The path on the remote host that has the mounted data set.
 shared_path | String | **Optional.** The path of the subdirectory of the data set to mount to the remote host.
 
 
 ## OwnershipSpecification
 
-Represents how to set the onwership for a data set. This only applies to Unix Hosts.
+Represents how to set the ownership for a data set. This only applies to Unix Hosts.
 
 ```python
 from dlpx.virtualization.platform import OwnershipSpecification
@@ -150,7 +150,7 @@ ownership_specification | [OwnershipSpecification](#ownershipspecification) | **
 
 ## SnapshotParametersDefinition
 
-User provided parameters for the snapshot operation. It includes a boolean property named `resync` that can be used to indicate to the plugin whether or not to initiate a full ingestion of the dSource. The parameters are only be set during a manual snapshot. When using a sync policy `resync` defaults to `false`.
+User provided parameters for the snapshot operation. It includes a boolean property named `resync` that can be used to indicate to the plugin whether or not to initiate a full ingestion of the dSource. The parameters are only set during a manual snapshot. When using a sync policy, `resync` defaults to `false`.
 
 ```python
 from dlpx.virtualization.platform import Plugin
@@ -192,7 +192,7 @@ host | [RemoteHost](#remotehost) | Host that belongs to the environment.
 
 ## RemoteHost
 
-Represents a remote host, can we Unix or Windows.
+Represents a remote host, can be Unix or Windows.
 
 ```python
 from dlpx.virtualization.common import RemoteHost
