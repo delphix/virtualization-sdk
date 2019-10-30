@@ -6,3 +6,4 @@
     release-check = skip
     review-check = skip
     triage-check = skip
+    approvers = gatekeepers-virtualization-sdk
