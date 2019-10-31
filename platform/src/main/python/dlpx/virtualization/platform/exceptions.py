@@ -89,3 +89,28 @@ class OperationNotDefinedError(PlatformError):
         message = ('An implementation for the {} operation has not been'
                    ' defined.'.format(operation.value))
         super(OperationNotDefinedError, self).__init__(message)
+
+
+class MigrationIdAlreadyUsedError(Exception):
+    """MigrationIdAlreadyUsedError gets thrown when the same migration id is
+    used for the same upgrade operation
+
+    Args:
+        migration_id (str): The migration id assigned for this operation
+        function_name (str): The name of the function that used the
+        decorator with the same migration id.
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+        should be returning what type.
+    """
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, migration_id, function_name):
+        message = ("The migration id '{}' used in the function '{}' has"
+                   " been used by another migration.".format(migration_id,
+                                                             function_name))
+        super(MigrationIdAlreadyUsedError, self).__init__(message)
+

@@ -2,16 +2,12 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import json
 import pytest
-import sys
 from dlpx.virtualization import platform_pb2
 from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
 from dlpx.virtualization import common_pb2
-from dlpx.virtualization.platform import _plugin
 from dlpx.virtualization.platform.exceptions import (
-    IncorrectReturnTypeError, OperationAlreadyDefinedError,
-    PlatformError, PluginRuntimeError)
+    IncorrectReturnTypeError, OperationAlreadyDefinedError, PluginRuntimeError)
 
 from mock import MagicMock, patch
 import fake_generated_definitions
