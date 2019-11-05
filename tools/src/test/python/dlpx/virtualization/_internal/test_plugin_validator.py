@@ -218,10 +218,11 @@ class TestPluginValidator:
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
 
     @staticmethod
-    @mock.patch('os.path.exists', return_value=True)
-    @mock.patch('os.path.isdir', return_value=True)
-    def test_staged_plugin(mock_directory, mock_real_plugin,
-                           fake_staged_plugin_config):
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_staged_plugin(mock_file_util, fake_staged_plugin_config):
+        src_dir = os.path.dirname(fake_staged_plugin_config)
+        mock_file_util.return_value = os.path.join(src_dir, 'src/')
+
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_staged_plugin_config,
                                         util_classes.PLUGIN_CONFIG_SCHEMA,
@@ -235,10 +236,11 @@ class TestPluginValidator:
         assert 'Implementation missing for required method' in message
 
     @staticmethod
-    @mock.patch('os.path.exists', return_value=True)
-    @mock.patch('os.path.isdir', return_value=True)
-    def test_direct_plugin(mock_directory, mock_real_plugin,
-                           fake_direct_plugin_config):
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_direct_plugin(mock_file_util, fake_direct_plugin_config):
+        src_dir = os.path.dirname(fake_direct_plugin_config)
+        mock_file_util.return_value = os.path.join(src_dir, 'src/')
+
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_direct_plugin_config,
                                         util_classes.PLUGIN_CONFIG_SCHEMA,
