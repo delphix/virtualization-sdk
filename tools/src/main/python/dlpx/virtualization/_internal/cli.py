@@ -179,7 +179,13 @@ def init(root, ingestion_strategy, name, host_type):
               hidden=True,
               help=('An internal flag that does not enforce the format '
                     'of the id. Use of this flag is unsupported.'))
-def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
+@click.option('--dev',
+              is_flag=True,
+              hidden=True,
+              help=('An internal flag that installs dev builds of the '
+                    'wrappers. This should only be used by SDK developers.'))
+def build(plugin_config, upload_artifact, generate_only, skip_id_validation,
+          dev):
     """
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
@@ -187,9 +193,26 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
     # Set upload artifact to None if -g is true.
     if generate_only:
         upload_artifact = None
+
+    local_vsdk_root = None
+
     with command_error_handler():
-        build_internal.build(plugin_config, upload_artifact, generate_only,
-                             skip_id_validation)
+        if dev:
+            if not DVP_CONFIG_MAP.get('dev') or not DVP_CONFIG_MAP.get(
+                    'dev').get('vsdk_root'):
+                raise RuntimeError("The dev flag was specified but there is "
+                                   "not a vsdk_root entry in the dvp config "
+                                   "file. Please look in the SDK's README for "
+                                   "details on configuring the vsdk_root "
+                                   "property.")
+
+            local_vsdk_root = DVP_CONFIG_MAP.get('dev').get('vsdk_root')
+
+        build_internal.build(plugin_config,
+                             upload_artifact,
+                             generate_only,
+                             skip_id_validation,
+                             local_vsdk_root=local_vsdk_root)
 
 
 @delphix_sdk.command()

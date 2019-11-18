@@ -25,7 +25,6 @@ def htmlReportFiles = fileTree(dir: htmlReportDir,
                 "**/*.css",
         ])
 
-
 // The "check" task should also lint and format.
 check {
   dependsOn 'lint'
@@ -176,10 +175,6 @@ dlpxPython {
 
     requests {
       version = ">= 2.21.0"
-    }
-
-    typing {
-      markers = "python_version < '3.5'"
     }
 
     jinja2 {

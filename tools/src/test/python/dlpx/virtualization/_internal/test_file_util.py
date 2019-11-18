@@ -25,20 +25,38 @@ class TestFileUtil:
         assert not os.path.exists(plugin_config_file)
 
     @staticmethod
+    def test_get_src_dir_path_relative(tmp_path):
+        plugin_root = tmp_path / 'plugin'
+        src_dir = plugin_root / 'src'
+        plugin_root.mkdir()
+        src_dir.mkdir()
+
+        cwd = os.getcwd()
+        try:
+            os.chdir(tmp_path.as_posix())
+            actual = file_util.get_src_dir_path('plugin/plugin_config.yml',
+                                                'src')
+        finally:
+            os.chdir(cwd)
+
+        assert actual == src_dir.as_posix()
+
+    @staticmethod
     def test_get_src_dir_path_is_abs_fail():
         expected_message = "The path '{}' should be a relative path, but is " \
-                           "not.".format('/absolute/path')
+                           "not.".format('/absolute/src')
         with pytest.raises(exceptions.UserError) as err_info:
-            file_util.get_src_dir_path('/absolute/path', '/absolute/path')
+            file_util.get_src_dir_path('/absolute/config', '/absolute/src')
         message = err_info.value.message
         assert expected_message in message
 
     @staticmethod
     def test_get_src_dir_path_exists_fail():
+        expected_path = os.path.join(os.getcwd(), 'fake', 'nonexistent', 'dir')
         expected_message = "The path '{}' does not exist.".format(
-            'nonexistent/path')
+            expected_path)
         with pytest.raises(exceptions.UserError) as err_info:
-            file_util.get_src_dir_path('nonexistent/path', 'nonexistent/path')
+            file_util.get_src_dir_path('fake/plugin_config', 'nonexistent/dir')
         message = err_info.value.message
         assert expected_message in message
 
@@ -47,10 +65,11 @@ class TestFileUtil:
     @mock.patch('os.path.exists', return_value=True)
     def test_get_src_dir_path_is_dir_fail(mock_existing_path,
                                           mock_relative_path):
+        expected_path = os.path.join(os.getcwd(), 'fake', 'not', 'dir')
         expected_message = "The path '{}' should be a {} but is not.".format(
-            'path/to/a/file', 'directory')
+            expected_path, 'directory')
         with pytest.raises(exceptions.UserError) as err_info:
-            file_util.get_src_dir_path('path/to/a/file', 'path/to/a/file')
+            file_util.get_src_dir_path('fake/plugin_config', 'not/dir')
         message = err_info.value.message
         assert expected_message in message
 
@@ -70,7 +89,8 @@ class TestFileUtil:
 
         expected_plugin_root_dir = file_util.standardize_path(
             expected_plugin_root_dir)
-        expected_src_dir = file_util.standardize_path(src_dir_path)
+        expected_src_dir = file_util.standardize_path(
+            os.path.join(expected_plugin_root_dir, src_dir_path))
 
         expected_src_dir = os.path.join(expected_plugin_root_dir,
                                         expected_src_dir)
@@ -129,3 +149,95 @@ class TestFileUtil:
 
         message = err_info.value.message
         assert "Error code: 17. Error message: File exists" in message
+
+    @staticmethod
+    def test_clean_copy_no_tgt_dir(tmp_path):
+        #
+        # Before:           After:
+        #   src/              src/
+        #     hello.txt         hello.txt
+        #                     tgt/
+        #                       hello.txt
+        #
+        src = tmp_path / 'src'
+        src.mkdir()
+        f = src / 'hello.txt'
+        f.write_text(u'hello')
+        tgt = tmp_path / 'tgt'
+
+        file_util.clean_copy(src.as_posix(), tgt.as_posix())
+
+        expected_file = tgt / 'hello.txt'
+        assert expected_file.exists()
+        assert expected_file.read_text() == 'hello'
+
+    @staticmethod
+    def test_clean_copy_removes_tgt_dir(tmp_path):
+        #
+        # Before:           After:
+        #   src/              src/
+        #     hello.txt         hello.txt
+        #   tgt/              tgt/
+        #     remove.txt        hello.txt
+        #
+        src = tmp_path / 'src'
+        src.mkdir()
+        src_file = src / 'hello.txt'
+        src_file.write_text(u'hello')
+        tgt = tmp_path / 'tgt'
+        tgt.mkdir()
+        tgt_file = tgt / 'remove.txt'
+        tgt_file.touch()
+
+        file_util.clean_copy(src.as_posix(), tgt.as_posix())
+
+        expected_file = tgt / 'hello.txt'
+        assert expected_file.exists()
+        assert expected_file.read_text() == 'hello'
+        assert not tgt_file.exists()
+
+    @staticmethod
+    def test_clean_copy_nested_tgt_dir(tmp_path):
+        #
+        # Before:           After:
+        #   src/              src/
+        #     child/            child/
+        #       hello.txt         hello.txt
+        #   tgt_parent/       tgt_parent/
+        #                       tgt/
+        #                         child/
+        #                           hello.txt
+        #
+        src = tmp_path / 'src'
+        src.mkdir()
+        child = src / 'child'
+        child.mkdir()
+        src_file = child / 'hello.txt'
+        src_file.write_text(u'hello')
+        tgt_parent = tmp_path / 'tgt_parent'
+        tgt_parent.mkdir()
+        tgt = tgt_parent / 'tgt'
+
+        file_util.clean_copy(src.as_posix(), tgt.as_posix())
+
+        expected_file = tgt / 'child' / 'hello.txt'
+        assert expected_file.exists()
+        assert expected_file.read_text() == 'hello'
+
+    @staticmethod
+    def test_tmpdir():
+        with file_util.tmpdir() as d:
+            assert os.path.exists(d)
+
+        assert not os.path.exists(d)
+
+    @staticmethod
+    def test_tmpdir_with_raised_exception():
+        try:
+            with file_util.tmpdir() as d:
+                assert os.path.exists(d)
+
+                raise RuntimeError('test')
+        except RuntimeError as e:
+            assert e.message == 'test'
+            assert not os.path.exists(d)

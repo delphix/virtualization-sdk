@@ -7,8 +7,12 @@ from dlpx.virtualization._internal import package_util
 
 class TestPackageUtil:
     @staticmethod
-    def test_get_build_api_version():
-        assert package_util.get_version() == '1.0.0'
+    def test_get_version():
+        assert package_util.get_version() == '1.1.0-internal-001'
+
+    @staticmethod
+    def test_get_virtualization_api_version():
+        assert package_util.get_virtualization_api_version() == '1.1.0'
 
     @staticmethod
     def test_get_engine_api_version():
@@ -19,7 +23,7 @@ class TestPackageUtil:
         build_api_version = {
             'type': 'APIVersion',
             'major': 1,
-            'minor': 0,
+            'minor': 1,
             'micro': 0
         }
         assert package_util.get_build_api_version() == build_api_version

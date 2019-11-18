@@ -239,3 +239,18 @@ class BuildFailedError(UserError):
     def __init__(self, exception):
         message = ('{} \n\nBUILD FAILED.'.format(exception.message))
         super(BuildFailedError, self).__init__(message)
+
+
+class SubprocessFailedError(UserError):
+    """
+    SubprocessFailedError gets raised when a command executing in a subprocess
+    fails.
+    """
+    def __init__(self, command, exit_code, output):
+        self.command = command
+        self.exit_code = exit_code
+        self.output = output
+        message = ("{}\n"
+                   "{} failed with exit code {}.").format(
+                       output, command, exit_code)
+        super(SubprocessFailedError, self).__init__(message)
