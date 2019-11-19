@@ -12,7 +12,8 @@ import StringIO
 import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           package_util, plugin_util,
+                                           package_util,
+                                           plugin_dependency_util, plugin_util,
                                            util_classes)
 
 logger = logging.getLogger(__name__)
@@ -24,8 +25,14 @@ DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
 STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
 
+BUILD_DIR_NAME = 'build'
 
-def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
+
+def build(plugin_config,
+          upload_artifact,
+          generate_only,
+          skip_id_validation,
+          local_vsdk_root=None):
     """This builds the plugin using the configurations provided in config yaml
     file provided as input. It reads schemas and source code from the files
     given in yaml file, generates an encoded string of zip of source code,
@@ -36,10 +43,15 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
         upload_artifact: The file to which output of build  is written to.
         generate_only: Only generate python classes from schema definitions.
         skip_id_validation: Skip validation of the plugin id.
+        local_vsdk_root: The local path to the root of the Virtualization SDK
+            repository.
     """
     logger.debug(
         'Build parameters include plugin_config: %s, upload_artifact: %s,'
         ' generate_only: %s', plugin_config, upload_artifact, generate_only)
+
+    if local_vsdk_root:
+        local_vsdk_root = os.path.expanduser(local_vsdk_root)
 
     # Read content of the plugin config  file provided and perform validations
     logger.info('Reading and validating plugin config file %s', plugin_config)
@@ -113,10 +125,27 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
             logger.warn('{}\n{} Warning(s). {} Error(s).'.format(
                 warning_msg, len(result.warnings['warning']), 0))
 
+    #
+    # Setup a build directory for the plugin in its root. Dependencies are
+    # packaged with the plugin and should not be installed into the original
+    # source directory.
+    #
+    root = os.path.dirname(plugin_config)
+    build_dir = os.path.join(root, BUILD_DIR_NAME)
+    build_src_dir = os.path.join(build_dir, os.path.basename(src_dir))
+
+    # Copy everything from the source directory into the build directory.
+    file_util.clean_copy(src_dir, build_src_dir)
+
+    # Install dependencies in the plugin's source root in the build directory.
+    plugin_dependency_util.install_deps(build_src_dir,
+                                        local_vsdk_root=local_vsdk_root)
+
     # Prepare the output artifact.
     try:
-        plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
-                                                schemas, plugin_manifest)
+        plugin_output = prepare_upload_artifact(plugin_config_content,
+                                                build_src_dir, schemas,
+                                                plugin_manifest)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 

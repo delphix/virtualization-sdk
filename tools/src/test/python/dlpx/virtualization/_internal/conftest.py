@@ -97,11 +97,32 @@ def schema_filename():
 
 @pytest.fixture
 def dvp_config_file(tmpdir, dvp_config_properties):
+    _write_dvp_config_file(tmpdir, dvp_config_properties=dvp_config_properties)
+
+
+@pytest.fixture
+def dev_config_file(tmpdir, dev_config_properties):
+    _write_dvp_config_file(tmpdir, dev_config_properties=dev_config_properties)
+
+
+@pytest.fixture
+def empty_config_file(tmpdir):
+    _write_dvp_config_file(tmpdir)
+
+
+def _write_dvp_config_file(tmpdir,
+                           dvp_config_properties=None,
+                           dev_config_properties=None):
     dvp_dir = tmpdir.join(click_util.CONFIG_DIR_NAME).strpath
     os.mkdir(dvp_dir)
     dvp_config_filepath = os.path.join(dvp_dir, click_util.CONFIG_FILE_NAME)
     parser = configparser.ConfigParser()
-    parser['default'] = dvp_config_properties
+    if dvp_config_properties:
+        parser['default'] = dvp_config_properties
+
+    if dev_config_properties:
+        parser['dev'] = dev_config_properties
+
     with open(dvp_config_filepath, 'wb') as config_file:
         parser.write(config_file)
 

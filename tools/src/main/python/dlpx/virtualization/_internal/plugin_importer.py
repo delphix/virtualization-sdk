@@ -357,7 +357,7 @@ def _validate_named_args(module_content, entry_point, plugin_type):
         # LinkedOperations, DiscoveryOperations, VirtualOperations
         #
         plugin_op_type = plugin_attrib.__class__.__name__
-        if plugin_op_type is 'UpgradeOperations':
+        if plugin_op_type == 'UpgradeOperations':
             #
             # For now just ignore all upgrade operations because the fields
             # aren't all functions.

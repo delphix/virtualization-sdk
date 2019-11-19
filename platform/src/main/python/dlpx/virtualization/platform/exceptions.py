@@ -114,3 +114,21 @@ class MigrationIdAlreadyUsedError(Exception):
                                                              function_name))
         super(MigrationIdAlreadyUsedError, self).__init__(message)
 
+
+class IncorrectReferenceFormatError(PluginRuntimeError):
+    """There are 2 possible errors that can be thrown with an incorrect
+    reference. The reference passed in can be a non-string, throwing an
+    IncorrectTypeError. The second error that can be thrown is
+    IncorrectReferenceFormatError, which gets thrown when the reference is not
+    of the format "UNIX_HOST_ENVIRONMENT-#" nor of "WINDOWS_HOST_ENVIRONMENT-#".
+
+    Args:
+        reference (str): The incorrectly formatted reference
+
+    Attributes:
+        message (str): A user-readable message describing the exception.
+    """
+    def __init__(self, reference):
+        message = ("Reference '{}' is not a correctly formatted host environment reference.".format(reference))
+        super(IncorrectReferenceFormatError, self).__init__(message)
+

@@ -243,7 +243,10 @@ class TestBuildCli:
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
             mock_build.assert_called_once_with(plugin_config_file,
-                                               artifact_file, False, False)
+                                               artifact_file,
+                                               False,
+                                               False,
+                                               local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -261,8 +264,11 @@ class TestBuildCli:
             result = runner.invoke(cli.delphix_sdk, ['build', '-g'])
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
-            mock_build.assert_called_once_with(plugin_config_file, None, True,
-                                               False)
+            mock_build.assert_called_once_with(plugin_config_file,
+                                               None,
+                                               True,
+                                               False,
+                                               local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -273,8 +279,11 @@ class TestBuildCli:
             ['build', '-c', plugin_config_file, '-a', artifact_file])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
-                                           False, False)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           False,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
@@ -286,9 +295,12 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(
-            plugin_config_file, os.path.join(os.getcwd(), artifact_filename),
-            False, False)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           os.path.join(
+                                               os.getcwd(), artifact_filename),
+                                           False,
+                                           False,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -301,8 +313,11 @@ class TestBuildCli:
         ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
-                                           False, True)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           True,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -347,6 +362,38 @@ class TestBuildCli:
                                  u' mutually exclusive with argument(s)'
                                  u' "upload_artifact".'
                                  u'\n')
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    @pytest.mark.parametrize('dev_config_properties',
+                             [{
+                                 'vsdk_root': '/path/to/vsdk/dir'
+                             }])
+    def test_with_dev(mock_build, plugin_config_file, artifact_file,
+                      dev_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file, '--dev'])
+
+        assert result.exit_code == 0
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           False,
+                                           local_vsdk_root='/path/to/vsdk/dir')
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_with_dev_fail(mock_build, plugin_config_file, artifact_file,
+                           empty_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file, '--dev'])
+
+        assert result.exit_code == 2
+        assert not mock_build.called, 'build should not have been called'
 
 
 class TestUploadCli:
@@ -444,9 +491,8 @@ class TestUploadCli:
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_upload, artifact_file,
-                                      dvp_config_properties):
+                                      dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = dvp_config_properties['user']
         password = dvp_config_properties['password']
@@ -465,9 +511,8 @@ class TestUploadCli:
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_upload, artifact_file,
-                                       dvp_config_properties):
+                                       dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = 'fake_admin'
         password = dvp_config_properties['password']
@@ -658,9 +703,8 @@ class TestDownloadCli:
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_download_logs, plugin_config_file,
-                                      dvp_config_properties):
+                                      dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = dvp_config_properties['user']
         password = dvp_config_properties['password']
@@ -680,9 +724,8 @@ class TestDownloadCli:
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_download_logs, plugin_config_file,
-                                       dvp_config_properties):
+                                       dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = 'fake_admin'
         password = dvp_config_properties['password']
@@ -705,8 +748,7 @@ class TestDownloadCli:
         'user': 'user',
         'password': 'password'
     }])
-    @pytest.mark.usefixtures('dvp_config_file')
-    def test_with_config_file_fail(plugin_config_file):
+    def test_with_config_file_fail(plugin_config_file, dvp_config_file):
         cwd = os.getcwd()
 
         try:
