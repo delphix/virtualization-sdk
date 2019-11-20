@@ -53,9 +53,9 @@ def install_deps(target_dir, local_vsdk_root=None):
             for package in package_names:
                 _build_wheel(os.path.join(local_vsdk_root, package), wheel_dir)
 
-            packages = [
+            packages = {
                 os.path.join(wheel_dir, p) for p in os.listdir(wheel_dir)
-            ]
+            }
 
             if len(packages) != len(package_names):
                 raise RuntimeError(
@@ -133,7 +133,7 @@ def _pip_install_to_dir(dependencies, target_dir):
     Installs dependencies into a target_dir.
 
     Args:
-        dependencies: a list of dependencies to install.
+        dependencies: a set of dependencies to install.
         target_dir: the directory to the install the dependencies into.
     """
     args = ['install', '-t', target_dir]

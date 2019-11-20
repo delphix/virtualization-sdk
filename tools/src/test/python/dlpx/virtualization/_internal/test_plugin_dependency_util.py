@@ -43,14 +43,14 @@ class TestPluginDependencyUtil:
         google.mkdir()
 
         global packages
-        packages = []
+        packages = set()
 
         def build_wheel(package, dir):
             dist_path = wheel_dir / os.path.basename(package)
             dist_path.touch()
 
             global packages
-            packages.insert(0, dist_path.as_posix())
+            packages.add(dist_path.as_posix())
 
         def clean_up(a, b, c):
             file_util.delete_paths(wheel_dir.as_posix())
