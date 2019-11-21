@@ -87,6 +87,12 @@ message SnapshotParameters {
   PluginDefinedObject parameters = 1;
 }
 
+/*
+ * A PluginDefinedObject is a serialized JSON representation of an object that conforms to a schema provided by the
+ * plugin. Typically, this will be deserialized to a language-specific object for use by the plugin. For example,
+ * deserialization of snapshot metadata for a Python plugin would use the Python
+ * generated.definitions.SnapshotDefinition class.
+ */
 message PluginDefinedObject {
   string json = 1;
 }

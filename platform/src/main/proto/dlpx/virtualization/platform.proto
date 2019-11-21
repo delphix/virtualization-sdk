@@ -446,18 +446,26 @@ message VirtualMountSpecResponse {
 
 /* UPGRADE */
 
-message UpgradeLinkedSourceRequest {
-  com.delphix.virtualization.common.LinkedSource linked_source = 1;
+message UpgradeRequest {
+  enum Type {
+        SOURCECONFIG = 0;
+        REPOSITORY = 1;
+        LINKEDSOURCE = 2;
+        VIRTUALSOURCE = 3;
+        SNAPSHOT = 4;
+  }
+  map<string, string> pre_upgrade_parameters = 1;
+  Type type = 2;
+  repeated string migration_ids = 3;
 }
 
-message UpgradeVirtualSourceRequest {
-  com.delphix.virtualization.common.VirtualSource virtual_source = 1;
+message UpgradeResult {
+  map<string, string> post_upgrade_parameters = 1;
 }
 
-message UpgradeSourceConfigRequest {
-  com.delphix.virtualization.common.SourceConfig source_config = 1;
-}
-
-message UpgradeSnapshotRequest {
-  com.delphix.virtualization.common.Snapshot snapshot = 1;
+message UpgradeResponse {
+  oneof result {
+    UpgradeResult return_value = 1;
+    PluginErrorResult error = 2;
+  }
 }
