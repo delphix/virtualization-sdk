@@ -42,6 +42,16 @@ Unfortunately, at the moment _all_ SDK changes require an app-gate change. Curre
 
 To setup local development, refer to README-dev.md in the `tools` directory. This walks through the setup of a local virtualenv for development. This should be done for _all_ SDK changes.
 
+### Configure pip index
+
+`dvp build` executes `pip` to install the wrappers. By default `pip` looks at pypi.org for packages to install. Internal builds of the SDK are published to artifactory, not pypi. In order to configure pip to look at artifactory, create a file at `<virtualenv-root>/pip.conf` that contains:
+
+```
+[install]
+trusted-host=artifactory.delphix.com
+index-url=http://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/
+```
+
 ### CLI changes
 
 To better understand how to develop and test `tools` changes, see README-dev.md in the `tools` directory.
@@ -79,7 +89,7 @@ This repository is going through a transition in which Gradle will eventually be
 Eclipse does not use gradle to build, so you have to follow special steps if you're using Eclipse. Update this line to the appropriate version:
 
 ```
-<dependency org="com.delphix.virtualization" name="api-java" rev="version"/>
+<dependency org="com.delphix.virtualization.platform" name="api-java" rev="version"/>
 ```
 
 ### Testing
@@ -145,7 +155,7 @@ Once you are absolutely certain all changes have been made run `./gradlew publis
 Now, we have to go back to our `appgate` code and make it point to the newly-deployed build on artifactory, instead of the local build we used to test.
 
 1. Modify `appliance/gradle.properties` and change `virtualizationSdkVer` and `virtualizationApiVer` to refer to your new version number.
-2. Modify `ivy-eclipse-deps.xml` and change the `com.delphix.virtualization` line to refer to your new version number.
+2. Modify `ivy-eclipse-deps.xml` and change the `com.delphix.virtualization.platform` line to refer to your new version number.
 
 ## Finalizing Appgate Review
 
