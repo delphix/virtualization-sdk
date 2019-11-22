@@ -17,6 +17,7 @@ from dlpx.virtualization.platform import DirectSource
 from dlpx.virtualization.platform import StagedSource
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
+from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.operation import Operation as Op
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationNotDefinedError,
@@ -24,6 +25,7 @@ from dlpx.virtualization.platform.exceptions import (
 
 
 __all__ = ['LinkedOperations']
+
 
 class LinkedOperations(object):
 
@@ -40,7 +42,8 @@ class LinkedOperations(object):
         def pre_snapshot_decorator(pre_snapshot_impl):
             if self.pre_snapshot_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_PRE_SNAPSHOT)
-            self.pre_snapshot_impl = pre_snapshot_impl
+            self.pre_snapshot_impl = v.check_function(pre_snapshot_impl,
+                                                      Op.LINKED_PRE_SNAPSHOT)
             return pre_snapshot_impl
         return pre_snapshot_decorator
 
@@ -48,7 +51,8 @@ class LinkedOperations(object):
         def post_snapshot_decorator(post_snapshot_impl):
             if self.post_snapshot_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_POST_SNAPSHOT)
-            self.post_snapshot_impl = post_snapshot_impl
+            self.post_snapshot_impl = v.check_function(post_snapshot_impl,
+                                                       Op.LINKED_POST_SNAPSHOT)
             return post_snapshot_impl
         return post_snapshot_decorator
 
@@ -56,7 +60,8 @@ class LinkedOperations(object):
         def start_staging_decorator(start_staging_impl):
             if self.start_staging_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_START_STAGING)
-            self.start_staging_impl = start_staging_impl
+            self.start_staging_impl = v.check_function(start_staging_impl,
+                                                       Op.LINKED_START_STAGING)
             return start_staging_impl
         return start_staging_decorator
 
@@ -64,7 +69,8 @@ class LinkedOperations(object):
         def stop_staging_decorator(stop_staging_impl):
             if self.stop_staging_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_STOP_STAGING)
-            self.stop_staging_impl = stop_staging_impl
+            self.stop_staging_impl = v.check_function(stop_staging_impl,
+                                                      Op.LINKED_STOP_STAGING)
             return stop_staging_impl
         return stop_staging_decorator
 
@@ -72,7 +78,7 @@ class LinkedOperations(object):
         def status_decorator(status_impl):
             if self.status_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_STATUS)
-            self.status_impl = status_impl
+            self.status_impl = v.check_function(status_impl, Op.LINKED_STATUS)
             return status_impl
         return status_decorator
 
@@ -80,7 +86,7 @@ class LinkedOperations(object):
         def worker_decorator(worker_impl):
             if self.worker_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_WORKER)
-            self.worker_impl = worker_impl
+            self.worker_impl = v.check_function(worker_impl, Op.LINKED_WORKER)
             return worker_impl
         return worker_decorator
 
@@ -89,7 +95,8 @@ class LinkedOperations(object):
             if self.mount_specification_impl:
                 raise OperationAlreadyDefinedError(
                     Op.LINKED_MOUNT_SPEC)
-            self.mount_specification_impl = mount_specification_impl
+            self.mount_specification_impl = v.check_function(
+                mount_specification_impl, Op.LINKED_MOUNT_SPEC)
             return mount_specification_impl
         return mount_specification_decorator
 

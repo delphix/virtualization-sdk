@@ -91,7 +91,53 @@ class OperationNotDefinedError(PlatformError):
         super(OperationNotDefinedError, self).__init__(message)
 
 
-class MigrationIdAlreadyUsedError(Exception):
+class MigrationIdIncorrectTypeError(PlatformError):
+    """MigrationIdIncorrectType gets thrown when the provided migration id is
+    not a string.
+
+    Args:
+        migration_id (str): The migration id assigned for this operation
+        function_name (str): The name of the function that used the
+        decorator with the same migration id.
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+        should be returning what type.
+    """
+    def __init__(self, migration_id, function_name):
+        message = ("The migration id '{}' used in the function '{}' should"
+                   " be a string.".format(migration_id, function_name))
+        super(MigrationIdIncorrectTypeError, self).__init__(message)
+
+
+class MigrationIdIncorrectFormatError(PlatformError):
+    """MigrationIdIncorrectFormat gets thrown when the migration id given is
+    not in the correct format. It should be one or more positive integers
+    separated by periods.
+
+    Args:
+        migration_id (str): The migration id assigned for this operation
+        function_name (str): The name of the function that used the
+        decorator with the same migration id.
+        format (str): The format expected of the migration_id.
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+        should be returning what type.
+    """
+    def __init__(self, message):
+        super(MigrationIdIncorrectFormatError, self).__init__(message)
+
+    @classmethod
+    def from_fields(cls, migration_id, function_name, format):
+        message = ("The migration id '{}' used in the function '{}' does not"
+                   " follow the correct format '{}'.".format(migration_id,
+                                                             function_name,
+                                                             format))
+        return cls(message)
+
+
+class MigrationIdAlreadyUsedError(PlatformError):
     """MigrationIdAlreadyUsedError gets thrown when the same migration id is
     used for the same upgrade operation
 
@@ -104,15 +150,28 @@ class MigrationIdAlreadyUsedError(Exception):
         message (str): A localized user-readable message about what operation
         should be returning what type.
     """
-    @property
-    def message(self):
-        return self.args[0]
-
-    def __init__(self, migration_id, function_name):
-        message = ("The migration id '{}' used in the function '{}' has"
-                   " been used by another migration.".format(migration_id,
-                                                             function_name))
+    def __init__(self, migration_id, std_migration_id, function_name):
+        message = ("The migration id '{}' used in the function '{}' has the"
+                   " same canonical form '{}' as another migration.".format(
+                        migration_id, function_name, std_migration_id))
         super(MigrationIdAlreadyUsedError, self).__init__(message)
+
+class DecoratorNotFunctionError(PlatformError):
+    """DecoratorNotFunctionError gets thrown when the decorated variable is
+    not a function when it should be.
+
+    Args:
+        object_name (str): The name of the variable that should have been a
+        decorator_name (str): The decorator that is being incorrectly used.
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+        should be returning what type.
+    """
+    def __init__(self, object_name, decorator_name):
+        message = ("The object '{}' decorated by '{}' is"
+                   " not a function.".format(object_name, decorator_name))
+        super(DecoratorNotFunctionError, self).__init__(message)
 
 
 class IncorrectReferenceFormatError(PluginRuntimeError):
@@ -120,7 +179,8 @@ class IncorrectReferenceFormatError(PluginRuntimeError):
     reference. The reference passed in can be a non-string, throwing an
     IncorrectTypeError. The second error that can be thrown is
     IncorrectReferenceFormatError, which gets thrown when the reference is not
-    of the format "UNIX_HOST_ENVIRONMENT-#" nor of "WINDOWS_HOST_ENVIRONMENT-#".
+    of the format "UNIX_HOST_ENVIRONMENT-#" nor of
+    "WINDOWS_HOST_ENVIRONMENT-#".
 
     Args:
         reference (str): The incorrectly formatted reference
@@ -129,6 +189,7 @@ class IncorrectReferenceFormatError(PluginRuntimeError):
         message (str): A user-readable message describing the exception.
     """
     def __init__(self, reference):
-        message = ("Reference '{}' is not a correctly formatted host environment reference.".format(reference))
+        message = ("Reference '{}' is not a correctly formatted host"
+                   " environment reference.".format(reference))
         super(IncorrectReferenceFormatError, self).__init__(message)
 

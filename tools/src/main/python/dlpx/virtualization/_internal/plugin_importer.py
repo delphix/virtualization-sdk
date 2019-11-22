@@ -39,13 +39,12 @@ class PluginImporter:
     issues with validation of module content and entry points- will save
     errors/warnings in a dict that callers can access.
     """
-    validation_maps = load_validation_maps()
-    expected_staged_args_by_op = validation_maps['EXPECTED_STAGED_ARGS_BY_OP']
-    expected_direct_args_by_op = validation_maps['EXPECTED_DIRECT_ARGS_BY_OP']
-    required_methods_by_plugin_type = \
-        validation_maps['REQUIRED_METHODS_BY_PLUGIN_TYPE']
-    required_methods_description = \
-        validation_maps['REQUIRED_METHODS_DESCRIPTION']
+    v_maps = load_validation_maps()
+    expected_staged_args_by_op = v_maps['EXPECTED_STAGED_ARGS_BY_OP']
+    expected_direct_args_by_op = v_maps['EXPECTED_DIRECT_ARGS_BY_OP']
+    expected_upgrade_args = v_maps['EXPECTED_UPGRADE_ARGS']
+    required_methods_by_plugin_type = v_maps['REQUIRED_METHODS_BY_PLUGIN_TYPE']
+    required_methods_description = v_maps['REQUIRED_METHODS_DESCRIPTION']
 
     def __init__(self,
                  src_dir,
@@ -212,15 +211,24 @@ class PluginImporter:
     def __report_warnings_and_exceptions(warnings):
         """
         Prints the warnings and errors that were found in the plugin code, if
-        the warnings dictionary contains the 'exception' key.
+        the warnings dictionary contains the 'sdk exception' key this means
+        there was an sdk error and we should throw the error as such.
         """
-        if warnings and 'exception' in warnings:
-            exception_msg = MessageUtils.exception_msg(warnings)
-            exception_msg += '\n{}'.format(MessageUtils.warning_msg(warnings))
-            raise exceptions.UserError(
-                '{}\n{} Warning(s). {} Error(s).'.format(
-                    exception_msg, len(warnings['warning']),
-                    len(warnings['exception'])))
+        if warnings:
+            final_message = '\n'.join(
+                filter(None, [
+                    MessageUtils.sdk_exception_msg(warnings),
+                    MessageUtils.exception_msg(warnings),
+                    MessageUtils.warning_msg(warnings),
+                    '{} Warning(s). {} Error(s).'.format(
+                        len(warnings['warning']),
+                        len(warnings['exception']) +
+                        len(warnings['sdk exception']))
+                ]))
+            if warnings['sdk exception']:
+                raise exceptions.SDKToolingError(final_message)
+            elif warnings['exception']:
+                raise exceptions.UserError(final_message)
 
 
 def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
@@ -249,6 +257,20 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
         queue.put({'exception': user_err})
     except RuntimeError as rt_err:
         queue.put({'exception': rt_err})
+    except Exception as err:
+        #
+        # We need to figure out if this is an error that was raised inside the
+        # wrappers which would mean that it is a user error. Otherwise we
+        # should still queue the error but specify that it's not a user error.
+        #
+        parent_class_list = [base.__name__ for base in err.__class__.__bases__]
+        if 'PlatformError' in parent_class_list:
+            # This is a user error
+            error = exceptions.UserError(err.message)
+            queue.put({'exception': error})
+        else:
+            error = exceptions.SDKToolingError(err.message)
+            queue.put({'sdk exception': error})
     finally:
         sys.path.remove(src_dir)
 
@@ -333,7 +355,9 @@ def _validate_and_get_manifest(module, module_content, entry_point):
         'hasVirtualStatus':
         bool(plugin_object.virtual.status_impl),
         'hasInitialize':
-        bool(plugin_object.virtual.initialize_impl)
+        bool(plugin_object.virtual.initialize_impl),
+        'migrationIdList':
+        plugin_object.upgrade.migration_id_list
     }
 
     return manifest
@@ -354,24 +378,58 @@ def _validate_named_args(module_content, entry_point, plugin_type):
         # us the name of the plugin implemntation method name. That name
         # is useful in looking up named arguments expected and what is
         # actually in the plugin code. And plugin_op_type can be, for e.g.
-        # LinkedOperations, DiscoveryOperations, VirtualOperations
+        # LinkedOperations, DiscoveryOperations, VirtualOperations.
+        # UpgradeOperations will need to be handled separately because it's
+        # attributes are different.
         #
         plugin_op_type = plugin_attrib.__class__.__name__
         if plugin_op_type == 'UpgradeOperations':
             #
-            # For now just ignore all upgrade operations because the fields
-            # aren't all functions.
+            # Handle the upgrade operations separately because they aren't
+            # just functions.
             #
+            warnings.extend(_check_upgrade_operations(plugin_attrib))
             continue
-        for op_name_key, op_name in plugin_attrib.__dict__.items():
+        for op_name_key, op_name in vars(plugin_attrib).items():
             if op_name is None:
                 continue
-            actual_args = inspect.getargspec(op_name)
+            actual = inspect.getargspec(op_name)
             warnings.extend(
                 _check_args(method_name=op_name.__name__,
                             expected_args=_lookup_expected_args(
                                 plugin_type, plugin_op_type, op_name_key),
-                            actual_args=actual_args.args))
+                            actual_args=actual.args))
+
+    return warnings
+
+
+def _check_upgrade_operations(upgrade_operations):
+    """
+    Does named argument validation of all functions in dictionaries by looping
+    first through all the attributes in the UpgradeOperations for this plugin.
+    Any attributes that are not dictionaries that map migration_id ->
+    upgrade_function are skipped. We then loop through every key/value pair
+    of each of the dictionaries and validate that the argument in the defined
+    function has the expected name.
+    """
+    warnings = []
+
+    for attribute_name, attribute in vars(upgrade_operations).items():
+        if attribute_name not in PluginImporter.expected_upgrade_args.keys():
+            # Skip if not in one of the operation dicts we store functions in.
+            continue
+        #
+        # If the attribute_name was in the expected upgrade dicts then we know
+        # it is a dict containing migration id -> upgrade function that we can
+        # iterate on.
+        #
+        for migration_id, migration_func in attribute.items():
+            actual = inspect.getargspec(migration_func).args
+            expected = PluginImporter.expected_upgrade_args[attribute_name]
+            warnings.extend(
+                _check_args(method_name=migration_func.__name__,
+                            expected_args=expected,
+                            actual_args=actual))
 
     return warnings
 

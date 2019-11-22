@@ -4,70 +4,81 @@
 # flake8: noqa
 from dlpx.virtualization.platform import Plugin, Status
 
-vfiles = Plugin()
+direct = Plugin()
 
 
-@vfiles.discovery.repository()
+@direct.discovery.repository()
 def repository_discovery(source_connection):
     return []
 
 
-@vfiles.discovery.source_config()
+@direct.discovery.source_config()
 def source_config_discovery(source_connection, repository):
     return []
 
 
-@vfiles.linked.pre_snapshot()
+@direct.linked.pre_snapshot()
 def direct_pre_snapshot(direct_source, repository, source_config):
     return
 
 
-@vfiles.linked.post_snapshot()
+@direct.linked.post_snapshot()
 def direct_post_snapshot(direct_source, repository, source_config):
     return None
 
 
-@vfiles.virtual.configure()
+@direct.virtual.configure()
 def configure(virtual_source, repository, snapshot):
     path = virtual_source.parameters.path
     name = "VDB mounted to " + path
     return None
 
 
-@vfiles.virtual.mount_specification()
+@direct.virtual.mount_specification()
 def mount_specification(repository, virtual_source):
     return None
 
 
-@vfiles.virtual.post_snapshot()
+@direct.virtual.post_snapshot()
 def postSnapshot(repository, source_config, virtual_source):
     return None
 
 
-@vfiles.virtual.pre_snapshot()
+@direct.virtual.pre_snapshot()
 def preSnapshot(repository, source_config, virtual_source):
     pass
 
 
-# Removed virtual.reconfigure for required methods check test.
+@direct.virtual.reconfigure()
+def reconfigure(virtual_source, repository, source_config, snapshot):
+    pass
 
 
-@vfiles.virtual.start()
+@direct.virtual.start()
 def start(repository, source_config, virtual_source):
     pass
 
 
-# Added snapshot arg to check if named arg check fails.
-@vfiles.virtual.status()
-def status(repository, source_config, virtual_source, snapshot):
+@direct.virtual.status()
+def status(repository, source_config, virtual_source):
     return Status.ACTIVE
 
 
-@vfiles.virtual.stop()
+@direct.virtual.stop()
 def stop(repository, source_config, virtual_source):
     pass
 
 
-@vfiles.virtual.unconfigure()
+@direct.virtual.unconfigure()
 def unconfigure(repository, source_config, virtual_source):
     pass
+
+
+@direct.upgrade.repository('2019.10.30')
+def repo_upgrade(old_repository):
+    return old_repository
+
+
+@direct.upgrade.snapshot('2019.11.30')
+def repo_upgrade(old_snapshot):
+    return old_snapshot

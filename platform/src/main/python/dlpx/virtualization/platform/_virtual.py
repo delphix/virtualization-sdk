@@ -15,6 +15,7 @@ from dlpx.virtualization.platform import VirtualSource
 from dlpx.virtualization.platform import Status
 from dlpx.virtualization.platform import Mount
 from dlpx.virtualization.platform import MountSpecification
+from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.operation import Operation as Op
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationNotDefinedError,
@@ -42,7 +43,8 @@ class VirtualOperations(object):
         def configure_decorator(configure_impl):
             if self.configure_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_CONFIGURE)
-            self.configure_impl = configure_impl
+            self.configure_impl = v.check_function(configure_impl,
+                                                   Op.VIRTUAL_CONFIGURE)
             return configure_impl
         return configure_decorator
 
@@ -50,7 +52,8 @@ class VirtualOperations(object):
         def unconfigure_decorator(unconfigure_impl):
             if self.unconfigure_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_UNCONFIGURE)
-            self.unconfigure_impl = unconfigure_impl
+            self.unconfigure_impl = v.check_function(unconfigure_impl,
+                                                     Op.VIRTUAL_UNCONFIGURE)
             return unconfigure_impl
         return unconfigure_decorator
 
@@ -58,7 +61,8 @@ class VirtualOperations(object):
         def reconfigure_decorator(reconfigure_impl):
             if self.reconfigure_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_RECONFIGURE)
-            self.reconfigure_impl = reconfigure_impl
+            self.reconfigure_impl = v.check_function(reconfigure_impl,
+                                                     Op.VIRTUAL_RECONFIGURE)
             return reconfigure_impl
         return reconfigure_decorator
 
@@ -66,7 +70,7 @@ class VirtualOperations(object):
         def start_decorator(start_impl):
             if self.start_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_START)
-            self.start_impl = start_impl
+            self.start_impl = v.check_function(start_impl, Op.VIRTUAL_START)
             return start_impl
         return start_decorator
 
@@ -74,7 +78,7 @@ class VirtualOperations(object):
         def stop_decorator(stop_impl):
             if self.stop_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_STOP)
-            self.stop_impl = stop_impl
+            self.stop_impl = v.check_function(stop_impl, Op.VIRTUAL_STOP)
             return stop_impl
         return stop_decorator
 
@@ -82,7 +86,8 @@ class VirtualOperations(object):
         def pre_snapshot_decorator(pre_snapshot_impl):
             if self.pre_snapshot_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_PRE_SNAPSHOT)
-            self.pre_snapshot_impl = pre_snapshot_impl
+            self.pre_snapshot_impl = v.check_function(pre_snapshot_impl,
+                                                      Op.VIRTUAL_PRE_SNAPSHOT)
             return pre_snapshot_impl
         return pre_snapshot_decorator
 
@@ -90,7 +95,8 @@ class VirtualOperations(object):
         def post_snapshot_decorator(post_snapshot_impl):
             if self.post_snapshot_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_POST_SNAPSHOT)
-            self.post_snapshot_impl = post_snapshot_impl
+            self.post_snapshot_impl = v.check_function(
+                post_snapshot_impl, Op.VIRTUAL_POST_SNAPSHOT)
             return post_snapshot_impl
         return post_snapshot_decorator
 
@@ -98,7 +104,7 @@ class VirtualOperations(object):
         def status_decorator(status_impl):
             if self.status_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_STATUS)
-            self.status_impl = status_impl
+            self.status_impl = v.check_function(status_impl, Op.VIRTUAL_STATUS)
             return status_impl
         return status_decorator
 
@@ -106,7 +112,8 @@ class VirtualOperations(object):
         def initialize_decorator(initialize_impl):
             if self.initialize_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_INITIALIZE)
-            self.initialize_impl = initialize_impl
+            self.initialize_impl = v.check_function(initialize_impl,
+                                                    Op.VIRTUAL_INITIALIZE)
             return initialize_impl
         return initialize_decorator
 
@@ -115,7 +122,8 @@ class VirtualOperations(object):
             if self.mount_specification_impl:
                 raise OperationAlreadyDefinedError(
                     Op.VIRTUAL_MOUNT_SPEC)
-            self.mount_specification_impl = mount_specification_impl
+            self.mount_specification_impl = v.check_function(
+                mount_specification_impl, Op.VIRTUAL_MOUNT_SPEC)
             return mount_specification_impl
         return mount_specification_decorator
 

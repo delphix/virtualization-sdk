@@ -4,8 +4,6 @@
 
 import json
 import os
-import uuid
-from collections import OrderedDict
 
 import mock
 import pytest
@@ -15,14 +13,12 @@ from dlpx.virtualization._internal.util_classes import ValidationMode
 
 
 @pytest.fixture
-def plugin_config_file(tmpdir):
-    return os.path.join(tmpdir.strpath, 'plugin_config.yml')
-
-
-@pytest.fixture
-def src_dir(tmpdir):
-    tmpdir.mkdir('src')
-    return os.path.join(tmpdir.strpath, 'src')
+def test_src_dir(plugin_type):
+    """
+    This fixture gets the path of the fake plugin src files used for testing
+    """
+    return os.path.join(os.path.dirname(__file__), 'fake_plugin',
+                        plugin_type.lower())
 
 
 class TestPluginValidator:
@@ -30,16 +26,8 @@ class TestPluginValidator:
     @pytest.mark.parametrize(
         'schema_content',
         ['{}\nNOT JSON'.format(json.dumps({'random': 'json'}))])
-    def test_plugin_bad_schema(plugin_config_file, schema_file):
-        plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')),
-            ('prettyName', 'StagedPlugin'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
+    def test_plugin_bad_schema(plugin_config_file, plugin_config_content,
+                               schema_file):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content, schema_file,
@@ -52,6 +40,7 @@ class TestPluginValidator:
                 ' (char 19 - 27)'.format(schema_file)) in message
 
     @staticmethod
+    @pytest.mark.parametrize('plugin_config_file', ['/dir/plugin_config.yml'])
     def test_plugin_bad_config_file(plugin_config_file):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
@@ -69,17 +58,8 @@ class TestPluginValidator:
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    def test_plugin_valid_content(mock_import_plugin, mock_relative_path,
-                                  src_dir, plugin_config_file):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-
+    def test_plugin_valid_content(mock_import_plugin, src_dir,
+                                  plugin_config_file, plugin_config_content):
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
             util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
@@ -88,16 +68,8 @@ class TestPluginValidator:
         mock_import_plugin.assert_called()
 
     @staticmethod
-    def test_plugin_missing_field(plugin_config_file):
-        plugin_config_content = OrderedDict([
-            ('name', 'staged'.encode('utf-8')), ('version', '0.1.0'),
-            ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
-            ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-
+    @pytest.mark.parametrize('src_dir', [None])
+    def test_plugin_missing_field(plugin_config_file, plugin_config_content):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -111,22 +83,12 @@ class TestPluginValidator:
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    @pytest.mark.parametrize('version, expected', [
-        pytest.param('xxx', "'xxx' does not match"),
-        pytest.param('1.0.0', None),
-        pytest.param('1.0.0_HF', None)
-    ])
-    def test_plugin_version_format(mock_import_plugin, mock_path_is_relative,
-                                   src_dir, plugin_config_file, version,
+    @pytest.mark.parametrize('version,expected',
+                             [('xxx', "'xxx' does not match"), ('1.0.0', None),
+                              ('1.0.0_HF', None)])
+    def test_plugin_version_format(mock_import_plugin, src_dir,
+                                   plugin_config_file, plugin_config_content,
                                    expected):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', version), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
 
         try:
             validator = PluginValidator.from_config_content(
@@ -143,28 +105,17 @@ class TestPluginValidator:
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    @pytest.mark.parametrize('entry_point, expected', [
-        pytest.param('staged_plugin', "'staged_plugin' does not match"),
-        pytest.param(':staged_plugin', "':staged_plugin' does not match"),
-        pytest.param('staged:', "'staged:' does not match"),
-        pytest.param('staged_plugin::staged',
-                     "'staged_plugin::staged' does not match"),
-        pytest.param(':staged_plugin:staged:',
-                     "':staged_plugin:staged:' does not match"),
-        pytest.param('staged_plugin:staged', None)
-    ])
-    def test_plugin_entry_point(mock_import_plugin, mock_relative_path,
-                                src_dir, plugin_config_file, entry_point,
+    @pytest.mark.parametrize(
+        'entry_point,expected',
+        [('staged_plugin', "'staged_plugin' does not match"),
+         (':staged_plugin', "':staged_plugin' does not match"),
+         ('staged:', "'staged:' does not match"),
+         ('staged_plugin::staged', "'staged_plugin::staged' does not match"),
+         (':staged_plugin:staged:', "':staged_plugin:staged:' does not match"),
+         ('staged_plugin:staged', None)])
+    def test_plugin_entry_point(mock_import_plugin, src_dir,
+                                plugin_config_file, plugin_config_content,
                                 expected):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '1.0.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', entry_point.encode('utf-8')), ('srcDir', src_dir),
-            ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -176,16 +127,10 @@ class TestPluginValidator:
             assert expected in message
 
     @staticmethod
-    def test_plugin_additional_properties(src_dir, plugin_config_file):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '1.0.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('unknown_key', 'unknown_value'.encode('utf-8')),
-            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
+    def test_plugin_additional_properties(src_dir, plugin_config_file,
+                                          plugin_config_content):
+        # Adding an unknown key
+        plugin_config_content['unknown_key'] = 'unknown_value'
 
         try:
             validator = PluginValidator.from_config_content(
@@ -194,20 +139,14 @@ class TestPluginValidator:
             validator.validate()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
-            assert "Additional properties are not allowed " \
-                   "('unknown_key' was unexpected)" in message
+            assert ("Additional properties are not allowed"
+                    " ('unknown_key' was unexpected)" in message)
 
     @staticmethod
-    def test_multiple_validation_errors(plugin_config_file):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['xxx']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-
+    @pytest.mark.parametrize('host_types', [['xxx']])
+    @pytest.mark.parametrize('src_dir', [None])
+    def test_multiple_validation_errors(plugin_config_file,
+                                        plugin_config_content):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -218,64 +157,19 @@ class TestPluginValidator:
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
 
     @staticmethod
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_staged_plugin(mock_file_util, fake_staged_plugin_config):
-        src_dir = os.path.dirname(fake_staged_plugin_config)
-        mock_file_util.return_value = os.path.join(src_dir, 'src/')
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(fake_staged_plugin_config,
-                                        util_classes.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR, True)
-            validator.validate()
-
-        message = err_info.value.message
-        assert validator.result.warnings.items() > 0
-        assert 'Named argument mismatch in method' in message
-        assert 'Number of arguments do not match' in message
-        assert 'Implementation missing for required method' in message
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_direct_plugin(mock_file_util, fake_direct_plugin_config):
-        src_dir = os.path.dirname(fake_direct_plugin_config)
-        mock_file_util.return_value = os.path.join(src_dir, 'src/')
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(fake_direct_plugin_config,
-                                        util_classes.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR, True)
-            validator.validate()
-
-        message = err_info.value.message
-        assert validator.result.warnings.items() > 0
-        assert 'Named argument mismatch in method' in message
-        assert 'Number of arguments do not match' in message
-        assert 'Implementation missing for required method' in message
-
-    @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
                        return_value=({}, None))
-    @pytest.mark.parametrize('plugin_id , expected', [
-        pytest.param('Staged_plugin', "'Staged_plugin' does not match"),
-        pytest.param('staged_Plugin', "'staged_Plugin' does not match"),
-        pytest.param('STAGED', "'STAGED' does not match"),
-        pytest.param('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
-        pytest.param('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)
-    ])
-    def test_plugin_id(mock_import_plugin, mock_relative_path, src_dir,
-                       plugin_config_file, plugin_id, expected):
-        plugin_config_content = OrderedDict([
-            ('id', plugin_id.encode('utf-8')), ('name', 'python_vfiles'),
-            ('version', '1.0.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('srcDir', src_dir), ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-
+    @pytest.mark.parametrize(
+        'plugin_id , expected',
+        [('Staged_plugin', "'Staged_plugin' does not match"),
+         ('staged_Plugin', "'staged_Plugin' does not match"),
+         ('STAGED', "'STAGED' does not match"),
+         ('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
+         ('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)])
+    def test_plugin_id(mock_import_plugin, src_dir, plugin_config_file,
+                       plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -289,15 +183,8 @@ class TestPluginValidator:
     @staticmethod
     @pytest.mark.parametrize('validation_mode',
                              [ValidationMode.INFO, ValidationMode.WARNING])
-    def test_plugin_info_warn_mode(plugin_config_file, validation_mode):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
+    def test_plugin_info_warn_mode(plugin_config_file, plugin_config_content,
+                                   validation_mode):
         err_info = None
         try:
             validator = PluginValidator.from_config_content(
@@ -308,3 +195,117 @@ class TestPluginValidator:
             err_info = e
 
         assert err_info is None
+
+    @staticmethod
+    @pytest.mark.parametrize('entry_point,plugin_type',
+                             [('successful:staged', 'STAGED'),
+                              ('successful:direct', 'DIRECT')])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_successful_validation(mock_file_util, plugin_config_file,
+                                   test_src_dir):
+        mock_file_util.return_value = test_src_dir
+
+        validator = PluginValidator(plugin_config_file,
+                                    util_classes.PLUGIN_CONFIG_SCHEMA,
+                                    ValidationMode.ERROR, True)
+        validator.validate()
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,plugin_type,expected_errors',
+        [('multiple_warnings:staged', 'STAGED', [
+            'Error: Named argument mismatch in method repository_discovery',
+            'Error: Number of arguments do not match in method stop',
+            'Error: Named argument mismatch in method stop',
+            'Warning: Implementation missing for required method'
+            ' virtual.mount_specification().', '1 Warning(s). 3 Error(s).'
+        ]),
+         ('multiple_warnings:vfiles', 'DIRECT', [
+             'Error: Number of arguments do not match in method status',
+             'Error: Named argument mismatch in method status',
+             'Warning: Implementation missing for required method'
+             ' virtual.reconfigure().', '1 Warning(s). 2 Error(s).'
+         ])])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_multiple_warnings(mock_file_util, plugin_config_file,
+                               test_src_dir, expected_errors):
+        mock_file_util.return_value = test_src_dir
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator(plugin_config_file,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        for error in expected_errors:
+            assert error in message
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,expected_errors', [('upgrade_warnings:direct', [
+            'Error: Named argument mismatch in method snap_upgrade.',
+            'Error: Number of arguments do not match in method ls_upgrade.',
+            'Error: Named argument mismatch in method ls_upgrade.',
+            'Error: Named argument mismatch in method ls_upgrade.',
+            '0 Warning(s). 4 Error(s).'
+        ])])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_upgrade_warnings(mock_file_util, plugin_config_file, test_src_dir,
+                              expected_errors):
+        mock_file_util.return_value = test_src_dir
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator(plugin_config_file,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        for error in expected_errors:
+            assert error in message
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,expected_error',
+        [('op_already_defined:plugin', 'has already been defined'),
+         ('dec_not_function:plugin', "decorated by 'linked.pre_snapshot()'"
+          " is not a function"),
+         ('id_not_string:plugin', "The migration id '['testing', 'out',"
+          " 'validation']' used in the function"
+          " 'repo_upgrade' should be a string."),
+         ('id_bad_format:plugin', "used in the function 'repo_upgrade' does"
+          " not follow the correct format"),
+         ('id_used:plugin', "'5.04.000.01' used in the function 'snap_upgrade'"
+          " has the same canonical form '5.4.0.1' as another migration")])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_wrapper_failures(mock_file_util, plugin_config_file, test_src_dir,
+                              expected_error):
+        mock_file_util.return_value = test_src_dir
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            validator = PluginValidator(plugin_config_file,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        assert expected_error in message
+        assert '0 Warning(s). 1 Error(s).' in message
+
+    @staticmethod
+    @pytest.mark.parametrize('entry_point', ['arbitrary_error:plugin'])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_sdk_error(mock_file_util, plugin_config_file, test_src_dir):
+        mock_file_util.return_value = test_src_dir
+
+        with pytest.raises(exceptions.SDKToolingError) as err_info:
+            validator = PluginValidator(plugin_config_file,
+                                        util_classes.PLUGIN_CONFIG_SCHEMA,
+                                        ValidationMode.ERROR, True)
+            validator.validate()
+
+        message = err_info.value.message
+        assert ('SDK Error: Got an arbitrary non-platforms error for testing.'
+                in message)
+        assert '0 Warning(s). 1 Error(s).' in message

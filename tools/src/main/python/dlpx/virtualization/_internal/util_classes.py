@@ -44,17 +44,27 @@ class MessageUtils:
     Defines helpers methods to format warning and exception messages.
     """
     @staticmethod
-    def exception_msg(exceptions):
-        exception_msg = '\n'.join(
+    def sdk_exception_msg(warnings):
+        sdk_exception_msg = '\n'.join([
+            MessageUtils.__format_msg('SDK Error', ex)
+            for ex in warnings['sdk exception']
+        ])
+        return sdk_exception_msg
+
+    @staticmethod
+    def exception_msg(warnings):
+        exception_msg = '\n'.join([
             MessageUtils.__format_msg('Error', ex)
-            for ex in exceptions['exception'])
+            for ex in warnings['exception']
+        ])
         return exception_msg
 
     @staticmethod
     def warning_msg(warnings):
-        warning_msg = '\n'.join(
+        warning_msg = '\n'.join([
             MessageUtils.__format_msg('Warning', warning)
-            for warning in warnings['warning'])
+            for warning in warnings['warning']
+        ])
         return warning_msg
 
     @staticmethod

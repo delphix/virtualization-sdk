@@ -11,6 +11,7 @@ import json
 from dlpx.virtualization.common import RemoteConnection
 from dlpx.virtualization import common_pb2
 from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.operation import Operation as Op
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationNotDefinedError,
@@ -31,7 +32,8 @@ class DiscoveryOperations(object):
             if self.repository_impl:
                 raise OperationAlreadyDefinedError(Op.DISCOVERY_REPOSITORY)
 
-            self.repository_impl = repository_impl
+            self.repository_impl = v.check_function(repository_impl,
+                                                    Op.DISCOVERY_REPOSITORY)
             return repository_impl
         return repository_decorator
 
@@ -39,7 +41,8 @@ class DiscoveryOperations(object):
         def source_config_decorator(source_config_impl):
             if self.source_config_impl:
                 raise OperationAlreadyDefinedError(Op.DISCOVERY_SOURCE_CONFIG)
-            self.source_config_impl = source_config_impl
+            self.source_config_impl = v.check_function(
+                source_config_impl, Op.DISCOVERY_SOURCE_CONFIG)
             return source_config_impl
         return source_config_decorator
 

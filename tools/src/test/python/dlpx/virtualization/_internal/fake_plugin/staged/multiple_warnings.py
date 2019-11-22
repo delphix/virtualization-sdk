@@ -17,12 +17,12 @@ staged = Plugin()
 # Renamed source_connection to connection to test if named arg check detects.
 @staged.discovery.repository()
 def repository_discovery(connection):
-    return None
+    return []
 
 
 @staged.discovery.source_config()
 def source_config_discovery(source_connection, repository):
-    return None
+    return []
 
 
 @staged.linked.mount_specification()
@@ -67,6 +67,11 @@ def configure(virtual_source, repository, snapshot):
     return None
 
 
+@staged.virtual.reconfigure()
+def reconfigure(virtual_source, repository, source_config, snapshot):
+    return None
+
+
 # Removed virtual.mount_specification for test validation.
 
 
@@ -86,8 +91,11 @@ def start(repository, source_config, virtual_source):
 
 
 # Added snapshot parameter to check if arg check fails.
-
-
 @staged.virtual.stop()
 def stop(repository, source_config, virtual_source, snapshot):
     pass
+
+
+@staged.upgrade.repository('2019.10.30')
+def repo_upgrade(old_repository):
+    return old_repository

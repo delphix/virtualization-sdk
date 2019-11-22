@@ -13,11 +13,11 @@ class TestPluginImporter:
     @staticmethod
     @mock.patch('importlib.import_module')
     def test_get_plugin_manifest(mock_import, src_dir, plugin_type,
-                                 plugin_name, plugin_entry_point_name,
+                                 entry_point_module, entry_point_object,
                                  plugin_module_content, plugin_manifest):
         mock_import.return_value = plugin_module_content
-        importer = PluginImporter(src_dir, plugin_name,
-                                  plugin_entry_point_name, plugin_type, False)
+        importer = PluginImporter(src_dir, entry_point_module,
+                                  entry_point_object, plugin_type, False)
         manifest, warnings = importer.import_plugin()
 
         assert not warnings
@@ -26,15 +26,15 @@ class TestPluginImporter:
     @staticmethod
     @mock.patch('importlib.import_module')
     def test_plugin_module_content_none(mock_import, src_dir, plugin_type,
-                                        plugin_name, plugin_entry_point_name):
+                                        entry_point_module,
+                                        entry_point_object):
         mock_import.return_value = None
         manifest = {}
         warnings = defaultdict(list)
 
         with pytest.raises(exceptions.UserError) as err_info:
-            importer = PluginImporter(src_dir, plugin_name,
-                                      plugin_entry_point_name, plugin_type,
-                                      False)
+            importer = PluginImporter(src_dir, entry_point_module,
+                                      entry_point_object, plugin_type, False)
             manifest, warnings = importer.import_plugin()
 
         message = str(err_info)
