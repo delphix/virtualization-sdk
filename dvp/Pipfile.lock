@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "61dd68fa84db728d2f9604993189481aae3d7e04d53f605627960c0cbdfdc396"
+            "sha256": "29cd8bea844d56f1e9296ac2e2d28a4eff66f99b5d4f9f4201d9b6290e6a8c8d"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -15,20 +15,20 @@
     },
     "default": {
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-003.tar.gz",
-            "version": "== 1.1.0-internal-upgrade-003"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-004.tar.gz",
+            "version": "== 1.1.0-internal-upgrade-004"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.1.0-internal-upgrade-003.tar.gz",
-            "version": "== 1.1.0-internal-upgrade-003"
+            "path": "../libs/build/python-dist/dvp-libs-1.1.0-internal-upgrade-004.tar.gz",
+            "version": "== 1.1.0-internal-upgrade-004"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.1.0-internal-upgrade-003.tar.gz",
-            "version": "== 1.1.0-internal-upgrade-003"
+            "path": "../platform/build/python-dist/dvp-platform-1.1.0-internal-upgrade-004.tar.gz",
+            "version": "== 1.1.0-internal-upgrade-004"
         },
         "dvp-tools": {
-            "path": "../tools/build/python-dist/dvp-tools-1.1.0-internal-upgrade-003.tar.gz",
-            "version": "== 1.1.0-internal-upgrade-003"
+            "path": "../tools/build/python-dist/dvp-tools-1.1.0-internal-upgrade-004.tar.gz",
+            "version": "== 1.1.0-internal-upgrade-004"
         }
     },
     "develop": {
@@ -72,11 +72,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:aa18d7378b00b40847790e7c27e11673d7fed219354109d0e7b9e5b25dc3ad26",
-                "sha256:d5f18a79777f3aa179c145737780282e27b508fc8fd688cb17c7a813e8bd39af"
+                "sha256:b044f07694ef14a6683b097ba56bd081dbc7cdc7c7fe46011e499dfecc082f21",
+                "sha256:e6ac600a142cf2db707b1998382cc7fc3b02befb7273876e01b8ad10b9652742"
             ],
             "markers": "python_version < '3.8'",
-            "version": "==0.23"
+            "version": "==1.1.0"
         },
         "more-itertools": {
             "hashes": [
@@ -99,7 +99,7 @@
                 "sha256:0ec8205a157c80d7acc301c0b18fbd5d44fe655968f5d947b6ecef5290fc35db",
                 "sha256:6cd9a47b597b37cc57de1c05e56fb1a1c9cc9fab04fe78c29acd090418529868"
             ],
-            "markers": "python_version == '3.4.*' or python_version < '3'",
+            "markers": "python_version < '3'",
             "version": "==2.3.5"
         },
         "pluggy": {

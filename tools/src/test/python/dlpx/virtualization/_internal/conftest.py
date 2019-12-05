@@ -169,18 +169,9 @@ def artifact_file_created():
 
 
 @pytest.fixture
-def plugin_config_content(
-        plugin_id,
-        plugin_name,
-        version,
-        language,
-        host_types,
-        plugin_type,
-        entry_point,
-        src_dir,
-        schema_file,
-        manual_discovery,
-):
+def plugin_config_content(plugin_id, plugin_name, version, language,
+                          host_types, plugin_type, entry_point, src_dir,
+                          schema_file, manual_discovery):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.

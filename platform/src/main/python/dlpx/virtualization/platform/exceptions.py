@@ -57,6 +57,27 @@ class IncorrectReturnTypeError(PluginRuntimeError):
         super(IncorrectReturnTypeError, self).__init__(message)
 
 
+class IncorrectUpgradeObjectTypeError(PluginRuntimeError):
+    """IncorrectUpgradeObjectTypeError gets thrown when an upgrade workflow was
+    called with the incorrect object type to upgrade.
+
+    Args:
+        actual type (platform_pb2.UpgradeRequest.Type): type that was passed in
+        expected_type (platform_pb2.UpgradeRequest.Type): expected type
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+            should be returning what type.
+
+    """
+
+    def __init__(self, actual_type, expected_type):
+        message = (
+            'The upgrade operation received objects with {} type but should'
+            ' have had type {}.'.format(actual_type, expected_type))
+        super(IncorrectUpgradeObjectTypeError, self).__init__(message)
+
+
 class OperationAlreadyDefinedError(PlatformError):
     """OperationAlreadyDefinedError gets thrown when the plugin writer tries
     to define an operation more than ones.

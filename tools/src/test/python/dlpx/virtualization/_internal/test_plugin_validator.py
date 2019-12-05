@@ -13,7 +13,7 @@ from dlpx.virtualization._internal.util_classes import ValidationMode
 
 
 @pytest.fixture
-def test_src_dir(plugin_type):
+def fake_src_dir(plugin_type):
     """
     This fixture gets the path of the fake plugin src files used for testing
     """
@@ -202,8 +202,8 @@ class TestPluginValidator:
                               ('successful:direct', 'DIRECT')])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_successful_validation(mock_file_util, plugin_config_file,
-                                   test_src_dir):
-        mock_file_util.return_value = test_src_dir
+                                   fake_src_dir):
+        mock_file_util.return_value = fake_src_dir
 
         validator = PluginValidator(plugin_config_file,
                                     util_classes.PLUGIN_CONFIG_SCHEMA,
@@ -228,8 +228,8 @@ class TestPluginValidator:
          ])])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_multiple_warnings(mock_file_util, plugin_config_file,
-                               test_src_dir, expected_errors):
-        mock_file_util.return_value = test_src_dir
+                               fake_src_dir, expected_errors):
+        mock_file_util.return_value = fake_src_dir
 
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
@@ -251,9 +251,9 @@ class TestPluginValidator:
             '0 Warning(s). 4 Error(s).'
         ])])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_upgrade_warnings(mock_file_util, plugin_config_file, test_src_dir,
+    def test_upgrade_warnings(mock_file_util, plugin_config_file, fake_src_dir,
                               expected_errors):
-        mock_file_util.return_value = test_src_dir
+        mock_file_util.return_value = fake_src_dir
 
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
@@ -279,9 +279,9 @@ class TestPluginValidator:
          ('id_used:plugin', "'5.04.000.01' used in the function 'snap_upgrade'"
           " has the same canonical form '5.4.0.1' as another migration")])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_wrapper_failures(mock_file_util, plugin_config_file, test_src_dir,
+    def test_wrapper_failures(mock_file_util, plugin_config_file, fake_src_dir,
                               expected_error):
-        mock_file_util.return_value = test_src_dir
+        mock_file_util.return_value = fake_src_dir
 
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
@@ -296,8 +296,8 @@ class TestPluginValidator:
     @staticmethod
     @pytest.mark.parametrize('entry_point', ['arbitrary_error:plugin'])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_sdk_error(mock_file_util, plugin_config_file, test_src_dir):
-        mock_file_util.return_value = test_src_dir
+    def test_sdk_error(mock_file_util, plugin_config_file, fake_src_dir):
+        mock_file_util.return_value = fake_src_dir
 
         with pytest.raises(exceptions.SDKToolingError) as err_info:
             validator = PluginValidator(plugin_config_file,

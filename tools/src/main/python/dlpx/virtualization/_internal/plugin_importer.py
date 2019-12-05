@@ -269,7 +269,12 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
             error = exceptions.UserError(err.message)
             queue.put({'exception': error})
         else:
-            error = exceptions.SDKToolingError(err.message)
+            #
+            # Because we don't know if the output of the err is actually in the
+            # message, we just cast the exception to a string and hope to get
+            # the most information possible.
+            #
+            error = exceptions.SDKToolingError(str(err))
             queue.put({'sdk exception': error})
     finally:
         sys.path.remove(src_dir)

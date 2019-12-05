@@ -113,7 +113,7 @@ def build(plugin_config,
                                                  plugin_config_content,
                                                  not generate_only,
                                                  skip_id_validation)
-    except exceptions.UserError as err:
+    except (exceptions.UserError, exceptions.SDKToolingError) as err:
         raise exceptions.BuildFailedError(err)
 
     plugin_manifest = {}

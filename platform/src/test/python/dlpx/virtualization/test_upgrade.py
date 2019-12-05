@@ -3,6 +3,8 @@
 #
 
 import pytest
+import logging
+from dlpx.virtualization import platform_pb2
 from dlpx.virtualization.platform.exceptions import (
     DecoratorNotFunctionError, MigrationIdAlreadyUsedError)
 from dlpx.virtualization.platform.operation import Operation as Op
@@ -189,3 +191,117 @@ class TestUpgrade:
             "The migration id '2019.010.001' used in the function"
             " 'snap_upgrade_one' has the same canonical form '2019.10.1'"
             " as another migration.")
+
+    @staticmethod
+    @pytest.fixture
+    def caplog(caplog):
+        caplog.set_level(logging.DEBUG)
+        return caplog
+
+    @staticmethod
+    @pytest.fixture
+    def upgrade_request(fake_map_param, upgrade_type):
+        return platform_pb2.UpgradeRequest(
+            pre_upgrade_parameters=fake_map_param,
+            type=upgrade_type,
+            migration_ids=[]
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize('fake_map_param,upgrade_type',
+                             [({
+                                  'APPDATA_REPOSITORY-1': '{}',
+                                  'APPDATA_REPOSITORY-2': '{}',
+                                  'APPDATA_REPOSITORY-3': '{}'
+                              }, platform_pb2.UpgradeRequest.REPOSITORY,
+                             )])
+    def test_repository(my_plugin, upgrade_request, fake_map_param, caplog):
+        upgrade_response = my_plugin.upgrade._internal_repository(
+            upgrade_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert upgrade_response.WhichOneof('result') == 'return_value'
+        assert (upgrade_response.return_value.post_upgrade_parameters
+                == fake_map_param)
+        assert (caplog.records[0].message ==
+                'Upgrade repositories [APPDATA_REPOSITORY-1,'
+                ' APPDATA_REPOSITORY-2, APPDATA_REPOSITORY-3]')
+
+    @staticmethod
+    @pytest.mark.parametrize('fake_map_param,upgrade_type',
+                             [({
+                                   'APPDATA_SOURCE_CONFIG-1': '{}',
+                                   'APPDATA_SOURCE_CONFIG-2': '{}',
+                                   'APPDATA_SOURCE_CONFIG-3': '{}',
+                                   'APPDATA_SOURCE_CONFIG-4': '{}'
+                               }, platform_pb2.UpgradeRequest.SOURCECONFIG,
+                             )])
+    def test_source_config(my_plugin, upgrade_request, fake_map_param, caplog):
+        upgrade_response = my_plugin.upgrade._internal_source_config(
+            upgrade_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert upgrade_response.WhichOneof('result') == 'return_value'
+        assert (upgrade_response.return_value.post_upgrade_parameters
+                == fake_map_param)
+        assert (caplog.records[0].message ==
+                'Upgrade source configs [APPDATA_SOURCE_CONFIG-1,'
+                ' APPDATA_SOURCE_CONFIG-2, APPDATA_SOURCE_CONFIG-3,'
+                ' APPDATA_SOURCE_CONFIG-4]')
+
+    @staticmethod
+    @pytest.mark.parametrize('fake_map_param,upgrade_type',
+                             [({
+                                   'APPDATA_STAGED_SOURCE-1': '{}',
+                                   'APPDATA_STAGED_SOURCE-2': '{}',
+                                   'APPDATA_STAGED_SOURCE-3': '{}'
+                               }, platform_pb2.UpgradeRequest.LINKEDSOURCE,
+                             )])
+    def test_linked_source(my_plugin, upgrade_request, fake_map_param, caplog):
+        upgrade_response = my_plugin.upgrade._internal_linked_source(
+            upgrade_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert upgrade_response.WhichOneof('result') == 'return_value'
+        assert (upgrade_response.return_value.post_upgrade_parameters
+                == fake_map_param)
+        assert (caplog.records[0].message ==
+                'Upgrade linked sources [APPDATA_STAGED_SOURCE-1,'
+                ' APPDATA_STAGED_SOURCE-2, APPDATA_STAGED_SOURCE-3]')
+
+    @staticmethod
+    @pytest.mark.parametrize('fake_map_param,upgrade_type',
+                             [({
+                                   'APPDATA_VIRTUAL_SOURCE-1': '{}',
+                                   'APPDATA_VIRTUAL_SOURCE-2': '{}'
+                               }, platform_pb2.UpgradeRequest.VIRTUALSOURCE,
+                             )])
+    def test_virtual_source(
+        my_plugin, upgrade_request, fake_map_param, caplog):
+        upgrade_response = my_plugin.upgrade._internal_virtual_source(
+            upgrade_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert upgrade_response.WhichOneof('result') == 'return_value'
+        assert (upgrade_response.return_value.post_upgrade_parameters
+                == fake_map_param)
+        assert (caplog.records[0].message ==
+                'Upgrade virtual sources [APPDATA_VIRTUAL_SOURCE-1,'
+                ' APPDATA_VIRTUAL_SOURCE-2]')
+
+    @staticmethod
+    @pytest.mark.parametrize('fake_map_param,upgrade_type',
+                             [({
+                                   'APPDATA_SNAPSHOT-1': '{}'
+                               }, platform_pb2.UpgradeRequest.SNAPSHOT,
+                             )])
+    def test_snapshot(my_plugin, upgrade_request, fake_map_param, caplog):
+        upgrade_response = my_plugin.upgrade._internal_snapshot(
+            upgrade_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert upgrade_response.WhichOneof('result') == 'return_value'
+        assert (upgrade_response.return_value.post_upgrade_parameters
+                == fake_map_param)
+        assert (caplog.records[0].message ==
+                'Upgrade snapshots [APPDATA_SNAPSHOT-1]')
