@@ -54,7 +54,8 @@ def install_deps(target_dir, local_vsdk_root=None):
                 _build_wheel(os.path.join(local_vsdk_root, package), wheel_dir)
 
             packages = {
-                os.path.join(wheel_dir, p) for p in os.listdir(wheel_dir)
+                os.path.join(wheel_dir, p)
+                for p in os.listdir(wheel_dir)
             }
 
             if len(packages) != len(package_names):

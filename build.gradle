@@ -3,13 +3,19 @@
  */
 
 plugins {
-  id "com.google.protobuf" version "0.8.7" apply false
   id "delphix.python" version "0.0.7" apply false
 }
 
 subprojects {
-  version = "1.1.0-internal-001"
+    /*
+     * dvp-api is a Python package that contains Python protobuf classes generated based on the Virtualization API.
+     * dvpApiVersion is the version of the Virtualization API that we want this version of the SDK to be built against.
+     */
+    project.ext.dvpApiVersion = "1.1.0-master-003"
+    version = "1.1.0-internal-004"
 }
+
+
 
 def binDir = "${rootProject.projectDir}/bin"
 
@@ -17,14 +23,6 @@ def binDir = "${rootProject.projectDir}/bin"
  * The commands below are all temporary commands to help abstract the ad-hoc release process we have today. They
  * are only intended to help abstract away this logic until we roll these into the actual build system.
  */
-
-/*
- * The jar that is shipped with the Delphix Engine to support the Virtualization Platform is created by a shell script.
- * This task wraps that shell script.
- */
-task jar(type: Exec) {
-    commandLine "${binDir}/build.sh"
-}
 
 /*
  * This task wraps a shell script that checks if the version of the SDK has been bumped. Bumping the SDK version is
@@ -57,7 +55,7 @@ task build {
 }
 
 /*
- * This task publishes the final version of the jar and all Python distributions to our internal production PyPI
+ * This task publishes the final version of all the Python distributions to our internal production PyPI
  * repository. This should be executed immediately before a change is pushed.
  *
  * NOTE: This DOES NOT publish to pypi.org. The external release process is done outside of the build system.
@@ -78,7 +76,6 @@ task publishProd(type: Exec) {
  */
 task publishDebug(type: Exec) {
     dependsOn 'checkVersionBump'
-    dependsOn 'jar'
     dependsOn 'buildPython'
 
     executable "${binDir}/upload.sh"

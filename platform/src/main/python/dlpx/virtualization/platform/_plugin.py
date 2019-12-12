@@ -82,8 +82,8 @@ to have the import in the methods as the objects will exist at runtime.
 """
 import json
 from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
-from dlpx.virtualization import common_pb2
-from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.api import common_pb2
+from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.common.exceptions import PluginRuntimeError
 from dlpx.virtualization.platform import VirtualSource
 from dlpx.virtualization.platform import DirectSource

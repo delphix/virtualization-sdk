@@ -5,9 +5,9 @@
 import json
 import pytest
 import sys
-from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
-from dlpx.virtualization import common_pb2
+from dlpx.virtualization.api import common_pb2
 from dlpx.virtualization.platform import _plugin
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationAlreadyDefinedError,

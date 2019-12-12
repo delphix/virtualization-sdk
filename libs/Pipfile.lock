@@ -1,22 +1,30 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "374101d2ea5343b51742fc84a1b6ba82f50eb4671deb8f6944df1aa0861041fd"
+            "sha256": "14088559f45826a15935708b470b33e951715b88ba52502c21c2522009c8778c"
         },
         "pipfile-spec": 6,
         "requires": {},
         "sources": [
             {
                 "name": "delphix",
-                "url": "https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/",
+                "url": "https://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/",
                 "verifySsl": true
             }
         ]
     },
     "default": {
+        "dvp-api": {
+            "hashes": [
+                "sha256:df435f1bb843703d1a93346781ebb1ae0b6f61e4722d90399f6b0a641ad73c5f",
+                "sha256:eff849f3681e0c429a339a96f2861c8923606058b2941e1103d20e842f39d377"
+            ],
+            "index": "delphix",
+            "version": "==1.1.0-master-003"
+        },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-001.tar.gz",
-            "version": "== 1.1.0-internal-001"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-004.tar.gz",
+            "version": "== 1.1.0-internal-004"
         },
         "protobuf": {
             "hashes": [
@@ -37,7 +45,6 @@
                 "sha256:ceec283da2323e2431c49de58f80e1718986b79be59c266bb0509cbf90ca5b9e",
                 "sha256:fcfc907746ec22716f05ea96b7f41597dfe1a1c088f861efb8a0d4f4196a6f10"
             ],
-            "index": "delphix",
             "version": "==3.6.1"
         },
         "six": {
@@ -89,11 +96,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:aa18d7378b00b40847790e7c27e11673d7fed219354109d0e7b9e5b25dc3ad26",
-                "sha256:d5f18a79777f3aa179c145737780282e27b508fc8fd688cb17c7a813e8bd39af"
+                "sha256:073a852570f92da5f744a3472af1b61e28e9f78ccf0c9117658dc32b15de7b45",
+                "sha256:d95141fbfa7ef2ec65cfd945e2af7e5a6ddbd7c8d9a25e66ff3be8e3daf9f60f"
             ],
             "markers": "python_version < '3.8'",
-            "version": "==0.23"
+            "version": "==1.3.0"
         },
         "mock": {
             "hashes": [
@@ -129,10 +136,10 @@
         },
         "pluggy": {
             "hashes": [
-                "sha256:0db4b7601aae1d35b4a033282da476845aa19185c1e6964b25cf324b5e4ec3e6",
-                "sha256:fa5fa1622fa6dd5c030e9cad086fa19ef6a0cf6d7a2d12318e10cb49d6d68f34"
+                "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0",
+                "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"
             ],
-            "version": "==0.13.0"
+            "version": "==0.13.1"
         },
         "py": {
             "hashes": [
@@ -150,11 +157,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:5d0d20a9a66e39b5845ab14f8989f3463a7aa973700e6cdf02db69da9821e738",
-                "sha256:692d9351353ef709c1126266579edd4fd469dcf6b5f4f583050f72161d6f3592"
+                "sha256:65e92898fb5b61d0a1d7319c3e6dcf97e599e331cfdc2b27f20c0d87ece19239",
+                "sha256:9ea149066f566c943d3122f4b1cf1b577cab73189d11f490b54703fa5fa9df50"
             ],
             "index": "delphix",
-            "version": "==4.6.6"
+            "version": "==4.6.7"
         },
         "scandir": {
             "hashes": [

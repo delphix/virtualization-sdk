@@ -10,14 +10,6 @@ artifacts {
     python sdist.distFile
 }
 
-dependencies {
-    // Necessary to compile generated python protocol buffer libraries.
-    python project(path: ":common", configuration: "python")
-    python project(path: ":platform", configuration: "python")
-    python project(path: ":libs", configuration: "python")
-    python project(path: ":tools", configuration: "python")
-}
-
 dlpxPython {
     sources {
         delphix {

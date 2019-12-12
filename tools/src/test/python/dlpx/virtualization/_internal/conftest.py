@@ -17,7 +17,7 @@ from dlpx.virtualization._internal import (cli, click_util, package_util,
 # automatically get discovered in the test class if the figure name is used
 # as the input variable. The idea of fixtures is to define certain object
 # configs and allow them to get used in different tests but also being allowed
-# to set certain parts definated in other fixtures. Read more at:
+# to set certain parts defined in other fixtures. Read more at:
 # https://docs.pytest.org/en/latest/fixture.html
 #
 

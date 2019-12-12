@@ -140,7 +140,7 @@ artifacts {
 dlpxPython {
   sources {
     delphix {
-      url = "https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/"
+      url = "https://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/"
     }
   }
 
@@ -157,12 +157,13 @@ dlpxPython {
         version = "== 0.2.3"
     }
 
-    flake8 {
-      version = ">= 3.6"
+    "dvp-platform" {
+      version = "== $project.version"
+      path = file(tasks.getByPath(":platform:sdist").getDistFile().toString())
     }
 
-    protobuf {
-      version = "== 3.6.1"
+    flake8 {
+      version = ">= 3.6"
     }
 
     pyyaml {
@@ -214,7 +215,7 @@ dlpxPython {
     }
 
     yapf {
-      version = ">= 0.25"
+      version = "== 0.28"
     }
 
     /*
@@ -226,11 +227,6 @@ dlpxPython {
     "dvp-common" {
       version = "== $project.version"
       path = file(tasks.getByPath(":common:sdist").getDistFile().toString())
-    }
-
-    "dvp-platform" {
-      version = "== $project.version"
-      path = file(tasks.getByPath(":platform:sdist").getDistFile().toString())
     }
 
     "dvp-libs" {
