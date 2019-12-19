@@ -9,9 +9,8 @@ from collections import OrderedDict
 
 import mock
 import pytest
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import exceptions, plugin_util, util_classes
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
-from dlpx.virtualization._internal.util_classes import ValidationMode
 
 
 @pytest.fixture
@@ -42,9 +41,8 @@ class TestPluginValidator:
         ])
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator.from_config_content(
-                plugin_config_file, plugin_config_content, schema_file,
-                ValidationMode.ERROR)
-            validator.validate()
+                plugin_config_file, plugin_config_content, schema_file)
+            validator.validate_plugin_config()
 
         message = err_info.value.message
         assert ('Failed to load schemas because {} is not a valid json file.'
@@ -55,9 +53,8 @@ class TestPluginValidator:
     def test_plugin_bad_config_file(plugin_config_file):
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(plugin_config_file,
-                                        util_classes.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR, True)
-            validator.validate()
+                                        util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
 
         message = err_info.value.message
         assert message == ("Unable to read plugin config file '{}'"
@@ -82,8 +79,8 @@ class TestPluginValidator:
 
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
-            util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-        validator.validate()
+            util_classes.PLUGIN_CONFIG_SCHEMA)
+        validator.validate_plugin_module()
 
         mock_import_plugin.assert_called()
 
@@ -101,8 +98,8 @@ class TestPluginValidator:
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
 
@@ -131,8 +128,8 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
@@ -168,8 +165,8 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
@@ -190,8 +187,8 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert "Additional properties are not allowed " \
@@ -211,8 +208,8 @@ class TestPluginValidator:
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
@@ -225,12 +222,10 @@ class TestPluginValidator:
 
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_staged_plugin_config,
-                                        util_classes.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR, True)
-            validator.validate()
+                                        util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
 
         message = err_info.value.message
-        assert validator.result.warnings.items() > 0
         assert 'Named argument mismatch in method' in message
         assert 'Number of arguments do not match' in message
         assert 'Implementation missing for required method' in message
@@ -243,12 +238,10 @@ class TestPluginValidator:
 
         with pytest.raises(exceptions.UserError) as err_info:
             validator = PluginValidator(fake_direct_plugin_config,
-                                        util_classes.PLUGIN_CONFIG_SCHEMA,
-                                        ValidationMode.ERROR, True)
-            validator.validate()
+                                        util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
 
         message = err_info.value.message
-        assert validator.result.warnings.items() > 0
         assert 'Named argument mismatch in method' in message
         assert 'Number of arguments do not match' in message
         assert 'Implementation missing for required method' in message
@@ -279,17 +272,15 @@ class TestPluginValidator:
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, ValidationMode.ERROR)
-            validator.validate()
+                util_classes.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
             mock_import_plugin.assert_called()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
-    @pytest.mark.parametrize('validation_mode',
-                             [ValidationMode.INFO, ValidationMode.WARNING])
-    def test_plugin_info_warn_mode(plugin_config_file, validation_mode):
+    def test_plugin_info_warn_mode(plugin_config_file):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
@@ -300,10 +291,8 @@ class TestPluginValidator:
         ])
         err_info = None
         try:
-            validator = PluginValidator.from_config_content(
-                plugin_config_file, plugin_config_content,
-                util_classes.PLUGIN_CONFIG_SCHEMA, validation_mode)
-            validator.validate()
+            plugin_util.get_plugin_manifest(plugin_config_file,
+                                            plugin_config_content, False)
         except Exception as e:
             err_info = e
 
