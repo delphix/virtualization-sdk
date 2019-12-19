@@ -63,9 +63,13 @@ class PluginImporter:
         Imports the plugin module, does basic validation.
         Returns:
             plugin manifest - dict describing methods implemented in the plugin
-        Note:
-            warnings - dict containing a list of errors or warnings can be
-            obtained by the caller via warnings property.
+        NOTE:
+            Importing module in the current context pollutes the runtime of
+            the caller, in this case dvp. If the module being imported, for
+            e.g. contains code that adds a handler to the root logger at
+            import time, this can cause issues with logging in this code and
+            callers of validator. To avoid such issues, perform the import in
+            in a sub-process and on completion return the output.
         """
         logger.debug('Importing plugin module : %s', self.__plugin_module)
 
@@ -73,25 +77,25 @@ class PluginImporter:
         plugin_manifest, warnings = self.__import_plugin()
         self.__post_import_checks(plugin_manifest, warnings)
 
-        return plugin_manifest, warnings
+        return plugin_manifest
 
     def __pre_import_checks(self):
         """
         Performs checks of the plugin code that should take place prior to
         importing.
         """
-        warnings = PluginImporter.__check_for_undefined_names(self.__src_dir)
-        PluginImporter.__report_warnings_and_exceptions(warnings)
+        warnings = self.__check_for_undefined_names(self.__src_dir)
+        self.__report_warnings_and_exceptions(warnings)
 
     def __import_plugin(self):
         """
-        Imports the module to check for errors or issues. Also does an eval on
-        the entry point.
+        Imports the module in a sub-process to check for errors or issues.
+        Also does an eval on the entry point.
         """
         plugin_manifest = {}
         warnings = defaultdict(list)
         try:
-            plugin_manifest, warnings = (PluginImporter.__import_in_subprocess(
+            plugin_manifest, warnings = (self.__import_in_subprocess(
                 self.__src_dir, self.__plugin_module,
                 self.__plugin_entry_point, self.__plugin_type,
                 self.__validate))

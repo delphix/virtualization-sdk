@@ -59,7 +59,7 @@ class TestBuild:
     @pytest.mark.parametrize('artifact_filename', ['somefile.json'])
     @mock.patch.object(PluginValidator,
                        '_PluginValidator__import_plugin',
-                       return_value=({}, None))
+                       return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')

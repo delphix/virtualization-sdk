@@ -85,9 +85,9 @@ class TestInitialize:
         init.init(tmpdir.strpath, ingestion_strategy, plugin_name, host_type)
 
         # Validate the config file is as we expect.
-        result = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, False)
+            True)
 
         config = result.plugin_config_content
 
@@ -121,9 +121,9 @@ class TestInitialize:
         init.init(tmpdir.strpath, util_classes.DIRECT_TYPE, "",
                   util_classes.UNIX_HOST_TYPE)
 
-        result = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, False)
+            True)
 
         config = result.plugin_config_content
 
@@ -134,9 +134,9 @@ class TestInitialize:
     def test_init_windows_plugin(tmpdir, plugin_name):
         init.init(tmpdir.strpath, util_classes.DIRECT_TYPE, plugin_name,
                   util_classes.WINDOWS_HOST_TYPE)
-        result = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, False)
+            True)
         config = result.plugin_config_content
 
         # Validate that the host type is WINDOWS
@@ -157,10 +157,26 @@ class TestInitialize:
                                           init.DEFAULT_PLUGIN_CONFIG_FILE)
         schema_file = os.path.join(tmpdir.strpath, init.DEFAULT_SCHEMA_FILE)
         validator = plugin_validator.PluginValidator(plugin_config_file,
-                                                     schema_file, True, True)
-        validator.validate()
+                                                     schema_file)
 
-        assert not validator.result.warnings
+        # Assert config file and import validations are not done.
+        assert not validator.result.plugin_config_content
+        assert not validator.result.plugin_manifest
+
+        validator.validate_plugin_config()
+
+        # Assert config file is validated and import validation is not done.
+        assert validator.result.plugin_config_content
+        assert not validator.result.plugin_manifest
+
+        validator.validate_plugin_module()
+
+        #
+        # Assert both config content and import validation are done and result
+        # tuple has both set to valid values.
+        #
+        assert validator.result.plugin_config_content
+        assert validator.result.plugin_manifest
 
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file):
@@ -203,8 +219,7 @@ class TestInitialize:
     @staticmethod
     def test_default_schema_definition(schema_template):
         validator = schema_validator.SchemaValidator(
-            None, util_classes.PLUGIN_SCHEMA,
-            util_classes.ValidationMode.ERROR, schema_template)
+            None, util_classes.PLUGIN_SCHEMA, schema_template)
         validator.validate()
 
         # Validate the repository schema only has the 'name' property.

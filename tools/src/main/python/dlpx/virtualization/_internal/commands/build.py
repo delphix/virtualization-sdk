@@ -13,8 +13,7 @@ import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            package_util,
-                                           plugin_dependency_util, plugin_util,
-                                           util_classes)
+                                           plugin_dependency_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +53,10 @@ def build(plugin_config,
         local_vsdk_root = os.path.expanduser(local_vsdk_root)
 
     # Read content of the plugin config  file provided and perform validations
-    logger.info('Reading and validating plugin config file %s', plugin_config)
+    logger.info('Validating plugin config file %s', plugin_config)
     try:
-        result = plugin_util.read_and_validate_plugin_config_file(
-            plugin_config, not generate_only, False, skip_id_validation)
+        result = plugin_util.validate_plugin_config_file(
+            plugin_config, not generate_only, skip_id_validation)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -69,11 +68,11 @@ def build(plugin_config,
         plugin_config, plugin_config_content['schemaFile'])
 
     # Read schemas from the file provided in the config and validate them
-    logger.info('Reading and validating schemas from %s', schema_file)
+    logger.info('Validating schemas from %s', schema_file)
 
     try:
-        result = plugin_util.read_and_validate_schema_file(
-            schema_file, not generate_only)
+        result = plugin_util.validate_schema_file(schema_file,
+                                                  not generate_only)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -119,11 +118,6 @@ def build(plugin_config,
     plugin_manifest = {}
     if result:
         plugin_manifest = result.plugin_manifest
-        if result.warnings:
-            warning_msg = util_classes.MessageUtils.warning_msg(
-                result.warnings)
-            logger.warn('{}\n{} Warning(s). {} Error(s).'.format(
-                warning_msg, len(result.warnings['warning']), 0))
 
     #
     # Setup a build directory for the plugin in its root. Dependencies are
