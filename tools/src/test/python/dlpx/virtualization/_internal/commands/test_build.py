@@ -5,12 +5,13 @@
 import json
 import os
 
-import mock
-import pytest
 import yaml
 from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.commands import build
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
+
+import mock
+import pytest
 
 
 @pytest.fixture
@@ -65,9 +66,9 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
     def test_build_success_non_default_output_file(
-            mock_relative_path, mock_install_deps, mock_generate_python,
-            mock_import_plugin, plugin_config_file, artifact_file,
-            artifact_content, codegen_gen_py_inputs):
+        mock_relative_path, mock_install_deps, mock_generate_python,
+        mock_import_plugin, plugin_config_file, artifact_file,
+        artifact_content, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -216,9 +217,9 @@ class TestBuild:
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
     def test_build_generate_artifact_fail(
-            mock_relative_path, mock_install_deps, mock_generate_python,
-            mock_plugin_manifest, mock_gen_artifact, plugin_config_file,
-            artifact_file, codegen_gen_py_inputs):
+        mock_relative_path, mock_install_deps, mock_generate_python,
+        mock_plugin_manifest, mock_gen_artifact, plugin_config_file,
+        artifact_file, codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -320,7 +321,7 @@ class TestBuild:
     @staticmethod
     @mock.patch('compileall.compile_dir')
     def test_zip_and_encode_source_files_compileall_fail(
-            mock_compile, src_dir):
+        mock_compile, src_dir):
         mock_compile.return_value = 0
         with pytest.raises(exceptions.UserError) as err_info:
             build.zip_and_encode_source_files(src_dir)

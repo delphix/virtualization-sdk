@@ -2,9 +2,10 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import pytest
 from dlpx.virtualization._internal import delphix_client, exceptions
 from dlpx.virtualization._internal.commands import download_logs
+
+import pytest
 
 
 class FakeDelphixClient(object):

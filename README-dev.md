@@ -6,36 +6,35 @@ This README is for SDK developers. If you are a plugin developer please refer to
 
 The artifact produced by this repository is a set of Python distributions that make up the SDK.
 
-# Development process
-
-This repository is going through a lot of changes. It is being migrated to GitHub and open sourced. The development process will change throughout this process so please refer back to this README regularly to understand what the current development process is.
-
-At a very high level, our development process usually looks like this:
-
-1. Make changes to SDK and appgate code. Test these changes manually. Iterate on this until you have everything working.
-2. Publish a development build of the SDK to artifactory.
-3. Update the version of the SDK specified in the app gate.
-4. Publish a review for SDK code, and also publish a "provisional" review of appgate code. Address any feedback.
-5. Push the SDK code and publish new SDK builds to our internal servers.
-6. Finalize your appgate review.
-7. Push the appgate changes
-
-Not every type of change requires every step.
-
-These steps are described in more detail below.
-
 ## Background
 
 There are two parts of the SDK that are important to think about separately since they have slightly different workflows.
 
 1. The `tools` package is the SDK's CLI. This aids in plugin development, testing, and distribution.
-2. `common`, `libs`, and `platform` contain what are collectively called the "wrappers". These are vanilla Python classes that abstract the Virtualization API protobuf messages (published by app-gate) away from plugin developers. These expose the API plugin developers write against.
+2. `common`, `libs`, and `platform` contain what are collectively called the "wrappers". These are vanilla Python classes
+that abstract the Virtualization API protobuf messages (published by app-gate) away from plugin developers. These expose
+the API plugin developers write against.
 
-All dependencies of a plugin must be packaged with the plugin including the protobuf messages (`dvp-api`) and the wrappers. This is done automatically by `dvp build`.
+All dependencies of a plugin must be packaged with the plugin including the protobuf messages (`dvp-api`) and the wrappers.
+This is done automatically by `dvp build`.
 
-This is what causes the slightly different workflows in development. Changes to `tools` are completely isolated from the Delphix Engine and wrappers changes only impact the plugin build.
+This is what causes the slightly different workflows in development. Changes to `tools` are completely isolated from the
+Delphix Engine and wrappers changes only impact the plugin build.
 
-Unfortunately, at the moment _all_ SDK changes require an app-gate change. Currently BlackBox looks at a property file in the app-gate to determine which version of the SDK to install during tests. This will eventually change, but at the moment any SDK change needs to be accompanied by an app-gate change that, at a minimum, bumps this version.
+## Development process
+
+At a very high level, our development process usually looks like this:
+
+1. Create a fork of the delphix/virtualization-sdk repository.
+2. Clone the forked repository.
+3. Make changes to SDK code. Test these changes manually and with unit tests. Iterate on this until you have everything working.
+4. Commit your changes and build all Python package distributions. Make sure the version number of the packages is updated appropriately.
+5. Publish Python distributions to artifactory. 
+7. Run blackbox against the newly uploaded SDK version.
+7. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
+8. Once the pull request is approved, it will merged into delphix/virtualization-sdk repository.
+
+These steps are described in more detail below.
 
 ## Local SDK Development
 
@@ -66,57 +65,73 @@ The wrappers are built with the plugin. `dvp build` has a hidden `--dev` flag. T
 vsdk_root = /path/to/vsdk_repo_root
 ```
 
-### Versioning
-The first thing to do is to change the version number. There are _two_ places where the version needs to be changed unfortunately. For almost all cases, this will simply involve incrementing the "build number", which is the three-digit number at the very end of the version.
+## Versioning
 
-1. In the root of the SDK codebase, open the `build.gradle` file, and change the version.
-2. In `tools/src/main/python/dlpx/virtualization/_internal/settings.cfg` change the `package_version` property.
+The SDK is shipped as five Python packages that are currently versioned and shipped together: dvp, dvp-common, dvp-libs,
+dvp-platform, and dvp-tools. 
 
-The two versions should be identical.
+The first thing to do is to change the version number of all the packages. Our versioning scheme follows the rules of
+semantic versioning in order to help developers manage their "dependency hell". We use bump2version 
+(https://github.com/c4urself/bump2version) to make the version management of all five packages easier. Semantic versioning rules are the following:
 
-This repository is going through a transition in which Gradle will eventually be removed. The version string will eventually only live in the individual packages themselves.
+```
+Given a version number MAJOR.MINOR.PATCH, increment the:
 
-### Testing
+    MAJOR version when you make incompatible API changes,
+    MINOR version when you add functionality in a backwards compatible manner, and
+    PATCH version when you make backwards compatible bug fixes.
+```
+Source: https://semver.org/
 
-Currently, there are three types of SDK testing: unit, manual, and blackbox.
+The version format is MAJOR.MINOR.PATCH for released versions and MAJOR.MINOR.PATCH-RELEASE-BUILD for pre-release builds.
+For more details see `.bumpversion.cfg` in the root of this repository.
 
-#### Unit Testing
+If you want to bump the build number from `1.1.0-internal-7` to `1.1.0-internal-8`, run `bumpversion build`.
 
-Running `./gradlew test` from the top level of the repository will run all SDK unit tests. Smaller sets of tests can be run from inside each directory (`common`, `platform`, etc.) by going into that directory and running `../gradlew test`. These can also be run through your IDE.
+If you want to bump the major/minor/patch version, run `bumpversion [major|minor|patch]`.
 
-#### Testing sdk-gate changes with app-gate code
+If you want to get rid of the pre-release label (bump from `1.1.1-internal-7` to `1.1.0`), run `bumpversion release`.
 
-At the moment blackbox refers to a property file in the app-gate to determine the version of the SDK to install for tests so this property always needs to updated for automated testing.
+## Testing
 
-NOTE: The app-gate does not pull in the wrappers or CLI from this repository.
+Currently, there are three types of SDK testing: unit, manual, and functional (blackbox).
 
-The easiest way to do both of these is:
+### Unit Testing
 
-1. Update the version of the SDK to something unique and clearly a development build. The standard is `x.y.z-internal-abc-<your_name>`. For example, `1.1.0-internal-001-grant`.
-2. Run `./gradlew publishDebug` from the root of this repository.
-3. In `appliance/gradle.properties` in the app-gate update `virtualizationSdkVer` to match the SDK version.
+Go into one of the package directories (common, dvp, libs, platform, tools) and run the following commands (if you haven't done it already):
+1. Install the package's development dependencies: `pip install -r requirements.txt`.
+2. Install the package itself in editable mode: `pip install -e .`.
+3. Run unit tests: `python -m pytest src/main/python`.
 
-Run an appliance-update for manual testing and/or kick off automated blackbox tests by running `git blackbox -s appdata_python_samples` from your app-gate development branch.
+There's no way to locally run unit tests in all packages with one command. However, they will be run automatically through GitHub Actions when you open a pull request. 
+
+### Testing sdk-gate changes with app-gate code
+
+#### Manual testing
+
+Run `dvp build --dev` to build your plugin and then upload it to a Delphix Engine to test.
+
+The wrappers are built with the plugin. `dvp build` has a hidden `--dev` flag. This builds `common`, `libs`, and `platform` locally and bundles them with the plugin. A special configuration entry is needed in your dvp config file which is located at `~/.dvp/config`:
+
+```
+[dev]
+vsdk_root = /path/to/vsdk_repo_root
+```
+
+##### Functional (blackbox) testing
+(Now) Let's assume you're working on the SDK version `1.1.0-internal-10`.
+To run blackbox tests, follow these steps:
+1. Navigate to each package directory (common, dvp, libs, platform, tools) and run `python setup.py sdist bdist_wheel`. This will build Python package distributions.
+2. Run `./bin/upload.sh` to upload Python distributions to artifactory. 
+2. Navigate to the app-gate directory and run 
+`git blackbox -s appdata_samples --extra-params="-p sdk-version=1.0.0-internal-10"`.
 
 
-## SDK Review and Provisional app-gate review
-
-Once you're finished with local development and testing, you can publish your final SDK review to reviewboard.
-
-In addition, it's customary to publish a "provisional" appgate review, so that people can get insight into how the out-for-review SDK changes will actually be used by the appgate. Of course, this review will contain all your temporary local-build changes mentioned above. So, in your review, you'll want to mention that these temporary changes will be reverted before the review is finalized.
-
-## Pushing and Deploying SDK Code
-
-
-### Publishing
-
-There are two Gradle tasks that do publishing: `publishDebug` and `publishProd`. They differ in two ways:
-
-1. They publish the Python distributions to separate repositories on Artifactory. `publishDebug` uploads to `dvp-local-pypi`. This is a special repository that has been setup to test the SDK. It falls back our our production PyPI repository, but artifacts uploaded to `dvp-local-pypi` do not impact production artifacts. This should be used for testing. `publishProd` does upload the Python distributions to our production Artifactory PyPI repository, `delphix-local`.
-
-2. `publishProd` runs tests, formatting, and linting while `publishDebug` does not.
-
-NOTE: The external release to `pypi.org` is done outside of the build system.
+(Soon) We will be able to move to this process once blackbox runner can build Python distributions without using Gradle.
+To run blackbox tests, follow these steps: 
+1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `feature1` in repository called `username/virtualization-sdk`.
+2. Navigate to the app-gate directory and run 
+`git blackbox -s appdata_samples --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=feature1"`.
 
 #### Setup
 
@@ -127,16 +142,3 @@ NOTE: The external release to `pypi.org` is done outside of the build system.
    - `ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS` is the username/password combo given to you by whoever setup your Artifactory pypi account. This is an account separate from your Artifactory account. If you do not have one, please reach out to the `#artifactory` channel and request a `dvp-uploaders-python` account. See <https://docs.delphix.com/pages/viewpage.action?spaceKey=EO&title=Artifactory-instance#Artifactory-instance-SDKpythonpackages> for directions on how to add the account. These are used to upload the Python distributions to our internal PyPI repositories. The credentials are the same for both internal PyPI repositories mentioned above.
 
 2. `twine` needs to be installed. This is a Python package that is used to upload Python distributions. If it's not installed, install it by running `pip install twine`.
-
-#### Final Publishing
-
-Once you are absolutely certain all changes have been made run `./gradlew publishProd`. This will run checks, create the Python distributions, and upload all of them to Artifactory with the Python distributions going to `delphix-local`.
-
-## Using Newly-Deployed SDK Build
-
-Now, we have to go back to our `appgate` code and make it point to the newly-deployed build on artifactory, instead of the local build we used to test. To achieve that,
-modify `appliance/gradle.properties` and change `virtualizationSdkVer` to refer to your new version number.
-
-## Finalizing Appgate Review
-
-Once you've got the above changes completed, tested, and checked into git, you can update your appgate review. Now, your review will be ready for final ship-its.

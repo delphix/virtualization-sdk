@@ -6,11 +6,12 @@ import os
 import subprocess
 import sys
 
-import mock
-import pytest
 from dlpx.virtualization._internal import file_util, package_util
 from dlpx.virtualization._internal import plugin_dependency_util as pdu
 from dlpx.virtualization._internal.exceptions import SubprocessFailedError
+
+import mock
+import pytest
 
 
 class TestPluginDependencyUtil:

@@ -9,8 +9,9 @@ import os
 import subprocess
 import sys
 
-import pytest
 from dlpx.virtualization._internal import codegen
+
+import pytest
 
 
 @pytest.fixture(scope='module')

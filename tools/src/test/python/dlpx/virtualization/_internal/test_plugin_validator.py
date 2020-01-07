@@ -7,11 +7,12 @@ import os
 import uuid
 from collections import OrderedDict
 
-import mock
-import pytest
 from dlpx.virtualization._internal import exceptions, util_classes
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.util_classes import ValidationMode
+
+import mock
+import pytest
 
 
 @pytest.fixture

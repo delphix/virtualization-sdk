@@ -4,9 +4,10 @@
 
 import json
 
-import pytest
 from dlpx.virtualization._internal import delphix_client, exceptions
 from dlpx.virtualization._internal.commands import upload
+
+import pytest
 
 
 class FakeDelphixClient(object):

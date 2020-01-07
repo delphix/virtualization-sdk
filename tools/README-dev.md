@@ -6,10 +6,6 @@ These tools will be one piece of the Delphix Virtualization SDK. Plugin develope
 ## NOTE
 This guide assumes that the current working directory is the root of the tools directory where this README is.
 
-## The absolute basics
-- `../gradlew build` to get started developing
-- `../gradlew check` must pass for code reviews. Copy and paste the output into reviews
-
 ## Getting Started
 
 ### Development Environment
@@ -17,9 +13,8 @@ Development should be done in a personal virtualenv. To setup the virtual enviro
 
 1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
 2. `source ~/path/ot/env/root/bin/activate`
-3. `pip install -r lock.dev-requirements.txt`. This installs the required devlopment packages.
-4. `../gradlew makeSetupPy` (this command will generate the setup.py file)
-5. `pip install -e .`
+3. `pip install -r requirements.txt`. This installs the required development packages.
+4. `pip install -e .`
 
 NOTE: If build reports any issues with 'virtualenv' not found and/or errors finding virtualenv in the PATH, check and make sure virtualenv from Python 2.7 is being used and not from 3.x. Few places to check, for e.g. on Mac - /usr/local/bin/virtualenv, ~/Library/Python/2.7/virtualenv.
 

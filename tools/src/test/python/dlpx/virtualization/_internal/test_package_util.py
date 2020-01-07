@@ -2,14 +2,15 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-import pytest
 from dlpx.virtualization._internal import package_util
+
+import pytest
 
 
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '1.1.0-internal-004'
+        assert package_util.get_version() == '1.1.0-internal-7'
 
     @staticmethod
     def test_get_virtualization_api_version():

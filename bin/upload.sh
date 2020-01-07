@@ -9,16 +9,17 @@
 #
 # This script can upload to both our internal dev and prod PyPI repositories. It defaults to dev.
 
-SCRIPT_DIR=`dirname $0`
-source ${SCRIPT_DIR}/common.sh
+SCRIPT_DIR=$(dirname "$0")
+# shellcheck source=./common.sh
+source "${SCRIPT_DIR}"/common.sh
 
 USAGE="Usage: upload.sh [--prod]"
 
 # Validate usage is correct and expected environment variables are set.
 if [[ $# -gt 1 ]]; then
-    die $USAGE
+    die "$USAGE"
 elif [[ $# -eq 1 && $1 != "--prod" ]]; then
-    die $USAGE
+    die "$USAGE"
 elif [[ -z ${ARTIFACTORY_PYPI_USER} || -z ${ARTIFACTORY_PYPI_PASS} ]]; then
     die "ARTIFACTORY_PYPI_USER and/or ARTIFACTORY_PYPI_PASS environment variables are not set. Set them or pass them in as arguments to upload.sh."
 fi
@@ -32,34 +33,34 @@ else
 fi
 
 # Check early that 'twine' is on the path.
-command -v twine 2>&1 >/dev/null || die "'twine' is either not install or not on PATH. To install 'twine' run 'pip install twine'"
+command -v twine >/dev/null 2>&1 || die "'twine' is either not install or not on PATH. To install 'twine' run 'pip install twine'"
 
 # All the file paths need to be relative to the root of the git repo
-ROOT=`git rev-parse --show-toplevel`
+ROOT=$(git rev-parse --show-toplevel)
 
 # Get the SDK version from build.gradle in the root of the SDK. This essentially just looks for a line that has
 # 'version =' and pulls the value from the quotes after it. Nothing too sophisticated and fairly error prone.
-VERSION=`cat "${ROOT}/build.gradle" | grep '^\s*version\s*=\s*"*"'| sed -E 's/.*"(.*)".*/\1/g'`
+VERSION=$(grep '^current_version\s*=\s*' "${ROOT}/.bumpversion.cfg" | sed -E 's/.*=[[:space:]](.*)/\1/g')
 [ -z "$VERSION" ] && die "Failed to retrieve SDK version from build.gradle."
 
 echo "Uploading 'common' Python distribution..."
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/common/build/python-dist/*${VERSION}.tar.gz" > /dev/null
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/common/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/common/dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/common/dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'platform' Python distribution..."
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/platform/build/python-dist/*${VERSION}.tar.gz" > /dev/null
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/platform/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/platform/dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/platform/dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'libs' Python distribution..."
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/libs/build/python-dist/*${VERSION}.tar.gz" > /dev/null
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/libs/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/libs/dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/libs/dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'tools' Python distribution..."
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/tools/build/python-dist/*${VERSION}.tar.gz" > /dev/null
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/tools/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/tools/dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/tools/dist/*${VERSION//-/_}*.whl" > /dev/null
 
 echo "Uploading 'dvp' Python distribution..."
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/dvp/build/python-dist/*${VERSION}.tar.gz" > /dev/null
-twine upload --repository-url ${REPO} -u ${ARTIFACTORY_PYPI_USER} -p ${ARTIFACTORY_PYPI_PASS} "${ROOT}/dvp/build/python-dist/*${VERSION//-/_}*.whl" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/dvp/dist/*${VERSION}.tar.gz" > /dev/null
+twine upload --repository-url ${REPO} -u "${ARTIFACTORY_PYPI_USER}" -p "${ARTIFACTORY_PYPI_PASS}" "${ROOT}/dvp/dist/*${VERSION//-/_}*.whl" > /dev/null
 
 exit 0
