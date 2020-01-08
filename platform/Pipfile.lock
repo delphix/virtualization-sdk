@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fc15781d03ed3f3d9e8ff4f588f90cab291c9899ef4339d82656e5d3aaa1aa68"
+            "sha256": "486b00d11f451beda7c61fbb8a4b65f6aa8aec9866dfd4f460fb2034bdaac806"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -23,8 +23,8 @@
             "version": "==1.1.0-master-003"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-005.tar.gz",
-            "version": "== 1.1.0-internal-005"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-006.tar.gz",
+            "version": "== 1.1.0-internal-006"
         },
         "enum34": {
             "hashes": [
@@ -168,11 +168,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:65e92898fb5b61d0a1d7319c3e6dcf97e599e331cfdc2b27f20c0d87ece19239",
-                "sha256:9ea149066f566c943d3122f4b1cf1b577cab73189d11f490b54703fa5fa9df50"
+                "sha256:6192875be8af57b694b7c4904e909680102befcb99e610ef3d9f786952f795aa",
+                "sha256:f8447ebf8fd3d362868a5d3f43a9df786dfdfe9608843bd9002a2d47a104808f"
             ],
             "index": "delphix",
-            "version": "==4.6.7"
+            "version": "==4.6.8"
         },
         "scandir": {
             "hashes": [

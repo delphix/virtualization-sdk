@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6ce0b104acdd7af1e177100807866ee7176d5da58f6feb55b3a2aa5bbc8c4c8c"
+            "sha256": "9fdae34cda2117051576372f70698033622d25c390672a83669f63d5ae206370"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -23,8 +23,8 @@
             "version": "==1.1.0-master-003"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-005.tar.gz",
-            "version": "== 1.1.0-internal-005"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-006.tar.gz",
+            "version": "== 1.1.0-internal-006"
         },
         "protobuf": {
             "hashes": [
@@ -91,7 +91,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.0'",
+            "markers": "python_version < '3.3'",
             "version": "==1.0.2"
         },
         "importlib-metadata": {
@@ -131,7 +131,7 @@
                 "sha256:0ec8205a157c80d7acc301c0b18fbd5d44fe655968f5d947b6ecef5290fc35db",
                 "sha256:6cd9a47b597b37cc57de1c05e56fb1a1c9cc9fab04fe78c29acd090418529868"
             ],
-            "markers": "python_version < '3.6'",
+            "markers": "python_version < '3'",
             "version": "==2.3.5"
         },
         "pluggy": {
@@ -157,11 +157,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:65e92898fb5b61d0a1d7319c3e6dcf97e599e331cfdc2b27f20c0d87ece19239",
-                "sha256:9ea149066f566c943d3122f4b1cf1b577cab73189d11f490b54703fa5fa9df50"
+                "sha256:6192875be8af57b694b7c4904e909680102befcb99e610ef3d9f786952f795aa",
+                "sha256:f8447ebf8fd3d362868a5d3f43a9df786dfdfe9608843bd9002a2d47a104808f"
             ],
             "index": "delphix",
-            "version": "==4.6.7"
+            "version": "==4.6.8"
         },
         "scandir": {
             "hashes": [

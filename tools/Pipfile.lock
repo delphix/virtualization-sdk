@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "68f9a4de5023d37cdcef8e799d69437a07b7ea17980210634090a5e146d21faa"
+            "sha256": "cc67692aa51c06b35e89165038a8e0789edc38dd91b0e60f0f932d631739931b"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -56,7 +56,7 @@
                 "sha256:254c1d9c79f60c45dfde850850883d5aaa7f19a23f13561243a050d5a7c3fe4c",
                 "sha256:c7d282687a5308319bf3d2e7706e575c635b0a470342641c93bea0ea3b5331df"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version < '3'",
             "version": "==4.0.2"
         },
         "contextlib2": {
@@ -68,8 +68,8 @@
             "version": "==0.6.0.post1"
         },
         "dvp-platform": {
-            "path": "../platform/build/python-dist/dvp-platform-1.1.0-internal-005.tar.gz",
-            "version": "== 1.1.0-internal-005"
+            "path": "../platform/build/python-dist/dvp-platform-1.1.0-internal-006.tar.gz",
+            "version": "== 1.1.0-internal-006"
         },
         "entrypoints": {
             "hashes": [
@@ -102,7 +102,7 @@
                 "sha256:89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0",
                 "sha256:f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version < '3'",
             "version": "==3.2.3.post2"
         },
         "idna": {
@@ -313,7 +313,7 @@
                 "sha256:254c1d9c79f60c45dfde850850883d5aaa7f19a23f13561243a050d5a7c3fe4c",
                 "sha256:c7d282687a5308319bf3d2e7706e575c635b0a470342641c93bea0ea3b5331df"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version < '3'",
             "version": "==4.0.2"
         },
         "contextlib2": {
@@ -362,12 +362,12 @@
             "version": "==5.0"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-005.tar.gz",
-            "version": "== 1.1.0-internal-005"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-006.tar.gz",
+            "version": "== 1.1.0-internal-006"
         },
         "dvp-libs": {
-            "path": "../libs/build/python-dist/dvp-libs-1.1.0-internal-005.tar.gz",
-            "version": "== 1.1.0-internal-005"
+            "path": "../libs/build/python-dist/dvp-libs-1.1.0-internal-006.tar.gz",
+            "version": "== 1.1.0-internal-006"
         },
         "entrypoints": {
             "hashes": [
@@ -400,7 +400,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "functools32": {
@@ -408,7 +408,7 @@
                 "sha256:89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0",
                 "sha256:f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d"
             ],
-            "markers": "python_version < '3.2'",
+            "markers": "python_version < '3'",
             "version": "==3.2.3.post2"
         },
         "futures": {
@@ -517,11 +517,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:65e92898fb5b61d0a1d7319c3e6dcf97e599e331cfdc2b27f20c0d87ece19239",
-                "sha256:9ea149066f566c943d3122f4b1cf1b577cab73189d11f490b54703fa5fa9df50"
+                "sha256:6192875be8af57b694b7c4904e909680102befcb99e610ef3d9f786952f795aa",
+                "sha256:f8447ebf8fd3d362868a5d3f43a9df786dfdfe9608843bd9002a2d47a104808f"
             ],
             "index": "delphix",
-            "version": "==4.6.7"
+            "version": "==4.6.8"
         },
         "pytest-cov": {
             "hashes": [

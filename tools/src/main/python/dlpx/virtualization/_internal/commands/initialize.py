@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import logging
@@ -10,8 +10,8 @@ from collections import OrderedDict
 
 import jinja2
 import yaml
-from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           plugin_util, util_classes)
+from dlpx.virtualization._internal import (codegen, const, exceptions,
+                                           file_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -163,15 +163,15 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy, host_type):
 
     template = env.get_template(ENTRY_POINT_TEMPLATE_NAME)
 
-    if host_type == util_classes.WINDOWS_HOST_TYPE:
+    if host_type == const.WINDOWS_HOST_TYPE:
         default_mount_path = "C:\\\\tmp\\\\dlpx_staged_mounts\\\\{}"
-    elif host_type == util_classes.UNIX_HOST_TYPE:
+    elif host_type == const.UNIX_HOST_TYPE:
         default_mount_path = "/tmp/dlpx_staged_mounts/{}"
 
-    if ingestion_strategy == util_classes.DIRECT_TYPE:
+    if ingestion_strategy == const.DIRECT_TYPE:
         linked_operations = env.get_template(
             DIRECT_OPERATIONS_TEMPLATE_NAME).render()
-    elif ingestion_strategy == util_classes.STAGED_TYPE:
+    elif ingestion_strategy == const.STAGED_TYPE:
         linked_operations = env.get_template(
             STAGED_OPERATIONS_TEMPLATE_NAME).render(
                 default_mount_path=default_mount_path)
