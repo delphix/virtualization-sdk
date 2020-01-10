@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 import importlib
 import inspect
@@ -10,15 +10,45 @@ from collections import defaultdict
 from multiprocessing import Process, Queue
 
 import yaml
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
-from dlpx.virtualization._internal.util_classes import MessageUtils
 from flake8.api import legacy as flake8
 
 logger = logging.getLogger(__name__)
 
-PLUGIN_IMPORTER_YAML = os.path.join(util_classes.PLUGIN_SCHEMAS_DIR,
+PLUGIN_IMPORTER_YAML = os.path.join(const.PLUGIN_SCHEMAS_DIR,
                                     'plugin_importer.yaml')
+
+
+class MessageUtils:
+    """
+    Defines helpers methods to format warning and exception messages.
+    """
+    @classmethod
+    def sdk_exception_msg(cls, warnings):
+        sdk_exception_msg = '\n'.join([
+            cls.__format_msg('SDK Error', ex)
+            for ex in warnings['sdk exception']
+        ])
+        return sdk_exception_msg
+
+    @classmethod
+    def exception_msg(cls, exceptions):
+        exception_msg = '\n'.join(
+            cls.__format_msg('Error', ex) for ex in exceptions['exception'])
+        return exception_msg
+
+    @classmethod
+    def warning_msg(cls, warnings):
+        warning_msg = '\n'.join(
+            cls.__format_msg('Warning', warning)
+            for warning in warnings['warning'])
+        return warning_msg
+
+    @staticmethod
+    def __format_msg(msg_type, msg):
+        msg_str = "{}: {}".format(msg_type, msg)
+        return msg_str
 
 
 def load_validation_maps():
@@ -462,7 +492,7 @@ def _check_args(method_name, expected_args, actual_args):
 
 
 def _lookup_expected_args(plugin_type, plugin_op_type, plugin_op_name):
-    if plugin_type == util_classes.DIRECT_TYPE:
+    if plugin_type == const.DIRECT_TYPE:
         return PluginImporter.expected_direct_args_by_op[plugin_op_type][
             plugin_op_name]
     else:

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import copy
@@ -10,7 +10,7 @@ import os
 import shutil
 import subprocess
 
-from dlpx.virtualization._internal import exceptions, file_util, util_classes
+from dlpx.virtualization._internal import const, exceptions, file_util
 
 logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
@@ -77,7 +77,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     # relevant to the plugin writer. We want to always force this to be
     # recreated.
     #
-    output_dir = os.path.join(plugin_config_dir, util_classes.OUTPUT_DIR_NAME)
+    output_dir = os.path.join(plugin_config_dir, const.OUTPUT_DIR_NAME)
     logger.info('Creating new output directory: {}'.format(output_dir))
     file_util.make_dir(output_dir, True)
 

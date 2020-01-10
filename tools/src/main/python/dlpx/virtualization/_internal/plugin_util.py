@@ -1,17 +1,29 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
+import enum
 import logging
 import os
 from contextlib import contextmanager
 
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
-from dlpx.virtualization._internal.util_classes import ValidationMode
 
 logger = logging.getLogger(__name__)
+
+
+class ValidationMode(enum.Enum):
+    """
+    Defines the validation mode that validator uses.
+    INFO - validator will give out info messages if validation fails.
+    WARNING - validator will log a warning if validation fails.
+    ERROR - validator will raise an exception if validation fails.
+    """
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
 
 
 @contextmanager
@@ -42,9 +54,9 @@ def validate_plugin_config_file(plugin_config,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (
-        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
+    plugin_config_schema_file = (const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
+                                 if skip_id_validation else
+                                 const.PLUGIN_CONFIG_SCHEMA)
     validator = PluginValidator(plugin_config, plugin_config_schema_file)
 
     with validate_error_handler(plugin_config, validation_mode):
@@ -65,9 +77,9 @@ def get_plugin_manifest(plugin_config_file,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (
-        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
+    plugin_config_schema_file = (const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
+                                 if skip_id_validation else
+                                 const.PLUGIN_CONFIG_SCHEMA)
     validator = PluginValidator.from_config_content(plugin_config_file,
                                                     plugin_config_content,
                                                     plugin_config_schema_file)
@@ -88,7 +100,7 @@ def validate_schema_file(schema_file, stop_build):
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA)
+    validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
 
     with validate_error_handler(schema_file, validation_mode):
         validator.validate()

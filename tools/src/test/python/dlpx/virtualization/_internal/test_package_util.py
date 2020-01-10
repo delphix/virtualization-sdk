@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 from dlpx.virtualization._internal import package_util
@@ -8,7 +8,7 @@ from dlpx.virtualization._internal import package_util
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '1.1.0-internal-upgrade-005'
+        assert package_util.get_version() == '1.1.0-internal-upgrade-006'
 
     @staticmethod
     def test_get_virtualization_api_version():

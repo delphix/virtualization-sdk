@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import json
@@ -8,7 +8,7 @@ import os
 import mock
 import pytest
 import yaml
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.commands import build
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 
@@ -627,10 +627,10 @@ class TestPluginUtil:
 
     @staticmethod
     def test_plugin_config_schemas_diff():
-        with open(util_classes.PLUGIN_CONFIG_SCHEMA) as f:
+        with open(const.PLUGIN_CONFIG_SCHEMA) as f:
             config_schema = json.load(f)
 
-        with open(util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
+        with open(const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
             config_schema_no_id = json.load(f)
 
         # Only the id's pattern should be different so remove it.

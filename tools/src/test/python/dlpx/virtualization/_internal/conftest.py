@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import configparser
@@ -9,8 +9,7 @@ import os
 
 import pytest
 import yaml
-from dlpx.virtualization._internal import (cli, click_util, package_util,
-                                           util_classes)
+from dlpx.virtualization._internal import cli, click_util, const, package_util
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
@@ -243,7 +242,7 @@ def host_types():
 
 @pytest.fixture
 def plugin_type():
-    return util_classes.DIRECT_TYPE
+    return const.DIRECT_TYPE
 
 
 @pytest.fixture
