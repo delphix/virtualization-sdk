@@ -186,6 +186,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['hostTypes'],
         'entryPoint':
         plugin_config_content['entryPoint'],
+        'buildNumber':
+        plugin_util.get_standardized_build_number(
+            plugin_config_content['buildNumber']),
         'buildApi':
         package_util.get_build_api_version(),
         'engineApi':

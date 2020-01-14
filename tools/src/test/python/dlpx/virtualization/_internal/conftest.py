@@ -170,7 +170,7 @@ def artifact_file_created():
 @pytest.fixture
 def plugin_config_content(plugin_id, plugin_name, version, language,
                           host_types, plugin_type, entry_point, src_dir,
-                          schema_file, manual_discovery):
+                          schema_file, manual_discovery, build_number):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
@@ -211,6 +211,9 @@ def plugin_config_content(plugin_id, plugin_name, version, language,
     # booleans as a parameter in tests.
     if manual_discovery is not None:
         config['manualDiscovery'] = manual_discovery
+
+    if build_number:
+        config['buildNumber'] = build_number
 
     return config
 
@@ -263,6 +266,11 @@ def entry_point_object():
 @pytest.fixture
 def manual_discovery():
     return None
+
+
+@pytest.fixture
+def build_number():
+    return '2.0.0'
 
 
 @pytest.fixture
@@ -551,6 +559,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'engineApi': engine_api,
         'rootSquashEnabled': True,
+        'buildNumber': '2',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -597,6 +606,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
+        'buildNumber': '2',
         'manifest': {}
     }
 

@@ -296,3 +296,32 @@ class TestPluginValidator:
         assert ('SDK Error: Got an arbitrary non-platforms error for testing.'
                 in message)
         assert '0 Warning(s). 1 Error(s).' in message
+
+    @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch.object(PluginValidator,
+                       '_PluginValidator__import_plugin',
+                       return_value=({}, None))
+    @pytest.mark.parametrize('build_number, expected',
+                             [('xxx', "'xxx' does not match"), ('1', None),
+                              ('1.x', "'1.x' does not match"), ('1.100', None),
+                              ('0.1.2', None), ('02.5000', None),
+                              (None, "'buildNumber' is a required property"),
+                              ('1.0.0_HF', "'1.0.0_HF' does not match"),
+                              ('0.0.0', "'0.0.0' does not match"),
+                              ('0', "'0' does not match"),
+                              ('0.0.00', "'0.0.00' does not match"),
+                              ('0.1', None)])
+    def test_plugin_build_number_format(mock_import_plugin, src_dir,
+                                        plugin_config_file,
+                                        plugin_config_content, expected):
+
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_module()
+            mock_import_plugin.assert_called()
+        except exceptions.SchemaValidationError as err_info:
+            message = err_info.message
+            assert expected in message
