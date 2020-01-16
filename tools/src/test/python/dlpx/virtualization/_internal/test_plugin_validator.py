@@ -9,7 +9,7 @@ from collections import OrderedDict
 
 import mock
 import pytest
-from dlpx.virtualization._internal import const, exceptions, plugin_util
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 
 
@@ -63,11 +63,8 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
-    def test_plugin_valid_content(mock_import_plugin, mock_relative_path,
-                                  src_dir, plugin_config_file):
+    def test_plugin_valid_content(mock_relative_path, src_dir,
+                                  plugin_config_file):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '0.1.0'), ('language', 'PYTHON27'),
@@ -80,9 +77,7 @@ class TestPluginValidator:
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
             const.PLUGIN_CONFIG_SCHEMA)
-        validator.validate_plugin_module()
-
-        mock_import_plugin.assert_called()
+        validator.validate_plugin_config()
 
     @staticmethod
     def test_plugin_missing_field(plugin_config_file):
@@ -105,17 +100,13 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize('version, expected', [
         pytest.param('xxx', "'xxx' does not match"),
         pytest.param('1.0.0', None),
         pytest.param('1.0.0_HF', None)
     ])
-    def test_plugin_version_format(mock_import_plugin, mock_path_is_relative,
-                                   src_dir, plugin_config_file, version,
-                                   expected):
+    def test_plugin_version_format(mock_path_is_relative, src_dir,
+                                   plugin_config_file, version, expected):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', version), ('language', 'PYTHON27'),
@@ -129,17 +120,13 @@ class TestPluginValidator:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize('entry_point, expected', [
         pytest.param('staged_plugin', "'staged_plugin' does not match"),
         pytest.param(':staged_plugin', "':staged_plugin' does not match"),
@@ -150,9 +137,8 @@ class TestPluginValidator:
                      "':staged_plugin:staged:' does not match"),
         pytest.param('staged_plugin:staged', None)
     ])
-    def test_plugin_entry_point(mock_import_plugin, mock_relative_path,
-                                src_dir, plugin_config_file, entry_point,
-                                expected):
+    def test_plugin_entry_point(mock_relative_path, src_dir,
+                                plugin_config_file, entry_point, expected):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
@@ -166,8 +152,7 @@ class TestPluginValidator:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
@@ -215,42 +200,7 @@ class TestPluginValidator:
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
 
     @staticmethod
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_staged_plugin(mock_file_util, fake_staged_plugin_config):
-        src_dir = os.path.dirname(fake_staged_plugin_config)
-        mock_file_util.return_value = os.path.join(src_dir, 'src/')
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(fake_staged_plugin_config,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        assert 'Named argument mismatch in method' in message
-        assert 'Number of arguments do not match' in message
-        assert 'Implementation missing for required method' in message
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_direct_plugin(mock_file_util, fake_direct_plugin_config):
-        src_dir = os.path.dirname(fake_direct_plugin_config)
-        mock_file_util.return_value = os.path.join(src_dir, 'src/')
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(fake_direct_plugin_config,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        assert 'Named argument mismatch in method' in message
-        assert 'Number of arguments do not match' in message
-        assert 'Implementation missing for required method' in message
-
-    @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize('plugin_id , expected', [
         pytest.param('Staged_plugin', "'Staged_plugin' does not match"),
         pytest.param('staged_Plugin', "'staged_Plugin' does not match"),
@@ -258,8 +208,8 @@ class TestPluginValidator:
         pytest.param('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
         pytest.param('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)
     ])
-    def test_plugin_id(mock_import_plugin, mock_relative_path, src_dir,
-                       plugin_config_file, plugin_id, expected):
+    def test_plugin_id(mock_relative_path, src_dir, plugin_config_file,
+                       plugin_id, expected):
         plugin_config_content = OrderedDict([
             ('id', plugin_id.encode('utf-8')), ('name', 'python_vfiles'),
             ('version', '1.0.0'), ('language', 'PYTHON27'),
@@ -273,27 +223,7 @@ class TestPluginValidator:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
-
-    @staticmethod
-    def test_plugin_info_warn_mode(plugin_config_file):
-        plugin_config_content = OrderedDict([
-            ('id', str(uuid.uuid4())), ('name', 'staged'.encode('utf-8')),
-            ('version', '0.1.0'), ('language', 'PYTHON27'),
-            ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'.encode('utf-8')),
-            ('manualDiscovery', True),
-            ('entryPoint', 'staged_plugin:staged'.encode('utf-8')),
-            ('schemaFile', 'schema.json'.encode('utf-8'))
-        ])
-        err_info = None
-        try:
-            plugin_util.get_plugin_manifest(plugin_config_file,
-                                            plugin_config_content, False)
-        except Exception as e:
-            err_info = e
-
-        assert err_info is None

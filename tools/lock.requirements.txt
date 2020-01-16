@@ -1,5 +1,5 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/
-./../platform/build/python-dist/dvp-platform-1.1.0-internal-006.tar.gz
+./../platform/build/python-dist/dvp-platform-1.1.0-internal-007.tar.gz
 attrs==19.3.0
 certifi==2019.11.28
 chardet==3.0.4
@@ -10,9 +10,9 @@ contextlib2==0.6.0.post1 ; python_version < '3'
 entrypoints==0.3
 enum34==1.1.6
 flake8==3.7.9
-functools32==3.2.3.post2 ; python_version < '3'
+functools32==3.2.3.post2 ; python_version < '3.2'
 idna==2.8
-importlib-metadata==1.3.0 ; python_version < '3.8'
+importlib-metadata==1.4.0 ; python_version < '3.8'
 jinja2==2.10.3
 jsonschema==3.2.0
 markupsafe==1.1.1
@@ -21,11 +21,11 @@ more-itertools==5.0.0
 pathlib2==2.3.5 ; python_version < '3'
 pycodestyle==2.5.0
 pyflakes==2.1.1
-pyrsistent==0.15.6
-pyyaml==5.2
+pyrsistent==0.15.7
+pyyaml==5.3
 requests==2.22.0
 scandir==1.10.0 ; python_version < '3.5'
 six==1.13.0
 typing==3.7.4.1 ; python_version < '3.5'
 urllib3==1.25.7
-zipp==0.6.0
+zipp==1.0.0

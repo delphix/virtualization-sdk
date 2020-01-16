@@ -7,7 +7,8 @@ import logging
 import os
 from contextlib import contextmanager
 
-from dlpx.virtualization._internal import const, exceptions
+from dlpx.virtualization._internal import const, exceptions, file_util
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
 
@@ -77,17 +78,19 @@ def get_plugin_manifest(plugin_config_file,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-                                 if skip_id_validation else
-                                 const.PLUGIN_CONFIG_SCHEMA)
-    validator = PluginValidator.from_config_content(plugin_config_file,
-                                                    plugin_config_content,
-                                                    plugin_config_schema_file)
+    src_dir = file_util.get_src_dir_path(plugin_config_file,
+                                         plugin_config_content['srcDir'])
+    entry_point_module, entry_point_object = PluginValidator.split_entry_point(
+        plugin_config_content['entryPoint'])
+    plugin_type = plugin_config_content['pluginType']
+
+    importer = PluginImporter(src_dir, entry_point_module, entry_point_object,
+                              plugin_type, True)
 
     with validate_error_handler(plugin_config_file, validation_mode):
-        validator.validate_plugin_module()
+        importer.validate_plugin_module()
 
-    return validator.result
+    return importer.result
 
 
 def validate_schema_file(schema_file, stop_build):

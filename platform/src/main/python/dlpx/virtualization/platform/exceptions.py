@@ -108,3 +108,20 @@ class IncorrectReferenceFormatError(PluginRuntimeError):
         message = ("Reference '{}' is not a correctly formatted host environment reference.".format(reference))
         super(IncorrectReferenceFormatError, self).__init__(message)
 
+class IncorrectPluginCodeError(PluginRuntimeError):
+    """
+    This gets thrown if the import validations come across invalid plugin
+    code that causes import to fail, or if the expected plugin entry point is
+    not found in the plugin code.
+        Args:
+        message (str): A user-readable message describing the exception.
+
+    Attributes:
+        message (str): A user-readable message describing the exception.
+    """
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, message):
+        super(IncorrectPluginCodeError, self).__init__(message)

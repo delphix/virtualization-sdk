@@ -254,3 +254,44 @@ class SubprocessFailedError(UserError):
                    "{} failed with exit code {}.").format(
                        output, command, exit_code)
         super(SubprocessFailedError, self).__init__(message)
+
+
+class ValidationFailedError(UserError):
+    """
+    ValidationFailedError gets raised when validation fails on plugin config
+    and its contents.
+    Defines helpers methods to format warning and exception messages.
+    """
+    def __init__(self, warnings):
+        message = self.__report_warnings_and_exceptions(warnings)
+        super(ValidationFailedError, self).__init__(message)
+
+    @classmethod
+    def __report_warnings_and_exceptions(cls, warnings):
+        """
+        Prints the warnings and errors that were found in the plugin code, if
+        the warnings dictionary contains the 'exception' key.
+        """
+        exception_msg = cls.exception_msg(warnings)
+        exception_msg += '\n{}'.format(cls.warning_msg(warnings))
+        return '{}\n{} Warning(s). {} Error(s).'.format(
+            exception_msg, len(warnings['warning']),
+            len(warnings['exception']))
+
+    @classmethod
+    def exception_msg(cls, exceptions):
+        exception_msg = '\n'.join(
+            cls.__format_msg('Error', ex) for ex in exceptions['exception'])
+        return exception_msg
+
+    @classmethod
+    def warning_msg(cls, warnings):
+        warning_msg = '\n'.join(
+            cls.__format_msg('Warning', warning)
+            for warning in warnings['warning'])
+        return warning_msg
+
+    @staticmethod
+    def __format_msg(msg_type, msg):
+        msg_str = "{}: {}".format(msg_type, msg)
+        return msg_str

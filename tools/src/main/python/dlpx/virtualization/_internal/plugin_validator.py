@@ -5,17 +5,17 @@
 import json
 import logging
 import os
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 
 import yaml
-from dlpx.virtualization._internal import (exceptions, file_util,
-                                           plugin_importer)
+from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
+from flake8.api import legacy as flake8
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
 
-validation_result = namedtuple('validation_result',
-                               ['plugin_config_content', 'plugin_manifest'])
+validation_result = namedtuple('validation_result', ['plugin_config_content'])
 
 
 class PluginValidator:
@@ -37,12 +37,16 @@ class PluginValidator:
         self.__plugin_config_schema = plugin_config_schema
         self.__plugin_config_content = plugin_config_content
         self.__plugin_manifest = None
+        self.__pre_import_checks = [
+            self.__validate_plugin_config_content,
+            self.__validate_plugin_entry_point,
+            self.__check_for_undefined_names
+        ]
 
     @property
     def result(self):
         return validation_result(
-            plugin_config_content=self.__plugin_config_content,
-            plugin_manifest=self.__plugin_manifest)
+            plugin_config_content=self.__plugin_config_content)
 
     @classmethod
     def from_config_content(cls, plugin_config_file, plugin_config_content,
@@ -60,37 +64,21 @@ class PluginValidator:
     def validate_plugin_config(self):
         """
         Reads a plugin config file and validates the contents using a
-        pre-defined schema. If validation is successful, tries to import
-        the plugin module and validates the entry point specified.
+        pre-defined schema.
         """
-        logger.info('Reading plugin config file %s', self.__plugin_config)
-
         if self.__plugin_config_content is None:
             self.__plugin_config_content = self.__read_plugin_config_file()
 
         logger.debug('Validating plugin config file content : %s',
                      self.__plugin_config_content)
-        self.__validate_plugin_config_content()
-
-    def validate_plugin_module(self):
-        """
-        Tries to import the plugin module and validates the entry point
-        specified.
-        """
-        self.validate_plugin_config()
-
-        src_dir = file_util.get_src_dir_path(
-            self.__plugin_config, self.__plugin_config_content['srcDir'])
-
-        logger.debug('Validating plugin entry point : %s',
-                     self.__plugin_config_content['entryPoint'])
-        self.__validate_plugin_entry_point(src_dir)
+        self.__run_checks()
 
     def __read_plugin_config_file(self):
         """
         Reads a plugin config file and raises UserError if there is an issue
         reading the file.
         """
+        logger.info('Reading plugin config file %s', self.__plugin_config)
         try:
             with open(self.__plugin_config, 'rb') as f:
                 try:
@@ -110,6 +98,18 @@ class PluginValidator:
                 'Unable to read plugin config file \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__plugin_config, err.errno, os.strerror(err.errno)))
+
+    def __run_checks(self):
+        """
+        Runs validations on the plugin config content and raise exceptions
+        if any.
+        """
+        #
+        # All the pre-import checks need to happen in sequence. So no point
+        # validating further if a check fails.
+        #
+        for check in self.__pre_import_checks:
+            check()
 
     def __validate_plugin_config_content(self):
         """
@@ -170,43 +170,55 @@ class PluginValidator:
             raise exceptions.SchemaValidationError(self.__plugin_config,
                                                    validation_errors)
 
-    def __validate_plugin_entry_point(self, src_dir):
+    def __validate_plugin_entry_point(self):
         """
         Validates the plugin entry point by parsing the entry
-        point to get module and entry point. Imports the module
-        to check for errors or issues. Also does an eval on the
-        entry point.
+        point to get module and entry point.
         """
-        entry_point_field = self.__plugin_config_content['entryPoint']
-        entry_point_strings = entry_point_field.split(':')
-
         # Get the module and entry point name to import
-        entry_point_module = entry_point_strings[0]
-        entry_point_object = entry_point_strings[1]
-        plugin_type = self.__plugin_config_content['pluginType']
+        entry_point_module, entry_point_object = self.split_entry_point(
+            self.__plugin_config_content['entryPoint'])
 
-        try:
-            self.__plugin_manifest = (self.__import_plugin(
-                src_dir, entry_point_module, entry_point_object, plugin_type))
-        except ImportError as err:
-            raise exceptions.UserError(
-                'Unable to load module \'{}\' specified in '
-                'pluginEntryPoint \'{}\' from path \'{}\'. '
-                'Error message: {}'.format(entry_point_module,
-                                           entry_point_object, src_dir, err))
+        if not entry_point_module:
+            raise exceptions.UserError('Plugin module is invalid')
 
-        logger.debug("Got manifest %s", self.__plugin_manifest)
+        if not entry_point_object:
+            raise exceptions.UserError('Plugin object is invalid')
+
+    def __check_for_undefined_names(self):
+        """
+        Checks the plugin module for undefined names. This catches
+        missing imports, references to nonexistent variables, etc.
+
+        ..note::
+            We are using the legacy flake8 api, because there is currently
+            no public, stable api for flake8 >= 3.0.0
+
+            For more info, see
+            https://flake8.pycqa.org/en/latest/user/python-api.html
+        """
+        warnings = defaultdict(list)
+        src_dir = self.__plugin_config_content['srcDir']
+        exclude_dir = os.path.sep.join([src_dir, CODEGEN_PACKAGE])
+        style_guide = flake8.get_style_guide(select=["F821"],
+                                             exclude=[exclude_dir],
+                                             quiet=1)
+        style_guide.check_files(paths=[src_dir])
+        file_checkers = style_guide._application.file_checker_manager.checkers
+
+        for checker in file_checkers:
+            for result in checker.results:
+                # From the api code, result is a tuple defined as: error =
+                # (error_code, line_number, column, text, physical_line)
+                if result[0] == 'F821':
+                    msg = "{} on line {} in {}".format(result[3], result[1],
+                                                       checker.filename)
+                    warnings['exception'].append(exceptions.UserError(msg))
+
+        if warnings and len(warnings) > 0:
+            raise exceptions.ValidationFailedError(warnings)
 
     @staticmethod
-    def __import_plugin(src_dir, entry_point_module, entry_point_object,
-                        plugin_type):
-        """
-        Imports the given python module, does some validations ans returns the
-        manifest describing implemented plugin operations.
-        """
-        importer = plugin_importer.PluginImporter(src_dir, entry_point_module,
-                                                  entry_point_object,
-                                                  plugin_type, True)
-        manifest = importer.import_plugin()
-
-        return manifest
+    def split_entry_point(entry_point):
+        entry_point_strings = entry_point.split(':')
+        return entry_point_strings[0], entry_point_strings[1]

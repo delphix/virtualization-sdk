@@ -10,7 +10,7 @@ import pytest
 import yaml
 from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.commands import build
-from dlpx.virtualization._internal.plugin_validator import PluginValidator
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
 
 
 @pytest.fixture
@@ -57,9 +57,9 @@ class TestBuild:
 
     @staticmethod
     @pytest.mark.parametrize('artifact_filename', ['somefile.json'])
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value={})
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
+                       return_value=({}, None))
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
@@ -341,8 +341,8 @@ class TestBuild:
                            ''.format(src_dir, 'something'))
 
     @staticmethod
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
                        return_value=({}, None))
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
@@ -358,8 +358,8 @@ class TestBuild:
                     skip_id_validation)
 
     @staticmethod
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
                        return_value=({}, None))
     @pytest.mark.parametrize('plugin_id', ['mongo'])
     def test_id_validation_negative(mock_import_plugin, plugin_config_file,
