@@ -2,9 +2,6 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-# Non-build Gradle files
-.gradle/
-
 # IntelliJ config files
 .idea/
 
@@ -38,6 +35,3 @@ venv/
 # Python cache
 __pycache__
 
-# Generated python build files
-Pipfile
-setup.py

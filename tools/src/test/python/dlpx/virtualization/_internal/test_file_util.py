@@ -4,9 +4,10 @@
 
 import os
 
+from dlpx.virtualization._internal import exceptions, file_util
+
 import mock
 import pytest
-from dlpx.virtualization._internal import exceptions, file_util
 
 
 class TestFileUtil:

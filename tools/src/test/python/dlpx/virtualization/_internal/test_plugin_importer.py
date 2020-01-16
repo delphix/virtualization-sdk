@@ -4,9 +4,10 @@
 import exceptions
 from collections import defaultdict
 
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
+
 import mock
 import pytest
-from dlpx.virtualization._internal.plugin_importer import PluginImporter
 
 
 class TestPluginImporter:

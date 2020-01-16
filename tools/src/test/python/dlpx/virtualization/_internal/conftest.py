@@ -7,10 +7,11 @@ import copy
 import json
 import os
 
-import pytest
 import yaml
 from dlpx.virtualization._internal import (cli, click_util, package_util,
                                            util_classes)
+
+import pytest
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will

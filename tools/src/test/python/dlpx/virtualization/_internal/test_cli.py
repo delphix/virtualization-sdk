@@ -5,10 +5,11 @@
 import os
 
 import click.testing as click_testing
-import mock
-import pytest
 import yaml
 from dlpx.virtualization._internal import cli, exceptions, util_classes
+
+import mock
+import pytest
 
 
 class TestCli:

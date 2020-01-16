@@ -7,9 +7,10 @@ import json
 import os
 import subprocess
 
-import pytest
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            util_classes)
+
+import pytest
 
 
 class TestCodegen:

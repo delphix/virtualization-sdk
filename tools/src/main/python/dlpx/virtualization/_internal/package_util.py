@@ -46,7 +46,10 @@ def _get_settings():
 @_run_once
 def get_version():
     """Returns the version of the dlpx.virtualization._internal package."""
-    return _get_settings().get('General', 'package_version')
+    with open(os.path.join(get_internal_package_root(),
+                           'VERSION')) as version_file:
+        version = version_file.read().strip()
+    return version
 
 
 def get_external_version_string(version_string):
