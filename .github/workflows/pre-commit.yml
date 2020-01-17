@@ -15,7 +15,9 @@ jobs:
 
     steps:
     - name: Checkout ${{ matrix.package }} project
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        ref: develop
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
@@ -50,7 +52,10 @@ jobs:
         package: [tools]
         
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout ${{ matrix.package }}
+        uses: actions/checkout@v2
+        with:
+          ref: develop
     
       - name: Set up Python 2.7
         uses: actions/setup-python@v1
