@@ -13,14 +13,11 @@ This repository is going through a lot of changes. It is being migrated to GitHu
 At a very high level, our development process usually looks like this:
 
 1. Make changes to SDK and appgate code. Test these changes manually. Iterate on this until you have everything working.
-2. Publish a development build of the SDK to artifactory.
-3. Update the version of the SDK specified in the app gate.
-4. Publish a review for SDK code, and also publish a "provisional" review of appgate code. Address any feedback.
-5. Push the SDK code and publish new SDK builds to our internal servers.
-6. Finalize your appgate review.
-7. Push the appgate changes
-
-Not every type of change requires every step.
+2. Update the version of the SDK.
+3. Create a remote branch in the virtualization-sdk Gitlab repo (e.g. projects/my-test).
+4. Push your commit to that branch.
+5. Publish a review for SDK code. Address any feedback. Run unit and blackbox tests.
+6. Push the SDK code.
 
 These steps are described in more detail below.
 
@@ -86,29 +83,22 @@ Running `./gradlew test` from the top level of the repository will run all SDK u
 
 #### Testing sdk-gate changes with app-gate code
 
-At the moment blackbox refers to a property file in the app-gate to determine the version of the SDK to install for tests so this property always needs to updated for automated testing.
+Blackbox expects you to push your SDK changes to a branch on Gitlab.
 
-NOTE: The app-gate does not pull in the wrappers or CLI from this repository.
+1. Push your SDK changes to a remote branch on Gitlab, let's call it `projects/my-test`.
+2. Navigate to the app-gate directory and run `git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-branch=projects/my-test"`.
+If you also want to specify the repository (the Virtualization SDK Gitlab repo is the default), you can do that via `virt-sdk-repo` parameter:
+`git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-repo=https://gitlab.delphix.com/virtualization-platform/virtualization-sdk.git -p virt-sdk-branch=projects/my-test"`.
+If for some reason you want to build all Python distributions and upload them to artifactory, you can still do that using `sdk-version` parameter:
+`git blackbox -s appdata_python_samples --extra-params="-p sdk-version=1.1.0-internal-007-upgrade"`.
 
-The easiest way to do both of these is:
-
-1. Update the version of the SDK to something unique and clearly a development build. The standard is `x.y.z-internal-abc-<your_name>`. For example, `1.1.0-internal-001-grant`.
-2. Run `./gradlew publishDebug` from the root of this repository.
-3. In `appliance/gradle.properties` in the app-gate update `virtualizationSdkVer` to match the SDK version.
-
-Run an appliance-update for manual testing and/or kick off automated blackbox tests by running `git blackbox -s appdata_python_samples` from your app-gate development branch.
-
-
-## SDK Review and Provisional app-gate review
-
-Once you're finished with local development and testing, you can publish your final SDK review to reviewboard.
-
-In addition, it's customary to publish a "provisional" appgate review, so that people can get insight into how the out-for-review SDK changes will actually be used by the appgate. Of course, this review will contain all your temporary local-build changes mentioned above. So, in your review, you'll want to mention that these temporary changes will be reverted before the review is finalized.
+For manual testing, you can install the SDK locally, build a plugin using the SDK, and upload it to your Delphix engine. There are no changes required to the app-gate code.
 
 ## Pushing and Deploying SDK Code
 
-
 ### Publishing
+
+Since Blackbox can build SDK from source, there's no need to publish the SDK Python distributions to the artifactory. However, if for some reason you need to do that, the process is described below.
 
 There are two Gradle tasks that do publishing: `publishDebug` and `publishProd`. They differ in two ways:
 
@@ -128,15 +118,3 @@ NOTE: The external release to `pypi.org` is done outside of the build system.
 
 2. `twine` needs to be installed. This is a Python package that is used to upload Python distributions. If it's not installed, install it by running `pip install twine`.
 
-#### Final Publishing
-
-Once you are absolutely certain all changes have been made run `./gradlew publishProd`. This will run checks, create the Python distributions, and upload all of them to Artifactory with the Python distributions going to `delphix-local`.
-
-## Using Newly-Deployed SDK Build
-
-Now, we have to go back to our `appgate` code and make it point to the newly-deployed build on artifactory, instead of the local build we used to test. To achieve that,
-modify `appliance/gradle.properties` and change `virtualizationSdkVer` to refer to your new version number.
-
-## Finalizing Appgate Review
-
-Once you've got the above changes completed, tested, and checked into git, you can update your appgate review. Now, your review will be ready for final ship-its.

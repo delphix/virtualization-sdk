@@ -17,7 +17,7 @@ Development should be done in a personal virtualenv. To setup the virtual enviro
 
 1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
 2. `source ~/path/ot/env/root/bin/activate`
-3. `pip install -r lock.dev-requirements.txt`. This installs the required devlopment packages.
+3. `pip install -r lock.dev-requirements.txt`. This installs the required development packages.
 4. `../gradlew makeSetupPy` (this command will generate the setup.py file)
 5. `pip install -e .`
 
