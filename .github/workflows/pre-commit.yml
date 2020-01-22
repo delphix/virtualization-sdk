@@ -10,7 +10,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [2.7]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-16.04]
         package: [common, libs, platform, tools]
 
     steps:
