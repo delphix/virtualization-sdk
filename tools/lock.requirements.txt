@@ -4,12 +4,12 @@ certifi==2019.11.28
 chardet==3.0.4
 click-configfile==0.2.3
 click==7.0
-configparser==4.0.2 ; python_version == '2.7'
+configparser==4.0.2 ; python_version < '3.2'
 contextlib2==0.6.0.post1 ; python_version < '3'
 entrypoints==0.3
 enum34==1.1.6
 flake8==3.7.9
-functools32==3.2.3.post2 ; python_version < '3'
+functools32==3.2.3.post2 ; python_version < '3.2'
 idna==2.8
 importlib-metadata==1.4.0 ; python_version < '3.8'
 jinja2==2.10.3
@@ -25,7 +25,7 @@ pyrsistent==0.15.7
 pyyaml==5.3
 requests==2.22.0
 scandir==1.10.0 ; python_version < '3.5'
-six==1.13.0
+six==1.14.0
 typing==3.7.4.1 ; python_version < '3.5'
-urllib3==1.25.7
+urllib3==1.25.8
 zipp==1.0.0

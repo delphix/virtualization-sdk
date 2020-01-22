@@ -156,24 +156,13 @@ class TestInitialize:
         validator = plugin_validator.PluginValidator(plugin_config_file,
                                                      schema_file)
 
-        # Assert config file and import validations are not done.
+        # Assert config file validation is not done.
         assert not validator.result.plugin_config_content
-        assert not validator.result.plugin_manifest
 
         validator.validate_plugin_config()
 
-        # Assert config file is validated and import validation is not done.
+        # Assert config file is validated.
         assert validator.result.plugin_config_content
-        assert not validator.result.plugin_manifest
-
-        validator.validate_plugin_module()
-
-        #
-        # Assert both config content and import validation are done and result
-        # tuple has both set to valid values.
-        #
-        assert validator.result.plugin_config_content
-        assert validator.result.plugin_manifest
 
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file):

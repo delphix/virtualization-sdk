@@ -3,21 +3,11 @@
 #
 
 import json
-import os
 
 import mock
 import pytest
-from dlpx.virtualization._internal import const, exceptions, plugin_util
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
-
-
-@pytest.fixture
-def fake_src_dir(plugin_type):
-    """
-    This fixture gets the path of the fake plugin src files used for testing
-    """
-    return os.path.join(os.path.dirname(__file__), 'fake_plugin',
-                        plugin_type.lower())
 
 
 class TestPluginValidator:
@@ -52,17 +42,12 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
-    def test_plugin_valid_content(mock_import_plugin, src_dir,
-                                  plugin_config_file, plugin_config_content):
+    def test_plugin_valid_content(src_dir, plugin_config_file,
+                                  plugin_config_content):
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
             const.PLUGIN_CONFIG_SCHEMA)
-        validator.validate_plugin_module()
-
-        mock_import_plugin.assert_called()
+        validator.validate_plugin_config()
 
     @staticmethod
     @pytest.mark.parametrize('src_dir', [None])
@@ -77,31 +62,22 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize('version,expected',
                              [('xxx', "'xxx' does not match"), ('1.0.0', None),
                               ('1.0.0_HF', None)])
-    def test_plugin_version_format(mock_import_plugin, src_dir,
-                                   plugin_config_file, plugin_config_content,
-                                   expected):
-
+    def test_plugin_version_format(src_dir, plugin_config_file,
+                                   plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize(
         'entry_point,expected',
         [('staged_plugin', "'staged_plugin' does not match"),
@@ -110,15 +86,13 @@ class TestPluginValidator:
          ('staged_plugin::staged', "'staged_plugin::staged' does not match"),
          (':staged_plugin:staged:', "':staged_plugin:staged:' does not match"),
          ('staged_plugin:staged', None)])
-    def test_plugin_entry_point(mock_import_plugin, src_dir,
-                                plugin_config_file, plugin_config_content,
-                                expected):
+    def test_plugin_entry_point(src_dir, plugin_config_file,
+                                plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
@@ -155,9 +129,6 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize(
         'plugin_id , expected',
         [('Staged_plugin', "'Staged_plugin' does not match"),
@@ -171,137 +142,13 @@ class TestPluginValidator:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
 
     @staticmethod
-    def test_plugin_info_warn_mode(plugin_config_file, plugin_config_content):
-        err_info = None
-        try:
-            plugin_util.get_plugin_manifest(plugin_config_file,
-                                            plugin_config_content, False)
-        except Exception as e:
-            err_info = e
-
-        assert err_info is None
-
-    @staticmethod
-    @pytest.mark.parametrize('entry_point,plugin_type',
-                             [('successful:staged', 'STAGED'),
-                              ('successful:direct', 'DIRECT')])
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_successful_validation(mock_file_util, plugin_config_file,
-                                   fake_src_dir):
-        mock_file_util.return_value = fake_src_dir
-
-        validator = PluginValidator(plugin_config_file,
-                                    const.PLUGIN_CONFIG_SCHEMA)
-        validator.validate_plugin_module()
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        'entry_point,plugin_type,expected_errors',
-        [('multiple_warnings:staged', 'STAGED', [
-            'Error: Named argument mismatch in method repository_discovery',
-            'Error: Number of arguments do not match in method stop',
-            'Error: Named argument mismatch in method stop',
-            'Warning: Implementation missing for required method'
-            ' virtual.mount_specification().', '1 Warning(s). 3 Error(s).'
-        ]),
-         ('multiple_warnings:vfiles', 'DIRECT', [
-             'Error: Number of arguments do not match in method status',
-             'Error: Named argument mismatch in method status',
-             'Warning: Implementation missing for required method'
-             ' virtual.reconfigure().', '1 Warning(s). 2 Error(s).'
-         ])])
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_multiple_warnings(mock_file_util, plugin_config_file,
-                               fake_src_dir, expected_errors):
-        mock_file_util.return_value = fake_src_dir
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(plugin_config_file,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        for error in expected_errors:
-            assert error in message
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        'entry_point,expected_errors', [('upgrade_warnings:direct', [
-            'Error: Named argument mismatch in method snap_upgrade.',
-            'Error: Number of arguments do not match in method ls_upgrade.',
-            'Error: Named argument mismatch in method ls_upgrade.',
-            'Error: Named argument mismatch in method ls_upgrade.',
-            '0 Warning(s). 4 Error(s).'
-        ])])
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_upgrade_warnings(mock_file_util, plugin_config_file, fake_src_dir,
-                              expected_errors):
-        mock_file_util.return_value = fake_src_dir
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(plugin_config_file,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        for error in expected_errors:
-            assert error in message
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        'entry_point,expected_error',
-        [('op_already_defined:plugin', 'has already been defined'),
-         ('dec_not_function:plugin', "decorated by 'linked.pre_snapshot()'"
-          " is not a function"),
-         ('id_not_string:plugin', "The migration id '['testing', 'out',"
-          " 'validation']' used in the function"
-          " 'repo_upgrade' should be a string."),
-         ('id_bad_format:plugin', "used in the function 'repo_upgrade' does"
-          " not follow the correct format"),
-         ('id_used:plugin', "'5.04.000.01' used in the function 'snap_upgrade'"
-          " has the same canonical form '5.4.0.1' as another migration")])
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_wrapper_failures(mock_file_util, plugin_config_file, fake_src_dir,
-                              expected_error):
-        mock_file_util.return_value = fake_src_dir
-
-        with pytest.raises(exceptions.UserError) as err_info:
-            validator = PluginValidator(plugin_config_file,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        assert expected_error in message
-        assert '0 Warning(s). 1 Error(s).' in message
-
-    @staticmethod
-    @pytest.mark.parametrize('entry_point', ['arbitrary_error:plugin'])
-    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_sdk_error(mock_file_util, plugin_config_file, fake_src_dir):
-        mock_file_util.return_value = fake_src_dir
-
-        with pytest.raises(exceptions.SDKToolingError) as err_info:
-            validator = PluginValidator(plugin_config_file,
-                                        const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-
-        message = err_info.value.message
-        assert ('SDK Error: Got an arbitrary non-platforms error for testing.'
-                in message)
-        assert '0 Warning(s). 1 Error(s).' in message
-
-    @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
-                       return_value=({}, None))
     @pytest.mark.parametrize('build_number, expected',
                              [('xxx', "'xxx' does not match"), ('1', None),
                               ('1.x', "'1.x' does not match"), ('1.100', None),
@@ -312,16 +159,13 @@ class TestPluginValidator:
                               ('0', "'0' does not match"),
                               ('0.0.00', "'0.0.00' does not match"),
                               ('0.1', None)])
-    def test_plugin_build_number_format(mock_import_plugin, src_dir,
-                                        plugin_config_file,
+    def test_plugin_build_number_format(src_dir, plugin_config_file,
                                         plugin_config_content, expected):
-
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
-            validator.validate_plugin_module()
-            mock_import_plugin.assert_called()
+            validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
