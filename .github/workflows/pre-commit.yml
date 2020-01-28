@@ -26,17 +26,16 @@ jobs:
       working-directory: ${{ matrix.package }}
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt --index-url https://pypi.org/simple --extra-index-url https://test.pypi.org/simple
+        pip install -r requirements.txt --find-links https://test.pypi.org/simple/dvp-api/
 
-    - name: Install ${{ matrix.package }} project in editable mode
+    - name: Install ${{ matrix.package }} project
       working-directory: ${{ matrix.package }}
       run: |
-        pip install -e . --index-url https://pypi.org/simple --extra-index-url https://test.pypi.org/simple
+        pip install . --find-links https://test.pypi.org/simple/dvp-api/
 
     - name: Test ${{ matrix.package }} project with pytest
       working-directory: ${{ matrix.package }}
       run: |
-        pip install pytest
         python -m pytest src/test/python
 
   lint:

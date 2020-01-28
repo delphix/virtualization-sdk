@@ -43,7 +43,7 @@ class TestPackageUtil:
     @staticmethod
     def test_get_internal_package_root():
         assert package_util.get_internal_package_root().endswith(
-            'main/python/dlpx/virtualization/_internal')
+            'dlpx/virtualization/_internal')
 
     @staticmethod
     @pytest.mark.parametrize('version_string', [
