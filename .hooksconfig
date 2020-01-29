@@ -9,3 +9,6 @@
 
  [branch "master"]
     gate-allowed-issuetypes = 1,3,4,5,10001,10302
+
+ [branch "projects/plugin-upgrade"]
+    gate-allowed-issuetypes = 1,3,4,5,10001,10302

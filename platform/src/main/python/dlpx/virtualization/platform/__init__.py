@@ -13,5 +13,6 @@ from dlpx.virtualization.platform._linked import *
 from dlpx.virtualization.platform._upgrade import *
 from dlpx.virtualization.platform._virtual import *
 from dlpx.virtualization.platform._plugin import *
+from dlpx.virtualization.platform.util import *
 from dlpx.virtualization.platform.import_util import *
 from dlpx.virtualization.platform.import_validations import *

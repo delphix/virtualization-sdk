@@ -1,22 +1,30 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "36907c9dc35ef41d53048ab38a5a5c05e03f64caa33795342572cc04eaf4eb28"
+            "sha256": "88a004aeaaed350e8fda61fa79aa62d7fb1dea765db1ec02d5d04603e65f0ebb"
         },
         "pipfile-spec": 6,
         "requires": {},
         "sources": [
             {
                 "name": "delphix",
-                "url": "https://artifactory.delphix.com/artifactory/api/pypi/delphix-virtual-pypi/simple/",
+                "url": "https://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/",
                 "verifySsl": true
             }
         ]
     },
     "default": {
+        "dvp-api": {
+            "hashes": [
+                "sha256:df435f1bb843703d1a93346781ebb1ae0b6f61e4722d90399f6b0a641ad73c5f",
+                "sha256:eff849f3681e0c429a339a96f2861c8923606058b2941e1103d20e842f39d377"
+            ],
+            "index": "delphix",
+            "version": "==1.1.0-master-003"
+        },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-008.tar.gz",
-            "version": "== 1.1.0-internal-upgrade-008"
+            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-009.tar.gz",
+            "version": "== 1.1.0-internal-upgrade-009"
         },
         "protobuf": {
             "hashes": [
@@ -37,7 +45,6 @@
                 "sha256:ceec283da2323e2431c49de58f80e1718986b79be59c266bb0509cbf90ca5b9e",
                 "sha256:fcfc907746ec22716f05ea96b7f41597dfe1a1c088f861efb8a0d4f4196a6f10"
             ],
-            "index": "delphix",
             "version": "==3.6.1"
         },
         "six": {
@@ -114,10 +121,10 @@
         },
         "packaging": {
             "hashes": [
-                "sha256:aec3fdbb8bc9e4bb65f0634b9f551ced63983a529d6a8931817d52fdd0816ddb",
-                "sha256:fe1d8331dfa7cc0a883b49d75fc76380b2ab2734b220fbb87d774e4fd4b851f8"
+                "sha256:170748228214b70b672c581a3dd610ee51f733018650740e98c7df862a583f73",
+                "sha256:e665345f9eef0c621aa0bf2f8d78cf6d21904eef16a93f020240b704a57f1334"
             ],
-            "version": "==20.0"
+            "version": "==20.1"
         },
         "pathlib2": {
             "hashes": [

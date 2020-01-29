@@ -9,8 +9,8 @@
 """
 import json
 from dlpx.virtualization.common import RemoteConnection
-from dlpx.virtualization import common_pb2
-from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.api import common_pb2
+from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.operation import Operation as Op
 from dlpx.virtualization.platform.exceptions import (

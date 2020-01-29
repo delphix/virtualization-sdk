@@ -38,9 +38,6 @@ venv/
 # Python cache
 __pycache__
 
-# Generated protobuf files
-*_pb2.py
-
 # Generated python build files
 Pipfile
 setup.py

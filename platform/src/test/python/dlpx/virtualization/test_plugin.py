@@ -3,9 +3,10 @@
 #
 
 import pytest
-from dlpx.virtualization import platform_pb2
+import sys
+from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
-from dlpx.virtualization import common_pb2
+from dlpx.virtualization.api import common_pb2
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationAlreadyDefinedError, PluginRuntimeError)
 

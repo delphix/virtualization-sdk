@@ -5,7 +5,7 @@
 import mock
 import pytest
 
-from dlpx.virtualization import libs_pb2
+from dlpx.virtualization.api import libs_pb2
 from dlpx.virtualization import libs
 from dlpx.virtualization.libs.exceptions import (
     IncorrectArgumentTypeError, LibraryError, PluginScriptError)

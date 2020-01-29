@@ -14,7 +14,7 @@ operation of the same schema, the key will be the migration id, and the value
 will be the function that was implemented.
 """
 import logging
-from dlpx.virtualization import platform_pb2
+from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.platform import MigrationIdSet
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.operation import Operation as Op

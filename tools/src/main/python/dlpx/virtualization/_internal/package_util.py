@@ -5,8 +5,10 @@
 import functools
 import logging
 import os
+import re
 
 from dlpx.virtualization import _internal as virtualization_internal
+from dlpx.virtualization.platform import util
 from six.moves import configparser
 
 logger = logging.getLogger(__name__)
@@ -47,9 +49,22 @@ def get_version():
     return _get_settings().get('General', 'package_version')
 
 
+def get_external_version_string(version_string):
+    """Returns the external version string given an external or internal
+    (development) version. An external version string contains only digits and
+    dots, and follows the following format: "1.1.0". The internal version
+    string might include the development build suffix of the following format:
+     "1.0.0-internal-001".
+
+    :param version_string: version string in either internal or external format
+    :return: version string in external format
+    """
+    return re.search(r'([0-9]\.[0-9]\.[0-9])', version_string).group(0)
+
+
 @_run_once
 def get_virtualization_api_version():
-    return _get_settings().get('General', 'virtualization_api_version')
+    return get_external_version_string(util.get_virtualization_api_version())
 
 
 def get_build_api_version():
