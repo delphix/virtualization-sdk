@@ -284,7 +284,7 @@ class TestPlugin:
         virtual_source.guid = TEST_GUID
         virtual_source.connection.CopyFrom(connection)
         virtual_source.parameters.json = TEST_VIRTUAL_SOURCE_JSON
-        virtual_source.mounts.MergeFrom([mount])
+        virtual_source.mounts.extend([mount])
         return virtual_source
 
     @staticmethod
