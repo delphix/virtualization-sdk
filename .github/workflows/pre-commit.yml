@@ -1,4 +1,4 @@
-name: Pre-commit actions for Delphix Virtualization Platform SDK
+name: Pre-commit actions for Delphix Virtualization SDK
 
 on: [pull_request]
 
