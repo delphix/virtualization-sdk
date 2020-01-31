@@ -13,3 +13,4 @@
  [branch "projects/plugin-upgrade"]
     gate-allowed-issuetypes = 1,3,4,5,10001,10302
     gate-comment-check = on
+    gate-review-check = on
