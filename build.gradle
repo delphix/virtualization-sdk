@@ -7,7 +7,7 @@ plugins {
 }
 
 subprojects {
-  version = "1.1.0-internal-upgrade-009"
+  version = "1.1.0-internal-upgrade-010"
     /*
      * dvp-api is a Python package that contains Python protobuf classes generated based on the Virtualization API.
      * dvpApiVersion is the version of the Virtualization API that we want this version of the SDK to be built against.

@@ -39,7 +39,6 @@ class UpgradeOperations(object):
 
     def repository(self, migration_id):
         def repository_decorator(repository_impl):
-
             std_mig_id = self.__migration_id_set.add(
                 migration_id, repository_impl.__name__)
             self.repository_id_to_impl[std_mig_id] = v.check_function(
@@ -94,21 +93,35 @@ class UpgradeOperations(object):
                 post_upgrade_parameters=upgraded_dict))
         return upgrade_response
 
+    def __process_upgrade_request(self, request, id_to_impl):
+        """Iterate through all objects in the pre_upgrade_parameters map,
+        invoke all available migrations on each object and its metadata,
+        and return a map containing the updated metadata for each object.
+        """
+        return_parameters = {}
+        for (object_ref, metadata) in request.pre_upgrade_parameters.items():
+            current_metadata = metadata
+            for migration_id in request.migration_ids:
+                current_metadata = id_to_impl[migration_id](
+                    pre_upgrade_parameters=current_metadata,
+                    type=request.type,
+                    migration_ids=request.migration_ids
+                )
+            return_parameters[object_ref] = current_metadata
+
+        return self._success_upgrade_response(return_parameters)
+
     def _internal_repository(self, request):
         """Upgrade repositories for plugins.
         """
         if request.type != platform_pb2.UpgradeRequest.REPOSITORY:
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.REPOSITORY)
-        #
-        # Then loop through each object and upgrade the object reference's
-        # payload through all migrations. For now we just want to print
-        # all object references passed in.
-        #
+
         logger.debug('Upgrade repositories [{}]'.format(
             ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self._success_upgrade_response(request.pre_upgrade_parameters)
+        return self.__process_upgrade_request(request, self.repository_id_to_impl)
 
     def _internal_source_config(self, request):
         """Upgrade source configs for plugins.
@@ -120,7 +133,7 @@ class UpgradeOperations(object):
         logger.debug('Upgrade source configs [{}]'.format(
             ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self._success_upgrade_response(request.pre_upgrade_parameters)
+        return self.__process_upgrade_request(request, self.source_config_id_to_impl)
 
     def _internal_linked_source(self, request):
         """Upgrade linked source for plugins.
@@ -132,7 +145,7 @@ class UpgradeOperations(object):
         logger.debug('Upgrade linked sources [{}]'.format(
             ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self._success_upgrade_response(request.pre_upgrade_parameters)
+        return self.__process_upgrade_request(request, self.linked_source_id_to_impl)
 
     def _internal_virtual_source(self, request):
         """Upgrade virtual sources for plugins.
@@ -144,7 +157,7 @@ class UpgradeOperations(object):
         logger.debug('Upgrade virtual sources [{}]'.format(
             ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self._success_upgrade_response(request.pre_upgrade_parameters)
+        return self.__process_upgrade_request(request, self.virtual_source_id_to_impl)
 
     def _internal_snapshot(self, request):
         """Upgrade snapshots for plugins.
@@ -156,4 +169,4 @@ class UpgradeOperations(object):
         logger.debug('Upgrade snapshots [{}]'.format(
             ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self._success_upgrade_response(request.pre_upgrade_parameters)
+        return self.__process_upgrade_request(request, self.snapshot_id_to_impl)

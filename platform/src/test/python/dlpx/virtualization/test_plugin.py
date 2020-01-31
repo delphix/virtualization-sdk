@@ -2,13 +2,12 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
+import json
 import pytest
-import sys
-from dlpx.virtualization.api import platform_pb2
+from dlpx.virtualization.api import (platform_pb2, common_pb2)
 from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
-from dlpx.virtualization.api import common_pb2
 from dlpx.virtualization.platform.exceptions import (
-    IncorrectReturnTypeError, OperationAlreadyDefinedError, PluginRuntimeError)
+    IncorrectReturnTypeError, IncorrectUpgradeObjectTypeError, OperationAlreadyDefinedError, PluginRuntimeError)
 
 from mock import MagicMock, patch
 import fake_generated_definitions
@@ -48,6 +47,14 @@ TEST_DIRECT_SOURCE_JSON = SIMPLE_JSON.format(TEST_DIRECT_SOURCE)
 TEST_STAGED_SOURCE_JSON = SIMPLE_JSON.format(TEST_STAGED_SOURCE)
 TEST_VIRTUAL_SOURCE_JSON = SIMPLE_JSON.format(TEST_VIRTUAL_SOURCE)
 TEST_SNAPSHOT_PARAMS_JSON = '{"resync": false}'
+TEST_PRE_UPGRADE_PARAMS = {'obj': json.dumps({'name': 'upgrade'})}
+TEST_POST_MIGRATION_METADATA_1 = (
+    json.dumps({'obj': {'name': 'upgrade', 'prettyName': 'prettyUpgrade'}}))
+TEST_POST_MIGRATION_METADATA_2 = (
+    json.dumps({'obj': {'name': 'upgrade', 'prettyName': 'prettyUpgrade',
+                        'metadata': 'metadata'}}))
+TEST_POST_UPGRADE_PARAMS = {'obj': TEST_POST_MIGRATION_METADATA_2}
+MIGRATION_IDS = ('2020.1.1', '2020.2.2')
 
 
 class TestPlugin:
@@ -1087,3 +1094,231 @@ class TestPlugin:
 
         message = err_info.value.message
         assert message == 'Shared path is not supported for linked sources.'
+
+    @staticmethod
+    def test_upgrade_repository_success(my_plugin):
+
+        @my_plugin.upgrade.repository('2020.1.1')
+        def upgrade_repository_impl(pre_upgrade_parameters,
+                                    type,
+                                    migration_ids):
+            return TEST_POST_MIGRATION_METADATA_1
+
+        @my_plugin.upgrade.repository('2020.2.2')
+        def upgrade_repository_impl(pre_upgrade_parameters,
+                                    type,
+                                    migration_ids):
+            return TEST_POST_MIGRATION_METADATA_2
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.REPOSITORY
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        upgrade_response = \
+            (my_plugin.upgrade._internal_repository(upgrade_request))
+
+        expected_response = platform_pb2.UpgradeResponse()
+        expected_response.return_value.post_upgrade_parameters\
+            .update(TEST_POST_UPGRADE_PARAMS)
+
+        assert expected_response == upgrade_response
+
+    @staticmethod
+    def test_upgrade_source_config_success(my_plugin):
+
+        @my_plugin.upgrade.source_config('2020.1.1')
+        def upgrade_source_config_impl(pre_upgrade_parameters,
+                                    type,
+                                    migration_ids):
+            return TEST_POST_MIGRATION_METADATA_1
+
+        @my_plugin.upgrade.source_config('2020.2.2')
+        def upgrade_source_config_impl(pre_upgrade_parameters,
+                                    type,
+                                    migration_ids):
+            return TEST_POST_MIGRATION_METADATA_2
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.SOURCECONFIG
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        upgrade_response = \
+            (my_plugin.upgrade._internal_source_config(upgrade_request))
+
+        expected_response = platform_pb2.UpgradeResponse()
+        expected_response.return_value.post_upgrade_parameters \
+            .update(TEST_POST_UPGRADE_PARAMS)
+
+        assert expected_response == upgrade_response
+
+    @staticmethod
+    def test_upgrade_linked_source_success(my_plugin):
+
+        @my_plugin.upgrade.linked_source('2020.1.1')
+        def upgrade_linked_source_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_1
+
+        @my_plugin.upgrade.linked_source('2020.2.2')
+        def upgrade_linked_source_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_2
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.LINKEDSOURCE
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        upgrade_response = \
+            (my_plugin.upgrade._internal_linked_source(upgrade_request))
+
+        expected_response = platform_pb2.UpgradeResponse()
+        expected_response.return_value.post_upgrade_parameters \
+            .update(TEST_POST_UPGRADE_PARAMS)
+
+        assert expected_response == upgrade_response
+
+    @staticmethod
+    def test_upgrade_virtual_source_success(my_plugin):
+
+        @my_plugin.upgrade.virtual_source('2020.1.1')
+        def upgrade_virtual_source_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_1
+
+        @my_plugin.upgrade.virtual_source('2020.2.2')
+        def upgrade_virtual_source_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_2
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.VIRTUALSOURCE
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        upgrade_response = \
+            (my_plugin.upgrade._internal_virtual_source(upgrade_request))
+
+        expected_response = platform_pb2.UpgradeResponse()
+        expected_response.return_value.post_upgrade_parameters \
+            .update(TEST_POST_UPGRADE_PARAMS)
+
+        assert expected_response == upgrade_response
+
+    @staticmethod
+    def test_upgrade_snapshot_success(my_plugin):
+
+        @my_plugin.upgrade.snapshot('2020.1.1')
+        def upgrade_snapshot_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_1
+
+        @my_plugin.upgrade.snapshot('2020.2.2')
+        def upgrade_snapshot_impl(pre_upgrade_parameters,
+                                       type,
+                                       migration_ids):
+            return TEST_POST_MIGRATION_METADATA_2
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.SNAPSHOT
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        upgrade_response = \
+            (my_plugin.upgrade._internal_snapshot(upgrade_request))
+
+        expected_response = platform_pb2.UpgradeResponse()
+        expected_response.return_value.post_upgrade_parameters \
+            .update(TEST_POST_UPGRADE_PARAMS)
+
+        assert expected_response == upgrade_response
+
+    @staticmethod
+    def test_upgrade_repository_incorrect_upgrade_object_type(my_plugin):
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.type = upgrade_request.SNAPSHOT
+
+        with pytest.raises(IncorrectUpgradeObjectTypeError) as err_info:
+            my_plugin.upgrade._internal_repository(upgrade_request)
+
+        message = err_info.value.message
+        assert message == ("The upgrade operation received objects with 4 type"
+                           " but should have had type 1.")
+
+    @staticmethod
+    def test_upgrade_source_config_incorrect_upgrade_object_type(my_plugin):
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.type = upgrade_request.SNAPSHOT
+
+        with pytest.raises(IncorrectUpgradeObjectTypeError) as err_info:
+            my_plugin.upgrade._internal_source_config(upgrade_request)
+
+        message = err_info.value.message
+        assert message == ("The upgrade operation received objects with 4 type"
+                           " but should have had type 0.")
+
+    @staticmethod
+    def test_upgrade_linked_source_incorrect_upgrade_object_type(my_plugin):
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.type = upgrade_request.SNAPSHOT
+
+        with pytest.raises(IncorrectUpgradeObjectTypeError) as err_info:
+            my_plugin.upgrade._internal_linked_source(upgrade_request)
+
+        message = err_info.value.message
+        assert message == ("The upgrade operation received objects with 4 type"
+                           " but should have had type 2.")
+
+    @staticmethod
+    def test_upgrade_virtual_source_incorrect_upgrade_object_type(my_plugin):
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.type = upgrade_request.SNAPSHOT
+
+        with pytest.raises(IncorrectUpgradeObjectTypeError) as err_info:
+            my_plugin.upgrade._internal_virtual_source(upgrade_request)
+
+        message = err_info.value.message
+        assert message == ("The upgrade operation received objects with 4 type"
+                           " but should have had type 3.")
+
+    @staticmethod
+    def test_upgrade_snapshot_incorrect_upgrade_object_type(my_plugin):
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.type = upgrade_request.SOURCECONFIG
+
+        with pytest.raises(IncorrectUpgradeObjectTypeError) as err_info:
+            my_plugin.upgrade._internal_snapshot(upgrade_request)
+
+        message = err_info.value.message
+        assert message == ("The upgrade operation received objects with 0 type"
+                           " but should have had type 4.")
+
+    @staticmethod
+    def test_upgrade_snapshot_fail_with_runtime_exception(my_plugin):
+
+        @my_plugin.upgrade.snapshot('2020.1.1')
+        def upgrade_snapshot_impl(pre_upgrade_parameters,
+                                  type,
+                                  migration_ids):
+            raise RuntimeError('RuntimeError in snapshot migration')
+
+        @my_plugin.upgrade.snapshot('2020.2.2')
+        def upgrade_snapshot_impl(pre_upgrade_parameters,
+                                  type,
+                                  migration_ids):
+            raise RuntimeError('RuntimeError in snapshot migration')
+
+        upgrade_request = platform_pb2.UpgradeRequest()
+        upgrade_request.pre_upgrade_parameters.update(TEST_PRE_UPGRADE_PARAMS)
+        upgrade_request.type = upgrade_request.SNAPSHOT
+        upgrade_request.migration_ids.extend(MIGRATION_IDS)
+
+        with pytest.raises(RuntimeError):
+            my_plugin.upgrade._internal_snapshot(upgrade_request)

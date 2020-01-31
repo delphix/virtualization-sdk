@@ -134,9 +134,8 @@ class TestPluginDependencyUtil:
         with pytest.raises(RuntimeError) as excinfo:
             pdu._build_wheel(tmp_path.as_posix())
 
-        assert excinfo.value.message == (
-            'No setup.py file exists in directory '
-            '{}'.format(tmp_path.as_posix()))
+        assert str(excinfo.value) == ('No setup.py file exists in directory '
+                                      '{}'.format(tmp_path.as_posix()))
 
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')
