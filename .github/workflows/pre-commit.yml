@@ -3,7 +3,7 @@ name: Pre-commit actions for Delphix Virtualization SDK
 on: [pull_request]
 
 jobs:
-  runpytest:
+  rununittests:
     name: Test ${{ matrix.package }} on ${{ matrix.os }} using pytest
     runs-on: ${{ matrix.os }}
     strategy:
