@@ -9,7 +9,7 @@ from dlpx.virtualization._internal import package_util
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '1.1.0-internal-upgrade-009'
+        assert package_util.get_version() == '1.1.0-internal-upgrade-010'
 
     @staticmethod
     def test_get_virtualization_api_version():

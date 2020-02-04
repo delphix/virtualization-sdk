@@ -80,5 +80,5 @@ def repo_upgrade(old_repository):
 
 
 @direct.upgrade.snapshot('2019.11.30')
-def repo_upgrade(old_snapshot):
+def snap_upgrade(old_snapshot):
     return old_snapshot

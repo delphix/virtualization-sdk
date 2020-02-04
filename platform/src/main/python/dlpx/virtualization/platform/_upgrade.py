@@ -13,6 +13,7 @@ the upgrade functions in a dict for the specific schema. For each new upgrade
 operation of the same schema, the key will be the migration id, and the value
 will be the function that was implemented.
 """
+import json
 import logging
 from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.platform import MigrationIdSet
@@ -88,9 +89,10 @@ class UpgradeOperations(object):
 
     @staticmethod
     def _success_upgrade_response(upgraded_dict):
+        upgrade_result = platform_pb2.UpgradeResult(
+            post_upgrade_parameters=upgraded_dict)
         upgrade_response = platform_pb2.UpgradeResponse(
-            return_value=platform_pb2.UpgradeResult(
-                post_upgrade_parameters=upgraded_dict))
+            return_value=upgrade_result)
         return upgrade_response
 
     def __process_upgrade_request(self, request, id_to_impl):
@@ -98,18 +100,23 @@ class UpgradeOperations(object):
         invoke all available migrations on each object and its metadata,
         and return a map containing the updated metadata for each object.
         """
-        return_parameters = {}
+        post_upgrade_parameters = {}
         for (object_ref, metadata) in request.pre_upgrade_parameters.items():
-            current_metadata = metadata
+            # Load the object metadata into a dictionary
+            current_metadata = json.loads(metadata)
+            #
+            # Loop through all migrations that were passed into the upgrade
+            # request. Protobuf will preserve the ordering of repeated
+            # elements, so we can rely on the backend to sort the migration
+            # ids before packing them into the request.
+            #
             for migration_id in request.migration_ids:
-                current_metadata = id_to_impl[migration_id](
-                    pre_upgrade_parameters=current_metadata,
-                    type=request.type,
-                    migration_ids=request.migration_ids
-                )
-            return_parameters[object_ref] = current_metadata
+                # Only try to execute the function if the id exists in the map.
+                if migration_id in id_to_impl:
+                    current_metadata = id_to_impl[migration_id](current_metadata)
+            post_upgrade_parameters[object_ref] = json.dumps(current_metadata)
 
-        return self._success_upgrade_response(return_parameters)
+        return self._success_upgrade_response(post_upgrade_parameters)
 
     def _internal_repository(self, request):
         """Upgrade repositories for plugins.

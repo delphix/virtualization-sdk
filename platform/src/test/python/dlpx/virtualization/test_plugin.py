@@ -53,7 +53,10 @@ TEST_POST_MIGRATION_METADATA_1 = (
 TEST_POST_MIGRATION_METADATA_2 = (
     json.dumps({'obj': {'name': 'upgrade', 'prettyName': 'prettyUpgrade',
                         'metadata': 'metadata'}}))
-TEST_POST_UPGRADE_PARAMS = {'obj': TEST_POST_MIGRATION_METADATA_2}
+TEST_POST_UPGRADE_PARAMS = (
+    {u'obj': '"{\\"obj\\": {\\"prettyName\\": \\"prettyUpgrade\\", '
+             '\\"name\\": \\"upgrade\\", \\"metadata\\": \\"metadata\\"}}"'}
+)
 MIGRATION_IDS = ('2020.1.1', '2020.2.2')
 
 
@@ -1099,15 +1102,11 @@ class TestPlugin:
     def test_upgrade_repository_success(my_plugin):
 
         @my_plugin.upgrade.repository('2020.1.1')
-        def upgrade_repository_impl(pre_upgrade_parameters,
-                                    type,
-                                    migration_ids):
+        def upgrade_repository(old_repository):
             return TEST_POST_MIGRATION_METADATA_1
 
         @my_plugin.upgrade.repository('2020.2.2')
-        def upgrade_repository_impl(pre_upgrade_parameters,
-                                    type,
-                                    migration_ids):
+        def upgrade_repository(old_repository):
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1128,15 +1127,11 @@ class TestPlugin:
     def test_upgrade_source_config_success(my_plugin):
 
         @my_plugin.upgrade.source_config('2020.1.1')
-        def upgrade_source_config_impl(pre_upgrade_parameters,
-                                    type,
-                                    migration_ids):
+        def upgrade_source_config(old_source_config):
             return TEST_POST_MIGRATION_METADATA_1
 
         @my_plugin.upgrade.source_config('2020.2.2')
-        def upgrade_source_config_impl(pre_upgrade_parameters,
-                                    type,
-                                    migration_ids):
+        def upgrade_source_config(old_source_config):
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1157,15 +1152,11 @@ class TestPlugin:
     def test_upgrade_linked_source_success(my_plugin):
 
         @my_plugin.upgrade.linked_source('2020.1.1')
-        def upgrade_linked_source_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_linked_source(old_linked_source):
             return TEST_POST_MIGRATION_METADATA_1
 
         @my_plugin.upgrade.linked_source('2020.2.2')
-        def upgrade_linked_source_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_linked_source(old_linked_source):
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1186,15 +1177,11 @@ class TestPlugin:
     def test_upgrade_virtual_source_success(my_plugin):
 
         @my_plugin.upgrade.virtual_source('2020.1.1')
-        def upgrade_virtual_source_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_virtual_source(old_virtual_source):
             return TEST_POST_MIGRATION_METADATA_1
 
         @my_plugin.upgrade.virtual_source('2020.2.2')
-        def upgrade_virtual_source_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_virtual_source(old_virtual_source):
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1215,15 +1202,11 @@ class TestPlugin:
     def test_upgrade_snapshot_success(my_plugin):
 
         @my_plugin.upgrade.snapshot('2020.1.1')
-        def upgrade_snapshot_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_snapshot(old_snapshot):
             return TEST_POST_MIGRATION_METADATA_1
 
         @my_plugin.upgrade.snapshot('2020.2.2')
-        def upgrade_snapshot_impl(pre_upgrade_parameters,
-                                       type,
-                                       migration_ids):
+        def upgrade_snapshot(old_snapshot):
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1301,18 +1284,14 @@ class TestPlugin:
                            " but should have had type 4.")
 
     @staticmethod
-    def test_upgrade_snapshot_fail_with_runtime_exception(my_plugin):
+    def test_upgrade_snapshot_fail_with_runtime_error(my_plugin):
 
         @my_plugin.upgrade.snapshot('2020.1.1')
-        def upgrade_snapshot_impl(pre_upgrade_parameters,
-                                  type,
-                                  migration_ids):
+        def upgrade_snapshot(old_snapshot):
             raise RuntimeError('RuntimeError in snapshot migration')
 
         @my_plugin.upgrade.snapshot('2020.2.2')
-        def upgrade_snapshot_impl(pre_upgrade_parameters,
-                                  type,
-                                  migration_ids):
+        def upgrade_snapshot(old_snapshot):
             raise RuntimeError('RuntimeError in snapshot migration')
 
         upgrade_request = platform_pb2.UpgradeRequest()
