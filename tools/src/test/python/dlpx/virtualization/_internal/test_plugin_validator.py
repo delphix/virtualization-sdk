@@ -62,8 +62,10 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize('version,expected',
-                             [('xxx', "'xxx' does not match"), ('1.0.0', None),
+    @pytest.mark.parametrize('external_version,expected',
+                             [(1, "1 is not of type 'string'"),
+                              (1.0, "1.0 is not of type 'string'"),
+                              ('my_version', None), ('1.0.0', None),
                               ('1.0.0_HF', None)])
     def test_plugin_version_format(src_dir, plugin_config_file,
                                    plugin_config_content, expected):

@@ -185,8 +185,51 @@ class PluginImporter:
 
 
 def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
-    manifest = {}
+    """
+    Imports the plugin module, runs validations and returns the manifest.
+    """
+    module_content = None
+
+    try:
+        module_content = _import_helper(queue, src_dir, module)
+    except exceptions.UserError:
+        #
+        # Exception here means there was an error importing the module and
+        # queue is updated with the exception details inside _import_helper.
+        #
+        return
+
+    #
+    # Create an instance of plugin module with associated state to pass around
+    # to the validation code.
+    #
+    plugin_module = import_util.PluginModule(src_dir, module, entry_point,
+                                             plugin_type, module_content,
+                                             PluginImporter.v_maps, validate)
+
+    # Validate if the module imported fine and is the expected one.
+    warnings = import_util.validate_import(plugin_module)
+    _process_warnings(queue, warnings)
+
+    # If the import itself had issues, no point validating further.
+    if warnings and len(warnings) > 0:
+        return
+
+    # Run post import validations and consolidate issues.
+    warnings = import_util.validate_post_import(plugin_module)
+    _process_warnings(queue, warnings)
+
+    manifest = _prepare_manifest(entry_point, module_content)
+    queue.put({'manifest': manifest})
+
+
+def _import_helper(queue, src_dir, module):
+    """Helper method to import the module and handle any import time
+    exceptions.
+    """
+    module_content = None
     sys.path.append(src_dir)
+
     try:
         module_content = importlib.import_module(module)
     except (ImportError, TypeError) as err:
@@ -213,28 +256,10 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
     finally:
         sys.path.remove(src_dir)
 
-    #
-    # Create an instance of plugin module with associated state to pass around
-    # to the validation code.
-    #
-    plugin_module = import_util.PluginModule(src_dir, module, entry_point,
-                                             plugin_type, module_content,
-                                             PluginImporter.v_maps, validate)
+    if not module_content:
+        raise exceptions.UserError("Plugin module content is None")
 
-    # Validate if the module imported fine and is the expected one.
-    warnings = import_util.validate_import(plugin_module)
-    _process_warnings(queue, warnings)
-
-    # If the import itself had issues, no point validating further.
-    if warnings and len(warnings) > 0:
-        return
-
-    # Run post import validations and consolidate issues.
-    warnings = import_util.validate_post_import(plugin_module)
-    _process_warnings(queue, warnings)
-
-    manifest = _prepare_manifest(entry_point, module_content)
-    queue.put({'manifest': manifest})
+    return module_content
 
 
 def _process_warnings(queue, warnings):

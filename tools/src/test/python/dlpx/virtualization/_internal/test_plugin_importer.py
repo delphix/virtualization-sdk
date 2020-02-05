@@ -58,17 +58,17 @@ class TestPluginImporter:
                                         entry_point_module,
                                         entry_point_object):
         mock_import.return_value = None
-        result = ()
+        importer = PluginImporter(src_dir, entry_point_module,
+                                  entry_point_object, plugin_type, False)
+        importer.validate_plugin_module()
+        result = importer.result
 
-        with pytest.raises(exceptions.UserError) as err_info:
-            importer = PluginImporter(src_dir, entry_point_module,
-                                      entry_point_object, plugin_type, False)
-            importer.validate_plugin_module()
-            result = importer.result
-
-        message = str(err_info)
-        assert result == ()
-        assert 'Plugin module content is None.' in message
+        #
+        # If module_content is None, importer does not perform any validations
+        # and just does a return. So result should have an empty manifest and
+        # assert to make sure it is the case.
+        #
+        assert result.plugin_manifest == {}
 
     @staticmethod
     @mock.patch('importlib.import_module')

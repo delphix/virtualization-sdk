@@ -1,5 +1,5 @@
 -i https://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/
-./../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-010.tar.gz
+./../common/build/python-dist/dvp-common-1.1.0-internal-upgrade-011.tar.gz
 dvp-api==1.1.0-master-003
 enum34==1.1.6 ; python_version < '3.4'
 protobuf==3.6.1

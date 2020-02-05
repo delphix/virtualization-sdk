@@ -7,9 +7,8 @@
       "name":  {
           "type": "string"
       },
-      "version":  {
-          "type": "string",
-          "pattern": "^([0-9]+)\\.([0-9]+)\\.([a-zA-Z0-9_]+)$"
+      "externalVersion":  {
+          "type": "string"
       },
       "hostTypes":  {
           "type": "array",
@@ -53,5 +52,5 @@
       }
     },
     "additionalProperties": false,
-    "required": ["id", "name", "version", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language", "buildNumber"]
+    "required": ["id", "name", "hostTypes", "entryPoint", "srcDir", "schemaFile", "pluginType", "language", "buildNumber"]
 }

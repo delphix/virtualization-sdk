@@ -159,7 +159,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     # This is the output dictionary that will be written
     # to the upload_artifact.
     #
-    return {
+    artifact = {
         # Hard code the type to a set default.
         'type':
         TYPE,
@@ -174,8 +174,6 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['id'].lower(),
         'prettyName':
         plugin_config_content['name'],
-        'version':
-        plugin_config_content['version'],
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
@@ -212,6 +210,11 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'manifest':
         manifest
     }
+
+    if plugin_config_content.get('externalVersion'):
+        artifact['externalVersion'] = plugin_config_content['externalVersion']
+
+    return artifact
 
 
 def get_linked_source_definition_type(plugin_config_content):

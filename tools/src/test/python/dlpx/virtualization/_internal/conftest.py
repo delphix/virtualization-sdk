@@ -168,7 +168,7 @@ def artifact_file_created():
 
 
 @pytest.fixture
-def plugin_config_content(plugin_id, plugin_name, version, language,
+def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
                           schema_file, manual_discovery, build_number):
     """
@@ -186,8 +186,8 @@ def plugin_config_content(plugin_id, plugin_name, version, language,
     if plugin_name:
         config['name'] = plugin_name
 
-    if version:
-        config['version'] = version
+    if external_version:
+        config['externalVersion'] = external_version
 
     if language:
         config['language'] = language
@@ -229,7 +229,7 @@ def plugin_name():
 
 
 @pytest.fixture
-def version():
+def external_version():
     return '2.0.0'
 
 
@@ -551,7 +551,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'type': 'Plugin',
         'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
         'prettyName': 'python_vfiles',
-        'version': '2.0.0',
+        'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
         'hostTypes': ['UNIX'],
@@ -598,7 +598,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'type': 'Plugin',
         'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
         'prettyName': 'python_vfiles',
-        'version': '2.0.0',
+        'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
         'hostTypes': ['UNIX'],
@@ -636,7 +636,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 10, 'micro': 5}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 12, 'micro': 0}
 
 
 @pytest.fixture
