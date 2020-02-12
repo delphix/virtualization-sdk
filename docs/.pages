@@ -3,5 +3,6 @@ arrange:
   - Getting_Started.md
   - Building_Your_First_Plugin
   - References
+  - Versioning_And_Upgrading
   - Best_Practices
   - Release_Notes
