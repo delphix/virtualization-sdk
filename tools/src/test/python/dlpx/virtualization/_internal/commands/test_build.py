@@ -637,3 +637,17 @@ class TestPluginUtil:
         config_schema['properties']['id'].pop('pattern')
 
         assert config_schema == config_schema_no_id
+
+    @staticmethod
+    @pytest.mark.parametrize('build_number, expected', [
+        pytest.param('0.0.1', '0.0.1'),
+        pytest.param('0.1.0', '0.1'),
+        pytest.param('1.0.01.0', '1.0.1')
+    ])
+    def test_build_number_parameter(plugin_config_content, src_dir,
+                                    schema_content, expected):
+
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+
+        assert expected == upload_artifact['buildNumber']

@@ -112,7 +112,7 @@ def build(plugin_config,
                                                  plugin_config_content,
                                                  not generate_only,
                                                  skip_id_validation)
-    except exceptions.UserError as err:
+    except (exceptions.UserError, exceptions.SDKToolingError) as err:
         raise exceptions.BuildFailedError(err)
 
     plugin_manifest = {}
@@ -159,7 +159,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     # This is the output dictionary that will be written
     # to the upload_artifact.
     #
-    return {
+    artifact = {
         # Hard code the type to a set default.
         'type':
         TYPE,
@@ -174,8 +174,6 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['id'].lower(),
         'prettyName':
         plugin_config_content['name'],
-        'version':
-        plugin_config_content['version'],
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
@@ -186,6 +184,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['hostTypes'],
         'entryPoint':
         plugin_config_content['entryPoint'],
+        'buildNumber':
+        plugin_util.get_standardized_build_number(
+            plugin_config_content['buildNumber']),
         'buildApi':
         package_util.get_build_api_version(),
         'engineApi':
@@ -209,6 +210,11 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'manifest':
         manifest
     }
+
+    if plugin_config_content.get('externalVersion'):
+        artifact['externalVersion'] = plugin_config_content['externalVersion']
+
+    return artifact
 
 
 def get_linked_source_definition_type(plugin_config_content):

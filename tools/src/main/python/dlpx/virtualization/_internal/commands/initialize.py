@@ -23,6 +23,7 @@ DEFAULT_ENTRY_POINT_FILE = 'plugin_runner.py'
 DEFAULT_ENTRY_POINT_SYMBOL = 'plugin'
 DEFAULT_ENTRY_POINT = '{}:{}'.format(DEFAULT_ENTRY_POINT_FILE[:-3],
                                      DEFAULT_ENTRY_POINT_SYMBOL)
+DEFAULT_BUILD_NUMBER = '0.1.0'
 
 # Internal constants for the template directory.
 ENTRY_POINT_TEMPLATE_NAME = 'entry_point.py.template'
@@ -122,7 +123,8 @@ def init(root, ingestion_strategy, name, host_type):
             config = _get_default_plugin_config(plugin_id, ingestion_strategy,
                                                 name, DEFAULT_ENTRY_POINT,
                                                 DEFAULT_SRC_DIRECTORY,
-                                                DEFAULT_SCHEMA_FILE, host_type)
+                                                DEFAULT_SCHEMA_FILE, host_type,
+                                                DEFAULT_BUILD_NUMBER)
             yaml.dump(config, f, default_flow_style=False)
 
         #
@@ -187,7 +189,7 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy, host_type):
 
 def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
                                entry_point, src_dir_path, schema_file_path,
-                               host_type):
+                               host_type, default_build_number):
     """
     Returns a valid plugin configuration as an OrderedDict.
 
@@ -208,12 +210,14 @@ def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
     # Ensure values are type 'str'. If they are type unicode yaml prints
     # them with '!!python/unicode' prepended to the value.
     config = OrderedDict([('id', plugin_id.encode('utf-8')),
-                          ('name', name.encode('utf-8')), ('version', '0.1.0'),
+                          ('name', name.encode('utf-8')),
                           ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
                           ('pluginType', ingestion_strategy.encode('utf-8')),
                           ('entryPoint', entry_point.encode('utf-8')),
                           ('srcDir', src_dir_path.encode('utf-8')),
                           ('schemaFile', schema_file_path.encode('utf-8')),
-                          ('hostTypes', [host_type.encode('utf-8')])])
+                          ('hostTypes', [host_type.encode('utf-8')]),
+                          ('buildNumber', default_build_number.encode('utf-8'))
+                          ])
 
     return config

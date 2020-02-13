@@ -94,6 +94,7 @@ class TestInitialize:
         assert config['entryPoint'] == init.DEFAULT_ENTRY_POINT
         assert config['srcDir'] == init.DEFAULT_SRC_DIRECTORY
         assert config['schemaFile'] == init.DEFAULT_SCHEMA_FILE
+        assert config['buildNumber'] == init.DEFAULT_BUILD_NUMBER
 
         # Validate the schema file is identical to the template.
         schema_file_path = os.path.join(tmpdir.strpath, config['schemaFile'])

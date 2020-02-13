@@ -2,7 +2,7 @@
     name = virtualization-sdk
     shortname = sdk
     slack-url = https://hooks.slack.com/services/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
-    slack-color = 1AD6F5 
+    slack-color = 1AD6F5
     slack-notify = virt-sdk-pushes
     approvers = gatekeepers-virtualization-sdk
     tags-allowed = true

@@ -21,16 +21,18 @@ class PluginModule:
                  entry_point,
                  plugin_type,
                  module_content,
-                 expected_direct_args_by_op,
-                 expected_staged_args_by_op,
+                 v_maps,
                  validate_args=False):
         self.__src_dir = src_dir
         self.__module = module
         self.__entry_point = entry_point
         self.__type = plugin_type
         self.__module_content = module_content
-        self.__expected_direct_args_by_op = expected_direct_args_by_op
-        self.__expected_staged_args_by_op = expected_staged_args_by_op
+        self.__expected_direct_args_by_op =\
+            v_maps['EXPECTED_DIRECT_ARGS_BY_OP']
+        self.__expected_staged_args_by_op =\
+            v_maps['EXPECTED_STAGED_ARGS_BY_OP']
+        self.__expected_upgrade_args = v_maps['EXPECTED_UPGRADE_ARGS']
         self.__validate_args = validate_args
 
     @property
@@ -60,6 +62,10 @@ class PluginModule:
     @property
     def expected_staged_args_by_op(self):
         return self.__expected_staged_args_by_op
+
+    @property
+    def expected_upgrade_args(self):
+        return self.__expected_upgrade_args
 
     @property
     def validate_args(self):

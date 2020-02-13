@@ -12,7 +12,7 @@ subprojects {
      * dvpApiVersion is the version of the Virtualization API that we want this version of the SDK to be built against.
      */
     project.ext.dvpApiVersion = "1.1.0-master-003"
-    version = "1.1.0-internal-008"
+    version = "1.1.0-internal-009"
 }
 
 def binDir = "${rootProject.projectDir}/bin"

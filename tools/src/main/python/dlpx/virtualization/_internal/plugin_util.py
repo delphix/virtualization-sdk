@@ -132,3 +132,23 @@ def get_schema_file_path(plugin_config, schema_file):
     if not os.path.isfile(schema_file):
         raise exceptions.PathTypeError(schema_file, 'file')
     return os.path.normpath(schema_file)
+
+
+def get_standardized_build_number(build_number):
+    """
+    Converts the build number the way back end expects it to be - without
+    leading or trailing zeros in each part of the multi part build number that
+    is separated by dots.
+    """
+    # Split on the period and convert to integer
+    array = [int(i) for i in build_number.split('.')]
+
+    # Next we want to trim all trailing zeros so ex: 5.3.0.0 == 5.3
+    while array:
+        if not array[-1]:
+            # Remove the last element which is a zero from array
+            array.pop()
+        else:
+            break
+
+    return '.'.join(str(i) for i in array)

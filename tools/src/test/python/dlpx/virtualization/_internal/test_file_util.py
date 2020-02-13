@@ -239,5 +239,5 @@ class TestFileUtil:
 
                 raise RuntimeError('test')
         except RuntimeError as e:
-            assert e.message == 'test'
+            assert str(e) == 'test'
             assert not os.path.exists(d)

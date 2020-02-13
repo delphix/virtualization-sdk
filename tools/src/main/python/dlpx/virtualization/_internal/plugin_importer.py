@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 PLUGIN_IMPORTER_YAML = os.path.join(const.PLUGIN_SCHEMAS_DIR,
                                     'plugin_importer.yaml')
+
 validation_result = namedtuple('validation_result', ['plugin_manifest'])
 
 
@@ -37,13 +38,9 @@ class PluginImporter:
     issues with validation of module content and entry points- will save
     errors/warnings in a dict that callers can access.
     """
-    validation_maps = load_validation_maps()
-    expected_staged_args_by_op = validation_maps['EXPECTED_STAGED_ARGS_BY_OP']
-    expected_direct_args_by_op = validation_maps['EXPECTED_DIRECT_ARGS_BY_OP']
-    required_methods_by_plugin_type = \
-        validation_maps['REQUIRED_METHODS_BY_PLUGIN_TYPE']
-    required_methods_description = \
-        validation_maps['REQUIRED_METHODS_DESCRIPTION']
+    v_maps = load_validation_maps()
+    required_methods_by_plugin_type = v_maps['REQUIRED_METHODS_BY_PLUGIN_TYPE']
+    required_methods_description = v_maps['REQUIRED_METHODS_DESCRIPTION']
 
     def __init__(self,
                  src_dir,
@@ -149,16 +146,22 @@ class PluginImporter:
             if check_warnings and 'warning' in check_warnings:
                 warnings['warning'].extend(check_warnings['warning'])
 
-        if warnings and 'exception' in warnings:
-            raise exceptions.ValidationFailedError(warnings)
+        if warnings:
+            if 'exception' in warnings:
+                raise exceptions.ValidationFailedError(warnings)
+            if 'sdk exception' in warnings:
+                sdk_exception_msg =\
+                    exceptions.ValidationFailedError(warnings).message
+                raise exceptions.SDKToolingError(sdk_exception_msg)
 
-        if warnings and 'warning' in warnings:
-            #
-            # Use the ValidationFailedError type to get a formatted message
-            # with number of warnings included in the message.
-            #
-            warning_msg = exceptions.ValidationFailedError(warnings).message
-            logger.warn(warning_msg)
+            if 'warning' in warnings:
+                #
+                # Use the ValidationFailedError type to get a formatted message
+                # with number of warnings included in the message.
+                #
+                warning_msg = exceptions.ValidationFailedError(
+                    warnings).message
+                logger.warn(warning_msg)
 
     def __check_for_required_methods(self):
         """
@@ -182,23 +185,27 @@ class PluginImporter:
 
 
 def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
-    manifest = {}
-    sys.path.append(src_dir)
+    """
+    Imports the plugin module, runs validations and returns the manifest.
+    """
+    module_content = None
+
     try:
-        module_content = importlib.import_module(module)
-    except (ImportError, TypeError) as err:
-        queue.put({'exception': err})
-    finally:
-        sys.path.remove(src_dir)
+        module_content = _import_helper(queue, src_dir, module)
+    except exceptions.UserError:
+        #
+        # Exception here means there was an error importing the module and
+        # queue is updated with the exception details inside _import_helper.
+        #
+        return
 
     #
     # Create an instance of plugin module with associated state to pass around
     # to the validation code.
     #
-    plugin_module = import_util.PluginModule(
-        src_dir, module, entry_point, plugin_type, module_content,
-        PluginImporter.expected_direct_args_by_op,
-        PluginImporter.expected_staged_args_by_op, validate)
+    plugin_module = import_util.PluginModule(src_dir, module, entry_point,
+                                             plugin_type, module_content,
+                                             PluginImporter.v_maps, validate)
 
     # Validate if the module imported fine and is the expected one.
     warnings = import_util.validate_import(plugin_module)
@@ -214,6 +221,45 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
 
     manifest = _prepare_manifest(entry_point, module_content)
     queue.put({'manifest': manifest})
+
+
+def _import_helper(queue, src_dir, module):
+    """Helper method to import the module and handle any import time
+    exceptions.
+    """
+    module_content = None
+    sys.path.append(src_dir)
+
+    try:
+        module_content = importlib.import_module(module)
+    except (ImportError, TypeError) as err:
+        queue.put({'exception': err})
+    except Exception as err:
+        #
+        # We need to figure out if this is an error that was raised inside the
+        # wrappers which would mean that it is a user error. Otherwise we
+        # should still queue the error but specify that it's not a user error.
+        #
+        parent_class_list = [base.__name__ for base in err.__class__.__bases__]
+        if 'PlatformError' in parent_class_list:
+            # This is a user error
+            error = exceptions.UserError(err.message)
+            queue.put({'exception': error})
+        else:
+            #
+            # Because we don't know if the output of the err is actually in the
+            # message, we just cast the exception to a string and hope to get
+            # the most information possible.
+            #
+            error = exceptions.SDKToolingError(str(err))
+            queue.put({'sdk exception': error})
+    finally:
+        sys.path.remove(src_dir)
+
+    if not module_content:
+        raise exceptions.UserError("Plugin module content is None")
+
+    return module_content
 
 
 def _process_warnings(queue, warnings):
@@ -277,7 +323,9 @@ def _prepare_manifest(entry_point, module_content):
         'hasVirtualStatus':
         bool(plugin_object.virtual.status_impl),
         'hasInitialize':
-        bool(plugin_object.virtual.initialize_impl)
+        bool(plugin_object.virtual.initialize_impl),
+        'migrationIdList':
+        plugin_object.upgrade.migration_id_list
     }
 
     return manifest

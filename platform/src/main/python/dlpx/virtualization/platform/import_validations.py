@@ -77,6 +77,11 @@ def validate_named_args(plugin_module):
             # LinkedOperations, DiscoveryOperations, VirtualOperations
             #
             plugin_op_type = plugin_attrib.__class__.__name__
+
+            # UpgradeOperations are validated differently, so ignore.
+            if plugin_op_type == 'UpgradeOperations':
+                continue
+
             for op_name_key, op_name in plugin_attrib.__dict__.items():
                 if op_name is None:
                     continue
@@ -87,6 +92,76 @@ def validate_named_args(plugin_module):
                                     plugin_module, plugin_op_type,
                                     op_name_key),
                                 actual_args=actual_args.args))
+
+    return warnings
+
+
+@post_import_check(ordinal=2)
+def check_upgrade_operations(plugin_module):
+    """
+    Does named argument validation on UpgradeOperations.
+    """
+    warnings = []
+
+    if plugin_module.validate_args:
+
+        #
+        # Validated methods args against expected args and return any
+        # resulting warnings to the caller to process.
+        # These warnings should be treated as an exception to make
+        # sure build fails.
+        #
+
+        plugin_object = getattr(plugin_module.module_content,
+                                plugin_module.entry_point)
+
+        # Iterate over attributes objects of the Plugin object
+        for plugin_attrib in plugin_object.__dict__.values():
+            #
+            # For each plugin attribute object, its __dict__.keys will give
+            # us the name of the plugin implemntation method name. That name
+            # is useful in looking up named arguments expected and what is
+            # actually in the plugin code. And plugin_op_type can be, for e.g.
+            # LinkedOperations, DiscoveryOperations, VirtualOperations
+            #
+            plugin_op_type = plugin_attrib.__class__.__name__
+
+            if plugin_op_type != 'UpgradeOperations':
+                continue
+
+            warnings.extend(_check_upgrade_args(
+                plugin_attrib, plugin_module.expected_upgrade_args))
+
+    return warnings
+
+
+def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
+    """
+    Does named argument validation of all functions in dictionaries by looping
+    first through all the attributes in the UpgradeOperations for this plugin.
+    Any attributes that are not dictionaries that map migration_id ->
+    upgrade_function are skipped. We then loop through every key/value pair
+    of each of the dictionaries and validate that the argument in the defined
+    function has the expected name.
+    """
+    warnings = []
+
+    for attribute_name, attribute in vars(upgrade_operations).items():
+        if attribute_name not in expected_upgrade_args.keys():
+            # Skip if not in one of the operation dicts we store functions in.
+            continue
+        #
+        # If the attribute_name was in the expected upgrade dicts then we know
+        # it is a dict containing migration id -> upgrade function that we can
+        # iterate on.
+        #
+        for migration_id, migration_func in attribute.items():
+            actual = inspect.getargspec(migration_func).args
+            expected = expected_upgrade_args[attribute_name]
+            warnings.extend(
+                _check_args(method_name=migration_func.__name__,
+                            expected_args=expected,
+                            actual_args=actual))
 
     return warnings
 
