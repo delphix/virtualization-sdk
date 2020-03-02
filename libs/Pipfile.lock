@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96c143cc35c4ddbf14ef9338369004944fe83b92bdd506787f7e4249950c411c"
+            "sha256": "f0b64fa9ad09f81f67cb8acff855a0512430ef1de376a966fa030c8aeab82cf5"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -19,11 +19,12 @@
                 "sha256:df435f1bb843703d1a93346781ebb1ae0b6f61e4722d90399f6b0a641ad73c5f",
                 "sha256:eff849f3681e0c429a339a96f2861c8923606058b2941e1103d20e842f39d377"
             ],
+            "index": "delphix",
             "version": "==1.1.0-master-003"
         },
         "dvp-common": {
-            "path": "../common/build/python-dist/dvp-common-1.1.0-internal-009.tar.gz",
-            "version": "== 1.1.0-internal-009"
+            "path": "../common/build/python-dist/dvp-common-2.0.0-internal-001.tar.gz",
+            "version": "== 2.0.0-internal-001"
         },
         "protobuf": {
             "hashes": [
@@ -106,6 +107,7 @@
                 "sha256:83657d894c90d5681d62155c82bda9c1187827525880eda8ff5df4ec813437c3",
                 "sha256:d157e52d4e5b938c550f39eb2fd15610db062441a9c2747d3dbfa9298211d0f8"
             ],
+            "index": "delphix",
             "version": "==3.0.5"
         },
         "more-itertools": {
@@ -158,6 +160,7 @@
                 "sha256:19e8f75eac01dd3f211edd465b39efbcbdc8fc5f7866d7dd49fedb30d8adf339",
                 "sha256:c77a5f30a90e0ce24db9eaa14ddfd38d4afb5ea159309bdd2dae55b931bc9324"
             ],
+            "index": "delphix",
             "version": "==4.6.9"
         },
         "scandir": {
@@ -193,10 +196,10 @@
         },
         "zipp": {
             "hashes": [
-                "sha256:15428d652e993b6ce86694c3cccf0d71aa7afdc6ef1807fa25a920e9444e0281",
-                "sha256:d9d2efe11d3a3fb9184da550d35bd1319dc8e30a63255927c82bb42fca1f4f7c"
+                "sha256:c70410551488251b0fee67b460fb9a536af8d6f9f008ad10ac51f615b6a521b1",
+                "sha256:e0d9e63797e483a30d27e09fffd308c59a700d365ec34e93cc100844168bf921"
             ],
-            "version": "==1.1.0"
+            "version": "==1.2.0"
         }
     }
 }
