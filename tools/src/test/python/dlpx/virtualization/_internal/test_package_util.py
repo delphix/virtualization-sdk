@@ -10,7 +10,7 @@ import pytest
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '1.1.0-internal-7'
+        assert package_util.get_version() == '1.1.0-internal-8'
 
     @staticmethod
     def test_get_virtualization_api_version():

@@ -94,7 +94,7 @@ If you want to get rid of the pre-release label (bump from `1.1.1-internal-7` to
 
 ## Testing
 
-Currently, there are three types of SDK testing: unit, manual, and functional (blackbox).
+Currently, there are three types of SDK testing: unit, manual, and functional (blackbox) testing.
 
 ### Unit Testing
 
