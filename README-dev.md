@@ -28,9 +28,9 @@ At a very high level, our development process usually looks like this:
 1. Create a fork of the delphix/virtualization-sdk repository.
 2. Clone the forked repository.
 3. Make changes to SDK code. Test these changes manually and with unit tests. Iterate on this until you have everything working.
-4. Commit your changes and build all Python package distributions. Make sure the version number of the packages is updated appropriately.
-5. Publish Python distributions to artifactory. 
-7. Run blackbox against the newly uploaded SDK version.
+4. Commit your changes. Make sure the version number of the packages is updated appropriately.
+5. Push your changes to a branch in the forked repository.
+7. Run blackbox tests against that branch.
 7. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
 8. Once the pull request is approved, it will merged into delphix/virtualization-sdk repository.
 
