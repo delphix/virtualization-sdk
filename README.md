@@ -1,5 +1,4 @@
 # Delphix Virtualization SDK
-Test read me
 
 This repository contains the Virtualization SDK for building custom data source integrations for the Delphix Dynamic Data Platform.
 
