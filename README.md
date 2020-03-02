@@ -1,4 +1,4 @@
-# Delphix Virtualization SDK
+# Delphix Virtualization SDK 2
 
 This repository contains the Virtualization SDK for building custom data source integrations for the Delphix Dynamic Data Platform.
 
