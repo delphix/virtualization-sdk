@@ -124,7 +124,7 @@ To run blackbox tests, follow these steps:
 1. Navigate to each package directory (common, dvp, libs, platform, tools) and run `python setup.py sdist bdist_wheel`. This will build Python package distributions.
 2. Run `./bin/upload.sh` to upload Python distributions to artifactory. 
 2. Navigate to the app-gate directory and run 
-`git blackbox -s appdata_samples --extra-params="-p sdk-version=1.0.0-internal-10"`.
+`git blackbox -s appdata_python_samples --extra-params="-p sdk-version=1.0.0-internal-10"`.
 
 
 (Soon) We will be able to move to this process once blackbox runner can build Python distributions without using Gradle.
