@@ -7,6 +7,21 @@ import json
 import re
 
 
+class SDKToolingError(Exception):
+    """
+    SDKBuildError is one of the main errors that gets caught in cli.py. Errors
+    that are not related to the user input should raise this error. The
+    message from this exception is posted to logger.error. message will be the
+    first arg that is passed in (for any exception that is extending it).
+    """
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, message):
+        super(SDKToolingError, self).__init__(message)
+
+
 class UserError(Exception):
     """
     UserError is the main error that gets caught in cli.py. The message from
@@ -254,3 +269,53 @@ class SubprocessFailedError(UserError):
                    "{} failed with exit code {}.").format(
                        output, command, exit_code)
         super(SubprocessFailedError, self).__init__(message)
+
+
+class ValidationFailedError(UserError):
+    """
+    ValidationFailedError gets raised when validation fails on plugin config
+    and its contents.
+    Defines helpers methods to format warning and exception messages.
+    """
+    def __init__(self, warnings):
+        message = self.__report_warnings_and_exceptions(warnings)
+        super(ValidationFailedError, self).__init__(message)
+
+    @classmethod
+    def __report_warnings_and_exceptions(cls, warnings):
+        """
+        Prints the warnings and errors that were found in the plugin code, if
+        the warnings dictionary contains the 'exception' key.
+        """
+        exception_msg = cls.sdk_exception_msg(warnings)
+        exception_msg += cls.exception_msg(warnings)
+        exception_msg += '\n{}'.format(cls.warning_msg(warnings))
+        return '{}\n{} Warning(s). {} Error(s).'.format(
+            exception_msg, len(warnings['warning']),
+            len(warnings['exception']) + len(warnings['sdk exception']))
+
+    @classmethod
+    def sdk_exception_msg(cls, warnings):
+        sdk_exception_msg = '\n'.join([
+            cls.__format_msg('SDK Error', ex)
+            for ex in warnings['sdk exception']
+        ])
+        return sdk_exception_msg
+
+    @classmethod
+    def exception_msg(cls, exceptions):
+        exception_msg = '\n'.join(
+            cls.__format_msg('Error', ex) for ex in exceptions['exception'])
+        return exception_msg
+
+    @classmethod
+    def warning_msg(cls, warnings):
+        warning_msg = '\n'.join(
+            cls.__format_msg('Warning', warning)
+            for warning in warnings['warning'])
+        return warning_msg
+
+    @staticmethod
+    def __format_msg(msg_type, msg):
+        msg_str = "{}: {}".format(msg_type, msg)
+        return msg_str
