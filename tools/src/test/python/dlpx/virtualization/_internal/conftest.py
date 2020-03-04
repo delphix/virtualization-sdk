@@ -637,7 +637,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 12, 'micro': 0}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 2}
 
 
 @pytest.fixture
