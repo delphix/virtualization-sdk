@@ -5,16 +5,14 @@
 import json
 import logging
 import os
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 
 from dlpx.virtualization._internal import exceptions
-from dlpx.virtualization._internal.util_classes import ValidationMode
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
 
-validation_result = namedtuple('validation_result',
-                               ['plugin_schemas', 'warnings'])
+validation_result = namedtuple('validation_result', ['plugin_schemas'])
 
 
 class SchemaValidator:
@@ -24,42 +22,18 @@ class SchemaValidator:
     Returns:
         On successful validation, callers can get the content of the plugin
         schemas. If validation fails or has issues - will report exception
-        back if validation mode is error, otherwise warnings or info based
-        on validation mode.
+        back.
     """
-    def __init__(self,
-                 schema_file,
-                 plugin_meta_schema,
-                 validation_mode,
-                 schemas=None):
+    def __init__(self, schema_file, plugin_meta_schema, schemas=None):
         self.__schema_file = schema_file
         self.__plugin_meta_schema = plugin_meta_schema
-        self.__validation_mode = validation_mode
         self.__plugin_schemas = schemas
-        self.__warnings = defaultdict(list)
 
     @property
     def result(self):
-        return validation_result(plugin_schemas=self.__plugin_schemas,
-                                 warnings=self.__warnings)
+        return validation_result(plugin_schemas=self.__plugin_schemas)
 
     def validate(self):
-        """
-        Validates the plugin schema file.
-        """
-        logger.debug('Run schema validations')
-        try:
-            self.__run_validations()
-        except Exception as e:
-            if self.__validation_mode is ValidationMode.INFO:
-                logger.info('Validation failed on plugin schema file : %s', e)
-            elif self.__validation_mode is ValidationMode.WARNING:
-                logger.warning('Validation failed on plugin schema file : %s',
-                               e)
-            else:
-                raise e
-
-    def __run_validations(self):
         """
         Reads a plugin schema file and validates the contents using a
         pre-defined schema.

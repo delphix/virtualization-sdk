@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import mock
@@ -189,11 +189,12 @@ class TestLibsRunBash:
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(remote_connection, command, variables, use_login_shell)
 
-        assert err_info.value.message == (
-            "The function run_bash's argument 'variables' was"
-            " a dict of {type 'str':type 'int', type 'str':type 'str'}"
-            " but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        message = ("The function run_bash's argument 'variables' was"
+                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                   " but should be of"
+                   " type 'dict of basestring:basestring' if defined.")
+        assert (err_info.value.message == message.format('int', 'str') or
+                err_info.value.message == message.format('str', 'int'))
 
     @staticmethod
     def test_run_bash_bad_use_login_shell(remote_connection):
@@ -213,7 +214,6 @@ class TestLibsRunBash:
 class TestLibsRunSync:
     @staticmethod
     def test_run_sync(remote_connection):
-
         expected_run_sync_response = libs_pb2.RunSyncResponse()
 
         expected_source_directory = 'sourceDirectory'
@@ -269,7 +269,6 @@ class TestLibsRunSync:
 
     @staticmethod
     def test_run_sync_with_nonactionable_error(remote_connection):
-
         response = libs_pb2.RunSyncResponse()
         na_error = libs_pb2.NonActionableLibraryError()
         response.error.non_actionable_error.CopyFrom(na_error)
@@ -593,11 +592,12 @@ class TestLibsRunPowershell:
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_powershell(remote_connection, command, variables)
 
-        assert err_info.value.message == (
-            "The function run_powershell's argument 'variables' was"
-            " a dict of {type 'str':type 'int', type 'str':type 'str'}"
-            " but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        message = ("The function run_powershell's argument 'variables' was"
+                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                   " but should be of"
+                   " type 'dict of basestring:basestring' if defined.")
+        assert (err_info.value.message == message.format('int', 'str') or
+                err_info.value.message == message.format('str', 'int'))
 
 
 class TestLibsRunExpect:
@@ -647,12 +647,12 @@ class TestLibsRunExpect:
         def mock_run_expect(actual_run_expect_request):
             assert actual_run_expect_request.command == expected_command
             assert (
-                actual_run_expect_request.remote_connection.environment.name
-                == remote_connection.environment.name
+                    actual_run_expect_request.remote_connection.environment.name
+                    == remote_connection.environment.name
             )
             assert (
-                actual_run_expect_request.remote_connection.environment.reference
-                == remote_connection.environment.reference
+                    actual_run_expect_request.remote_connection.environment.reference
+                    == remote_connection.environment.reference
             )
             return expected_run_expect_response
 
@@ -704,7 +704,6 @@ class TestLibsRunExpect:
 
     @staticmethod
     def test_run_expect_with_nonactionable_error(remote_connection):
-
         response = libs_pb2.RunExpectResponse()
         na_error = libs_pb2.NonActionableLibraryError()
         response.error.non_actionable_error.CopyFrom(na_error)
@@ -768,8 +767,9 @@ class TestLibsRunExpect:
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_expect(remote_connection, command, variables)
 
-        assert err_info.value.message == (
-            "The function run_expect's argument 'variables' was"
-            " a dict of {type 'str':type 'int', type 'str':type 'str'}"
-            " but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        message = ("The function run_expect's argument 'variables' was"
+                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                   " but should be of"
+                   " type 'dict of basestring:basestring' if defined.")
+        assert (err_info.value.message == message.format('int', 'str') or
+                err_info.value.message == message.format('str', 'int'))

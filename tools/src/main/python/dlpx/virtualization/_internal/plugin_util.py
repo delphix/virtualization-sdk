@@ -1,22 +1,50 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
+import enum
 import logging
 import os
+from contextlib import contextmanager
 
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import const, exceptions, file_util
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
 from dlpx.virtualization._internal.plugin_validator import PluginValidator
 from dlpx.virtualization._internal.schema_validator import SchemaValidator
-from dlpx.virtualization._internal.util_classes import ValidationMode
 
 logger = logging.getLogger(__name__)
 
 
-def read_and_validate_plugin_config_file(plugin_config,
-                                         stop_build,
-                                         run_all_validations,
-                                         skip_id_validation=False):
+class ValidationMode(enum.Enum):
+    """
+    Defines the validation mode that validator uses.
+    INFO - validator will give out info messages if validation fails.
+    WARNING - validator will log a warning if validation fails.
+    ERROR - validator will raise an exception if validation fails.
+    """
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
+
+
+@contextmanager
+def validate_error_handler(plugin_file, validation_mode):
+    try:
+        yield
+    except Exception as e:
+        if validation_mode is ValidationMode.INFO:
+            logger.info('Validation failed on plugin file %s : %s',
+                        plugin_file, e)
+        elif validation_mode is ValidationMode.WARNING:
+            logger.warning('Validation failed on plugin file %s : %s',
+                           plugin_file, e)
+        else:
+            raise e
+
+
+def validate_plugin_config_file(plugin_config,
+                                stop_build,
+                                skip_id_validation=False):
     """
     Reads a plugin config file and validates the contents using a
     pre-defined schema. If stop_build is True, will report exception
@@ -27,12 +55,14 @@ def read_and_validate_plugin_config_file(plugin_config,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (
-        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
-    validator = PluginValidator(plugin_config, plugin_config_schema_file,
-                                validation_mode, run_all_validations)
-    validator.validate()
+    plugin_config_schema_file = (const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
+                                 if skip_id_validation else
+                                 const.PLUGIN_CONFIG_SCHEMA)
+    validator = PluginValidator(plugin_config, plugin_config_schema_file)
+
+    with validate_error_handler(plugin_config, validation_mode):
+        validator.validate_plugin_config()
+
     return validator.result
 
 
@@ -48,18 +78,22 @@ def get_plugin_manifest(plugin_config_file,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (
-        util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-        if skip_id_validation else util_classes.PLUGIN_CONFIG_SCHEMA)
-    validator = PluginValidator.from_config_content(plugin_config_file,
-                                                    plugin_config_content,
-                                                    plugin_config_schema_file,
-                                                    validation_mode)
-    validator.validate()
-    return validator.result
+    src_dir = file_util.get_src_dir_path(plugin_config_file,
+                                         plugin_config_content['srcDir'])
+    entry_point_module, entry_point_object = PluginValidator.split_entry_point(
+        plugin_config_content['entryPoint'])
+    plugin_type = plugin_config_content['pluginType']
+
+    importer = PluginImporter(src_dir, entry_point_module, entry_point_object,
+                              plugin_type, True)
+
+    with validate_error_handler(plugin_config_file, validation_mode):
+        importer.validate_plugin_module()
+
+    return importer.result
 
 
-def read_and_validate_schema_file(schema_file, stop_build):
+def validate_schema_file(schema_file, stop_build):
     """
     Reads a plugin schema file and validates the contents using a
     pre-defined schema. If stop_build is True, will report exception
@@ -69,9 +103,11 @@ def read_and_validate_schema_file(schema_file, stop_build):
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
-                                validation_mode)
-    validator.validate()
+    validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
+
+    with validate_error_handler(schema_file, validation_mode):
+        validator.validate()
+
     return validator.result
 
 
@@ -79,8 +115,7 @@ def get_plugin_config_property(plugin_config_path, prop):
     """
     Returns the value for a specific property from the plugin config file.
     """
-    result = read_and_validate_plugin_config_file(plugin_config_path, False,
-                                                  False)
+    result = validate_plugin_config_file(plugin_config_path, False, False)
     return result.plugin_config_content[prop]
 
 
@@ -97,3 +132,23 @@ def get_schema_file_path(plugin_config, schema_file):
     if not os.path.isfile(schema_file):
         raise exceptions.PathTypeError(schema_file, 'file')
     return os.path.normpath(schema_file)
+
+
+def get_standardized_build_number(build_number):
+    """
+    Converts the build number the way back end expects it to be - without
+    leading or trailing zeros in each part of the multi part build number that
+    is separated by dots.
+    """
+    # Split on the period and convert to integer
+    array = [int(i) for i in build_number.split('.')]
+
+    # Next we want to trim all trailing zeros so ex: 5.3.0.0 == 5.3
+    while array:
+        if not array[-1]:
+            # Remove the last element which is a zero from array
+            array.pop()
+        else:
+            break
+
+    return '.'.join(str(i) for i in array)

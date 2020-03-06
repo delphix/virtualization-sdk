@@ -1,12 +1,12 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import os
 
 import click.testing as click_testing
 import yaml
-from dlpx.virtualization._internal import cli, exceptions, util_classes
+from dlpx.virtualization._internal import cli, const, exceptions
 
 import mock
 import pytest
@@ -107,10 +107,8 @@ class TestCli:
         assert result.output == 'codegen_error\n'
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
@@ -124,10 +122,8 @@ class TestCli:
         assert 'Internal error, please contact Delphix.\n' in result.output
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
 
 class TestInitCli:
@@ -141,26 +137,21 @@ class TestInitCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
     def test_non_default_params(mock_init, plugin_name):
         runner = click_testing.CliRunner()
 
-        result = runner.invoke(cli.delphix_sdk, [
-            'init', '-s', util_classes.STAGED_TYPE, '-r', '.', '-n',
-            plugin_name
-        ])
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-s', const.STAGED_TYPE, '-r', '.', '-n', plugin_name])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.STAGED_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.STAGED_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_invalid_ingestion_strategy(plugin_name):
@@ -185,8 +176,8 @@ class TestInitCli:
         runner = click_testing.CliRunner()
 
         result = runner.invoke(cli.delphix_sdk, [
-            'init', '-t', '{},{}'.format(util_classes.UNIX_HOST_TYPE,
-                                         util_classes.WINDOWS_HOST_TYPE)
+            'init', '-t', '{},{}'.format(const.UNIX_HOST_TYPE,
+                                         const.WINDOWS_HOST_TYPE)
         ])
 
         assert result.exit_code != 0
@@ -199,12 +190,10 @@ class TestInitCli:
 
         result = runner.invoke(
             cli.delphix_sdk,
-            ['init', '-n', plugin_name, '-t', util_classes.WINDOWS_HOST_TYPE])
+            ['init', '-n', plugin_name, '-t', const.WINDOWS_HOST_TYPE])
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.WINDOWS_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.WINDOWS_HOST_TYPE)
 
     @staticmethod
     def test_invalid_host_type():

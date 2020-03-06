@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import logging
@@ -9,9 +9,8 @@ import traceback
 from contextlib import contextmanager
 
 import click
-from dlpx.virtualization._internal import (click_util, exceptions,
-                                           logging_util, package_util,
-                                           util_classes)
+from dlpx.virtualization._internal import (click_util, const, exceptions,
+                                           logging_util, package_util)
 from dlpx.virtualization._internal.commands import build as build_internal
 from dlpx.virtualization._internal.commands import \
     download_logs as download_logs_internal
@@ -109,20 +108,19 @@ def delphix_sdk(verbose, quiet):
 @click.option(
     '-s',
     '--ingestion-strategy',
-    default=util_classes.DIRECT_TYPE,
+    default=const.DIRECT_TYPE,
     show_default=True,
-    type=click.Choice([util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE],
+    type=click.Choice([const.DIRECT_TYPE, const.STAGED_TYPE],
                       case_sensitive=False),
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '
           'requires a staging server.'))
 @click.option('-t',
               '--host-type',
-              default=util_classes.UNIX_HOST_TYPE,
+              default=const.UNIX_HOST_TYPE,
               show_default=True,
-              type=click.Choice([
-                  util_classes.UNIX_HOST_TYPE, util_classes.WINDOWS_HOST_TYPE
-              ]),
+              type=click.Choice(
+                  [const.UNIX_HOST_TYPE, const.WINDOWS_HOST_TYPE]),
               help='Set the host platform supported by the plugin.')
 def init(root, ingestion_strategy, name, host_type):
     """

@@ -1,14 +1,14 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import json
 import os
 
 import yaml
-from dlpx.virtualization._internal import exceptions, util_classes
+from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.commands import build
-from dlpx.virtualization._internal.plugin_validator import PluginValidator
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
 
 import mock
 import pytest
@@ -58,8 +58,8 @@ class TestBuild:
 
     @staticmethod
     @pytest.mark.parametrize('artifact_filename', ['somefile.json'])
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
                        return_value=({}, None))
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @mock.patch(
@@ -342,8 +342,8 @@ class TestBuild:
                            ''.format(src_dir, 'something'))
 
     @staticmethod
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
                        return_value=({}, None))
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
@@ -359,8 +359,8 @@ class TestBuild:
                     skip_id_validation)
 
     @staticmethod
-    @mock.patch.object(PluginValidator,
-                       '_PluginValidator__import_plugin',
+    @mock.patch.object(PluginImporter,
+                       '_PluginImporter__internal_import',
                        return_value=({}, None))
     @pytest.mark.parametrize('plugin_id', ['mongo'])
     def test_id_validation_negative(mock_import_plugin, plugin_config_file,
@@ -628,13 +628,27 @@ class TestPluginUtil:
 
     @staticmethod
     def test_plugin_config_schemas_diff():
-        with open(util_classes.PLUGIN_CONFIG_SCHEMA) as f:
+        with open(const.PLUGIN_CONFIG_SCHEMA) as f:
             config_schema = json.load(f)
 
-        with open(util_classes.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
+        with open(const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
             config_schema_no_id = json.load(f)
 
         # Only the id's pattern should be different so remove it.
         config_schema['properties']['id'].pop('pattern')
 
         assert config_schema == config_schema_no_id
+
+    @staticmethod
+    @pytest.mark.parametrize('build_number, expected', [
+        pytest.param('0.0.1', '0.0.1'),
+        pytest.param('0.1.0', '0.1'),
+        pytest.param('1.0.01.0', '1.0.1')
+    ])
+    def test_build_number_parameter(plugin_config_content, src_dir,
+                                    schema_content, expected):
+
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+
+        assert expected == upload_artifact['buildNumber']
