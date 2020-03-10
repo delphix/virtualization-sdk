@@ -21,7 +21,7 @@ This is done automatically by `dvp build`.
 This is what causes the slightly different workflows in development. Changes to `tools` are completely isolated from the
 Delphix Engine and wrappers changes only impact the plugin build.
 
-### Development
+## Development
  
 ### Development process
 
