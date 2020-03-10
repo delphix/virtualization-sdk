@@ -31,11 +31,13 @@ At a very high level, our development process usually looks like this:
 2. Clone the forked repository.
 3. Make changes to SDK code. Test these changes manually and with unit tests. Iterate on this until you have everything working.
 4. Bump major/minor/patch/build version depending on the scope of the change.
-5. Commit your changes. Make sure the version number of the packages is updated appropriately.
-6. Push your changes to a branch in the forked repository.
-7. Run blackbox tests against that branch.
-8. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
-9. Once the pull request is approved, merge the pull request into delphix/virtualization-sdk repository.
+5. Commit your changes. Refer to the [contribution guideline](https://github.com/delphix/virtualization-sdk/blob/develop/CONTRIBUTING.md#commit-message-format)
+ for commit message format. 
+6. Make sure the version number of the packages is updated appropriately.
+7. Push your changes to a branch in the forked repository.
+8. Run blackbox tests against that branch.
+9. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
+10. Once the pull request is approved, merge the pull request into delphix/virtualization-sdk repository.
 
 These steps are described in more detail below.
 
