@@ -318,14 +318,14 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk build [OPTIONS]'
-                                 u'\nTry "delphix-sdk build -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-c" /'
-                                 u' "--plugin-config": File'
-                                 u' "/not/a/real/file/plugin_config.yml"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
+                                 u"\nTry 'delphix-sdk build -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-c' /"
+                                 u" '--plugin-config': File"
+                                 u" '/not/a/real/file/plugin_config.yml'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     def test_option_a_and_g_set(plugin_config_file, artifact_file):
@@ -470,14 +470,14 @@ class TestUploadCli:
         ])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]'
-                                 u'\nTry "delphix-sdk upload -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-a" /'
-                                 u' "--upload-artifact": File'
-                                 u' "/not/a/real/file/artifact.json"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk upload [OPTIONS]"
+                                 u"\nTry 'delphix-sdk upload -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-a' /"
+                                 u" '--upload-artifact': File"
+                                 u" '/not/a/real/file/artifact.json'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -538,8 +538,8 @@ class TestUploadCli:
         assert result.exit_code == 2
         assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]\n'
                                  u'\n'
-                                 u'Error: Invalid value for "-e" / '
-                                 u'"--engine": Option is required '
+                                 u'Error: Invalid value for \'-e\' / '
+                                 u'\'--engine\': Option is required '
                                  u'and must be specified via the command line.'
                                  u'\n')
 
@@ -601,12 +601,12 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")
 
     @staticmethod
     @mock.patch(
@@ -655,14 +655,14 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-d" /'
-            u' "--directory": Directory'
-            u' "/not/a/real/directory"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-d' /"
+            u" '--directory': Directory"
+            u" '/not/a/real/directory'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -681,14 +681,14 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-c" /'
-            u' "--plugin-config": File'
-            u' "/not/a/real/file/plugin_config.yml"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-c' /"
+            u" '--plugin-config': File"
+            u" '/not/a/real/file/plugin_config.yml'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @mock.patch(
@@ -750,9 +750,9 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")
