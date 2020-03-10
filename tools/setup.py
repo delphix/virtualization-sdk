@@ -7,7 +7,7 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/_internal/VERSION')) as 
     version = version_file.read().strip()
 
 install_requires = [
-  "click >= 7.0",
+  "click >= 7.1",
   "click-configfile == 0.2.3",
   "dvp-platform == {}".format(version),
   "enum34 >= 1.1.6",
