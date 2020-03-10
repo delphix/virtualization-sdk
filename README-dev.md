@@ -46,20 +46,24 @@ Development should be done in a personal virtualenv. To setup the virtual enviro
 2. `source ~/path/to/env/root/bin/activate`.
 
 ### Installing the SDK from source
-Go into one of the package directories (common, dvp, libs, platform, tools) and run the following commands:
-1. Install the package's development dependencies: `pip install -r requirements.txt`.
-2. Install the package itself (use `-e` flag if you want to install the package in editable mode): `pip install .`.
+To install the SDK, follow these steps:
 
-One of the SDK dependencies - dvp-api - is currently hosted on [test PyPi](https://test.pypi.org/project/dvp-api/). 
-By default `pip` looks at pypi.org for packages to install. In order to successfully install the SDK, you have to 
-configure pip to search an additional package repository - test.pypi.org. To do that, create a file at 
-`<virtualenv-root>/pip.conf` that contains:
+1. Create a file at 
+    `<virtualenv-root>/pip.conf` that contains:
+    
+    ```
+    [install]
+    index-url=https://pypi.org/simple/
+    extra-index-url=https://test.pypi.org/simple/
+    ```
+   
+   One of the SDK dependencies - dvp-api - is currently hosted on [test PyPi](https://test.pypi.org/project/dvp-api/). 
+   By default `pip` looks at pypi.org for packages to install. In order to successfully install the SDK, you have to 
+   configure pip to search an additional package repository - test.pypi.org.
+2. Go into one of the package directories (common, dvp, libs, platform, tools) and run the commands below.
+3. Install the package's development dependencies: `pip install -r requirements.txt`.
+4. Install the package itself (use `-e` flag if you want to install the package in editable mode): `pip install .`.
 
-```
-[install]
-index-url=https://pypi.org/simple/
-extra-index-url=https://test.pypi.org/simple/
-```
 
 ### CLI changes
 
@@ -115,18 +119,18 @@ all the standard workflows. The same workflows will be exercised by functional (
 
 ### Functional (blackbox) testing
 To run blackbox tests, follow these steps: 
-1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `my-feature` in repository called `username/virtualization-sdk`.
+1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `my-feature` in repository called `<username>/virtualization-sdk`.
 2. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
 see the next sections.
 
 #### Blackbox tests targeting wrappers (mostly Delphix Engine workflows)
 * appdata_python_samples (sample plugins from the app-gate):
-`git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
-* appdata_sanity with a direct Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_DIRECT_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
-* appdata_sanity with a staged Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_STAGED_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
+`git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* appdata_sanity with a direct Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_DIRECT_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* appdata_sanity with a staged Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_STAGED_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
 
 #### Blackbox tests targeting the CLI (~80% CLI tests)
 * virtualization_sdk (installs and tests a direct Python plugin on Ubuntu 18): 
-`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_DIRECT_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_DIRECT_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
 * virtualization_sdk (installs and tests a staged Python plugin on Ubuntu 18): 
-`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_STAGED_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
+`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_STAGED_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
