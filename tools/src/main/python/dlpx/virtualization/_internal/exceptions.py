@@ -36,6 +36,30 @@ class UserError(Exception):
         super(UserError, self).__init__(message)
 
 
+class PluginUploadJobFailed(UserError):
+    """
+    PluginUploadJobFailed is raised in the upload command if the action/job
+    that is being monitored returns with a status other than 'COMPLETED' or
+    'RUNNING'.
+    """
+    def __init__(self, plugin_name):
+        message = "Failed trying to upload plugin {}."\
+            .format(plugin_name)
+        super(PluginUploadJobFailed, self).__init__(message)
+
+
+class PluginUploadWaitTimedOut(UserError):
+    """
+    PluginUploadWaitTimedOut is raised in the upload command if the
+    action/job that is being monitored does not complete or fail within a
+    30 minute timeout window.
+    """
+    def __init__(self, plugin):
+        message = "Timed out waiting for upload of plugin {} to complete."\
+            .format(plugin)
+        super(PluginUploadWaitTimedOut, self).__init__(message)
+
+
 class PathIsAbsoluteError(UserError):
     def __init__(self, path):
         self.path = path

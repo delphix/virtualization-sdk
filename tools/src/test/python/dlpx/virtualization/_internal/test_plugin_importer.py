@@ -15,7 +15,6 @@ import pytest
 import yaml
 
 
-
 @pytest.fixture
 def fake_src_dir(plugin_type):
     """

@@ -406,7 +406,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -423,7 +423,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -452,7 +452,7 @@ class TestUploadCli:
             '\nAction: Try with a different set of credentials.'
             '\n')
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('artifact_file',
@@ -497,7 +497,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -517,7 +517,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('dvp_config_properties', [{
