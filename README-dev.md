@@ -47,7 +47,7 @@ Development should be done in a personal virtualenv. To setup the virtual enviro
 1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
 2. `source ~/path/to/env/root/bin/activate`.
 
-### Installing the SDK from source
+###Installing the SDK from source
 To install the SDK, follow these steps:
 
 1. Create a file at 
@@ -104,11 +104,10 @@ Currently, there are three types of SDK testing: unit, manual, and functional (b
 
 ### Unit Testing
 
-Go into one of the package directories (common, dvp, libs, platform, tools) and run the following commands (if you haven't done it already):
+Go into one of the package directories (common, dvp, libs, platform, tools) and follow these steps:
 
-1. Install the package's development dependencies: `pip install -r requirements.txt`.
-2. Install the package itself in editable mode: `pip install -e .`.
-3. Run unit tests: `python -m pytest src/main/python`.
+1. Install the package's development dependencies and package itself by following the directions in [the SDK installation section](#installing-the-sdk-from-source).
+2. Run unit tests: `python -m pytest src/test/python`.
 
 There's no way to locally run unit tests in all packages with one command. However, they will be run automatically
 through GitHub Actions when you open a pull request. You can always open a draft pull request 
