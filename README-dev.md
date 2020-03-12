@@ -47,7 +47,7 @@ Development should be done in a personal virtualenv. To setup the virtual enviro
 1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
 2. `source ~/path/to/env/root/bin/activate`.
 
-###Installing the SDK from source
+### Installing the SDK from source
 To install the SDK, follow these steps:
 
 1. Create a file at 
