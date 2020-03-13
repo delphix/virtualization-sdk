@@ -21,49 +21,56 @@ This is done automatically by `dvp build`.
 This is what causes the slightly different workflows in development. Changes to `tools` are completely isolated from the
 Delphix Engine and wrappers changes only impact the plugin build.
 
-## Development process
+## Development
+ 
+### Development process
 
 At a very high level, our development process usually looks like this:
 
 1. Create a fork of the delphix/virtualization-sdk repository.
 2. Clone the forked repository.
-3. Make changes to SDK code. Test these changes manually and with unit tests. Iterate on this until you have everything working.
-4. Commit your changes and build all Python package distributions. Make sure the version number of the packages is updated appropriately.
-5. Publish Python distributions to artifactory. 
-7. Run blackbox against the newly uploaded SDK version.
-7. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
-8. Once the pull request is approved, it will merged into delphix/virtualization-sdk repository.
+3. Make changes to SDK code. Test these changes manually and with [unit tests](#unit-testing). Iterate on this until you have everything working.
+4. Bump major/minor/patch/build version depending on the scope of the change. Refer to [versioning section](#versioning) for instructions.
+5. Commit your changes. Refer to the [contribution guideline](https://github.com/delphix/virtualization-sdk/blob/develop/CONTRIBUTING.md#commit-message-format)
+ for commit message format. 
+6. Make sure the version number of the packages is updated appropriately in your commit. That includes all files mentioned
+in `.bumpversion.cfg` and the string in `test_get_version()` inside `test_package_util.py`.
+7. Push your changes to a branch in the forked repository.
+8. Run [blackbox tests](#functional-blackbox-testing) against that branch.
+9. Publish a pull request to the delphix/virtualization-sdk once your code is ready for review.
+10. Once the pull request is approved, merge the pull request into delphix/virtualization-sdk repository.
 
 These steps are described in more detail below.
 
-## Local SDK Development
+### Development environment
+Development should be done in a personal virtualenv. To setup the virtual environment:
 
-To setup local development, refer to README-dev.md in the `tools` directory. This walks through the setup of a local virtualenv for development. This should be done for _all_ SDK changes.
+1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
+2. `source ~/path/to/env/root/bin/activate`.
 
-### Configure pip index
+### Installing the SDK from source
+To install the SDK, follow these steps:
 
-`dvp build` executes `pip` to install the wrappers. By default `pip` looks at pypi.org for packages to install. Internal builds of the SDK are published to artifactory, not pypi. In order to configure pip to look at artifactory, create a file at `<virtualenv-root>/pip.conf` that contains:
+1. Create a file at 
+    `<virtualenv-root>/pip.conf` that contains:
+    
+    ```
+    [install]
+    index-url=https://pypi.org/simple/
+    extra-index-url=https://test.pypi.org/simple/
+    ```
+   
+   One of the SDK dependencies - dvp-api - is currently hosted on [TestPyPi](https://test.pypi.org/project/dvp-api/). 
+   By default `pip` looks at pypi.org for packages to install. In order to successfully install the SDK, you have to 
+   configure pip to search an additional package repository - test.pypi.org.
+2. Go into one of the package directories (common, dvp, libs, platform, tools) and run the commands below.
+3. Install the package's development dependencies: `pip install -r requirements.txt`.
+4. Install the package itself (use `-e` flag if you want to install the package in editable mode): `pip install .`.
 
-```
-[install]
-trusted-host=artifactory.delphix.com
-index-url=http://artifactory.delphix.com/artifactory/api/pypi/dvp-virtual-pypi/simple/
-```
 
 ### CLI changes
 
-To better understand how to develop and test `tools` changes, see README-dev.md in the `tools` directory.
-
-### Wrappers changes
-
-Run `dvp build --dev` to build your plugin and then upload it to a Delphix Engine to test.
-
-The wrappers are built with the plugin. `dvp build` has a hidden `--dev` flag. This builds `common`, `libs`, and `platform` locally and bundles them with the plugin. A special configuration entry is needed in your dvp config file which is located at `~/.dvp/config`:
-
-```
-[dev]
-vsdk_root = /path/to/vsdk_repo_root
-```
+To better understand how to develop and test `tools` changes, see [tools/README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/tools/README-dev.md).
 
 ## Versioning
 
@@ -71,8 +78,8 @@ The SDK is shipped as five Python packages that are currently versioned and ship
 dvp-platform, and dvp-tools. 
 
 The first thing to do is to change the version number of all the packages. Our versioning scheme follows the rules of
-semantic versioning in order to help developers manage their "dependency hell". We use bump2version 
-(https://github.com/c4urself/bump2version) to make the version management of all five packages easier. Semantic versioning rules are the following:
+semantic versioning in order to help developers manage their "dependency hell". We use [bump2version](https://github.com/c4urself/bump2version)
+to make the version management of all five packages easier. Semantic versioning rules are the following:
 
 ```
 Given a version number MAJOR.MINOR.PATCH, increment the:
@@ -90,7 +97,7 @@ If you want to bump the build number from `1.1.0-internal-7` to `1.1.0-internal-
 
 If you want to bump the major/minor/patch version, run `bumpversion [major|minor|patch]`.
 
-If you want to get rid of the pre-release label (bump from `1.1.1-internal-7` to `1.1.0`), run `bumpversion release`.
+If you want to get rid of the pre-release label (bump from `1.1.0-internal-7` to `1.1.0`), run `bumpversion release`.
 
 ## Testing
 
@@ -98,47 +105,37 @@ Currently, there are three types of SDK testing: unit, manual, and functional (b
 
 ### Unit Testing
 
-Go into one of the package directories (common, dvp, libs, platform, tools) and run the following commands (if you haven't done it already):
-1. Install the package's development dependencies: `pip install -r requirements.txt`.
-2. Install the package itself in editable mode: `pip install -e .`.
-3. Run unit tests: `python -m pytest src/main/python`.
+Go into one of the package directories (common, dvp, libs, platform, tools) and follow these steps:
 
-There's no way to locally run unit tests in all packages with one command. However, they will be run automatically through GitHub Actions when you open a pull request. 
+1. Install the package's development dependencies and package itself by following the directions in [the SDK installation section](#installing-the-sdk-from-source).
+2. Run unit tests: `python -m pytest src/test/python`.
 
-### Testing sdk-gate changes with app-gate code
+There's no way to locally run unit tests in all packages with one command. However, they will be run automatically
+through GitHub Actions when you open a pull request. You can always open a draft pull request 
 
-#### Manual testing
+### Manual testing
 
-Run `dvp build --dev` to build your plugin and then upload it to a Delphix Engine to test.
+#### Wrappers: dvp, common, platform, libs
+The only way to manually test the new wrappers code is to build a plugin, upload it to a Delphix Engine and run through
+all the standard workflows. The same workflows will be exercised by functional (blackbox) tests.
 
-The wrappers are built with the plugin. `dvp build` has a hidden `--dev` flag. This builds `common`, `libs`, and `platform` locally and bundles them with the plugin. A special configuration entry is needed in your dvp config file which is located at `~/.dvp/config`:
-
-```
-[dev]
-vsdk_root = /path/to/vsdk_repo_root
-```
-
-##### Functional (blackbox) testing
-(Now) Let's assume you're working on the SDK version `1.1.0-internal-10`.
-To run blackbox tests, follow these steps:
-1. Navigate to each package directory (common, dvp, libs, platform, tools) and run `python setup.py sdist bdist_wheel`. This will build Python package distributions.
-2. Run `./bin/upload.sh` to upload Python distributions to artifactory. 
-2. Navigate to the app-gate directory and run 
-`git blackbox -s appdata_samples --extra-params="-p sdk-version=1.0.0-internal-10"`.
-
-
-(Soon) We will be able to move to this process once blackbox runner can build Python distributions without using Gradle.
+### Functional (blackbox) testing
 To run blackbox tests, follow these steps: 
-1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `feature1` in repository called `username/virtualization-sdk`.
-2. Navigate to the app-gate directory and run 
-`git blackbox -s appdata_samples --extra-params="-p virt-sdk-repo=https://github.com/username/virtualization-sdk.git -p virt-sdk-branch=feature1"`.
+1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `my-feature` in repository called `<username>/virtualization-sdk`.
+2. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
+see the next sections.
 
-#### Setup
+At a minimum, each pull request should pass `appdata_python_samples` and `appdata_sanity` tests with a direct or staged plugin.
+See the section below for the description of each test suite.
 
-1. There are two environment variables that need to be set in order to publish: `ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS`.
+#### Blackbox tests targeting wrappers (mostly Delphix Engine workflows)
+* appdata_python_samples (sample plugins from the app-gate):
+`git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* appdata_sanity with a direct Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_DIRECT_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* appdata_sanity with a staged Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_STAGED_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
 
-	`ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS` are one set of credentials used to upload the Python distributions to our internal PyPI repositories. The credentials are the same for both internal PyPI repositories mentioned above.
-
-   - `ARTIFACTORY_PYPI_USER` and `ARTIFACTORY_PYPI_PASS` is the username/password combo given to you by whoever setup your Artifactory pypi account. This is an account separate from your Artifactory account. If you do not have one, please reach out to the `#artifactory` channel and request a `dvp-uploaders-python` account. See <https://docs.delphix.com/pages/viewpage.action?spaceKey=EO&title=Artifactory-instance#Artifactory-instance-SDKpythonpackages> for directions on how to add the account. These are used to upload the Python distributions to our internal PyPI repositories. The credentials are the same for both internal PyPI repositories mentioned above.
-
-2. `twine` needs to be installed. This is a Python package that is used to upload Python distributions. If it's not installed, install it by running `pip install twine`.
+#### Blackbox tests targeting the CLI (~80% CLI tests)
+* virtualization_sdk (installs and tests a direct Python plugin on Ubuntu 18): 
+`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_DIRECT_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* virtualization_sdk (installs and tests a staged Python plugin on Ubuntu 18): 
+`git blackbox -s virtualization_sdk -c APPDATA_SDK_UBUNTU18_STAGED_CENTOS73 --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
