@@ -60,7 +60,7 @@ To install the SDK, follow these steps:
     extra-index-url=https://test.pypi.org/simple/
     ```
    
-   One of the SDK dependencies - dvp-api - is currently hosted on [test PyPi](https://test.pypi.org/project/dvp-api/). 
+   One of the SDK dependencies - dvp-api - is currently hosted on [TestPyPi](https://test.pypi.org/project/dvp-api/). 
    By default `pip` looks at pypi.org for packages to install. In order to successfully install the SDK, you have to 
    configure pip to search an additional package repository - test.pypi.org.
 2. Go into one of the package directories (common, dvp, libs, platform, tools) and run the commands below.
@@ -70,7 +70,7 @@ To install the SDK, follow these steps:
 
 ### CLI changes
 
-To better understand how to develop and test `tools` changes, see [README-dev.md in the tools directory](https://github.com/delphix/virtualization-sdk/blob/develop/tools/README-dev.md).
+To better understand how to develop and test `tools` changes, see [tools/README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/tools/README-dev.md).
 
 ## Versioning
 
@@ -124,6 +124,9 @@ To run blackbox tests, follow these steps:
 1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `my-feature` in repository called `<username>/virtualization-sdk`.
 2. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
 see the next sections.
+
+At a minimum, each pull request should pass `appdata_python_samples` and `appdata_sanity` tests with a direct or staged plugin.
+See the section below for the description of each test suite.
 
 #### Blackbox tests targeting wrappers (mostly Delphix Engine workflows)
 * appdata_python_samples (sample plugins from the app-gate):

@@ -50,7 +50,7 @@ vsdk_root = /path/to/vsdk_repo_root
 ```
 
 #### Unit and functional (blackbox) testing
-Refer to [README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/README-dev.md). 
+Refer to [../README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/README-dev.md). 
 
 ## Decisions
 
