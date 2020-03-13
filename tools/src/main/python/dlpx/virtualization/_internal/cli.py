@@ -240,11 +240,14 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation,
                     resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Path to the upload artifact that was generated through build.')
+@click.option('--wait',
+              is_flag=True,
+              help='Wait for the upload job to complete before returning.')
 @click.password_option(cls=click_util.PasswordPromptIf,
                        default=DVP_CONFIG_MAP.get('password'),
                        confirmation_prompt=False,
                        help='Authenticate using the provided password.')
-def upload(engine, user, upload_artifact, password):
+def upload(engine, user, upload_artifact, password, wait):
     """
     Upload the generated upload artifact (the plugin JSON file) that was built
     to a target Delphix Engine.
@@ -252,7 +255,7 @@ def upload(engine, user, upload_artifact, password):
     the build command and will fail if it's not readable or valid.
     """
     with command_error_handler():
-        upload_internal.upload(engine, user, upload_artifact, password)
+        upload_internal.upload(engine, user, upload_artifact, password, wait)
 
 
 @delphix_sdk.command()

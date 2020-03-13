@@ -4,6 +4,8 @@
 
 import json
 import logging
+import threading
+import time
 
 import requests
 from dlpx.virtualization._internal import exceptions, plugin_util
@@ -20,10 +22,14 @@ class DelphixClient(object):
     """
     __BOUNDARY = '----------boundary------'
     __UPLOAD_CONTENT = 'multipart/form-data; boundary={}'.format(__BOUNDARY)
+    __JOB_POLLING_INTERVAL = 5
+    __WAIT_TIMEOUT_SECONDS = 3600
     __cookie = None
 
-    def __init__(self, engine):
+    def __init__(self, engine, timeout=None):
         self.__engine = engine
+        if timeout is not None:
+            self.__WAIT_TIMEOUT_SECONDS = timeout
 
     def login(self, engine_api, user, password):
         """
@@ -207,13 +213,12 @@ class DelphixClient(object):
             for chunk in download_zip_data:
                 f.write(chunk)
 
-    def upload_plugin(self, name, content):
+    def upload_plugin(self, name, content, wait):
         """
         Takes in the plugin name and content (as a json). Attempts to upload
         the plugin onto the connected Delphix Engine. Can raise HttpPostError
         and UnexpectedError.
         """
-
         # Get the upload token.
         logger.debug('Getting token to do upload.')
         response = self.__post('delphix/toolkit/requestUploadToken')
@@ -222,10 +227,60 @@ class DelphixClient(object):
 
         logger.info('Uploading plugin {!r}.'.format(name))
         # Encode plugin content.
-        self.__post('delphix/data/upload',
-                    content_type=self.__UPLOAD_CONTENT,
-                    data=self.__encode(json.dumps(content), token, name))
-        logger.info('Plugin was successfully uploaded.')
+        upload_response = self.__post('delphix/data/upload',
+                                      content_type=self.__UPLOAD_CONTENT,
+                                      data=self.__encode(
+                                          json.dumps(content), token, name))
+        if wait:
+            self._wait_for_upload_to_complete(name,
+                                              upload_response.get('action'),
+                                              upload_response.get('job'))
+
+    def _wait_for_upload_to_complete(self, name, upload_action, upgrade_job):
+        """
+        Waits a maximum of 60 minutes for the plugin upload to complete before
+        returning from the cli command. If the upload response contains a job,
+        this means that the plugin will be upgraded. We log additional details
+        regarding events if the job exists (i.e. event code, details, and
+        action), but only if we haven't seen the job event before. We will
+        return when the job succeeds, fails, or times out. Can raise
+        PluginUploadJobFailed or PluginUploadWaitTimedOut
+        """
+        ticker = threading.Event()
+        start_time = time.time()
+        event_tuples = set()
+        failed_statuses = ('FAILED', 'SUSPENDED', 'CANCELLED')
+        while not ticker.wait(self.__JOB_POLLING_INTERVAL):
+            if upgrade_job:
+                status_response = self.__get(
+                    'delphix/action/{}/getJob'.format(upload_action)).json()
+                events = status_response.get('result').get('events')
+                for event in events:
+                    event_tuple = (event.get('timestamp'),
+                                   event.get('messageCode'))
+                    if event_tuple not in event_tuples:
+                        logger.info('Timestamp: {}, Code: {}'.format(
+                            event.get('timestamp'), event.get('messageCode')))
+                        logger.warn(event.get('messageDetails'))
+                        if event.get('messageAction') is not None:
+                            logger.warn(event.get('messageAction'))
+                        event_tuples.add(event_tuple)
+                status = status_response.get('result').get('jobState')
+            else:
+                status_response = self.__get(
+                    'delphix/action/{}'.format(upload_action)).json()
+                status = status_response.get('result').get('state')
+
+            if status == 'COMPLETED':
+                logger.warn(
+                    'Plugin {} was successfully uploaded.'.format(name))
+                ticker.set()
+            elif status in failed_statuses:
+                ticker.set()
+                raise exceptions.PluginUploadJobFailed(name)
+            elif (time.time() - start_time) > self.__WAIT_TIMEOUT_SECONDS:
+                ticker.set()
+                raise exceptions.PluginUploadWaitTimedOut(name)
 
     def download_plugin_logs(self, directory, plugin_config):
         """
