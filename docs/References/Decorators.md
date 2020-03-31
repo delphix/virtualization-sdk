@@ -47,6 +47,11 @@ Plugin Operation | Decorator
 [Virtual Source Post-Snapshot](Plugin_Operations.md#virtual-source-post-snapshot) | `@plugin.virtual.post_snapshot()`
 [Virtual Source Mount Specification](Plugin_Operations.md#virtual-source-mount-specification) | `@plugin.virtual.mount_specification()`
 [Virtual Source Status](Plugin_Operations.md#virtual-source-status) | `@plugin.virtual.status()`
+[Repository Data Migration](Plugin_Operations.md#repository-data-migration) | `@plugin.upgrade.repository(migration_id)`
+[Source Config Data Migration](Plugin_Operations.md#source-config-data-migration) | `@plugin.upgrade.source_config(migration_id)`
+[Linked Source Data Migration](Plugin_Operations.md#linked-source-data-migration) | `@plugin.upgrade.linked_source(migration_id)`
+[Virtual Source Data Migration](Plugin_Operations.md#virtual-source-data-migration) | `@plugin.upgrade.virtual_source(migration_id)`
+[Snapshot Data Migration](Plugin_Operations.md#snapshot-data-migration) | `@plugin.upgrade.snapshot(migration_id)`
 
 !!! warning
     A plugin should only implement the **direct** operations or the **staged** operations based on the [plugin type](Glossary.md#plugin-type)

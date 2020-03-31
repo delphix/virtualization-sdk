@@ -1,10 +1,10 @@
-site_name: Delphix Virtualization SDK 1.0.0
-theme: 
+site_name: Delphix Virtualization SDK 2.0.0
+theme:
   name: material
   custom_dir: 'material/'
   palette:
-    primary: 
-    accent: 
+    primary:
+    accent:
   logo: 'images/delphix-logo-white.png'
   favicon: 'images/logo.png'
   font:
