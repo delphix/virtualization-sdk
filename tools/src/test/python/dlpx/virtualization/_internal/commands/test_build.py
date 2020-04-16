@@ -651,3 +651,14 @@ class TestPluginUtil:
             plugin_config_content, src_dir, schema_content, {})
 
         assert expected == upload_artifact['buildNumber']
+
+    @staticmethod
+    @pytest.mark.parametrize('lua_name, expected', [
+        pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
+        pytest.param(None, None)
+    ])
+    def test_lua_name_parameter(plugin_config_content, src_dir,
+                                schema_content, expected):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert expected == upload_artifact.get('luaName')

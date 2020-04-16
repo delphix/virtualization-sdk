@@ -171,7 +171,7 @@ def artifact_file_created():
 @pytest.fixture
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
-                          schema_file, manual_discovery, build_number):
+                          schema_file, manual_discovery, build_number, lua_name):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
@@ -215,6 +215,9 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if build_number:
         config['buildNumber'] = build_number
+
+    if lua_name:
+        config['luaName'] = lua_name
 
     return config
 
@@ -272,6 +275,11 @@ def manual_discovery():
 @pytest.fixture
 def build_number():
     return '2.0.0'
+
+
+@pytest.fixture
+def lua_name():
+    return 'lua-toolkit-1'
 
 
 @pytest.fixture
