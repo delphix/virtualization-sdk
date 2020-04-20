@@ -16,6 +16,8 @@ The Delphix Engine will enforce these rules before a newly-uploded plugin is all
 * The [build number](/Versioning_And_Upgrading/Versioning/#build-number) may only move forward, not backwards.
 * All [data migration IDs](/References/Glossary/#data-migration-id) that are present in the already-installed plugin must also be present on the newly-uploaded plugin. (The newly-uploaded plugin may add more data migrations, of course.)
 
+<!--
 ## Plugin-Defined Compatibility
 
 TODO: How can the plugin influence which version changes are allowed/denied?
+-->

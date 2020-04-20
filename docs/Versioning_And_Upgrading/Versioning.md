@@ -44,9 +44,11 @@ Your build number must be a string, conforming to these rules:
 
 Please also see the [App-Style vs. Enterprise-Style section](#app-style-vs-enterprise-style) below. We generally recommend using a single integer build number for app-style development. Build numbers need to have multiple parts if you are doing enterprise-style development.
 
+<!--
 ### (post-beta) Plugin Metadata
 
 TODO: What is plugin metadata? How may it be used? What are the rules and best practices?
+-->
 
 ## Versioning Strategies
 ### App-Style vs. Enterprise-Style

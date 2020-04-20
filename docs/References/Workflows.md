@@ -64,6 +64,8 @@ title: Virtualization SDK
 
 ![Screenshot](images/VirtualSourceDisable.png)
 
+<!--
 ## Upgrade
 
 TODO: Generate new image for upgrade workflow
+-->
