@@ -569,6 +569,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'engineApi': engine_api,
         'rootSquashEnabled': True,
         'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -616,6 +617,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
         'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
         'manifest': {}
     }
 
