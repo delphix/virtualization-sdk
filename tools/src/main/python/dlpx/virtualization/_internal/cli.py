@@ -32,6 +32,12 @@ __version__ = package_util.get_version()
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
                         obj=click_util.ConfigFileProcessor.read_config())
 
+# This setting is added to workaround the bug in click 7.1 on windows
+# when case_sensitive=False is used on click.Options
+CONTEXT_SETTINGS_INIT = dict(help_option_names=['-h', '--help'],
+                             obj=click_util.ConfigFileProcessor.read_config(),
+                             token_normalize_func=lambda x: x.encode("ascii"))
+
 DVP_CONFIG_MAP = CONTEXT_SETTINGS['obj']
 
 
@@ -87,7 +93,7 @@ def delphix_sdk(verbose, quiet):
             'Supported version is 2.7.x, found {}'.format(sys.version_info))
 
 
-@delphix_sdk.command()
+@delphix_sdk.command(context_settings=CONTEXT_SETTINGS_INIT)
 @click.option('-r',
               '--root-dir',
               'root',
