@@ -31,9 +31,10 @@ __version__ = package_util.get_version()
 # This is needed to add -h as an option for the help menu.
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
                         obj=click_util.ConfigFileProcessor.read_config())
-
+#
 # This setting is added to workaround the bug in click 7.1 on windows
 # when case_sensitive=False is used on click.Options
+#
 CONTEXT_SETTINGS_INIT = dict(help_option_names=['-h', '--help'],
                              obj=click_util.ConfigFileProcessor.read_config(),
                              token_normalize_func=lambda x: x.encode("ascii"))
