@@ -1,6 +1,4 @@
-# Special Concerns
-
-## Backports and Hotfixes
+# Backports and Hotfixes
 
 If your plugin uses an ["enterprise-style"](/Versioning_And_Upgrading/Versioning/#app-style-vs-enterprise-style) release strategy, then you'll probably want to occasionally provide new "minor" versions that build atop older versions.
 
