@@ -31,6 +31,22 @@ __version__ = package_util.get_version()
 # This is needed to add -h as an option for the help menu.
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
                         obj=click_util.ConfigFileProcessor.read_config())
+#
+# This setting is added to workaround the bug in click 7.1 on windows
+# when case_sensitive=False is used on click.Options. Line 187 of click
+# code at https://github.com/pallets/click/blob/7.x/src/click/types.py
+# fails when lower() method is called on normed_value as unicode type is
+# received on windows instead of string type. Removing case_sensitive=False
+# is not a good workaround as the behaviour of command changes.
+
+# This workaround uses token_normalize_func to convert normed_value
+# into an ascii string so that when lower() is called on it, it wont fail.
+# Also, chose to separate out this into a different settings instead of
+# adding it to CONTEXT_SETTINGS to avoid any side-effects on other commands.
+#
+CONTEXT_SETTINGS_INIT = dict(help_option_names=['-h', '--help'],
+                             obj=click_util.ConfigFileProcessor.read_config(),
+                             token_normalize_func=lambda x: x.encode("ascii"))
 
 DVP_CONFIG_MAP = CONTEXT_SETTINGS['obj']
 
@@ -87,7 +103,7 @@ def delphix_sdk(verbose, quiet):
             'Supported version is 2.7.x, found {}'.format(sys.version_info))
 
 
-@delphix_sdk.command()
+@delphix_sdk.command(context_settings=CONTEXT_SETTINGS_INIT)
 @click.option('-r',
               '--root-dir',
               'root',
