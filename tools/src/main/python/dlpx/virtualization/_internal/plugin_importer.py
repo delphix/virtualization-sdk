@@ -199,6 +199,14 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
         #
         return
 
+    manifest = get_manifest_helper(src_dir, module, entry_point,
+                                   module_content, plugin_type,
+                                   validate, queue)
+    queue.put({'manifest': manifest})
+
+
+def get_manifest_helper(src_dir, module, entry_point, module_content,
+                        plugin_type, validate, queue):
     #
     # Create an instance of plugin module with associated state to pass around
     # to the validation code.
@@ -219,8 +227,7 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
     warnings = import_util.validate_post_import(plugin_module)
     _process_warnings(queue, warnings)
 
-    manifest = _prepare_manifest(entry_point, module_content)
-    queue.put({'manifest': manifest})
+    return _prepare_manifest(entry_point, module_content)
 
 
 def _import_helper(queue, src_dir, module):
