@@ -171,3 +171,21 @@ class TestPluginValidator:
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
+
+    @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
+    @pytest.mark.parametrize('lua_name, expected', [
+        ('lua toolkit', "'lua toolkit' does not match"),
+        ('!lua#toolkit', "'!lua#toolkit' does not match"),
+        (None, "should never get here")
+    ])
+    def test_plugin_lua_name_format(src_dir, plugin_config_file,
+                                    plugin_config_content, expected):
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
+        except exceptions.SchemaValidationError as err_info:
+            message = err_info.message
+            assert expected in message
