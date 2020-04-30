@@ -215,7 +215,7 @@ def get_manifest_helper(src_dir, module, entry_point, module_content,
          unit tests on windows for validations. Since the behaviour of
          multiprocessing.Process module is different for windows and linux,
          unit testing validate_plugin_module method using mock has issues.
- 
+
          More details at :
          https://rhodesmill.org/brandon/2010/python-multiprocessing-linux-windows/
     """
