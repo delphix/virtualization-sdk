@@ -207,6 +207,18 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
 
 def get_manifest_helper(src_dir, module, entry_point, module_content,
                         plugin_type, validate, queue):
+    """
+    Helper method to run validations and prepare the manifest.
+    
+    NOTE:
+         This code is moved out into a separate method to help running 
+         unit tests on windows for validations. Since the behaviour of 
+         multiprocessing.Process module is different for windows and linux,
+         unit testing validate_plugin_module method using mock has issues.
+         
+         More details at : 
+         https://rhodesmill.org/brandon/2010/python-multiprocessing-linux-windows/
+    """
     #
     # Create an instance of plugin module with associated state to pass around
     # to the validation code.
