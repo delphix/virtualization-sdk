@@ -214,6 +214,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     if plugin_config_content.get('externalVersion'):
         artifact['externalVersion'] = plugin_config_content['externalVersion']
 
+    if plugin_config_content.get('luaName'):
+        artifact['luaName'] = plugin_config_content['luaName']
+
     return artifact
 
 
