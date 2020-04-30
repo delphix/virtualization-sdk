@@ -1,7 +1,3 @@
----
-title: Virtualization SDK
----
-
 # Discovery
 
 ## What is Discovery?
@@ -250,7 +246,7 @@ Once you have added one or more source configs, you will be able to sync. This i
 
 
 !!! warning
-    Once you have automatically or manually created source configs, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the upgrade section. For now, if you need to change your plugin's source config schema:
+    Once you have automatically or manually created source configs, you will not be allowed to modify your plugin's source config schema. We will cover how to deal with this later in the [upgrade section](/Versioning_And_Upgrade/Upgrade.md). For now, if you need to change your plugin's source config schema:
 
     - You will have to delete any source configs you have manually added.
     - Delete the plugin and its corresponding objects (dSources, Virtual Sources, etc) if the source configs were manually discovered.

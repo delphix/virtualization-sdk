@@ -37,3 +37,7 @@ Read through the first few sections of this documentation, and we will walk you 
 [Building Your First Plugin](/Building_Your_First_Plugin/Overview.md) will walk you step-by-step through the process of developing a very simple plugin. With it, you will learn the concepts and techniques that you will need to develop fully-fledged plugins. That does not mean this first plugin is useless—you will be able to virtualize simple datasets with it.
 
 Once you complete these sections, use the rest of the documentation whenever you would like.
+
+## Questions?
+
+If you have questions, bugs or feature requests reach out to us via the [Virtualization SDK GitHub repository](https://github.com/delphix/virtualization-sdk/).

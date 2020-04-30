@@ -1,7 +1,3 @@
----
-title: Virtualization SDK
----
-
 # Provisioning
 
 ## What is Provisioning?

@@ -1,7 +1,3 @@
----
-title: Virtualization SDK
----
-
 # Platform Libraries
 Set of functions that plugins can use these for executing remote commands, etc.
 

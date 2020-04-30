@@ -11,10 +11,10 @@ A single file that is the result of a [build](#building). It is this artifact wh
 The process of creating an [artifact](#artifact) from the collection of files that make up the plugin's source code.
 
 ## Data Migration
-A python function which is called as part of the upgrade process. It handles transforming data from an older format to a newer format. More details [here](/Versioning_And_Upgrading/Upgrading.md#data-migrations).
+A python function which is called as part of the upgrade process. It handles transforming data from an older format to a newer format. More details [here](/Versioning_And_Upgrade/Upgrade.md#data-migrations).
 
 ## Data Migration ID
-Each data migration is tagged with a unique ID. This allows the Delphix Engine to know which data migrations need to be run, in which order, when upgrading to a new plugin version. More details [here](/Versioning_And_Upgrading/Upgrading.md#data-migrations).
+Each data migration is tagged with a unique ID. This allows the Delphix Engine to know which data migrations need to be run, in which order, when upgrading to a new plugin version. More details [here](/Versioning_And_Upgrade/Upgrade.md#data-migrations).
 
 ## Decorator
 A Python construct which is used by plugins to "tag" certain functions, so that the Delphix Engine knows which function corresponds to which plugin operation.
@@ -72,7 +72,7 @@ For example, a MySQL plugin might provide an operation called "stop" which knows
 The process of making a virtual copy of a dataset and making it available for use on a target environment.
 
 ## Replication
-Delphix allows engine user to replicate data objects between Delphix Engines by creating a replication spec. Data objects that belong to a plugin can also be part of the replication spec. More details [here](/Best_Practices/Replication/Replication.md).
+Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the [Delphix Engine Documentation](https://docs.delphix.com/docs/data-backup-and-recovery-solutions/delphix-replication) for more details.
 
 ## Repository
 Information that represents a set of dependencies that a dataset requires in order to be functional. For example, a particular Postgres database might require an installed Postgres 9.6 DBMS, and so its associated repository would contain all the information required to interact with that DBMS.

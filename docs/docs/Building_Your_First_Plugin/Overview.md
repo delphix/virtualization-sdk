@@ -1,8 +1,3 @@
----
-title: Virtualization SDK
----
-
-
 # Overview
 
 In the following few pages, we will walk through an example of making a simple, working plugin.
@@ -59,6 +54,6 @@ Defining your plugin’s schemas will enable it to give the Delphix Engine the d
 To complete the tutorial that follows, make sure you check off the things on this list:
 
 - Download the SDK and get it working
-- A running Delphix Engine, version x.y.z or above.
-- Add at least one Unix host—but preferably three—to the Delphix Engine as remote environments
+- A running Delphix Engine version 6.0.2.0 or above.
+- Add at least one Unix host—but preferably three—to the Delphix Engine as remote environments.
 - Have a tool at hand for editing text files—mostly Python and JSON. A simple text editor would work fine, or you can use a full-fledged IDE.

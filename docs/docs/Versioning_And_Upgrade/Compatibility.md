@@ -13,11 +13,5 @@ These restrictions are enforced by the Delphix Engine, and sometimes, the plugin
 
 The Delphix Engine will enforce these rules before a newly-uploded plugin is allowed to be installed:
 
-* The [build number](/Versioning_And_Upgrading/Versioning/#build-number) may only move forward, not backwards.
-* All [data migration IDs](/References/Glossary/#data-migration-id) that are present in the already-installed plugin must also be present on the newly-uploaded plugin. (The newly-uploaded plugin may add more data migrations, of course.)
-
-<!--
-## Plugin-Defined Compatibility
-
-TODO: How can the plugin influence which version changes are allowed/denied?
--->
+* The [build number](/Versioning_And_Upgrade/Versioning.md#build-number) may only move forward, not backwards.
+* All [data migration IDs](/References/Glossary.md#data-migration-id) that are present in the already-installed plugin must also be present on the newly-uploaded plugin. The newly-uploaded plugin may add more data migrations, of course.
