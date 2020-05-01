@@ -51,12 +51,6 @@ Your build number must be a string, conforming to these rules:
 
 Please also see the [App-Style vs. Enterprise-Style section](#app-style-vs-enterprise-style) below. We generally recommend using a single integer build number for app-style development. Build numbers need to have multiple parts if you are doing enterprise-style development.
 
-<!--
-### (post-beta) Plugin Metadata
-
-TODO: What is plugin metadata? How may it be used? What are the rules and best practices?
--->
-
 ## Release Strategies
 
 There are two main strategies for releasing software:
@@ -85,4 +79,4 @@ You may use whichever of these strategies works best for you. The SDK and the De
 * Only publish one artifact built for a given official version of the plugin.
 * The official release of a plugin should not use the same build number as a development build.
 * Use an [external version](#external-version) that helps easily identify newer plugins.
-* Publish a plugin version compatibility matrix which lists out the plugin version, the Virtualization SDK it was built with and the Delphix Engine version(s) it is supports.
+* Publish a plugin version compatibility matrix which lists out the plugin version, the Virtualization SDK it was built with and the Delphix Engine version(s) it supports.

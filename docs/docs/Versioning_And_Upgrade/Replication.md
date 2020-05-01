@@ -1,7 +1,7 @@
 # Replication
 A Delphix Engine (source) can be setup to replicate data objects to another Delphix Engine (target). Plugins built using the Virtualization SDK work seamlessly with Delphix Engine replication with no additional development required from plugin developers.
 
-There is always a single version of the plugin that can be active on a Delphix Engine. We discuss some basic scenarios below. For more detailed information refer to the [Delphix Engine Documentation](https://docs.delphix.com/docs/).
+Only a single version of a plugin can be active on a Delphix Engine at a time. We discuss some basic scenarios below. For more detailed information refer to the [Delphix Engine Documentation](https://docs.delphix.com/docs/).
 
 ## Replica Provisioning
 Replicated dSource or VDB snapshots can be used to provision new VDBs onto a target Delphix Engine, without failing over any of the objects. When provisioning a VDB from a replicated snapshot:

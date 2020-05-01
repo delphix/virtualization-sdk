@@ -44,6 +44,6 @@ This meets our requirements:
 * It is impossible for a 2.1 end user to lose the bugfix, because the Delphix Engine will not allow the build number to go "backwards". So, a 2.1 end user will not be able to install versions 2.0, 1.1, or 1.0.
 * It is also impossible for a 1.2 end user to lose the bugfix.
     * They cannot install 1.0 or 1.1 because the build number is not allowed to decrease.
-    * They also cannot install 2.0. The data migration, will prevent this.
+    * They also cannot install 2.0. The missing data migration on 2.0 will prevent this.
 
 Note that a 1.2 end user can still upgrade to 2.1 at any time. This will allow them to keep the bugfix, and also take advantage of the new features that were part of 2.0.

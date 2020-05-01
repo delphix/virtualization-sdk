@@ -8,4 +8,4 @@ Like any other piece of software, plugins change over time. Every so often, ther
 
 ## Upgrade
 
-Upgrade is the process by which an older version of a plugin is replaced by a newer version. Depending on what has changed between the two versions, this process may also include modifying pre-existing plugin defined objects so that it conforms to the new schema expected by the new version of the plugin. Information on the upgrade process can be found [here](Upgrade.md).
+Upgrade is the process by which an older version of a plugin is replaced by a newer version. Depending on what has changed between the two versions, this process may also include modifying pre-existing plugin defined objects so they conform to the new schema expected by the new version of the plugin. Information on the upgrade process can be found [here](Upgrade.md).
