@@ -1,7 +1,3 @@
----
-title: Virtualization SDK
----
-
 # Data Ingestion
 
 ## How Does Delphix Ingest Data?
@@ -293,4 +289,4 @@ screen you see should ask for the properties that you recently added to your `li
 After you have finished entering this information, the initial sync process will begin. This is what will call your pre-snapshot operation, thus copying data.
 
 !!! warning "Gotcha"
-    Manually creating a dSource sets your plugin’s linked source schema in stone, and you will have to recreate the dSource in order to modify your schema. We will cover how to deal with this correctly later, in the upgrade section. For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.
+    Manually creating a dSource sets your plugin’s linked source schema in stone, and you will have to recreate the dSource in order to modify your schema. We will cover how to deal with this correctly later, in the [upgrade section](/Versioning_And_Upgrade/Upgrade.md). For now, if you need to change your plugin's linked source schema, you will have to first delete any dSources you have manually added.

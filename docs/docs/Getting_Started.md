@@ -14,7 +14,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
 - Python 2.7 (Python 3 is not supported)
 - Java 7+
-- Delphix Engine 5.3.5.0 or above
+- Delphix Engine 6.0.2.0 or above
 
 ## Installation
 To install the latest version of the SDK run:
@@ -64,3 +64,7 @@ $ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_fi
 You will be prompted for the Delphix Engine user's password.
 
 You can also use a [CLI Configuration File](/Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](/References/CLI.md) command options.
+
+## Questions?
+
+If you have questions, bugs or feature requests reach out to us via the [Virtualization SDK GitHub repository](https://github.com/delphix/virtualization-sdk/).

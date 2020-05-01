@@ -2,7 +2,7 @@ arrange:
   - index.md
   - Getting_Started.md
   - Building_Your_First_Plugin
+  - Versioning_And_Upgrade
   - References
-  - Versioning_And_Upgrading
   - Best_Practices
   - Release_Notes

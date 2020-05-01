@@ -1,7 +1,3 @@
----
-title: Virtualization SDK
----
-
 # Workflows
 
 ## Legend

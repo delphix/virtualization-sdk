@@ -5,7 +5,7 @@ The CLI is installed with the SDK. To install the SDK, refer to the [Getting Sta
 ## Help
 Every command has a `-h` flag including the CLI itself. This will print the help menu.
 
-####Examples
+#### Examples
 Get the CLI's help menu.
 
 ```
@@ -19,14 +19,18 @@ Options:
   --version      Show the version and exit.
   -v, --verbose  Enable verbose mode. Can be repeated up to three times for
                  increased verbosity.
+
   -q, --quiet    Enable quiet mode. Can be repeated up to three times for
                  increased suppression.
+
   -h, --help     Show this message and exit.
 
 Commands:
-  build   Build the plugin code and generate upload artifact file using the...
-  init    Create a plugin in the root directory.
-  upload  Upload the generated upload artifact (the plugin JSON file) that...
+  build          Build the plugin code and generate upload artifact file...
+  download-logs  Download plugin logs from a target Delphix Engine to a...
+  init           Create a plugin in the root directory.
+  upload         Upload the generated upload artifact (the plugin JSON
+                 file)...
 ```
 
 
@@ -76,7 +80,7 @@ $ dvp -vvv build
 Print nothing to the console.
 
 ```
-$ dvp -qqq upload -e engine.example.com -u admin
+$ dvp -qqq build
 ```
 
 ## Commands
@@ -91,6 +95,7 @@ Create a plugin in the root directory. The plugin will be valid but have no func
 |-r,<br>--root-dir<br>DIRECTORY|Set the plugin root directory.|N|`os.cwd()`|
 |-n,<br>--plugin-name<br>TEXT|Set the name of the plugin that will be used to identify it.|N|id|
 |-s,<br>--ingestion-strategy<br>[DIRECT\|STAGED]|Set the ingestion strategy of the plugin. A "direct" plugin ingests without a staging server while a "staged" plugin requires a staging server.|N|`DIRECT`|
+|-t,<br>--host-type<br>[UNIX\|WINDOWS]|Set the host platform supported by the plugin.|N|`UNIX`|
 
 
 #### Examples
@@ -115,7 +120,7 @@ $ dvp init -n mongodb -s STAGED -r /our/plugin/directory
 Create a `WINDOWS` plugin called `mssql` in the current working directory with the `DIRECT` ingestion strategy.
 
 ```
-$ dvp init -n mssql -p WINDOWS
+$ dvp init -n mssql -t WINDOWS
 ```
 
 ***
@@ -161,13 +166,14 @@ Upload the generated upload artifact (the plugin JSON file) that was built to a 
 |Option &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|Required|Default &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |-------|-----------|:--------:|:-------:|
 |-e,<br>--delphix-engine<br>TEXT|Upload plugin to the provided engine. This should be either the hostname or IP address.|Y|None|
-|-u,<br>--user<br>TEXT|Authenticate to the Delphix Engine with the provided user.|Y| None |
+|-u,<br>--user<br>TEXT|Authenticate to the Delphix Engine with the provided user.|Y|None|
 |-a,<br>--upload-artifact FILE|Path to the upload artifact that was generated through build.|N|`artifact.json`|
-|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be requested through a secure prompt.|N| None |
+|--wait|Block and wait for the upload job to finish on the Delphix Engine.|N|None|
+|--password<br>TEXT|Authenticate using the provided password. If ommitted, the password will be requested through a secure prompt.|N|None|
 
 
 #### Examples
-Upload artifact `build/artifact.json` to `delphix-engine.domain` using the user `admin`. Since the password option is ommitted, a secure password prompt is used instead.
+Upload artifact `build/artifact.json` to `engine.example.com` using the user `admin`. Since the password option is ommitted, a secure password prompt is used instead.
 
 ```
 $ dvp upload -a build/artifact -e engine.example.com -u admin

@@ -1,6 +1,7 @@
 arrange:
   - Overview.md
   - Versioning.md
-  - Upgrading.md
+  - Upgrade.md
   - Compatibility.md
-  - Special_Concerns
+  - Backports_And_Hotfixes.md
+  - Replication.md
