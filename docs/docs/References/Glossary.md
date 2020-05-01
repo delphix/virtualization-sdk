@@ -72,7 +72,7 @@ For example, a MySQL plugin might provide an operation called "stop" which knows
 The process of making a virtual copy of a dataset and making it available for use on a target environment.
 
 ## Replication
-Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the [Delphix Engine Documentation](https://docs.delphix.com/docs/data-backup-and-recovery-solutions/delphix-replication) for more details.
+Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the [Delphix Engine Documentation](https://docs.delphix.com/docs/) for more details.
 
 ## Repository
 Information that represents a set of dependencies that a dataset requires in order to be functional. For example, a particular Postgres database might require an installed Postgres 9.6 DBMS, and so its associated repository would contain all the information required to interact with that DBMS.

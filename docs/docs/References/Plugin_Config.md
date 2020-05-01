@@ -55,7 +55,7 @@ pluginType: DIRECT
 language: PYTHON27
 buildNumber: 0.1.0
 ```
-This is a valid plugin config for the plugin with `manualDiscovery` set to `false` and an `externalVersion`:
+This is a valid plugin config for the plugin with `manualDiscovery` set to `false` and an `externalVersion` set:
 
 ```yaml
 id: 7cf830f2-82f3-4d5d-a63c-7bbe50c22b32
