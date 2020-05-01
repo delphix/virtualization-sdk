@@ -13,59 +13,59 @@ from dlpx.virtualization.platform.operation import Operation as Op
 
 class UpgradeMigrations(object):
     def __init__(self):
-        self.__repository_id_to_impl = {}
-        self.__source_config_id_to_impl = {}
-        self.__linked_source_id_to_impl = {}
-        self.__virtual_source_id_to_impl = {}
-        self.__snapshot_id_to_impl = {}
+        self._repository_id_to_impl = {}
+        self._source_config_id_to_impl = {}
+        self._linked_source_id_to_impl = {}
+        self._virtual_source_id_to_impl = {}
+        self._snapshot_id_to_impl = {}
 
     def add_repository(self, migration_id, repository_impl):
-        self.__repository_id_to_impl[migration_id] = v.check_function(
+        self._repository_id_to_impl[migration_id] = v.check_function(
             repository_impl, Op.UPGRADE_REPOSITORY)
 
     def add_source_config(self, migration_id, source_config_impl):
-        self.__source_config_id_to_impl[migration_id] = v.check_function(
+        self._source_config_id_to_impl[migration_id] = v.check_function(
             source_config_impl, Op.UPGRADE_SOURCE_CONFIG)
 
     def add_linked_source(self, migration_id, linked_source_impl):
-        self.__linked_source_id_to_impl[migration_id] = v.check_function(
+        self._linked_source_id_to_impl[migration_id] = v.check_function(
             linked_source_impl, Op.UPGRADE_LINKED_SOURCE)
 
     def add_virtual_source(self, migration_id, virtual_source_impl):
-        self.__virtual_source_id_to_impl[migration_id] = v.check_function(
+        self._virtual_source_id_to_impl[migration_id] = v.check_function(
             virtual_source_impl, Op.UPGRADE_VIRTUAL_SOURCE)
 
     def add_snapshot(self, migration_id, snapshot_impl):
-        self.__snapshot_id_to_impl[migration_id] = v.check_function(
+        self._snapshot_id_to_impl[migration_id] = v.check_function(
             snapshot_impl, Op.UPGRADE_SNAPSHOT)
 
     def get_repository_dict(self):
         """dict: The migration id to implementation for repository migrations.
         """
-        return self.__repository_id_to_impl
+        return self._repository_id_to_impl
 
     def get_source_config_dict(self):
         """dict: The migration id to implementation for source config
         migrations.
         """
-        return self.__source_config_id_to_impl
+        return self._source_config_id_to_impl
 
     def get_linked_source_dict(self):
         """dict: The migration id to implementation for linked source
         migrations.
         """
-        return self.__linked_source_id_to_impl
+        return self._linked_source_id_to_impl
 
     def get_virtual_source_dict(self):
         """dict: The migration id to implementation for virtual source
         migrations.
         """
-        return self.__virtual_source_id_to_impl
+        return self._virtual_source_id_to_impl
 
     def get_snapshot_dict(self):
         """dict: The migration id to implementation for snapshot migrations.
         """
-        return self.__snapshot_id_to_impl
+        return self._snapshot_id_to_impl
 
 
 class PlatformUpgradeMigrations(UpgradeMigrations):
