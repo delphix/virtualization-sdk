@@ -19,7 +19,7 @@ from dlpx.virtualization.api import platform_pb2
 from dlpx.virtualization.platform import (LuaUpgradeMigrations, MigrationType,
                                           PlatformUpgradeMigrations)
 from dlpx.virtualization.platform.exceptions import (
-    IncorrectUpgradeObjectTypeError)
+    IncorrectUpgradeObjectTypeError, UnknownMigrationTypeError)
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +36,11 @@ class UpgradeOperations(object):
             if migration_type == MigrationType.PLATFORM:
                 self.platform_migrations.add_repository(
                     migration_id, repository_impl)
-            else:
-                # here migration type has to be lua.
+            elif migration_type == MigrationType.LUA:
                 self.lua_migrations.add_repository(migration_id,
                                                    repository_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return repository_impl
 
         return repository_decorator
@@ -51,10 +52,11 @@ class UpgradeOperations(object):
             if migration_type == MigrationType.PLATFORM:
                 self.platform_migrations.add_source_config(
                     migration_id, source_config_impl)
-            else:
-                # here migration type has to be lua.
+            elif migration_type == MigrationType.LUA:
                 self.lua_migrations.add_source_config(migration_id,
                                                       source_config_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return source_config_impl
 
         return source_config_decorator
@@ -66,10 +68,11 @@ class UpgradeOperations(object):
             if migration_type == MigrationType.PLATFORM:
                 self.platform_migrations.add_linked_source(
                     migration_id, linked_source_impl)
-            else:
-                # here migration type has to be lua.
+            elif migration_type == MigrationType.LUA:
                 self.lua_migrations.add_linked_source(migration_id,
                                                       linked_source_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return linked_source_impl
 
         return linked_source_decorator
@@ -81,10 +84,11 @@ class UpgradeOperations(object):
             if migration_type == MigrationType.PLATFORM:
                 self.platform_migrations.add_virtual_source(
                     migration_id, virtual_source_impl)
-            else:
-                # here migration type has to be lua.
+            elif migration_type == MigrationType.LUA:
                 self.lua_migrations.add_virtual_source(migration_id,
                                                        virtual_source_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return virtual_source_impl
 
         return virtual_source_decorator
@@ -94,9 +98,10 @@ class UpgradeOperations(object):
             if migration_type == MigrationType.PLATFORM:
                 self.platform_migrations.add_snapshot(migration_id,
                                                       snapshot_impl)
-            else:
-                # here migration type has to be lua.
+            elif migration_type == MigrationType.LUA:
                 self.lua_migrations.add_snapshot(migration_id, snapshot_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return snapshot_impl
 
         return snapshot_decorator
@@ -122,6 +127,11 @@ class UpgradeOperations(object):
         dict containing the upgraded parameters.
         """
         post_upgrade_parameters = {}
+        #
+        # For the request.migration_ids list, protobuf will preserve the
+        # ordering of repeated elements, so we can rely on the backend to
+        # give us the already sorted list of migrations
+        #
         impls_list = lua_impls_getter(
             request.lua_upgrade_version) + platform_impls_getter(
                 request.migration_ids)

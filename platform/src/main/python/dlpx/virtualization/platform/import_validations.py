@@ -146,7 +146,7 @@ def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
     """
     warnings = []
 
-    for _, migration_helper in vars(upgrade_operations).items():
+    for migration_helper in vars(upgrade_operations).values():
         # Next we must loop through each of the attributes (Should be just two)
         for attribute_name, attribute in vars(migration_helper).items():
             if attribute_name not in expected_upgrade_args.keys():
@@ -157,7 +157,7 @@ def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
             # know it is a dict containing migration id -> upgrade function
             # that we can iterate on.
             #
-            for _, migration_func in attribute.items():
+            for migration_func in attribute.values():
                 actual = inspect.getargspec(migration_func).args
                 expected = expected_upgrade_args[attribute_name]
                 warnings.extend(

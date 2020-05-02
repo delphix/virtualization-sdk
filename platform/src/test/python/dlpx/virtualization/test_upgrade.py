@@ -244,7 +244,8 @@ class TestUpgrade:
         '1.2',
         ['2020.4.2', '2020.4.4'],
     )])
-    def test_lua_upgrade(my_upgrade, upgrade_request, object_op):
+    def test_lua_upgrade(my_upgrade, upgrade_request, object_op,
+                         get_impls_to_exec):
         upgrade_type_decorator = getattr(my_upgrade, object_op)
 
         @upgrade_type_decorator('1.1', MigrationType.LUA)
@@ -277,11 +278,10 @@ class TestUpgrade:
             output_dict['migrations'].append('platform repo 2020.4.4')
             return output_dict
 
-        lua_getter = getattr(my_upgrade.lua_migrations,
-                             'get_{}_impls_to_exec'.format(object_op))
+        lua_getter = getattr(my_upgrade.lua_migrations, get_impls_to_exec)
 
         platform_getter = getattr(my_upgrade.platform_migrations,
-                                  'get_{}_impls_to_exec'.format(object_op))
+                                  get_impls_to_exec)
 
         post_upgrade_parameters = my_upgrade._run_migration_upgrades(
             upgrade_request, lua_getter, platform_getter)
@@ -294,102 +294,47 @@ class TestUpgrade:
             assert current_metadata['migrations'] == expected
 
     @staticmethod
-    @pytest.mark.parametrize('fake_map_param,upgrade_type', [(
-        {
+    @pytest.mark.parametrize(
+        'func_name,fake_map_param,upgrade_type,expected_logs',
+        [('_internal_repository', {
             'APPDATA_REPOSITORY-1': '{}',
             'APPDATA_REPOSITORY-2': '{}',
             'APPDATA_REPOSITORY-3': '{}'
-        },
-        platform_pb2.UpgradeRequest.REPOSITORY,
-    )])
-    def test_repository(my_upgrade, upgrade_request, fake_map_param, caplog):
-        upgrade_response = my_upgrade._internal_repository(upgrade_request)
+        }, platform_pb2.UpgradeRequest.REPOSITORY,
+          'Upgrade repositories [APPDATA_REPOSITORY-1,'
+          ' APPDATA_REPOSITORY-2, APPDATA_REPOSITORY-3]'),
+         ('_internal_source_config', {
+             'APPDATA_SOURCE_CONFIG-1': '{}',
+             'APPDATA_SOURCE_CONFIG-2': '{}',
+             'APPDATA_SOURCE_CONFIG-3': '{}',
+             'APPDATA_SOURCE_CONFIG-4': '{}'
+         }, platform_pb2.UpgradeRequest.SOURCECONFIG,
+          'Upgrade source configs [APPDATA_SOURCE_CONFIG-1,'
+          ' APPDATA_SOURCE_CONFIG-2, APPDATA_SOURCE_CONFIG-3,'
+          ' APPDATA_SOURCE_CONFIG-4]'),
+         ('_internal_linked_source', {
+             'APPDATA_STAGED_SOURCE-1': '{}',
+             'APPDATA_STAGED_SOURCE-2': '{}',
+             'APPDATA_STAGED_SOURCE-3': '{}'
+         }, platform_pb2.UpgradeRequest.LINKEDSOURCE,
+          'Upgrade linked sources [APPDATA_STAGED_SOURCE-1,'
+          ' APPDATA_STAGED_SOURCE-2, APPDATA_STAGED_SOURCE-3]'),
+         ('_internal_virtual_source', {
+             'APPDATA_VIRTUAL_SOURCE-1': '{}',
+             'APPDATA_VIRTUAL_SOURCE-2': '{}'
+         }, platform_pb2.UpgradeRequest.VIRTUALSOURCE,
+          'Upgrade virtual sources [APPDATA_VIRTUAL_SOURCE-1,'
+          ' APPDATA_VIRTUAL_SOURCE-2]'),
+         ('_internal_snapshot', {
+             'APPDATA_SNAPSHOT-1': '{}'
+         }, platform_pb2.UpgradeRequest.SNAPSHOT,
+          'Upgrade snapshots [APPDATA_SNAPSHOT-1]')])
+    def test_upgrade_requests(my_upgrade, func_name, fake_map_param,
+                              expected_logs, upgrade_request, caplog):
+        upgrade_response = getattr(my_upgrade, func_name)(upgrade_request)
 
         # Check that the response's oneof is set to return_value and not error
         assert upgrade_response.WhichOneof('result') == 'return_value'
         assert (upgrade_response.return_value.post_upgrade_parameters ==
                 fake_map_param)
-        assert (caplog.records[0].message ==
-                'Upgrade repositories [APPDATA_REPOSITORY-1,'
-                ' APPDATA_REPOSITORY-2, APPDATA_REPOSITORY-3]')
-
-    @staticmethod
-    @pytest.mark.parametrize('fake_map_param,upgrade_type', [(
-        {
-            'APPDATA_SOURCE_CONFIG-1': '{}',
-            'APPDATA_SOURCE_CONFIG-2': '{}',
-            'APPDATA_SOURCE_CONFIG-3': '{}',
-            'APPDATA_SOURCE_CONFIG-4': '{}'
-        },
-        platform_pb2.UpgradeRequest.SOURCECONFIG,
-    )])
-    def test_source_config(my_upgrade, upgrade_request, fake_map_param,
-                           caplog):
-        upgrade_response = my_upgrade._internal_source_config(upgrade_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert upgrade_response.WhichOneof('result') == 'return_value'
-        assert (upgrade_response.return_value.post_upgrade_parameters ==
-                fake_map_param)
-        assert (caplog.records[0].message ==
-                'Upgrade source configs [APPDATA_SOURCE_CONFIG-1,'
-                ' APPDATA_SOURCE_CONFIG-2, APPDATA_SOURCE_CONFIG-3,'
-                ' APPDATA_SOURCE_CONFIG-4]')
-
-    @staticmethod
-    @pytest.mark.parametrize('fake_map_param,upgrade_type', [(
-        {
-            'APPDATA_STAGED_SOURCE-1': '{}',
-            'APPDATA_STAGED_SOURCE-2': '{}',
-            'APPDATA_STAGED_SOURCE-3': '{}'
-        },
-        platform_pb2.UpgradeRequest.LINKEDSOURCE,
-    )])
-    def test_linked_source(my_upgrade, upgrade_request, fake_map_param,
-                           caplog):
-        upgrade_response = my_upgrade._internal_linked_source(upgrade_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert upgrade_response.WhichOneof('result') == 'return_value'
-        assert (upgrade_response.return_value.post_upgrade_parameters ==
-                fake_map_param)
-        assert (caplog.records[0].message ==
-                'Upgrade linked sources [APPDATA_STAGED_SOURCE-1,'
-                ' APPDATA_STAGED_SOURCE-2, APPDATA_STAGED_SOURCE-3]')
-
-    @staticmethod
-    @pytest.mark.parametrize('fake_map_param,upgrade_type', [(
-        {
-            'APPDATA_VIRTUAL_SOURCE-1': '{}',
-            'APPDATA_VIRTUAL_SOURCE-2': '{}'
-        },
-        platform_pb2.UpgradeRequest.VIRTUALSOURCE,
-    )])
-    def test_virtual_source(my_upgrade, upgrade_request, fake_map_param,
-                            caplog):
-        upgrade_response = my_upgrade._internal_virtual_source(upgrade_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert upgrade_response.WhichOneof('result') == 'return_value'
-        assert (upgrade_response.return_value.post_upgrade_parameters ==
-                fake_map_param)
-        assert (caplog.records[0].message ==
-                'Upgrade virtual sources [APPDATA_VIRTUAL_SOURCE-1,'
-                ' APPDATA_VIRTUAL_SOURCE-2]')
-
-    @staticmethod
-    @pytest.mark.parametrize('fake_map_param,upgrade_type', [(
-        {
-            'APPDATA_SNAPSHOT-1': '{}'
-        },
-        platform_pb2.UpgradeRequest.SNAPSHOT,
-    )])
-    def test_snapshot(my_upgrade, upgrade_request, fake_map_param, caplog):
-        upgrade_response = my_upgrade._internal_snapshot(upgrade_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert upgrade_response.WhichOneof('result') == 'return_value'
-        assert (upgrade_response.return_value.post_upgrade_parameters ==
-                fake_map_param)
-        assert (caplog.records[0].message ==
-                'Upgrade snapshots [APPDATA_SNAPSHOT-1]')
+        assert (caplog.records[0].message == expected_logs)

@@ -3,6 +3,7 @@
 #
 
 import pytest
+import conftest
 from dlpx.virtualization.platform import migration_helper as m
 from dlpx.virtualization.platform.exceptions import (
     MigrationIdAlreadyUsedError, MigrationIdIncorrectFormatError,
@@ -16,10 +17,7 @@ class TestPlatformUpgradeMigrations:
         yield m.PlatformUpgradeMigrations()
 
     @staticmethod
-    @pytest.mark.parametrize('method_name', [
-        'add_repository', 'add_source_config', 'add_linked_source',
-        'add_virtual_source', 'add_snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     @pytest.mark.parametrize('migration_id,expected_std_id',
                              [('5.3.2.1', '5.3.2.1'), ('1000', '1000'),
                               ('50.0.0', '50'), ('50.0.0000.1', '50.0.0.1'),
@@ -35,10 +33,7 @@ class TestPlatformUpgradeMigrations:
         assert expected_std_id in platform_migrations.get_sorted_ids()
 
     @staticmethod
-    @pytest.mark.parametrize('method_name', [
-        'add_repository', 'add_source_config', 'add_linked_source',
-        'add_virtual_source', 'add_snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     @pytest.mark.parametrize('id_one,id_two',
                              [('5.3.2.1', '5.3.2.1'), ('1000', '1000.0.0'),
                               ('50.0.0', '50'),
@@ -68,10 +63,7 @@ class TestPlatformUpgradeMigrations:
                 id_two, std_id))
 
     @staticmethod
-    @pytest.mark.parametrize('method_name', [
-        'add_repository', 'add_source_config', 'add_linked_source',
-        'add_virtual_source', 'add_snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     @pytest.mark.parametrize('migration_id',
                              [True, 1000, {'random set'}, ['random', 'list']])
     def test_migration_incorrect_type(platform_migrations, method_name,
@@ -110,10 +102,7 @@ class TestPlatformUpgradeMigrations:
                 m.PlatformUpgradeMigrations.MIGRATION_ID_REGEX.pattern))
 
     @staticmethod
-    @pytest.mark.parametrize('method_name', [
-        'add_repository', 'add_source_config', 'add_linked_source',
-        'add_virtual_source', 'add_snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     @pytest.mark.parametrize('migration_id', ['0.0', '0', '0.000.000.00.0'])
     def test_migration_id_is_zero(platform_migrations, method_name,
                                   migration_id):
@@ -155,10 +144,7 @@ class TestLuaUpgradeMigrations:
         yield m.LuaUpgradeMigrations()
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     def test_basic_add(lua_migrations, object_op):
         migration_id_list = ['0.0', '00.30', '1.00', '1.04', '2.5', '5.50']
         expected = ['0.0', '0.30', '1.0', '1.4', '2.5', '5.50']
@@ -176,10 +162,7 @@ class TestLuaUpgradeMigrations:
         assert all(migration_id in impl_dict for migration_id in expected)
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     def test_same_migration_id_used(lua_migrations, object_op):
         def function():
             pass
@@ -221,10 +204,7 @@ class TestLuaUpgradeMigrations:
             " be a string.".format(migration_id))
 
     @staticmethod
-    @pytest.mark.parametrize('method_name', [
-        'add_repository', 'add_source_config', 'add_linked_source',
-        'add_virtual_source', 'add_snapshot'
-    ])
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
     @pytest.mark.parametrize(
         'migration_id', ['Not integers', '1000.', '2019 10 20', '5.4.testver'])
     def test_migration_incorrect_format(lua_migrations, method_name,
@@ -243,11 +223,8 @@ class TestLuaUpgradeMigrations:
                 m.LuaUpgradeMigrations.LUA_VERSION_REGEX.pattern))
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
-    def test_get_correct_impls(lua_migrations, object_op):
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
+    def test_get_correct_impls(lua_migrations, method_name, get_impls_to_exec):
         def f_one():
             pass
 
@@ -261,22 +238,19 @@ class TestLuaUpgradeMigrations:
             pass
 
         # Add the id/function in a random order
-        getattr(lua_migrations, 'add_{}'.format(object_op))('3.6', f_three)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('1.02', f_one)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('4.0', f_four)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('2.01', f_two)
+        getattr(lua_migrations, method_name)('3.6', f_three)
+        getattr(lua_migrations, method_name)('1.02', f_one)
+        getattr(lua_migrations, method_name)('4.0', f_four)
+        getattr(lua_migrations, method_name)('2.01', f_two)
 
-        ordered_impl_list = getattr(
-            lua_migrations, 'get_{}_impls_to_exec'.format(object_op))('2.1')
+        ordered_impl_list = getattr(lua_migrations, get_impls_to_exec)('2.1')
 
         assert ordered_impl_list == [f_two, f_three, f_four]
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
-    def test_get_correct_impls_low_versions(lua_migrations, object_op):
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
+    def test_get_correct_impls_low_versions(lua_migrations, method_name,
+                                            get_impls_to_exec):
         def f_one():
             pass
 
@@ -290,22 +264,19 @@ class TestLuaUpgradeMigrations:
             pass
 
         # Add the id/function in a random order
-        getattr(lua_migrations, 'add_{}'.format(object_op))('3.6', f_three)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('1.02', f_one)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('4.0', f_four)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('2.01', f_two)
+        getattr(lua_migrations, method_name)('3.6', f_three)
+        getattr(lua_migrations, method_name)('1.02', f_one)
+        getattr(lua_migrations, method_name)('4.0', f_four)
+        getattr(lua_migrations, method_name)('2.01', f_two)
 
-        ordered_impl_list = getattr(
-            lua_migrations, 'get_{}_impls_to_exec'.format(object_op))('5.1')
+        ordered_impl_list = getattr(lua_migrations, get_impls_to_exec)('5.1')
 
         assert not ordered_impl_list
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
-    def test_get_correct_impls_high_versions(lua_migrations, object_op):
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
+    def test_get_correct_impls_high_versions(lua_migrations, method_name,
+                                             get_impls_to_exec):
         def f_one():
             pass
 
@@ -319,22 +290,19 @@ class TestLuaUpgradeMigrations:
             pass
 
         # Add the id/function in a random order
-        getattr(lua_migrations, 'add_{}'.format(object_op))('3.6', f_three)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('1.02', f_one)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('4.0', f_four)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('2.01', f_two)
+        getattr(lua_migrations, method_name)('3.6', f_three)
+        getattr(lua_migrations, method_name)('1.02', f_one)
+        getattr(lua_migrations, method_name)('4.0', f_four)
+        getattr(lua_migrations, method_name)('2.01', f_two)
 
-        ordered_impl_list = getattr(
-            lua_migrations, 'get_{}_impls_to_exec'.format(object_op))('0.0')
+        ordered_impl_list = getattr(lua_migrations, get_impls_to_exec)('0.0')
 
         assert ordered_impl_list == [f_one, f_two, f_three, f_four]
 
     @staticmethod
-    @pytest.mark.parametrize('object_op', [
-        'repository', 'source_config', 'linked_source', 'virtual_source',
-        'snapshot'
-    ])
-    def test_get_correct_impls_version_missing(lua_migrations, object_op):
+    @pytest.mark.parametrize('object_op', conftest.OBJECT_TYPES)
+    def test_get_correct_impls_version_missing(lua_migrations, method_name,
+                                               get_impls_to_exec):
         def f_one():
             pass
 
@@ -348,12 +316,11 @@ class TestLuaUpgradeMigrations:
             pass
 
         # Add the id/function in a random order
-        getattr(lua_migrations, 'add_{}'.format(object_op))('3.6', f_three)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('1.02', f_one)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('4.0', f_four)
-        getattr(lua_migrations, 'add_{}'.format(object_op))('2.01', f_two)
+        getattr(lua_migrations, method_name)('3.6', f_three)
+        getattr(lua_migrations, method_name)('1.02', f_one)
+        getattr(lua_migrations, method_name)('4.0', f_four)
+        getattr(lua_migrations, method_name)('2.01', f_two)
 
-        ordered_impl_list = getattr(
-            lua_migrations, 'get_{}_impls_to_exec'.format(object_op))('2.9')
+        ordered_impl_list = getattr(lua_migrations, get_impls_to_exec)('2.9')
 
         assert ordered_impl_list == [f_three, f_four]

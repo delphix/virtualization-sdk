@@ -38,7 +38,7 @@ class IncorrectReturnTypeError(PluginRuntimeError):
 
     Args:
         operation (Operation): The Operation enum of the operation being run
-        actual type (Type or List[Type]): type(s) returned from the operation
+        actual_type (Type or List[Type]): type(s) returned from the operation
         expected_type (Type): The type of the parameter that was expected.
 
     Attributes:
@@ -60,7 +60,7 @@ class IncorrectUpgradeObjectTypeError(PluginRuntimeError):
     called with the incorrect object type to upgrade.
 
     Args:
-        actual type (platform_pb2.UpgradeRequest.Type): type that was passed in
+        actual_type (platform_pb2.UpgradeRequest.Type): type that was passed in
         expected_type (platform_pb2.UpgradeRequest.Type): expected type
 
     Attributes:
@@ -73,6 +73,25 @@ class IncorrectUpgradeObjectTypeError(PluginRuntimeError):
             'The upgrade operation received objects with {} type but should'
             ' have had type {}.'.format(actual_type, expected_type))
         super(IncorrectUpgradeObjectTypeError, self).__init__(message)
+
+
+class UnknownMigrationTypeError(PlatformError):
+    """UnknownMigrationTypeError gets thrown when the migration type that is
+    set on an upgrade migration decorator is not one of PLATFORM or LUA.
+
+    Args:
+        actual_type (MigrationType): type that was passed in
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+            should be returning what type.
+
+    """
+    def __init__(self, actual_type, expected_type):
+        message = (
+            'The upgrade migrationType received was {} type which is not'
+            ' supported.'.format(actual_type))
+        super(UnknownMigrationTypeError, self).__init__(message)
 
 
 class OperationAlreadyDefinedError(PlatformError):
