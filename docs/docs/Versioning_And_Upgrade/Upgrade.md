@@ -63,6 +63,8 @@ If the user installs the new version of the plugin, we have a problem! The above
 
 The solution to this problem is to use [data migrations](/References/Glossary.md#data-migration), explained below.
 
+!!! info "Zero dSource and VDB downtime during plugin upgrade"
+    dSources and VDBs do not need to be disabled before a plugin upgrade is initiated. End users can continue to access data from existing VDBs during a plugin upgrade. However, while a particular plugin is in the process of being upgraded, no administrative Delphix Engine operations like: VDB Refresh, VDB Provision, dSource Disable/Enable etc will be allowed on the objects associated with that plugin. Objects associated with other plugins will not be affected.
 
 ## Data Migrations
 
