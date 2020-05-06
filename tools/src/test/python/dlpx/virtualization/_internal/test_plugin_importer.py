@@ -56,11 +56,11 @@ class TestPluginImporter:
                                  entry_point_module, entry_point_object,
                                  plugin_module_content, plugin_manifest):
         queue = Queue()
-        manifest = plugin_importer.get_manifest_helper(src_dir, entry_point_module,
-                                                       entry_point_object,
-                                                       plugin_module_content,
-                                                       plugin_type,
-                                                       False, queue)
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_object,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
         assert manifest == plugin_manifest
 
@@ -69,22 +69,22 @@ class TestPluginImporter:
                                         entry_point_module,
                                         entry_point_object):
         queue = Queue()
-        manifest = plugin_importer.get_manifest_helper(src_dir, entry_point_module,
-                                                       entry_point_object,
-                                                       None,
-                                                       plugin_type,
-                                                       False, queue)
-        assert manifest == None
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_object,
+                                                None,
+                                                plugin_type,
+                                                False, queue)
+        assert manifest is None
 
     @staticmethod
     def test_plugin_entry_object_none(src_dir, plugin_type,
                                       entry_point_module, plugin_module_content):
         queue = Queue()
-        manifest = plugin_importer.get_manifest_helper(src_dir, entry_point_module,
-                                                        None,
-                                                        plugin_module_content,
-                                                        plugin_type,
-                                                        False, queue)
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                None,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
         message = str(queue.get('exception'))
         assert 'Plugin entry point object is None.' in message
@@ -96,11 +96,11 @@ class TestPluginImporter:
                                             plugin_module_content):
         entry_point_name = "nonexistent entry point"
         queue = Queue()
-        manifest = plugin_importer.get_manifest_helper(src_dir, entry_point_module,
-                                                       entry_point_name,
-                                                       plugin_module_content,
-                                                       plugin_type,
-                                                       False, queue)
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_name,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
         message = str(queue.get('exception'))
         assert ("'{}' is not a symbol in module".format(entry_point_name) in
@@ -113,11 +113,11 @@ class TestPluginImporter:
         setattr(plugin_module_content, none_entry_point, None)
 
         queue = Queue()
-        manifest = plugin_importer.get_manifest_helper(src_dir, entry_point_module,
-                                                       none_entry_point,
-                                                       plugin_module_content,
-                                                       plugin_type,
-                                                       False, queue)
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                none_entry_point,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
         message = str(queue.get('exception'))
         assert ('Plugin object retrieved from the entry point {} is'

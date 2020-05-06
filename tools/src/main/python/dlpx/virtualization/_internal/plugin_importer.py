@@ -114,7 +114,7 @@ class PluginImporter:
             in a sub-process and on completion return the output.
         """
         queue = Queue()
-        process = Process(target=_get_manifest,
+        process = Process(target=_import_module_and_get_manifest,
                           args=(queue, src_dir, module, entry_point,
                                 plugin_type, validate))
         process.start()
@@ -184,7 +184,8 @@ class PluginImporter:
         return warnings
 
 
-def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
+def _import_module_and_get_manifest(queue, src_dir, module, entry_point,
+                                    plugin_type, validate):
     """
     Imports the plugin module, runs validations and returns the manifest.
     """
@@ -199,14 +200,14 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
         #
         return
 
-    manifest = get_manifest_helper(src_dir, module, entry_point,
-                                   module_content, plugin_type,
-                                   validate, queue)
+    manifest = get_manifest(src_dir, module, entry_point,
+                            module_content, plugin_type,
+                            validate, queue)
     queue.put({'manifest': manifest})
 
 
-def get_manifest_helper(src_dir, module, entry_point, module_content,
-                        plugin_type, validate, queue):
+def get_manifest(src_dir, module, entry_point, module_content,
+                 plugin_type, validate, queue):
     """
     Helper method to run validations and prepare the manifest.
 
