@@ -198,12 +198,20 @@ class TestPluginImporter:
          ('dec_not_function:plugin', "decorated by 'linked.pre_snapshot()'"
           " is not a function"),
          ('id_not_string:plugin', "The migration id '['testing', 'out',"
-          " 'validation']' used in the function"
-          " 'repo_upgrade' should be a string."),
+          " 'validation']' used in the function 'repo_upgrade' should be a"
+          " string."),
+         ('lua_id_not_string:plugin', "The migration id '['testing', 'out',"
+          " 'validation']' used in the function 'repo_upgrade' should be a"
+          " string."),
          ('id_bad_format:plugin', "used in the function 'repo_upgrade' does"
           " not follow the correct format"),
+         ('lua_id_bad_format:plugin', "used in the function 'repo_upgrade'"
+          " does not follow the correct format"),
          ('id_used:plugin', "'5.04.000.01' used in the function 'snap_upgrade'"
-          " has the same canonical form '5.4.0.1' as another migration")])
+          " has the same canonical form '5.4.0.1' as another migration"),
+         ('lua_id_used:plugin', "The lua major minor version '5.4' used in the"
+          " function 'repo_upgrade_two' decorated by 'upgrade.repository()'"
+          " has already been used.")])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_wrapper_failures(mock_file_util, plugin_config_file, fake_src_dir,
                               expected_error):
