@@ -1,0 +1,6 @@
+site/
+.DS_Store
+build.sh
+
+# virtualenv directory created by pipenv
+.venv/

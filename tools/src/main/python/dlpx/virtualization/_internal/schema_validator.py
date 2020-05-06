@@ -5,16 +5,14 @@
 import json
 import logging
 import os
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 
 from dlpx.virtualization._internal import exceptions
-from dlpx.virtualization._internal.util_classes import ValidationMode
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
 
-validation_result = namedtuple('validation_result',
-                               ['plugin_schemas', 'warnings'])
+validation_result = namedtuple('validation_result', ['plugin_schemas'])
 
 
 class SchemaValidator:
@@ -24,42 +22,18 @@ class SchemaValidator:
     Returns:
         On successful validation, callers can get the content of the plugin
         schemas. If validation fails or has issues - will report exception
-        back if validation mode is error, otherwise warnings or info based
-        on validation mode.
+        back.
     """
-    def __init__(self,
-                 schema_file,
-                 plugin_meta_schema,
-                 validation_mode,
-                 schemas=None):
+    def __init__(self, schema_file, plugin_meta_schema, schemas=None):
         self.__schema_file = schema_file
         self.__plugin_meta_schema = plugin_meta_schema
-        self.__validation_mode = validation_mode
         self.__plugin_schemas = schemas
-        self.__warnings = defaultdict(list)
 
     @property
     def result(self):
-        return validation_result(plugin_schemas=self.__plugin_schemas,
-                                 warnings=self.__warnings)
+        return validation_result(plugin_schemas=self.__plugin_schemas)
 
     def validate(self):
-        """
-        Validates the plugin schema file.
-        """
-        logger.debug('Run schema validations')
-        try:
-            self.__run_validations()
-        except Exception as e:
-            if self.__validation_mode is ValidationMode.INFO:
-                logger.info('Validation failed on plugin schema file : %s', e)
-            elif self.__validation_mode is ValidationMode.WARNING:
-                logger.warning('Validation failed on plugin schema file : %s',
-                               e)
-            else:
-                raise e
-
-    def __run_validations(self):
         """
         Reads a plugin schema file and validates the contents using a
         pre-defined schema.
@@ -84,12 +58,12 @@ class SchemaValidator:
                     return json.load(f)
                 except ValueError as err:
                     raise exceptions.UserError(
-                        'Failed to load schemas because {!r} is not a '
+                        'Failed to load schemas because \'{}\' is not a '
                         'valid json file. Error: {}'.format(
                             self.__schema_file, err))
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to load schemas from {!r}'
+                'Unable to load schemas from \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__schema_file, err.errno, os.strerror(err.errno)))
 
@@ -106,13 +80,13 @@ class SchemaValidator:
                     plugin_meta_schema = json.load(f)
                 except ValueError as err:
                     raise exceptions.UserError(
-                        'Failed to load schemas because {!r} is not a '
+                        'Failed to load schemas because \'{}\' is not a '
                         'valid json file. Error: {}'.format(
                             self.__plugin_meta_schema, err))
 
         except (IOError, OSError) as err:
             raise exceptions.UserError(
-                'Unable to read plugin schema file {!r}'
+                'Unable to read plugin schema file \'{}\''
                 '\nError code: {}. Error message: {}'.format(
                     self.__plugin_meta_schema, err.errno,
                     os.strerror(err.errno)))
@@ -125,7 +99,7 @@ class SchemaValidator:
         # validation errors and report everything wrong with the schema.
         #
         validation_errors = sorted(v.iter_errors(self.__plugin_schemas),
-                                   key=str)
+                                   key=lambda e: e.path)
 
         if validation_errors:
             raise exceptions.SchemaValidationError(self.__schema_file,

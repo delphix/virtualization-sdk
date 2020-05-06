@@ -12,8 +12,8 @@ import StringIO
 import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           package_util, plugin_util,
-                                           util_classes)
+                                           package_util,
+                                           plugin_dependency_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +24,14 @@ DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
 STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
 
+BUILD_DIR_NAME = 'build'
 
-def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
+
+def build(plugin_config,
+          upload_artifact,
+          generate_only,
+          skip_id_validation,
+          local_vsdk_root=None):
     """This builds the plugin using the configurations provided in config yaml
     file provided as input. It reads schemas and source code from the files
     given in yaml file, generates an encoded string of zip of source code,
@@ -36,16 +42,21 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
         upload_artifact: The file to which output of build  is written to.
         generate_only: Only generate python classes from schema definitions.
         skip_id_validation: Skip validation of the plugin id.
+        local_vsdk_root: The local path to the root of the Virtualization SDK
+            repository.
     """
     logger.debug(
         'Build parameters include plugin_config: %s, upload_artifact: %s,'
         ' generate_only: %s', plugin_config, upload_artifact, generate_only)
 
+    if local_vsdk_root:
+        local_vsdk_root = os.path.expanduser(local_vsdk_root)
+
     # Read content of the plugin config  file provided and perform validations
-    logger.info('Reading and validating plugin config file %s', plugin_config)
+    logger.info('Validating plugin config file %s', plugin_config)
     try:
-        result = plugin_util.read_and_validate_plugin_config_file(
-            plugin_config, not generate_only, False, skip_id_validation)
+        result = plugin_util.validate_plugin_config_file(
+            plugin_config, not generate_only, skip_id_validation)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -57,11 +68,11 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
         plugin_config, plugin_config_content['schemaFile'])
 
     # Read schemas from the file provided in the config and validate them
-    logger.info('Reading and validating schemas from %s', schema_file)
+    logger.info('Validating schemas from %s', schema_file)
 
     try:
-        result = plugin_util.read_and_validate_schema_file(
-            schema_file, not generate_only)
+        result = plugin_util.validate_schema_file(schema_file,
+                                                  not generate_only)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -101,22 +112,34 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
                                                  plugin_config_content,
                                                  not generate_only,
                                                  skip_id_validation)
-    except exceptions.UserError as err:
+    except (exceptions.UserError, exceptions.SDKToolingError) as err:
         raise exceptions.BuildFailedError(err)
 
     plugin_manifest = {}
     if result:
         plugin_manifest = result.plugin_manifest
-        if result.warnings:
-            warning_msg = util_classes.MessageUtils.warning_msg(
-                result.warnings)
-            logger.warn('{}\n{} Warning(s). {} Error(s).'.format(
-                warning_msg, len(result.warnings['warning']), 0))
+
+    #
+    # Setup a build directory for the plugin in its root. Dependencies are
+    # packaged with the plugin and should not be installed into the original
+    # source directory.
+    #
+    root = os.path.dirname(plugin_config)
+    build_dir = os.path.join(root, BUILD_DIR_NAME)
+    build_src_dir = os.path.join(build_dir, os.path.basename(src_dir))
+
+    # Copy everything from the source directory into the build directory.
+    file_util.clean_copy(src_dir, build_src_dir)
+
+    # Install dependencies in the plugin's source root in the build directory.
+    plugin_dependency_util.install_deps(build_src_dir,
+                                        local_vsdk_root=local_vsdk_root)
 
     # Prepare the output artifact.
     try:
-        plugin_output = prepare_upload_artifact(plugin_config_content, src_dir,
-                                                schemas, plugin_manifest)
+        plugin_output = prepare_upload_artifact(plugin_config_content,
+                                                build_src_dir, schemas,
+                                                plugin_manifest)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -136,7 +159,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     # This is the output dictionary that will be written
     # to the upload_artifact.
     #
-    return {
+    artifact = {
         # Hard code the type to a set default.
         'type':
         TYPE,
@@ -151,8 +174,6 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['id'].lower(),
         'prettyName':
         plugin_config_content['name'],
-        'version':
-        plugin_config_content['version'],
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
@@ -163,6 +184,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['hostTypes'],
         'entryPoint':
         plugin_config_content['entryPoint'],
+        'buildNumber':
+        plugin_util.get_standardized_build_number(
+            plugin_config_content['buildNumber']),
         'buildApi':
         package_util.get_build_api_version(),
         'engineApi':
@@ -186,6 +210,11 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'manifest':
         manifest
     }
+
+    if plugin_config_content.get('externalVersion'):
+        artifact['externalVersion'] = plugin_config_content['externalVersion']
+
+    return artifact
 
 
 def get_linked_source_definition_type(plugin_config_content):

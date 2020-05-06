@@ -26,7 +26,7 @@ of a lib operation.
 
 import sys
 
-from dlpx.virtualization import libs_pb2
+from dlpx.virtualization.api import libs_pb2
 from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
                                                  LibraryError,
                                                  PluginScriptError)

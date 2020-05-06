@@ -60,10 +60,12 @@ class PluginRuntimeError(Exception):
             type(s) that was actually passed in for the parameter. This will
             either take the type and make it a str or join the types as a
             string and put it in brackets.
-            expected_type (Type or List[Type], Dict[Type, Type]):
+            expected_type (Type, List[Type], List[Type1, Type2], or
+            Dict[Type, Type]):
             The type of the parameter that was expected. Or if this is a
-            container then we assume there is one element in it and that type
-            is the expected type of the container.
+            container then we either assume there is one element in it and that
+            type is the expected type of the container, or if the list contains
+            multiple types, then multiple types are expected.
             ie: if expected_type = [str] then the returned expected string with
             be something like "type 'list of str'"
 
@@ -74,33 +76,48 @@ class PluginRuntimeError(Exception):
         def _remove_angle_brackets(type_string):
             return type_string.replace('<', '').replace('>', '')
 
+        def _get_type_name(type_object):
+            if type_object.__module__ != '__builtin__':
+                type_name = '{}.{}'.format(
+                    type_object.__module__, type_object.__name__)
+            else:
+                type_name = type_object.__name__
+            return type_name
+
         if isinstance(expected_type, list):
-            if len(expected_type) != 1:
+            """
+            If expected_type length is greater than 1, we can
+            expect 2 cases. Either the list has all the same types
+            (violating the assumption that there is one element in the
+            list, and that type is the expected type of the container)
+            or the list has types that are unique to each other, meaning that
+            multiple types were expected, any one of which are allowed.
+            """
+            if len(expected_type) != 1 and len(set(expected_type)) == 1:
                 raise PlatformError('The thrown TypeError should have had a'
                                     ' list of size 1 as the expected_type')
-            single_type = expected_type[0]
-            if single_type.__module__ != '__builtin__':
-                type_name = '{}.{}'.format(
-                    single_type.__module__, single_type.__name__)
+            if len(expected_type) > 1:
+                for index in range(0, len(expected_type)):
+                    expected_type[index] = _get_type_name(expected_type[index])
+                    expected_type[index] = _remove_angle_brackets(str(expected_type[index]))
+
+                expected = "any one of the following types: '{}'".format(expected_type)
             else:
-                type_name = single_type.__name__
-            expected = "type 'list of {}'".format(type_name)
+                single_type = expected_type[0]
+                type_name = _get_type_name(single_type)
+
+                expected = "type 'list of {}'".format(type_name)
         elif isinstance(expected_type, dict):
             if len(expected_type) != 1:
                 raise PlatformError('The thrown TypeError should have had a'
                                     ' dict of size 1 as the expected_type')
+
             key_type = expected_type.keys()[0]
             value_type = expected_type.values()[0]
-            if key_type.__module__ != '__builtin__':
-                key_type_name = '{}.{}'.format(
-                    key_type.__module__, key_type.__name__)
-            else:
-                key_type_name = key_type.__name__
-            if value_type.__module__ != '__builtin__':
-                value_type_name = '{}.{}'.format(
-                    value_type.__module__, value_type.__name__)
-            else:
-                value_type_name = value_type.__name__
+
+            key_type_name = _get_type_name(key_type)
+            value_type_name = _get_type_name(value_type)
+
             expected = "type 'dict of {}:{}'".format(
                 key_type_name, value_type_name)
 
@@ -163,5 +180,3 @@ class IncorrectTypeError(PluginRuntimeError):
             expected,
             (' if defined', '')[required]))
         super(IncorrectTypeError, self).__init__(message)
-
-

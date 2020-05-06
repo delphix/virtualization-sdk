@@ -1,10 +1,15 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
+import re
 
 import enum
-from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
+import six
+from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment, \
+    RemoteHost
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
+from dlpx.virtualization.platform.exceptions import \
+    IncorrectReferenceFormatError
 
 """Classes used for Plugin Operations
 
@@ -157,23 +162,60 @@ class Status(enum.Enum):
 
 
 class Mount(object):
+
+
     def __init__(self, remote_environment, mount_path, shared_path=None):
-        if not isinstance(remote_environment, RemoteEnvironment):
+
+        """A Mount object asks for multiple Python objects (RemoteEnvironment,
+        RemoteHost), which have parameters (such as name, binary_path and
+        scratch_path) that require the plugin writer to provide values for.
+        Plugin writers will not know the values for these, nor are these values
+        ever used by engine code, except for RemoteHost's reference parameter.
+        This check allows plugin writers to provide either a RemoteEnvironment
+        object with fully populated parameters, or a reference string, leaving
+        the other parameters to be populated with dummy values. This saves the
+        plugin writer from attempting to provide parameter values that they
+        won't have access to."""
+        def __is_correct_reference_format(reference):
+            unix_format = re.compile("^UNIX_HOST_ENVIRONMENT-\d+$")
+            win_format = re.compile("^WINDOWS_HOST_ENVIRONMENT-\d+$")
+            return bool(unix_format.match(reference)) or \
+                   bool(win_format.match(reference))
+
+
+        def __make_remote_environment_from_reference(reference):
+            dummy_host = RemoteHost("dummy host", "dummy reference", "dummy binary path", "dummy scratch path")
+            if not isinstance(remote_environment, RemoteEnvironment) and not \
+                __is_correct_reference_format(remote_environment):
+                raise RuntimeError("Reference '{}' is not a valid host environment reference.".format(reference))
+            return RemoteEnvironment("dummy name", reference, dummy_host)
+
+        # if reference is not a RemoteEnvironment nor a string
+        if not isinstance(remote_environment, RemoteEnvironment) and not \
+            isinstance(remote_environment, six.string_types):
             raise IncorrectTypeError(
                 Mount,
                 'remote_environment',
                 type(remote_environment),
-                RemoteEnvironment)
-        self._remote_environment = remote_environment
+                [RemoteEnvironment, six.string_types[0]])
+        # if reference is a string, but incorrectly formatted
+        if isinstance(remote_environment, six.string_types) and not __is_correct_reference_format(remote_environment):
+            raise IncorrectReferenceFormatError(remote_environment)
 
-        if not isinstance(mount_path, basestring):
+        # If the plugin has provided us with just a valid reference string,
+        # convert to a real Python object
+        if isinstance(remote_environment, six.string_types):
+            self._remote_environment = __make_remote_environment_from_reference(remote_environment)
+        else:
+            self._remote_environment = remote_environment
+        if not isinstance(mount_path, six.string_types):
             raise IncorrectTypeError(
-                Mount, 'mount_path', type(mount_path), basestring)
+                Mount, 'mount_path', type(mount_path), six.string_types[0])
         self._mount_path = mount_path
 
-        if shared_path and not isinstance(shared_path, basestring):
+        if shared_path and not isinstance(shared_path, six.string_types[0]):
             raise IncorrectTypeError(
-                Mount, 'shared_path', type(shared_path), basestring, False)
+                Mount, 'shared_path', type(shared_path), six.string_types[0], False)
         self._shared_path = shared_path
 
     @property

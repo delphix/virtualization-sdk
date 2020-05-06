@@ -1,14 +1,15 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import os
 
 import click.testing as click_testing
+import yaml
+from dlpx.virtualization._internal import cli, const, exceptions
+
 import mock
 import pytest
-import yaml
-from dlpx.virtualization._internal import cli, exceptions, util_classes
 
 
 class TestCli:
@@ -94,6 +95,36 @@ class TestCli:
         with pytest.raises(AssertionError):
             cli.get_console_logging_level(1, 1)
 
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_command_user_error(mock_init, plugin_name):
+        runner = click_testing.CliRunner()
+
+        mock_init.side_effect = exceptions.UserError("codegen_error")
+        result = runner.invoke(cli.delphix_sdk, ['init', '-n', plugin_name])
+
+        assert result.exit_code == 1
+        assert result.output == 'codegen_error\n'
+
+        # 'DIRECT' and os.getcwd() are the expected defaults
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_command_non_user_error(mock_init, plugin_name):
+        runner = click_testing.CliRunner()
+
+        mock_init.side_effect = Exception("internal_error")
+        result = runner.invoke(cli.delphix_sdk, ['init', '-n', plugin_name])
+
+        assert result.exit_code == 2
+        assert 'Internal error, please contact Delphix.\n' in result.output
+
+        # 'DIRECT' and os.getcwd() are the expected defaults
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
+
 
 class TestInitCli:
     @staticmethod
@@ -106,24 +137,21 @@ class TestInitCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
     def test_non_default_params(mock_init, plugin_name):
         runner = click_testing.CliRunner()
 
-        result = runner.invoke(cli.delphix_sdk, [
-            'init', '-s', util_classes.STAGED_TYPE, '-r', '.', '-n',
-            plugin_name
-        ])
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-s', const.STAGED_TYPE, '-r', '.', '-n', plugin_name])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.STAGED_TYPE,
-                                          plugin_name)
+        mock_init.assert_called_once_with(os.getcwd(), const.STAGED_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_invalid_ingestion_strategy(plugin_name):
@@ -142,6 +170,39 @@ class TestInitCli:
         result = runner.invoke(cli.delphix_sdk, ['init'])
 
         assert result.exit_code != 0
+
+    @staticmethod
+    def test_multiple_host_types():
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, [
+            'init', '-t', '{},{}'.format(const.UNIX_HOST_TYPE,
+                                         const.WINDOWS_HOST_TYPE)
+        ])
+
+        assert result.exit_code != 0
+        assert "invalid choice" in result.output
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_windows_host_type(mock_init, plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-t', const.WINDOWS_HOST_TYPE])
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.WINDOWS_HOST_TYPE)
+
+    @staticmethod
+    def test_invalid_host_type():
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(cli.delphix_sdk, ['init', '-t', 'UNI'])
+
+        assert result.exit_code != 0
+        assert "invalid choice" in result.output
 
 
 class TestBuildCli:
@@ -172,7 +233,10 @@ class TestBuildCli:
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
             mock_build.assert_called_once_with(plugin_config_file,
-                                               artifact_file, False, False)
+                                               artifact_file,
+                                               False,
+                                               False,
+                                               local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -190,8 +254,11 @@ class TestBuildCli:
             result = runner.invoke(cli.delphix_sdk, ['build', '-g'])
 
             assert result.exit_code == 0, 'Output: {}'.format(result.output)
-            mock_build.assert_called_once_with(plugin_config_file, None, True,
-                                               False)
+            mock_build.assert_called_once_with(plugin_config_file,
+                                               None,
+                                               True,
+                                               False,
+                                               local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -202,8 +269,11 @@ class TestBuildCli:
             ['build', '-c', plugin_config_file, '-a', artifact_file])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
-                                           False, False)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           False,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_filename', ['plugin.yml'])
@@ -215,9 +285,12 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(
-            plugin_config_file, os.path.join(os.getcwd(), artifact_filename),
-            False, False)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           os.path.join(
+                                               os.getcwd(), artifact_filename),
+                                           False,
+                                           False,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.build.build')
@@ -230,8 +303,11 @@ class TestBuildCli:
         ])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(plugin_config_file, artifact_file,
-                                           False, True)
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           True,
+                                           local_vsdk_root=None)
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -242,14 +318,14 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk build [OPTIONS]'
-                                 u'\nTry "delphix-sdk build -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-c" /'
-                                 u' "--plugin-config": File'
-                                 u' "/not/a/real/file/plugin_config.yml"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
+                                 u"\nTry 'delphix-sdk build -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-c' /"
+                                 u" '--plugin-config': File"
+                                 u" '/not/a/real/file/plugin_config.yml'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     def test_option_a_and_g_set(plugin_config_file, artifact_file):
@@ -277,6 +353,38 @@ class TestBuildCli:
                                  u' "upload_artifact".'
                                  u'\n')
 
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    @pytest.mark.parametrize('dev_config_properties',
+                             [{
+                                 'vsdk_root': '/path/to/vsdk/dir'
+                             }])
+    def test_with_dev(mock_build, plugin_config_file, artifact_file,
+                      dev_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file, '--dev'])
+
+        assert result.exit_code == 0
+        mock_build.assert_called_once_with(plugin_config_file,
+                                           artifact_file,
+                                           False,
+                                           False,
+                                           local_vsdk_root='/path/to/vsdk/dir')
+
+    @staticmethod
+    @mock.patch('dlpx.virtualization._internal.commands.build.build')
+    def test_with_dev_fail(mock_build, plugin_config_file, artifact_file,
+                           empty_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['build', '-c', plugin_config_file, '-a', artifact_file, '--dev'])
+
+        assert result.exit_code == 2
+        assert not mock_build.called, 'build should not have been called'
+
 
 class TestUploadCli:
     @staticmethod
@@ -298,7 +406,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -315,7 +423,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -344,7 +452,7 @@ class TestUploadCli:
             '\nAction: Try with a different set of credentials.'
             '\n')
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('artifact_file',
@@ -362,20 +470,19 @@ class TestUploadCli:
         ])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]'
-                                 u'\nTry "delphix-sdk upload -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-a" /'
-                                 u' "--upload-artifact": File'
-                                 u' "/not/a/real/file/artifact.json"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk upload [OPTIONS]"
+                                 u"\nTry 'delphix-sdk upload -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-a' /"
+                                 u" '--upload-artifact': File"
+                                 u" '/not/a/real/file/artifact.json'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_upload, artifact_file,
-                                      dvp_config_properties):
+                                      dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = dvp_config_properties['user']
         password = dvp_config_properties['password']
@@ -390,13 +497,12 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_upload, artifact_file,
-                                       dvp_config_properties):
+                                       dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = 'fake_admin'
         password = dvp_config_properties['password']
@@ -411,7 +517,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('dvp_config_properties', [{
@@ -432,8 +538,8 @@ class TestUploadCli:
         assert result.exit_code == 2
         assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]\n'
                                  u'\n'
-                                 u'Error: Invalid value for "-e" / '
-                                 u'"--engine": Option is required '
+                                 u'Error: Invalid value for \'-e\' / '
+                                 u'\'--engine\': Option is required '
                                  u'and must be specified via the command line.'
                                  u'\n')
 
@@ -495,12 +601,12 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")
 
     @staticmethod
     @mock.patch(
@@ -549,14 +655,14 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-d" /'
-            u' "--directory": Directory'
-            u' "/not/a/real/directory"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-d' /"
+            u" '--directory': Directory"
+            u" '/not/a/real/directory'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -575,21 +681,20 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-c" /'
-            u' "--plugin-config": File'
-            u' "/not/a/real/file/plugin_config.yml"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-c' /"
+            u" '--plugin-config': File"
+            u" '/not/a/real/file/plugin_config.yml'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_success(mock_download_logs, plugin_config_file,
-                                      dvp_config_properties):
+                                      dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = dvp_config_properties['user']
         password = dvp_config_properties['password']
@@ -609,9 +714,8 @@ class TestDownloadCli:
     @staticmethod
     @mock.patch(
         'dlpx.virtualization._internal.commands.download_logs.download_logs')
-    @pytest.mark.usefixtures('dvp_config_file')
     def test_with_config_file_override(mock_download_logs, plugin_config_file,
-                                       dvp_config_properties):
+                                       dvp_config_properties, dvp_config_file):
         engine = dvp_config_properties['engine']
         user = 'fake_admin'
         password = dvp_config_properties['password']
@@ -634,8 +738,7 @@ class TestDownloadCli:
         'user': 'user',
         'password': 'password'
     }])
-    @pytest.mark.usefixtures('dvp_config_file')
-    def test_with_config_file_fail(plugin_config_file):
+    def test_with_config_file_fail(plugin_config_file, dvp_config_file):
         cwd = os.getcwd()
 
         try:
@@ -647,9 +750,9 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")

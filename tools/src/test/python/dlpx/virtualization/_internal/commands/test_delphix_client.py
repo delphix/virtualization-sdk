@@ -5,11 +5,12 @@
 import json
 import os
 
+import requests
+from dlpx.virtualization._internal import delphix_client, exceptions
+
 import httpretty
 import mock
 import pytest
-import requests
-from dlpx.virtualization._internal import delphix_client, exceptions
 
 
 @pytest.mark.usefixtures('httpretty_enabled')
@@ -221,6 +222,30 @@ class TestDelphixClient:
             'Date': 'Mon, 04 Feb 2019 08:09:44 GMT'
         })
 
+    JOB_RESP_FAIL = (('{"type": "OKResult", "status": "OK", "result": '
+                      '{"jobState": "FAILED", "events": []}}'), {
+                         'X-Frame-Options': 'SAMEORIGIN',
+                         'X-Content-Type-Options': 'nosniff',
+                         'X-XSS-Protection': '1; mode=block',
+                         'Cache-Control': 'max-age=0',
+                         'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
+                         'Content-Type': 'application/json',
+                         'Content-Length': '71',
+                         'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
+                     })
+
+    JOB_RESP_TIMED_OUT = (('{"type": "OKResult", "status": "OK", "result": '
+                           '{"jobState": "RUNNING", "events": []}}'), {
+                              'X-Frame-Options': 'SAMEORIGIN',
+                              'X-Content-Type-Options': 'nosniff',
+                              'X-XSS-Protection': '1; mode=block',
+                              'Cache-Control': 'max-age=0',
+                              'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
+                              'Content-Type': 'application/json',
+                              'Content-Length': '71',
+                              'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
+                          })
+
     PLUGIN_RESP_SUCCESS = (
         '{"type": "ListResult", "status": "OK", "result": ['
         '{"type": "Toolkit", "reference": "APPDATA_TOOLKIT-1",'
@@ -288,7 +313,7 @@ class TestDelphixClient:
 
         dc = delphix_client.DelphixClient('test-engine.com')
         dc.login(engine_api, 'admin', 'delphix')
-        dc.upload_plugin('plugin name', artifact_content)
+        dc.upload_plugin('plugin name', artifact_content, False)
 
         history = httpretty.HTTPretty.latest_requests
         assert history[-1].path == u'/resources/json/delphix/data/upload'
@@ -489,7 +514,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
 
         with pytest.raises(exceptions.UnexpectedError) as err_info:
-            dc.upload_plugin('plugin name', artifact_content)
+            dc.upload_plugin('plugin name', artifact_content, False)
 
         assert err_info.value.status_code == 403
         assert err_info.value.response == token_body
@@ -537,7 +562,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
 
         with pytest.raises(exceptions.HttpError) as err_info:
-            dc.upload_plugin('plugin name', artifact_content)
+            dc.upload_plugin('plugin name', artifact_content, False)
         error = err_info.value.error
         message = err_info.value.message
         assert err_info.value.status_code == 200
@@ -564,6 +589,99 @@ class TestDelphixClient:
                 u'/resources/json/delphix/toolkit/requestUploadToken')
         assert history[-3].path == u'/resources/json/delphix/login'
         assert history[-4].path == u'/resources/json/delphix/session'
+
+    @staticmethod
+    def test_delphix_client_wait_for_job_to_complete_job_failed(
+            engine_api, artifact_content):
+        session_body, session_header = TestDelphixClient.SES_RESP_SUCCESS
+        httpretty.register_uri(
+            httpretty.POST,
+            'http://test-engine.com/resources/json/delphix/session',
+            body=session_body,
+            forcing_headers=session_header)
+
+        login_body, login_header = TestDelphixClient.LOGIN_RESP_SUCCESS
+        httpretty.register_uri(
+            httpretty.POST,
+            'http://test-engine.com/resources/json/delphix/login',
+            body=login_body,
+            forcing_headers=login_header)
+
+        token_body, token_header = TestDelphixClient.TOKEN_RESP_SUCCESS
+        httpretty.register_uri(httpretty.POST,
+                               'http://test-engine.com/resources/'
+                               'json/delphix/toolkit/requestUploadToken',
+                               body=token_body,
+                               forcing_headers=token_header)
+
+        job_body, job_header = TestDelphixClient.JOB_RESP_FAIL
+        httpretty.register_uri(httpretty.GET,
+                               'http://test-engine.com/resources/json/'
+                               'delphix/action/ACTION-161/getJob',
+                               body=job_body)
+
+        dc = delphix_client.DelphixClient('test-engine.com')
+        dc.login(engine_api, 'admin', 'delphix')
+
+        with pytest.raises(exceptions.PluginUploadJobFailed) as err_info:
+            dc._wait_for_upload_to_complete('nix_direct_python', 'ACTION-161',
+                                            'JOB-38')
+
+        assert err_info.value.message == ('Failed trying to upload plugin '
+                                          'nix_direct_python.')
+
+        history = httpretty.HTTPretty.latest_requests
+        assert (history[-1].path ==
+                u'/resources/json/delphix/action/ACTION-161/getJob')
+        assert history[-2].path == u'/resources/json/delphix/login'
+        assert history[-3].path == u'/resources/json/delphix/session'
+
+    @staticmethod
+    def test_delphix_client_wait_for_job_to_complete_timed_out(
+            engine_api, artifact_content):
+        session_body, session_header = TestDelphixClient.SES_RESP_SUCCESS
+        httpretty.register_uri(
+            httpretty.POST,
+            'http://test-engine.com/resources/json/delphix/session',
+            body=session_body,
+            forcing_headers=session_header)
+
+        login_body, login_header = TestDelphixClient.LOGIN_RESP_SUCCESS
+        httpretty.register_uri(
+            httpretty.POST,
+            'http://test-engine.com/resources/json/delphix/login',
+            body=login_body,
+            forcing_headers=login_header)
+
+        token_body, token_header = TestDelphixClient.TOKEN_RESP_SUCCESS
+        httpretty.register_uri(httpretty.POST,
+                               'http://test-engine.com/resources/'
+                               'json/delphix/toolkit/requestUploadToken',
+                               body=token_body,
+                               forcing_headers=token_header)
+
+        job_body, job_header = TestDelphixClient.JOB_RESP_TIMED_OUT
+        httpretty.register_uri(httpretty.GET,
+                               'http://test-engine.com/resources/json/'
+                               'delphix/action/ACTION-161/getJob',
+                               body=job_body)
+
+        dc = delphix_client.DelphixClient('test-engine.com', 0)
+        dc.login(engine_api, 'admin', 'delphix')
+
+        with pytest.raises(exceptions.PluginUploadWaitTimedOut) as err_info:
+            dc._wait_for_upload_to_complete('nix_direct_python', 'ACTION-161',
+                                            'JOB-38')
+
+        assert err_info.value.message == ('Timed out waiting for upload of '
+                                          'plugin nix_direct_python to '
+                                          'complete.')
+
+        history = httpretty.HTTPretty.latest_requests
+        assert (history[-1].path ==
+                u'/resources/json/delphix/action/ACTION-161/getJob')
+        assert history[-2].path == u'/resources/json/delphix/login'
+        assert history[-3].path == u'/resources/json/delphix/session'
 
     @staticmethod
     def test_delphix_client_download_success(engine_api, src_dir,

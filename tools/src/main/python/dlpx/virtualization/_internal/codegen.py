@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import copy
@@ -10,7 +10,7 @@ import os
 import shutil
 import subprocess
 
-from dlpx.virtualization._internal import exceptions, file_util, util_classes
+from dlpx.virtualization._internal import const, exceptions, file_util
 
 logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
@@ -77,15 +77,15 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     # relevant to the plugin writer. We want to always force this to be
     # recreated.
     #
-    output_dir = os.path.join(plugin_config_dir, util_classes.OUTPUT_DIR_NAME)
-    logger.info('Creating new output directory: {!r}'.format(output_dir))
+    output_dir = os.path.join(plugin_config_dir, const.OUTPUT_DIR_NAME)
+    logger.info('Creating new output directory: {}'.format(output_dir))
     file_util.make_dir(output_dir, True)
 
     #
     # Create the json with the correct Swagger JSON specification required to
     # generate the objects. Write it to the output dir that we created above.
     #
-    logger.info('Writing the swagger file in {!r}'.format(output_dir))
+    logger.info('Writing the swagger file in {}'.format(output_dir))
     swagger_file = _write_swagger_file(name, schema_content, output_dir)
 
     #
@@ -94,7 +94,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     # output_dir again.
     #
     logger.info('Executing swagger codegen generate with'
-                ' swagger file {!r}'.format(swagger_file))
+                ' swagger file {}'.format(swagger_file))
     _execute_swagger_codegen(swagger_file, output_dir)
 
     #
@@ -104,7 +104,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     # classes were generated properly.
     #
     logger.info('Copying generated python files to'
-                ' source directory {!r}'.format(source_dir))
+                ' source directory {}'.format(source_dir))
     _copy_generated_to_dir(output_dir, source_dir)
 
 
@@ -116,7 +116,7 @@ def _write_swagger_file(name, schema_dict, output_dir):
     swagger_json['definitions'].update(SNAPSHOT_PARAMS_JSON)
 
     swagger_file = os.path.join(output_dir, SWAGGER_FILE_NAME)
-    logger.info('Writing swagger file to {!r}'.format(swagger_file))
+    logger.info('Writing swagger file to {}'.format(swagger_file))
     #
     # Dump JSON into swagger json file. This should work since we just created
     # the dir `output_dir`. If this fails just let the full failure go through
@@ -222,7 +222,7 @@ def _copy_generated_to_dir(src_location, dst_location):
     destination_dir = os.path.join(dst_location, CODEGEN_PACKAGE)
     file_util.make_dir(destination_dir, True)
 
-    logger.info('Copying generated files {} from {!r} to {!r}.'.format(
+    logger.info('Copying generated files {} from {} to {}.'.format(
         CODEGEN_COPY_FILES, source_dir, destination_dir))
 
     for name in CODEGEN_COPY_FILES:
@@ -233,7 +233,7 @@ def _copy_generated_to_dir(src_location, dst_location):
             # must include the name of of the dir for it to be copied there.
             #
             shutil.copytree(src, os.path.join(destination_dir, name))
-            logger.info('Successfully copied directory {!r}.'.format(name))
+            logger.info('Successfully copied directory {}.'.format(name))
         except OSError as err:
             if err.errno == errno.ENOTDIR or err.errno == errno.EINVAL:
                 #
@@ -245,7 +245,7 @@ def _copy_generated_to_dir(src_location, dst_location):
                 # errno.EINVAL is received on windows
                 #
                 shutil.copy2(src, destination_dir)
-                logger.info('Successfully copied file {!r}.'.format(name))
+                logger.info('Successfully copied file {}.'.format(name))
             else:
                 #
                 # Since we're not expecting any other errors raise anything

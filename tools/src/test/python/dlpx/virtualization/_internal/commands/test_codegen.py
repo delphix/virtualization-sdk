@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import errno
@@ -8,8 +8,7 @@ import os
 import subprocess
 
 import pytest
-from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           util_classes)
+from dlpx.virtualization._internal import codegen, const, exceptions, file_util
 
 
 class TestCodegen:
@@ -139,7 +138,7 @@ class TestCodegen:
         assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
         assert popen_helper.module_name == codegen.CODEGEN_MODULE
         expected_output_dir = os.path.join(gen_py.plugin_content_dir,
-                                           util_classes.OUTPUT_DIR_NAME)
+                                           const.OUTPUT_DIR_NAME)
         assert popen_helper.output_dir == expected_output_dir
 
         # Validate that the "generated" file were copied.
@@ -158,7 +157,7 @@ class TestCodegen:
 
     @staticmethod
     def test_get_build_dir_success(tmpdir):
-        testdir = os.path.join(tmpdir.strpath, util_classes.OUTPUT_DIR_NAME)
+        testdir = os.path.join(tmpdir.strpath, const.OUTPUT_DIR_NAME)
         file_util.make_dir(testdir, True)
         assert os.path.exists(testdir)
         assert os.path.isdir(testdir)

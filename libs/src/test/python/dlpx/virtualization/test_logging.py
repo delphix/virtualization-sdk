@@ -7,9 +7,9 @@ import mock
 import pytest
 
 from dlpx.virtualization.libs import PlatformHandler
-from dlpx.virtualization.libs_pb2 import LogRequest
-from dlpx.virtualization.libs_pb2 import LogResult
-from dlpx.virtualization.libs_pb2 import LogResponse
+from dlpx.virtualization.api.libs_pb2 import LogRequest
+from dlpx.virtualization.api.libs_pb2 import LogResult
+from dlpx.virtualization.api.libs_pb2 import LogResponse
 
 
 class TestPythonHandler:
