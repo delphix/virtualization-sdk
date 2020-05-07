@@ -7,6 +7,21 @@ import json
 import re
 
 
+class SDKToolingError(Exception):
+    """
+    SDKBuildError is one of the main errors that gets caught in cli.py. Errors
+    that are not related to the user input should raise this error. The
+    message from this exception is posted to logger.error. message will be the
+    first arg that is passed in (for any exception that is extending it).
+    """
+    @property
+    def message(self):
+        return self.args[0]
+
+    def __init__(self, message):
+        super(SDKToolingError, self).__init__(message)
+
+
 class UserError(Exception):
     """
     UserError is the main error that gets caught in cli.py. The message from
@@ -21,17 +36,49 @@ class UserError(Exception):
         super(UserError, self).__init__(message)
 
 
+class PluginUploadJobFailed(UserError):
+    """
+    PluginUploadJobFailed is raised in the upload command if the action/job
+    that is being monitored returns with a status other than 'COMPLETED' or
+    'RUNNING'.
+    """
+    def __init__(self, plugin_name):
+        message = "Failed trying to upload plugin {}."\
+            .format(plugin_name)
+        super(PluginUploadJobFailed, self).__init__(message)
+
+
+class PluginUploadWaitTimedOut(UserError):
+    """
+    PluginUploadWaitTimedOut is raised in the upload command if the
+    action/job that is being monitored does not complete or fail within a
+    30 minute timeout window.
+    """
+    def __init__(self, plugin):
+        message = "Timed out waiting for upload of plugin {} to complete."\
+            .format(plugin)
+        super(PluginUploadWaitTimedOut, self).__init__(message)
+
+
+class PathIsAbsoluteError(UserError):
+    def __init__(self, path):
+        self.path = path
+        message = "The path '{}' should be a relative path, but is not."\
+            .format(path)
+        super(PathIsAbsoluteError, self).__init__(message)
+
+
 class PathDoesNotExistError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path {!r} does not exist.'.format(path)
+        message = "The path '{}' does not exist.".format(path)
         super(PathDoesNotExistError, self).__init__(message)
 
 
 class PathExistsError(UserError):
     def __init__(self, path):
         self.path = path
-        message = 'The path {!r} already exists.'.format(path)
+        message = "The path '{}' already exists.".format(path)
         super(PathExistsError, self).__init__(message)
 
 
@@ -39,7 +86,7 @@ class PathTypeError(UserError):
     def __init__(self, path, path_type):
         self.path = path
         self.path_type = path_type
-        message = 'The path {!r} should be a {} but is not.'.format(
+        message = "The path '{}' should be a {} but is not.".format(
             path, path_type)
         super(PathTypeError, self).__init__(message)
 
@@ -147,12 +194,35 @@ class SchemaValidationError(UserError):
     def __init__(self, schema_file, validation_errors):
         self.schema_file = schema_file
         self.validation_errors = validation_errors
-        error_msg = "\n\n".join(
-            map(lambda err: self.__format_error(err), validation_errors))
+
+        formatted_errors = self.__format_errors(validation_errors)
+        error_msg = "\n".join(formatted_errors)
+
         message = (
-            '{}\nValidation failed on {}. \n{} Warning(s). {} Error(s)'.format(
-                error_msg, self.schema_file, 0, len(validation_errors)))
+            '{}\n\nValidation failed on {}. \n{} Warning(s). {} Error(s)'.
+            format(error_msg, self.schema_file, 0, len(formatted_errors)))
         super(SchemaValidationError, self).__init__(message)
+
+    @staticmethod
+    def __format_errors(validation_errors):
+        """
+        Formats the validation errors by extracting out relevant parts of the
+        object and also check for errros on nested schemas, if any.
+        """
+        all_errors = []
+        for err in validation_errors:
+            all_errors.append(SchemaValidationError.__format_error(err))
+
+            #
+            # Check if sub/nested schema errors are reported as well. If so,
+            # get the error string based on those errors.
+            #
+            if err.context:
+                nested_errors = SchemaValidationError.__format_errors(
+                    err.context)
+                all_errors.extend(nested_errors)
+
+        return all_errors
 
     @staticmethod
     def __format_error(err):
@@ -164,6 +234,8 @@ class SchemaValidationError(UserError):
         message - error message from validation failure
         path - path of the schema that failed validation
         instance - instance on which validation failed
+        context - if there are errors on nested/sub-schemas, context object
+                  contains validations errors from those schemas.
         e.g.
         Validation Error:
             'identityFields' is a required property
@@ -182,17 +254,16 @@ class SchemaValidationError(UserError):
                  'properties': {'name': {'type': 'string'}},
                  'type': 'object'}
         """
-        err_instance = json.dumps(err.instance, indent=2)
-
         #
         # Validation error message could be unicode encoded string. Strip out
         # any leading unicode characters for proper display and logging.
         #
         err_msg = re.compile(r'\bu\b', re.IGNORECASE)
         err_msg = err_msg.sub("", err.message)
-        error_string = 'Error: {} on {}\n{}'.format(err_msg,
-                                                    map(str, list(err.path)),
-                                                    err_instance)
+
+        error_string = 'Error: {} on {}'.format(
+            err_msg, map(str, list(err.schema_path)))
+
         return error_string
 
 
@@ -207,3 +278,68 @@ class BuildFailedError(UserError):
     def __init__(self, exception):
         message = ('{} \n\nBUILD FAILED.'.format(exception.message))
         super(BuildFailedError, self).__init__(message)
+
+
+class SubprocessFailedError(UserError):
+    """
+    SubprocessFailedError gets raised when a command executing in a subprocess
+    fails.
+    """
+    def __init__(self, command, exit_code, output):
+        self.command = command
+        self.exit_code = exit_code
+        self.output = output
+        message = ("{}\n"
+                   "{} failed with exit code {}.").format(
+                       output, command, exit_code)
+        super(SubprocessFailedError, self).__init__(message)
+
+
+class ValidationFailedError(UserError):
+    """
+    ValidationFailedError gets raised when validation fails on plugin config
+    and its contents.
+    Defines helpers methods to format warning and exception messages.
+    """
+    def __init__(self, warnings):
+        message = self.__report_warnings_and_exceptions(warnings)
+        super(ValidationFailedError, self).__init__(message)
+
+    @classmethod
+    def __report_warnings_and_exceptions(cls, warnings):
+        """
+        Prints the warnings and errors that were found in the plugin code, if
+        the warnings dictionary contains the 'exception' key.
+        """
+        exception_msg = cls.sdk_exception_msg(warnings)
+        exception_msg += cls.exception_msg(warnings)
+        exception_msg += '\n{}'.format(cls.warning_msg(warnings))
+        return '{}\n{} Warning(s). {} Error(s).'.format(
+            exception_msg, len(warnings['warning']),
+            len(warnings['exception']) + len(warnings['sdk exception']))
+
+    @classmethod
+    def sdk_exception_msg(cls, warnings):
+        sdk_exception_msg = '\n'.join([
+            cls.__format_msg('SDK Error', ex)
+            for ex in warnings['sdk exception']
+        ])
+        return sdk_exception_msg
+
+    @classmethod
+    def exception_msg(cls, exceptions):
+        exception_msg = '\n'.join(
+            cls.__format_msg('Error', ex) for ex in exceptions['exception'])
+        return exception_msg
+
+    @classmethod
+    def warning_msg(cls, warnings):
+        warning_msg = '\n'.join(
+            cls.__format_msg('Warning', warning)
+            for warning in warnings['warning'])
+        return warning_msg
+
+    @staticmethod
+    def __format_msg(msg_type, msg):
+        msg_str = "{}: {}".format(msg_type, msg)
+        return msg_str

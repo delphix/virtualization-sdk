@@ -2,7 +2,7 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-from dlpx.virtualization import common_pb2
+from dlpx.virtualization.api import common_pb2
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
 
 """Classes used for Plugin Operations

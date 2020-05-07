@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import logging
@@ -9,9 +9,8 @@ import traceback
 from contextlib import contextmanager
 
 import click
-from dlpx.virtualization._internal import (click_util, exceptions,
-                                           logging_util, package_util,
-                                           util_classes)
+from dlpx.virtualization._internal import (click_util, const, exceptions,
+                                           logging_util, package_util)
 from dlpx.virtualization._internal.commands import build as build_internal
 from dlpx.virtualization._internal.commands import \
     download_logs as download_logs_internal
@@ -32,6 +31,22 @@ __version__ = package_util.get_version()
 # This is needed to add -h as an option for the help menu.
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
                         obj=click_util.ConfigFileProcessor.read_config())
+#
+# This setting is added to workaround the bug in click 7.1 on windows
+# when case_sensitive=False is used on click.Options. Line 187 of click
+# code at https://github.com/pallets/click/blob/7.x/src/click/types.py
+# fails when lower() method is called on normed_value as unicode type is
+# received on windows instead of string type. Removing case_sensitive=False
+# is not a good workaround as the behaviour of command changes.
+
+# This workaround uses token_normalize_func to convert normed_value
+# into an ascii string so that when lower() is called on it, it wont fail.
+# Also, chose to separate out this into a different settings instead of
+# adding it to CONTEXT_SETTINGS to avoid any side-effects on other commands.
+#
+CONTEXT_SETTINGS_INIT = dict(help_option_names=['-h', '--help'],
+                             obj=click_util.ConfigFileProcessor.read_config(),
+                             token_normalize_func=lambda x: x.encode("ascii"))
 
 DVP_CONFIG_MAP = CONTEXT_SETTINGS['obj']
 
@@ -44,6 +59,10 @@ def command_error_handler():
         logger.error(err.message)
         logger.debug(traceback.format_exc())
         exit(1)
+    except Exception as err:
+        logger.debug(err)
+        logger.error('Internal error, please contact Delphix.')
+        exit(2)
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -84,7 +103,7 @@ def delphix_sdk(verbose, quiet):
             'Supported version is 2.7.x, found {}'.format(sys.version_info))
 
 
-@delphix_sdk.command()
+@delphix_sdk.command(context_settings=CONTEXT_SETTINGS_INIT)
 @click.option('-r',
               '--root-dir',
               'root',
@@ -105,20 +124,27 @@ def delphix_sdk(verbose, quiet):
 @click.option(
     '-s',
     '--ingestion-strategy',
-    default=util_classes.DIRECT_TYPE,
+    default=const.DIRECT_TYPE,
     show_default=True,
-    type=click.Choice([util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE],
+    type=click.Choice([const.DIRECT_TYPE, const.STAGED_TYPE],
                       case_sensitive=False),
     help=('Set the ingestion strategy of the plugin. A "direct" plugin '
           'ingests without a staging server while a "staged" plugin '
           'requires a staging server.'))
-def init(root, ingestion_strategy, name):
+@click.option('-t',
+              '--host-type',
+              default=const.UNIX_HOST_TYPE,
+              show_default=True,
+              type=click.Choice(
+                  [const.UNIX_HOST_TYPE, const.WINDOWS_HOST_TYPE]),
+              help='Set the host platform supported by the plugin.')
+def init(root, ingestion_strategy, name, host_type):
     """
     Create a plugin in the root directory. The plugin will be valid
     but have no functionality.
     """
     with command_error_handler():
-        init_internal.init(root, ingestion_strategy, name)
+        init_internal.init(root, ingestion_strategy, name, host_type)
 
 
 @delphix_sdk.command()
@@ -167,7 +193,13 @@ def init(root, ingestion_strategy, name):
               hidden=True,
               help=('An internal flag that does not enforce the format '
                     'of the id. Use of this flag is unsupported.'))
-def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
+@click.option('--dev',
+              is_flag=True,
+              hidden=True,
+              help=('An internal flag that installs dev builds of the '
+                    'wrappers. This should only be used by SDK developers.'))
+def build(plugin_config, upload_artifact, generate_only, skip_id_validation,
+          dev):
     """
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
@@ -175,9 +207,26 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
     # Set upload artifact to None if -g is true.
     if generate_only:
         upload_artifact = None
+
+    local_vsdk_root = None
+
     with command_error_handler():
-        build_internal.build(plugin_config, upload_artifact, generate_only,
-                             skip_id_validation)
+        if dev:
+            if not DVP_CONFIG_MAP.get('dev') or not DVP_CONFIG_MAP.get(
+                    'dev').get('vsdk_root'):
+                raise RuntimeError("The dev flag was specified but there is "
+                                   "not a vsdk_root entry in the dvp config "
+                                   "file. Please look in the SDK's README for "
+                                   "details on configuring the vsdk_root "
+                                   "property.")
+
+            local_vsdk_root = DVP_CONFIG_MAP.get('dev').get('vsdk_root')
+
+        build_internal.build(plugin_config,
+                             upload_artifact,
+                             generate_only,
+                             skip_id_validation,
+                             local_vsdk_root=local_vsdk_root)
 
 
 @delphix_sdk.command()
@@ -207,11 +256,14 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation):
                     resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Path to the upload artifact that was generated through build.')
+@click.option('--wait',
+              is_flag=True,
+              help='Wait for the upload job to complete before returning.')
 @click.password_option(cls=click_util.PasswordPromptIf,
                        default=DVP_CONFIG_MAP.get('password'),
                        confirmation_prompt=False,
                        help='Authenticate using the provided password.')
-def upload(engine, user, upload_artifact, password):
+def upload(engine, user, upload_artifact, password, wait):
     """
     Upload the generated upload artifact (the plugin JSON file) that was built
     to a target Delphix Engine.
@@ -219,7 +271,7 @@ def upload(engine, user, upload_artifact, password):
     the build command and will fail if it's not readable or valid.
     """
     with command_error_handler():
-        upload_internal.upload(engine, user, upload_artifact, password)
+        upload_internal.upload(engine, user, upload_artifact, password, wait)
 
 
 @delphix_sdk.command()

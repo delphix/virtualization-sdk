@@ -5,8 +5,9 @@
 import os
 import tempfile
 
-import mock
 from dlpx.virtualization._internal import logging_util
+
+import mock
 
 
 class TestLoggingUtil:

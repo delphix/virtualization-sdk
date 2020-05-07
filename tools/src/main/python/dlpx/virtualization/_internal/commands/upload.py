@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
 
 
-def upload(engine, user, upload_artifact, password):
+def upload(engine, user, upload_artifact, password, wait):
     """
     Takes in the engine hostname/ip address, logs on and uploads the artifact
     passed in. The upload artifact should have been generated via the build
@@ -26,12 +26,15 @@ def upload(engine, user, upload_artifact, password):
         InvalidArtifactError
         HttpError
         UnexpectedError
+        PluginUploadJobFailed
+        PluginUploadWaitTimedOut
     """
     logger.debug('Upload parameters include'
                  ' engine: {},'
                  ' user: {},'
-                 ' upload_artifact: {}'.format(engine, user, upload_artifact))
-    logger.info('Uploading plugin artifact {!r} ...'.format(upload_artifact))
+                 ' upload_artifact: {},'
+                 ' wait: {}'.format(engine, user, upload_artifact, wait))
+    logger.info('Uploading plugin artifact {} ...'.format(upload_artifact))
 
     # Read content of upload artifact
     try:
@@ -45,7 +48,7 @@ def upload(engine, user, upload_artifact, password):
                     ' build command.')
     except IOError as err:
         raise exceptions.UserError(
-            'Unable to read upload artifact file {!r}'
+            'Unable to read upload artifact file \'{}\''
             '\nError code: {}. Error message: {}'.format(
                 upload_artifact, err.errno,
                 errno.errorcode.get(err.errno, UNKNOWN_ERR)))
@@ -54,4 +57,4 @@ def upload(engine, user, upload_artifact, password):
     client = delphix_client.DelphixClient(engine)
     engine_api = client.get_engine_api(content)
     client.login(engine_api, user, password)
-    client.upload_plugin(os.path.basename(upload_artifact), content)
+    client.upload_plugin(os.path.basename(upload_artifact), content, wait)

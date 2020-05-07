@@ -39,6 +39,28 @@ class Model(object):
 
         for attr, _ in six.iteritems(self.swagger_types):
             value = getattr(self, attr)
+            if value is None:
+                # Plugins use the JSON schema specification to define their
+                # datatypes. JSON schemas, and therefore plugin data
+                # definitions, distinguish between these two independent
+                # situations:
+                #  - The property X exists, and has the value `null`
+                #  - The property X does not exist
+                #
+                # Unfortunately, Swagger's generated code conflates these two
+                # cases together. In either case, we'll receive `None` here.
+                #
+                # We don't know of a way that we can 100% reliably know which of
+                # these two cases is what the plugin code intended. However,
+                # we expect that real-world plugin code will almost always
+                # intend the "does not exist" case.
+                #
+                # So, for now, we'll simply omit these properties from the dict.
+                # If we want to be more sophisticated in future, we could start
+                # analyzing the property's subschema, or we could perhaps
+                # customize Swagger's generated code so it can distinguish
+                # these two cases.
+                continue
             attr = self.attribute_map[attr]
             if isinstance(value, list):
                 result[attr] = list(map(

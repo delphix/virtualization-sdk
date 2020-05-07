@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import ast
@@ -9,9 +9,8 @@ import os
 import jinja2
 import mock
 import pytest
-from dlpx.virtualization._internal import (exceptions, plugin_util,
-                                           plugin_validator, schema_validator,
-                                           util_classes)
+from dlpx.virtualization._internal import (const, exceptions, plugin_util,
+                                           plugin_validator, schema_validator)
 from dlpx.virtualization._internal.commands import initialize as init
 
 
@@ -47,43 +46,55 @@ def staged_operations_template():
 def format_entry_point_template(entry_point_template):
     template = jinja2.Environment().from_string(entry_point_template)
 
-    def format_template(plugin_name, ingestion_strategy):
-        if ingestion_strategy == util_classes.DIRECT_TYPE:
+    def format_template(plugin_name, ingestion_strategy, host_type):
+        if host_type == const.WINDOWS_HOST_TYPE:
+            default_mount_path = "C:\\\\tmp\\\\dlpx_staged_mounts\\\\{}"
+        elif host_type == const.UNIX_HOST_TYPE:
+            default_mount_path = "/tmp/dlpx_staged_mounts/{}"
+
+        if ingestion_strategy == const.DIRECT_TYPE:
             operations = direct_operations_template()
-        elif ingestion_strategy == util_classes.STAGED_TYPE:
-            operations = staged_operations_template()
+        elif ingestion_strategy == const.STAGED_TYPE:
+            operations = jinja2.Environment().from_string(
+                staged_operations_template())
+            operations = operations.render(
+                default_mount_path=default_mount_path)
         else:
             raise RuntimeError(
-                'Got unrecognized ingestion strategy: {!r}'.format(
+                'Got unrecognized ingestion strategy: {}'.format(
                     ingestion_strategy))
         return template.render(name=repr(plugin_name),
-                               linked_operations=operations)
+                               linked_operations=operations,
+                               default_mount_path=default_mount_path)
 
     return format_template
 
 
 class TestInitialize:
     @staticmethod
-    @pytest.mark.parametrize(
-        'ingestion_strategy',
-        [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
-    def test_init(tmpdir, ingestion_strategy, schema_template, plugin_name,
-                  format_entry_point_template):
+    @pytest.mark.parametrize('ingestion_strategy',
+                             [const.DIRECT_TYPE, const.STAGED_TYPE])
+    @pytest.mark.parametrize('host_type',
+                             [const.UNIX_HOST_TYPE, const.WINDOWS_HOST_TYPE])
+    def test_init(tmpdir, ingestion_strategy, host_type, schema_template,
+                  plugin_name, format_entry_point_template):
         # Initialize an empty directory.
-        init.init(tmpdir.strpath, ingestion_strategy, plugin_name)
+        init.init(tmpdir.strpath, ingestion_strategy, plugin_name, host_type)
 
         # Validate the config file is as we expect.
-        result = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, False)
+            True)
 
         config = result.plugin_config_content
 
+        assert config['hostTypes'] == [host_type]
         assert config['pluginType'] == ingestion_strategy
         assert config['name'] == plugin_name
         assert config['entryPoint'] == init.DEFAULT_ENTRY_POINT
         assert config['srcDir'] == init.DEFAULT_SRC_DIRECTORY
         assert config['schemaFile'] == init.DEFAULT_SCHEMA_FILE
+        assert config['buildNumber'] == init.DEFAULT_BUILD_NUMBER
 
         # Validate the schema file is identical to the template.
         schema_file_path = os.path.join(tmpdir.strpath, config['schemaFile'])
@@ -101,15 +112,15 @@ class TestInitialize:
         with open(entry_file_path, 'r') as f:
             contents = f.read()
             assert contents == format_entry_point_template(
-                config['id'], ingestion_strategy)
+                config['id'], ingestion_strategy, host_type)
 
     @staticmethod
     def test_init_without_plugin_name(tmpdir):
-        init.init(tmpdir.strpath, util_classes.DIRECT_TYPE, "")
+        init.init(tmpdir.strpath, const.DIRECT_TYPE, "", const.UNIX_HOST_TYPE)
 
-        result = plugin_util.read_and_validate_plugin_config_file(
+        result = plugin_util.validate_plugin_config_file(
             os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True, False)
+            True)
 
         config = result.plugin_config_content
 
@@ -117,38 +128,58 @@ class TestInitialize:
         assert config['name'] == config['id']
 
     @staticmethod
-    @pytest.mark.parametrize(
-        'ingestion_strategy',
-        [util_classes.DIRECT_TYPE, util_classes.STAGED_TYPE])
+    def test_init_windows_plugin(tmpdir, plugin_name):
+        init.init(tmpdir.strpath, const.DIRECT_TYPE, plugin_name,
+                  const.WINDOWS_HOST_TYPE)
+        result = plugin_util.validate_plugin_config_file(
+            os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
+            True)
+        config = result.plugin_config_content
+
+        # Validate that the host type is WINDOWS
+        host_types = config['hostTypes']
+        assert len(host_types) == 1
+        assert host_types[0] == const.WINDOWS_HOST_TYPE
+
+    @staticmethod
+    @pytest.mark.parametrize('ingestion_strategy',
+                             [const.DIRECT_TYPE, const.STAGED_TYPE])
     def test_plugin_from_init_is_valid(tmpdir, ingestion_strategy,
                                        plugin_name):
-        init.init(tmpdir.strpath, ingestion_strategy, plugin_name)
+        init.init(tmpdir.strpath, ingestion_strategy, plugin_name,
+                  const.UNIX_HOST_TYPE)
 
         plugin_config_file = os.path.join(tmpdir.strpath,
                                           init.DEFAULT_PLUGIN_CONFIG_FILE)
         schema_file = os.path.join(tmpdir.strpath, init.DEFAULT_SCHEMA_FILE)
         validator = plugin_validator.PluginValidator(plugin_config_file,
-                                                     schema_file, True, True)
-        validator.validate()
+                                                     schema_file)
 
-        assert not validator.result.warnings
+        # Assert config file validation is not done.
+        assert not validator.result.plugin_config_content
+
+        validator.validate_plugin_config()
+
+        # Assert config file is validated.
+        assert validator.result.plugin_config_content
 
     @staticmethod
     def test_invalid_with_config_file(plugin_config_file):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(plugin_config_file),
-                      util_classes.DIRECT_TYPE, None)
+            init.init(os.path.dirname(plugin_config_file), const.DIRECT_TYPE,
+                      None, const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_invalid_with_schema_file(schema_file):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(schema_file), util_classes.DIRECT_TYPE,
-                      None)
+            init.init(os.path.dirname(schema_file), const.DIRECT_TYPE, None,
+                      const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_invalid_with_src_dir(src_dir):
         with pytest.raises(exceptions.PathExistsError):
-            init.init(os.path.dirname(src_dir), util_classes.DIRECT_TYPE, None)
+            init.init(os.path.dirname(src_dir), const.DIRECT_TYPE, None,
+                      const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('yaml.dump')
@@ -157,7 +188,8 @@ class TestInitialize:
                                            tmpdir, plugin_name):
         mock_yaml_dump.side_effect = RuntimeError()
         with pytest.raises(exceptions.UserError):
-            init.init(tmpdir.strpath, util_classes.STAGED_TYPE, plugin_name)
+            init.init(tmpdir.strpath, const.STAGED_TYPE, plugin_name,
+                      const.UNIX_HOST_TYPE)
 
         src_dir_path = os.path.join(tmpdir.strpath, init.DEFAULT_SRC_DIRECTORY)
         config_file_path = os.path.join(tmpdir.strpath,
@@ -170,9 +202,8 @@ class TestInitialize:
 
     @staticmethod
     def test_default_schema_definition(schema_template):
-        validator = schema_validator.SchemaValidator(
-            None, util_classes.PLUGIN_SCHEMA,
-            util_classes.ValidationMode.ERROR, schema_template)
+        validator = schema_validator.SchemaValidator(None, const.PLUGIN_SCHEMA,
+                                                     schema_template)
         validator.validate()
 
         # Validate the repository schema only has the 'name' property.
@@ -207,7 +238,7 @@ class TestInitialize:
     @staticmethod
     def test_default_entry_point(plugin_id):
         entry_point_contents = init._get_entry_point_contents(
-            plugin_id, util_classes.DIRECT_TYPE)
+            plugin_id, const.DIRECT_TYPE, const.UNIX_HOST_TYPE)
         tree = ast.parse(entry_point_contents)
         for stmt in ast.walk(tree):
             if isinstance(stmt, ast.Assign):
