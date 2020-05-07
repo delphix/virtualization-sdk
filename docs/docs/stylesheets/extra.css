@@ -1,0 +1,9 @@
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    /* needed for Firefox: */
+    overflow:hidden;
+    width: 120%;
+}

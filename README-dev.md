@@ -90,14 +90,14 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
 ```
 Source: https://semver.org/
 
-The version format is MAJOR.MINOR.PATCH for released versions and MAJOR.MINOR.PATCH-RELEASE-BUILD for pre-release builds.
+The version format is MAJOR.MINOR.PATCH for released versions and <MAJOR>.<MINOR>.<PATCH>.dev<DEV> for development builds.
 For more details see `.bumpversion.cfg` in the root of this repository.
 
-If you want to bump the build number from `1.1.0-internal-7` to `1.1.0-internal-8`, run `bumpversion build`.
+If you want to bump the build number from `1.1.0.dev7` to `1.1.0.dev8`, run `bumpversion dev`.
 
 If you want to bump the major/minor/patch version, run `bumpversion [major|minor|patch]`.
 
-If you want to get rid of the pre-release label (bump from `1.1.0-internal-7` to `1.1.0`), run `bumpversion release`.
+If you want to get rid of the dev label (bump from `1.1.0.dev7` to `1.1.0`), run `bumpversion release`.
 
 ## Testing
 
