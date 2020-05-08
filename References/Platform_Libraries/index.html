@@ -1,0 +1,1612 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Platform Libraries - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#platform-libraries" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Platform Libraries
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Platform Libraries
+      </label>
+    
+    <a href="./" title="Platform Libraries" class="md-nav__link md-nav__link--active">
+      Platform Libraries
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run_bash" title="run_bash" class="md-nav__link">
+    run_bash
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" title="Examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_expect" title="run_expect" class="md-nav__link">
+    run_expect
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_1" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_1" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_powershell" title="run_powershell" class="md-nav__link">
+    run_powershell
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_2" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_2" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_sync" title="run_sync" class="md-nav__link">
+    run_sync
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_3" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_3" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_3" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run_bash" title="run_bash" class="md-nav__link">
+    run_bash
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" title="Examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_expect" title="run_expect" class="md-nav__link">
+    run_expect
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_1" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_1" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_powershell" title="run_powershell" class="md-nav__link">
+    run_powershell
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_2" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_2" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_sync" title="run_sync" class="md-nav__link">
+    run_sync
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#signature_3" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arguments_3" title="Arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_3" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="platform-libraries">Platform Libraries<a class="headerlink" href="#platform-libraries" title="Permanent link">&para;</a></h1>
+<p>Set of functions that plugins can use these for executing remote commands, etc.</p>
+<h2 id="run_bash">run_bash<a class="headerlink" href="#run_bash" title="Permanent link">&para;</a></h2>
+<p>Executes a bash command on a remote Unix host.</p>
+<h3 id="signature">Signature<a class="headerlink" href="#signature" title="Permanent link">&para;</a></h3>
+<p><code>def run_bash(remote_connection, command, variables=None, use_login_shell=False, check=False)</code></p>
+<h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remote_connection</td>
+<td><a href="../Classes/#remoteconnection">RemoteConnection</a></td>
+<td>Connection associated with the remote host to run the command on.</td>
+</tr>
+<tr>
+<td>command</td>
+<td>String</td>
+<td>Command to run on the host.</td>
+</tr>
+<tr>
+<td>variables</td>
+<td>dict[String, String]</td>
+<td><strong>Optional</strong>. Environement variables to set when running the command.</td>
+</tr>
+<tr>
+<td>use_login_shell</td>
+<td>boolean</td>
+<td><strong>Optional</strong>. Whether to use a login shell.</td>
+</tr>
+<tr>
+<td>check</td>
+<td>boolean</td>
+<td><strong>Optional</strong>. Whether or not to raise an exception if the <code>exit_code</code> in the <code>RunBashResponse</code> is non-zero.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h3>
+<p>An object of <code>RunBashResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exit_code</td>
+<td>Integer</td>
+<td>Exit code from the command.</td>
+</tr>
+<tr>
+<td>stdout</td>
+<td>String</td>
+<td>Stdout from the command.</td>
+</tr>
+<tr>
+<td>stderr</td>
+<td>String</td>
+<td>Stderr from the command.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<p>Calling bash with an inline command.</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;echo &#39;Hi&#39; &gt;&gt; /tmp/debug.log&quot;</span>
+<span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;var&quot;</span><span class="p">:</span> <span class="s2">&quot;val&quot;</span><span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">exit_code</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stdout</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stderr</span>
+</pre></div>
+
+
+<p>Using parameters to construct a bash command.</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+<span class="n">name</span> <span class="o">=</span> <span class="n">virtual_source</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">username</span>
+<span class="n">port</span> <span class="o">=</span> <span class="n">virtual_source</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">port</span>
+<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;mysqldump -u {} -p {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">port</span><span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Running a bash script that is saved in a directory.</p>
+<div class="codehilite"><pre><span></span> <span class="kn">import</span> <span class="nn">pkgutil</span>
+ <span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+ <span class="n">script_content</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_date.sh&#39;</span><span class="p">)</span>
+
+ <span class="c1"># Execute script on remote host</span>
+ <span class="n">response</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">direct_source</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span> <span class="n">script_content</span><span class="p">)</span>
+</pre></div>
+
+
+<p>For more information please go to <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/">Managing Scripts for Remote Execution</a> section.</p>
+<h2 id="run_expect">run_expect<a class="headerlink" href="#run_expect" title="Permanent link">&para;</a></h2>
+<p>Executes a tcl command or script on a remote Unix host.</p>
+<h3 id="signature_1">Signature<a class="headerlink" href="#signature_1" title="Permanent link">&para;</a></h3>
+<p><code>def run_expect(remote_connection, command, variables=None)</code></p>
+<h3 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remote_connection</td>
+<td><a href="../Classes/#remoteconnection">RemoteConnection</a></td>
+<td>Connection associated with the remote host to run the command on.</td>
+</tr>
+<tr>
+<td>command</td>
+<td>String</td>
+<td>Expect(Tcl) command to run.</td>
+</tr>
+<tr>
+<td>variables</td>
+<td>dict[String, String]</td>
+<td><strong>Optional</strong>. Environement variables to set when running the command.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h3>
+<p>An object of <code>RunExpectResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exit_code</td>
+<td>Integer</td>
+<td>Exit code from the command.</td>
+</tr>
+<tr>
+<td>stdout</td>
+<td>String</td>
+<td>Stdout from the command.</td>
+</tr>
+<tr>
+<td>stderr</td>
+<td>String</td>
+<td>Stderr from the command.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Calling expect  with an inline command.</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;puts &#39;Hi&#39;&quot;</span>
+<span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;var&quot;</span><span class="p">:</span> <span class="s2">&quot;val&quot;</span><span class="p">}</span>
+
+<span class="n">repsonse</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_expect</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">exit_code</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stdout</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stderr</span>
+</pre></div>
+
+
+<h2 id="run_powershell">run_powershell<a class="headerlink" href="#run_powershell" title="Permanent link">&para;</a></h2>
+<p>Executes a powershell command on a remote Windows host.</p>
+<h3 id="signature_2">Signature<a class="headerlink" href="#signature_2" title="Permanent link">&para;</a></h3>
+<p><code>def run_powershell(remote_connection, command, variables=None, check=False)</code></p>
+<h3 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remote_connection</td>
+<td><a href="../Classes/#remoteconnection">RemoteConnection</a></td>
+<td>Connection associated with the remote host to run the command on.</td>
+</tr>
+<tr>
+<td>command</td>
+<td>String</td>
+<td>Command to run to the remote host.</td>
+</tr>
+<tr>
+<td>variables</td>
+<td>dict[String, String]</td>
+<td><strong>Optional</strong>. Environement variables to set when running the command.</td>
+</tr>
+<tr>
+<td>check</td>
+<td>boolean</td>
+<td><strong>Optional</strong>. Whether or not to raise an exception if the <code>exit_code</code> in the <code>RunPowershellResponse</code> is non-zero.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h3>
+<p>An object of <code>RunPowershellResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exit_code</td>
+<td>Integer</td>
+<td>Exit code from the command.</td>
+</tr>
+<tr>
+<td>stdout</td>
+<td>String</td>
+<td>Stdout from the command.</td>
+</tr>
+<tr>
+<td>stderr</td>
+<td>String</td>
+<td>Stderr from the command.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
+<p>Calling powershell with an inline command.</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;Write-Output &#39;Hi&#39;&quot;</span>
+<span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;var&quot;</span><span class="p">:</span> <span class="s2">&quot;val&quot;</span><span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_powershell</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">exit_code</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stdout</span>
+<span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">stderr</span>
+</pre></div>
+
+
+<h2 id="run_sync">run_sync<a class="headerlink" href="#run_sync" title="Permanent link">&para;</a></h2>
+<p>Copies files from the remote source host directly into the dSource, without involving a staging host.</p>
+<h3 id="signature_3">Signature<a class="headerlink" href="#signature_3" title="Permanent link">&para;</a></h3>
+<p><code>def run_sync(remote_connection, source_directory, rsync_user=None, exclude_paths=None, sym_links_to_follow=None)</code></p>
+<h3 id="arguments_3">Arguments<a class="headerlink" href="#arguments_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remote_connection</td>
+<td><a href="../Classes/#remoteconnection">RemoteConnection</a></td>
+<td>Connection associated with the remote host to run the command on.</td>
+</tr>
+<tr>
+<td>source_directory</td>
+<td>String</td>
+<td>Directory of files to be synced.</td>
+</tr>
+<tr>
+<td>rsync_user</td>
+<td>String</td>
+<td><strong>Optional</strong> User who has access to the directory to be synced.</td>
+</tr>
+<tr>
+<td>exclude_paths</td>
+<td>list[String]</td>
+<td><strong>Optional</strong> Paths to be excluded.</td>
+</tr>
+<tr>
+<td>sym_links_to_follow</td>
+<td>list[String]</td>
+<td><strong>Optional</strong> Symbollic links to follow if any.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h3>
+<p>None</p>
+<h3 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+
+<span class="n">source_directory</span> <span class="o">=</span> <span class="s2">&quot;sourceDirectory&quot;</span>
+<span class="n">rsync_user</span> <span class="o">=</span> <span class="s2">&quot;rsyncUser&quot;</span>
+<span class="n">exclude_paths</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/path1&quot;</span><span class="p">,</span> <span class="s2">&quot;/path2&quot;</span><span class="p">]</span>
+<span class="n">sym_links_to_follow</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/path3&quot;</span><span class="p">,</span> <span class="s2">&quot;/path4&quot;</span><span class="p">]</span>
+
+<span class="n">libs</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">source_directory</span><span class="p">,</span> <span class="n">rsync_user</span><span class="p">,</span> <span class="n">exclude_paths</span><span class="p">,</span> <span class="n">sym_links_to_follow</span><span class="p">)</span>
+</pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Schemas and Autogenerated Classes
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Logging/" title="Logging" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Logging
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

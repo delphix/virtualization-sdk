@@ -1,0 +1,1130 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Initial Setup - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#initial-setup" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Initial Setup
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Initial Setup
+      </label>
+    
+    <a href="./" title="Initial Setup" class="md-nav__link md-nav__link--active">
+      Initial Setup
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sanity-check" title="Sanity check" class="md-nav__link">
+    Sanity check
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-bare-plugin" title="Creating a Bare Plugin" class="md-nav__link">
+    Creating a Bare Plugin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-new-plugin" title="Building The New Plugin" class="md-nav__link">
+    Building The New Plugin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uploading-the-new-plugin" title="Uploading The New Plugin" class="md-nav__link">
+    Uploading The New Plugin
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sanity-check" title="Sanity check" class="md-nav__link">
+    Sanity check
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-bare-plugin" title="Creating a Bare Plugin" class="md-nav__link">
+    Creating a Bare Plugin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-new-plugin" title="Building The New Plugin" class="md-nav__link">
+    Building The New Plugin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uploading-the-new-plugin" title="Uploading The New Plugin" class="md-nav__link">
+    Uploading The New Plugin
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">&para;</a></h1>
+<p>Before we begin to start writing plugin code, we will need to do some setup work. We will be using the <code>dvp</code> tool, which is described in the <a href="../../Getting_Started/">Getting Started</a> section.</p>
+<p>The quoted examples in this section assume you're working on a Unix-like system.</p>
+<h2 id="sanity-check">Sanity check<a class="headerlink" href="#sanity-check" title="Permanent link">&para;</a></h2>
+<p>First a reminder that it's highly recommended that you develop your plugin in a <a href="https://virtualenv.pypa.io/en/latest/">virtual environment</a>.</p>
+<p>Next, make sure you have a Delphix Engine ready to use, as described in the <a href="../Overview/#prerequisites">Prerequisites</a> section on the previous page.</p>
+<p>Finally, let's quickly make sure that <code>dvp</code> is working! Type <code>dvp -h</code> and you should see something like the following:</p>
+<div class="codehilite"><pre><span></span>(venv)$ dvp -h
+Usage: dvp [OPTIONS] COMMAND [ARGS]...
+
+  The tools of the Delphix Virtualization SDK that help develop, build, and
+  upload a plugin.
+
+Options:
+  --version      Show the version and exit.
+  -v, --verbose  Enable verbose mode. Can be repeated up to three times for
+                 increased verbosity.
+  -q, --quiet    Enable quiet mode. Can be repeated up to three times for
+                 increased suppression.
+  -h, --help     Show this message and exit.
+
+Commands:
+  build          Build the plugin code and generate upload artifact file...
+  download-logs  Download plugin logs from a target Delphix Engine to a...
+  init           Create a plugin in the root directory.
+  upload         Upload the generated upload artifact (the plugin JSON
+                 file)...
+</pre></div>
+
+
+<p>If this looks good, you are ready to begin!</p>
+<p>If, instead, you see something like the following, go back to <a href="../../Getting_Started/">Getting Started</a> and make sure you setup everything correctly before continuing.</p>
+<div class="codehilite"><pre><span></span>(venv)$ dvp
+-bash: dvp: command not found
+</pre></div>
+
+
+<h2 id="creating-a-bare-plugin">Creating a Bare Plugin<a class="headerlink" href="#creating-a-bare-plugin" title="Permanent link">&para;</a></h2>
+<p>To start, we will create a new directory where our new plugin code will live.</p>
+<div class="codehilite"><pre><span></span>(venv)$ mkdir first_plugin
+(venv)$ cd first_plugin
+</pre></div>
+
+
+<p>Now that we are in our new plugin directory, we can use the <code>dvp</code> tool to create a plugin for us. This plugin will be a mere skeleton -- it will not do anything useful until we modify it in the subsequent pages.</p>
+<div class="codehilite"><pre><span></span>(venv) first_plugin$ dvp init -n first_plugin -s STAGED -p WINDOWS
+</pre></div>
+
+
+<p>The <code>-n</code> argument here means "plugin name." We are using the name <code>first_plugin</code>.</p>
+<p>The <code>-s</code> argument tells which syncing strategy we want to use.</p>
+<p>The <code>-p</code> argument tells which host platform our plugin supports.</p>
+<p>You can type <code>dvp init -h</code> for more information about the options available.</p>
+<p>After running this command, you should see that files have been created for you:</p>
+<div class="codehilite"><pre><span></span>(venv) first_plugin$ ls
+plugin_config.yml   schema.json     src
+</pre></div>
+
+
+<p>These files are described below:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugin_config.yml</code></td>
+<td>The <a href="../../References/Glossary/#plugin-config">plugin config</a> file, which provides a list of plugin properties</td>
+</tr>
+<tr>
+<td><code>schema.json</code></td>
+<td>Contains <a href="../../References/Glossary/#schema">schemas</a> which provide custom datatype definitions</td>
+</tr>
+<tr>
+<td><code>src/plugin_runner.py</code></td>
+<td>A Python file which will eventually contain code that handles plugin <a href="../../References/Glossary/#operation">operations</a></td>
+</tr>
+</tbody>
+</table>
+<p>Open these files in your editor/IDE and take a look at them. At this point they will not have a lot of content, but we will add to them as we go through the next few pages.</p>
+<h2 id="building-the-new-plugin">Building The New Plugin<a class="headerlink" href="#building-the-new-plugin" title="Permanent link">&para;</a></h2>
+<p>The new files we created above have to get <a href="../../References/Glossary/#building">built</a> to produce a single <a href="../../References/Glossary/#artifact">artifact</a>. This is done with the <code>dvp</code> tool.</p>
+<div class="codehilite"><pre><span></span>(venv) first_plugin$ dvp build
+</pre></div>
+
+
+<p>After the build, you should see that the build process has created a new file called <code>artifact.json</code>.</p>
+<div class="codehilite"><pre><span></span>(venv) first_plugin$ ls
+artifact.json       plugin_config.yml   schema.json     src
+</pre></div>
+
+
+<h2 id="uploading-the-new-plugin">Uploading The New Plugin<a class="headerlink" href="#uploading-the-new-plugin" title="Permanent link">&para;</a></h2>
+<p>Now using the <code>dvp</code> tool we can upload the artifact onto our Delphix Engine.</p>
+<div class="codehilite"><pre><span></span>(venv) first_plugin$ dvp upload -e engine.company.com -u admin
+</pre></div>
+
+
+<p>The <code>-e</code> argument specifies the engine on which to install the plugin, and the <code>-u</code> argument gives the Delphix Engine user.</p>
+<p>You will be prompted for a password.</p>
+<p>Once the upload is finished, you can verify the installation from the Manage &gt; Toolkits screen in the Delphix Engine UI.</p>
+<p><img alt="Screenshot" src="../images/PostUpload.png" /></p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Overview/" title="Overview" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Overview
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Discovery/" title="Discovery" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Discovery
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

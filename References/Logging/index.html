@@ -1,0 +1,1293 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Logging - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#logging" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Logging
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Logging
+      </label>
+    
+    <a href="./" title="Logging" class="md-nav__link md-nav__link--active">
+      Logging
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-logging" title="What is logging?" class="md-nav__link">
+    What is logging?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" title="Overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-setup" title="Basic Setup" class="md-nav__link">
+    Basic Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" title="Usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-retrieve-logs" title="How to retrieve logs" class="md-nav__link">
+    How to retrieve logs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-levels" title="Logging Levels" class="md-nav__link">
+    Logging Levels
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensitive-data" title="Sensitive data" class="md-nav__link">
+    Sensitive data
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-logging" title="What is logging?" class="md-nav__link">
+    What is logging?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" title="Overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-setup" title="Basic Setup" class="md-nav__link">
+    Basic Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" title="Usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-retrieve-logs" title="How to retrieve logs" class="md-nav__link">
+    How to retrieve logs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-levels" title="Logging Levels" class="md-nav__link">
+    Logging Levels
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensitive-data" title="Sensitive data" class="md-nav__link">
+    Sensitive data
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-logging">What is logging?<a class="headerlink" href="#what-is-logging" title="Permanent link">&para;</a></h2>
+<p>The Virtualization Platform keeps plugin-specific log files. A plugin can, at any point in any of its <a href="../Glossary/#plugin-operation">plugin operations</a>, write out some text to its log file(s). These log files can be examined later, typically to try to debug a problem with the plugin.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Virtualization Platform integrates with Python's built-in <a href="https://docs.python.org/2/library/logging.html">logging framework</a>. A special <a href="https://docs.python.org/2/library/logging.html#handler-objects">Handler</a> is exposed by the platform at <code>dlpx.virtualization.libs.PlatformHandler</code>. This handler needs to be added to the Python logger your plugin creates. Logging statements made through Python's logging framework will then be routed to the platform.</p>
+<h2 id="basic-setup">Basic Setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h2>
+<p>Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's <a href="https://docs.python.org/2/library/logging.html">logging documentation</a> and the <a href="#customized-example">example below</a> to better understand how it can be customized.</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">dlpx.virtualization.libs</span> <span class="kn">import</span> <span class="n">PlatformHandler</span>
+
+<span class="c1"># Get the root logger.</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">PlatformHandler</span><span class="p">())</span>
+
+<span class="c1"># The root logger&#39;s default level is logging.WARNING.</span>
+<span class="c1"># Without the line below, logging statements of levels</span>
+<span class="c1"># lower than logging.WARNING will be suppressed.</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="admonition note">
+<p class="admonition-title">Logging Setup</p>
+<p>Python's logging framework is global. Setup only needs to happen once, but where it happens is important. Any logging statements that occur before the <code>PlatformHandler</code> is added will not be logged by the platform.</p>
+<p>It is highly recommended that the logging setup is done in the plugin's entry point module before any operations are ran.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Add the PlatformHandler to the root logger</p>
+<p>Loggers in Python have a hierarchy and all loggers are children of a special logger called the "root logger". Logging hierarchy is not always intuitive and depends on how modules are structured.</p>
+<p>To avoid this complexity, add the <code>PlatformHandler</code> to the root logger. The root logger can be retrieved with <code>logging.getLogger()</code>.</p>
+</div>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<p>Once the <code>PlatformHandler</code> has been added to the logger, logging is done with Python's <a href="https://docs.python.org/2/library/logging.html#logger-objects">Logger</a> object. Below is a simple example including the basic setup code used above:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">dlpx.virtualization.libs</span> <span class="kn">import</span> <span class="n">PlatformHandler</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">PlatformHandler</span><span class="p">())</span>
+
+<span class="c1"># The root logger&#39;s default level is logging.WARNING.</span>
+<span class="c1"># Without the line below, logging statements of levels</span>
+<span class="c1"># lower than logging.WARNING will be suppressed.</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;info&#39;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Imagine you notice that your plugin is taking a very long time to do discovery. Everything works, it just takes much longer than expected. You'd like to figure out why.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Refer to <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/">Managing Scripts for Remote Execution</a> for how remote scripts can be stored and retrieved.</p>
+</div>
+<p>Suppose your plugin has a source config discovery operation that looks like this (code is abbreviated to be easier to follow):</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
+
+<span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+<span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin.discovery.repository</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">repository_discovery</span><span class="p">(</span><span class="n">source_connection</span><span class="p">):</span> 
+  <span class="k">return</span> <span class="p">[</span><span class="n">RepositoryDefinition</span><span class="p">(</span><span class="s1">&#39;Logging Example&#39;</span><span class="p">)]</span>
+
+
+<span class="nd">@plugin.discovery.source_config</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">source_config_discovery</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">repository</span><span class="p">):</span>
+  <span class="n">version_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_db_version.sh&#39;</span><span class="p">))</span>
+  <span class="n">users_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_db_users.sh&#39;</span><span class="p">))</span>
+  <span class="n">db_results</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_databases.sh&#39;</span><span class="p">))</span>
+  <span class="n">status_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_database_statuses.sh&#39;</span><span class="p">))</span>
+
+  <span class="c1"># Return an empty list for simplicity. In reality</span>
+  <span class="c1"># something would be done with the results above.</span>
+  <span class="k">return</span> <span class="p">[]</span>
+</pre></div>
+
+
+<p>Now, imagine that you notice that it's taking a long time to do discovery, and you'd like to try to figure out why. One thing that might help is to add logging, like this:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
+
+<span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
+<span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="kn">from</span> <span class="nn">generated.definitions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="c1"># This should probably be defined in its own module outside</span>
+<span class="c1"># of the plugin&#39;s entry point file. It is here for simplicity.</span>
+<span class="k">def</span> <span class="nf">_setup_logger</span><span class="p">():</span>
+    <span class="c1"># This will log the time, level, filename, line number, and log message.</span>
+    <span class="n">log_message_format</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1">] [</span><span class="si">%(levelname)s</span><span class="s1">] [</span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">] </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+    <span class="n">log_message_date_format</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span>
+
+    <span class="c1"># Create a custom formatter. This will help with diagnosability.</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">log_message_format</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span> <span class="n">log_message_date_format</span><span class="p">)</span>
+
+    <span class="n">platform_handler</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">PlatformHandler</span><span class="p">()</span>
+    <span class="n">platform_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">platform_handler</span><span class="p">)</span>
+
+    <span class="c1"># By default the root logger&#39;s level is logging.WARNING.</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+
+<span class="c1"># Setup the logger.</span>
+<span class="n">_setup_logger</span><span class="p">()</span>
+
+<span class="c1"># logging.getLogger(__name__) is the convention way to get a logger in Python.</span>
+<span class="c1"># It returns a new logger per module and will be a child of the root logger.</span>
+<span class="c1"># Since we setup the root logger, nothing else needs to be done to set this</span>
+<span class="c1"># one up.</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin.discovery.repository</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">repository_discovery</span><span class="p">(</span><span class="n">source_connection</span><span class="p">):</span> 
+  <span class="k">return</span> <span class="p">[</span><span class="n">RepositoryDefinition</span><span class="p">(</span><span class="s1">&#39;Logging Example&#39;</span><span class="p">)]</span>
+
+<span class="nd">@plugin.discovery.source_config</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">source_config_discovery</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">repository</span><span class="p">):</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;About to get DB version&#39;</span><span class="p">)</span>
+  <span class="n">version_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_db_version.sh&#39;</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;About to get DB users&#39;</span><span class="p">)</span>
+  <span class="n">users_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_db_users.sh&#39;</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;About to get databases&#39;</span><span class="p">)</span>
+  <span class="n">db_results</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_databases.sh&#39;</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;About to get DB statuses&#39;</span><span class="p">)</span>
+  <span class="n">status_result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;get_database_statuses.sh&#39;</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Done collecting data&#39;</span><span class="p">)</span>
+
+  <span class="c1"># Return an empty list for simplicity. In reality</span>
+  <span class="c1"># something would be done with the results above.</span>
+  <span class="k">return</span> <span class="p">[]</span>
+</pre></div>
+
+
+<p>When you look at the log file, perhaps you'll see something like this:</p>
+<div class="codehilite"><pre><span></span>[Worker-360|JOB-315|ENVIRONMENT_DISCOVER(UNIX_HOST_ENVIRONMENT-5)] [2019-04-30 12:10:42] [DEBUG] [python_runner.py:44] About to get DB version
+[Worker-360|JOB-316|DB_SYNC(APPDATA_CONTAINER-21)] [2019-04-30 12:19:35] [DEBUG] [python_runner.py:49] About to get DB users
+[Worker-325|JOB-280|ENVIRONMENT_REFRESH(UNIX_HOST_ENVIRONMENT-5)] [DEBUG] [plugin_runner.py:51] About to get databases
+[Worker-326|JOB-281|SOURCES_DISABLE(UNIX_HOST_ENVIRONMENT-5)] [DEBUG] [plugin_runner.py:53] About to get DB statuses
+</pre></div>
+
+
+<p>You can see that it only takes a few seconds for us do each of our data collection steps, with the exception of getting the users, which takes over 13 minutes!</p>
+<p>We now know that our slowdown is something to do with how our bash script is collecting all the users. Logging has gotten us a lot closer to figuring out the problem.</p>
+<h2 id="how-to-retrieve-logs">How to retrieve logs<a class="headerlink" href="#how-to-retrieve-logs" title="Permanent link">&para;</a></h2>
+<p>Download a support bundle by going to <strong>Help</strong> &gt; <strong>Support Logs</strong>  and select <strong>Download</strong>. The logs will be in a the support bundle under <code>log/mgmt_log/plugin_log/&lt;plugin name&gt;</code>.</p>
+<h2 id="logging-levels">Logging Levels<a class="headerlink" href="#logging-levels" title="Permanent link">&para;</a></h2>
+<p>Python has a number of <a href="https://docs.python.org/2/library/logging.html#logging-levels">preset logging levels</a> and allows for custom ones as well. Since logging on the Virtualization Platform uses the <code>logging</code> framework, log statements of all levels are supported.</p>
+<p>However, the Virtualization Platform will map all logging levels into three files: <code>debug.log</code>, <code>info.log</code>, and <code>error.log</code> in the following way:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Python Logging Level</th>
+<th align="center">Logging File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">DEBUG</td>
+<td align="center">debug.log</td>
+</tr>
+<tr>
+<td align="center">INFO</td>
+<td align="center">info.log</td>
+</tr>
+<tr>
+<td align="center">WARN</td>
+<td align="center">error.log</td>
+</tr>
+<tr>
+<td align="center">WARNING</td>
+<td align="center">error.log</td>
+</tr>
+<tr>
+<td align="center">ERROR</td>
+<td align="center">error.log</td>
+</tr>
+<tr>
+<td align="center">CRITICAL</td>
+<td align="center">error.log</td>
+</tr>
+</tbody>
+</table>
+<p>As is the case with the <code>logging</code> framework, logging statements are hierarchical: logging statements made at the <code>logging.DEBUG</code> level will be written only to <code>debug.log</code> while logging statements made at the <code>logging.ERROR</code> level will be written to <code>debug.log</code>, <code>info.log</code>, and <code>error.log</code>.</p>
+<h2 id="sensitive-data">Sensitive data<a class="headerlink" href="#sensitive-data" title="Permanent link">&para;</a></h2>
+<p>Remember that logging data means writing that data out in cleartext. Make sure you never log any data that could be secret or sensitive (passwords, etc.). For more details please see our section on <a href="../../Best_Practices/Sensitive_Data/">sensitive data</a></p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Platform_Libraries/" title="Platform Libraries" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Platform Libraries
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Workflows/" title="Workflows" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Workflows
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

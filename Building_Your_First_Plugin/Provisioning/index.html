@@ -1,0 +1,1237 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Provisioning - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#provisioning" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Provisioning
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Provisioning
+      </label>
+    
+    <a href="./" title="Provisioning" class="md-nav__link md-nav__link--active">
+      Provisioning
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-provisioning" title="What is Provisioning?" class="md-nav__link">
+    What is Provisioning?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#our-provisioning-strategy" title="Our Provisioning Strategy" class="md-nav__link">
+    Our Provisioning Strategy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-our-provision-related-data-formats" title="Defining our Provision-Related Data Formats" class="md-nav__link">
+    Defining our Provision-Related Data Formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-provisioning" title="Implementing Provisioning" class="md-nav__link">
+    Implementing Provisioning
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controlling-mounting" title="Controlling Mounting" class="md-nav__link">
+    Controlling Mounting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-source-config-for-a-new-vdb" title="Creating a Source Config for a new VDB" class="md-nav__link">
+    Creating a Source Config for a new VDB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-a-source-config-after-rewind-or-refresh" title="Modifying a Source Config after Rewind or Refresh" class="md-nav__link">
+    Modifying a Source Config after Rewind or Refresh
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-snapshot-data" title="Saving Snapshot Data" class="md-nav__link">
+    Saving Snapshot Data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-provision-in-the-delphix-engine" title="How To Provision in the Delphix Engine" class="md-nav__link">
+    How To Provision in the Delphix Engine
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-provisioning" title="What is Provisioning?" class="md-nav__link">
+    What is Provisioning?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#our-provisioning-strategy" title="Our Provisioning Strategy" class="md-nav__link">
+    Our Provisioning Strategy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-our-provision-related-data-formats" title="Defining our Provision-Related Data Formats" class="md-nav__link">
+    Defining our Provision-Related Data Formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-provisioning" title="Implementing Provisioning" class="md-nav__link">
+    Implementing Provisioning
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controlling-mounting" title="Controlling Mounting" class="md-nav__link">
+    Controlling Mounting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-source-config-for-a-new-vdb" title="Creating a Source Config for a new VDB" class="md-nav__link">
+    Creating a Source Config for a new VDB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-a-source-config-after-rewind-or-refresh" title="Modifying a Source Config after Rewind or Refresh" class="md-nav__link">
+    Modifying a Source Config after Rewind or Refresh
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-snapshot-data" title="Saving Snapshot Data" class="md-nav__link">
+    Saving Snapshot Data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-provision-in-the-delphix-engine" title="How To Provision in the Delphix Engine" class="md-nav__link">
+    How To Provision in the Delphix Engine
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="provisioning">Provisioning<a class="headerlink" href="#provisioning" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-provisioning">What is Provisioning?<a class="headerlink" href="#what-is-provisioning" title="Permanent link">&para;</a></h2>
+<p>Once Delphix has a <a href="../../References/Glossary/#snapshot">snapshot</a> of a dataset (for example of a dSource), it is possible to quickly clone that snapshot to create a new <a href="../../References/Glossary/#virtual-dataset">virtual dataset</a>. This new virtual dataset will be made available for use on a <a href="../../References/Glossary/#target-environment">target environment</a>. This process is called <a href="../../References/Glossary/#provisioning">provisioning</a>.</p>
+<h2 id="our-provisioning-strategy">Our Provisioning Strategy<a class="headerlink" href="#our-provisioning-strategy" title="Permanent link">&para;</a></h2>
+<p>For many plugins, there is a lot of work that needs to be done before a newly-provisioned virtual dataset can be made useful. For example, it might need to be registered with a running DBMS. Or, maybe some data inside the dataset needs to be changed so it behaves properly on the target environment.</p>
+<p>In our case, however, there is very little to do. All we really require is that the files in the virtual dataset are accessible at some path on the target environment. Since the Delphix Engine takes care of mounting the data, we only need to worry about controlling <em>where</em> that data is mounted.</p>
+<h2 id="defining-our-provision-related-data-formats">Defining our Provision-Related Data Formats<a class="headerlink" href="#defining-our-provision-related-data-formats" title="Permanent link">&para;</a></h2>
+<p>We have already seen four custom data formats: for repositories, source configs, snapshots and
+linked sources. The final one is used for <a href="../../References/Glossary/#virtual-source">virtual sources</a>.</p>
+<p>Recall that, for our plugin, a VDB is just a directory full of files. There is no special
+procedure needed to enable it, no DBMS to coordinate with, etc. All we need to do is make the files
+available on the target environment.</p>
+<p>So, the only question for the user is "Where should these files live?"</p>
+<p>Open up <code>schema.json</code>, locate the <code>virtualSourceDefintion</code> section, and change it to look like this:</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;virtualSourceDefinition&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mountLocation&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;properties&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;mountLocation&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;unixpath&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;prettyName&quot;</span><span class="p">:</span> <span class="s2">&quot;Mount Location on Target Host&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Where to mount VDB onto the target host&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="err">,</span>
+</pre></div>
+
+
+<p>This should look familiar from the source config schema that we did earlier. We only have one
+property, and it represents the mount location on the target environment.</p>
+<h2 id="implementing-provisioning">Implementing Provisioning<a class="headerlink" href="#implementing-provisioning" title="Permanent link">&para;</a></h2>
+<p>There are numerous ways for a plugin to customize the provisioning process.
+For our example plugin, we just need to do a few things:</p>
+<ol>
+<li>Tell Delphix where to mount the virtual dataset.</li>
+<li>Create a <code>sourceConfig</code> to represent each newly-provisioned virtual dataset.</li>
+<li>Modify an existing <code>sourceConfig</code>, if necessary, when the virtual dataset is refreshed or rewound.</li>
+<li>Construct snapshot-related data any time a snapshot is taken of the virtual dataset.</li>
+</ol>
+<h3 id="controlling-mounting">Controlling Mounting<a class="headerlink" href="#controlling-mounting" title="Permanent link">&para;</a></h3>
+<p>As we saw previously with linked sources, we need to tell Delphix where to mount the dataset. Open
+up <code>plugin_runner.py</code> and find the <code>plugin.virtual.mount_specification</code> decorator. Change that function so that
+it looks like this:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.virtual.mount_specification</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">vdb_mount_spec</span><span class="p">(</span><span class="n">virtual_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">):</span>
+    <span class="n">mount_location</span> <span class="o">=</span> <span class="n">virtual_source</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">mount_location</span>
+    <span class="n">mount</span> <span class="o">=</span> <span class="n">Mount</span><span class="p">(</span><span class="n">virtual_source</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">mount_location</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MountSpecification</span><span class="p">([</span><span class="n">mount</span><span class="p">])</span>
+</pre></div>
+
+
+<p>As we did with linked sources, we just look up what the user told us, and then package that up
+and return it to Delphix.</p>
+<h3 id="creating-a-source-config-for-a-new-vdb">Creating a Source Config for a new VDB<a class="headerlink" href="#creating-a-source-config-for-a-new-vdb" title="Permanent link">&para;</a></h3>
+<p>Just like we saw earlier with <a href="../../References/Glossary/#linked-dataset">linked datasets</a>, each virtual dataset will need its own source config so that the Delphix Engine can interact with it. Our plugin is in charge of creating that source config at provision time</p>
+<p>As a reminder, here is what our schema looks like for source configs:</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;sourceConfigDefinition&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;prettyName&quot;</span><span class="p">:</span> <span class="s2">&quot;Dataset Name&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;User-visible name for this dataset&quot;</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;unixpath&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;prettyName&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Full path to data location on the remote environment&quot;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+<span class="p">}</span><span class="err">,</span>
+</pre></div>
+
+
+<p>Thus, for each newly-cloned virtual dataset, we create a new source config object with a name and a
+path. This is done by the <code>configure</code> plugin operation.</p>
+<p>In addition to generating a new source config, the configure operation is also tasked with getting
+the newly-cloned dataset ready for use on the target environment. What this means exactly will vary
+from plugin to plugin. For our simple plugin, the dataset does not require any setup work, and so we
+only have to worry about the source config.</p>
+<p>Find the <code>plugin.virtual.configure</code> decorator and change the function to look like this:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.virtual.configure</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">configure_new_vdb</span><span class="p">(</span><span class="n">virtual_source</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">,</span> <span class="n">repository</span><span class="p">):</span>
+    <span class="n">mount_location</span> <span class="o">=</span> <span class="n">virtual_source</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">mount_location</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;VDB mounted at {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mount_location</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SourceConfigDefinition</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">mount_location</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="modifying-a-source-config-after-rewind-or-refresh">Modifying a Source Config after Rewind or Refresh<a class="headerlink" href="#modifying-a-source-config-after-rewind-or-refresh" title="Permanent link">&para;</a></h3>
+<p>Just as a new VDB might need to be configured, a refreshed or rewound VDB might need to be
+"reconfigured" to handle the new post-refresh (or post-rewind) state of the VDB. So, just as there
+is a <code>configure</code> operation, there is also a <code>reconfigure</code> operation.</p>
+<p>The main difference between the two is that <code>configure</code> must <em>create</em> a source config, but
+<code>reconfigure</code> needs to <em>modify</em> a pre-existing source config.</p>
+<p>In our simple plugin, there is no special work to do at reconfigure time, and there is no reason
+to modify anything about the source config. We just need to write a <code>reconfigure</code> operation that
+returns the existing source config without making any changes. Find the <code>plugin.virtual.reconfigure</code> decorator and modify the function as follows.</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.virtual.reconfigure</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">reconfigure_existing_vdb</span><span class="p">(</span><span class="n">virtual_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">source_config</span>
+</pre></div>
+
+
+<h3 id="saving-snapshot-data">Saving Snapshot Data<a class="headerlink" href="#saving-snapshot-data" title="Permanent link">&para;</a></h3>
+<p>As with our linked sources, we don't actually have anything we need to save when VDB snapshots are
+taken. And, again, <code>dvp init</code> has created a post-snapshot operation that will work just fine for us without modification:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.virtual.post_snapshot</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">virtual_post_snapshot</span><span class="p">(</span><span class="n">virtual_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">()</span>
+</pre></div>
+
+
+<h2 id="how-to-provision-in-the-delphix-engine">How To Provision in the Delphix Engine<a class="headerlink" href="#how-to-provision-in-the-delphix-engine" title="Permanent link">&para;</a></h2>
+<p>Finally, let us try it out to make sure provisioning works!</p>
+<ol>
+<li>Again, use <code>dvp build</code> and <code>dvp upload</code> to get your new changes onto your Delphix Engine.</li>
+<li>Click <strong>Manage &gt; Datasets</strong>.</li>
+<li>Select the dSource you created in the last page. You should see at least one snapshot, and maybe more than one if you have manually taken a snapshot, or if you have a snapshot policy in place. Select one of these snapshots and click the <strong>Provision vFiles</strong> icon.</li>
+<li>This will open the Provision VDB wizard. Complete the steps and select <strong>Submit</strong>.
+  During VDB provisioning one of the things you will have to do is to provide the data required by your virtual source schema. In our case, that means you will be asked to provide a value for <code>mountLocation</code>. You will also be asked to choose a target environment on which the new VDB will live. After the wizard finishes, you will see a job appear in the <strong>Actions</strong> tab on the right-hand side of the screen. When that job completes, your new VDB should be ready.</li>
+<li>To ensure everything has worked correctly, log into to your target environment. From there, you can examine the directory you specified as the <code>mountLocation</code>. What you should see is a copy of the directory that you linked to with your dSource.</li>
+</ol>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Data_Ingestion/" title="Data Ingestion" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Data Ingestion
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Overview
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

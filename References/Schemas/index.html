@@ -1,0 +1,2168 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Schemas - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#schemas" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Schemas
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning_And_Upgrade/Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Schemas
+      </label>
+    
+    <a href="./" title="Schemas" class="md-nav__link md-nav__link--active">
+      Schemas
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about-schemas" title="About Schemas" class="md-nav__link">
+    About Schemas
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schemas" title="JSON Schemas" class="md-nav__link">
+    JSON Schemas
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json" title="JSON" class="md-nav__link">
+    JSON
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-schemas_1" title="JSON Schemas" class="md-nav__link">
+    JSON Schemas
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-specific-extensions-to-json-schema" title="Delphix-specific Extensions to JSON Schema" class="md-nav__link">
+    Delphix-specific Extensions to JSON Schema
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description" title="description" class="md-nav__link">
+    description
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identityfields" title="identityFields" class="md-nav__link">
+    identityFields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namefield" title="nameField" class="md-nav__link">
+    nameField
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering" title="ordering" class="md-nav__link">
+    ordering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password" title="password" class="md-nav__link">
+    password
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prettyname" title="prettyName" class="md-nav__link">
+    prettyName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unixpath" title="unixpath" class="md-nav__link">
+    unixpath
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference" title="reference" class="md-nav__link">
+    reference
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencetype" title="referenceType" class="md-nav__link">
+    referenceType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matches" title="matches" class="md-nav__link">
+    matches
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schema-limitations" title="JSON Schema Limitations" class="md-nav__link">
+    JSON Schema Limitations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generation-error" title="Generation Error" class="md-nav__link">
+    Generation Error
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-types" title="Multiple types" class="md-nav__link">
+    Multiple types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-schemas" title="Combining schemas" class="md-nav__link">
+    Combining schemas
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-additional-properties" title="Object Additional Properties" class="md-nav__link">
+    Object Additional Properties
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-keywords" title="Validation Keywords" class="md-nav__link">
+    Validation Keywords
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number-integer" title="Number / Integer" class="md-nav__link">
+    Number / Integer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arrays-tuples" title="Arrays / Tuples" class="md-nav__link">
+    Arrays / Tuples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#objects" title="Objects" class="md-nav__link">
+    Objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enumerated-values" title="Enumerated values" class="md-nav__link">
+    Enumerated values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about-schemas" title="About Schemas" class="md-nav__link">
+    About Schemas
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schemas" title="JSON Schemas" class="md-nav__link">
+    JSON Schemas
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json" title="JSON" class="md-nav__link">
+    JSON
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-schemas_1" title="JSON Schemas" class="md-nav__link">
+    JSON Schemas
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-specific-extensions-to-json-schema" title="Delphix-specific Extensions to JSON Schema" class="md-nav__link">
+    Delphix-specific Extensions to JSON Schema
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description" title="description" class="md-nav__link">
+    description
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identityfields" title="identityFields" class="md-nav__link">
+    identityFields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namefield" title="nameField" class="md-nav__link">
+    nameField
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering" title="ordering" class="md-nav__link">
+    ordering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password" title="password" class="md-nav__link">
+    password
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prettyname" title="prettyName" class="md-nav__link">
+    prettyName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unixpath" title="unixpath" class="md-nav__link">
+    unixpath
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference" title="reference" class="md-nav__link">
+    reference
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencetype" title="referenceType" class="md-nav__link">
+    referenceType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matches" title="matches" class="md-nav__link">
+    matches
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schema-limitations" title="JSON Schema Limitations" class="md-nav__link">
+    JSON Schema Limitations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generation-error" title="Generation Error" class="md-nav__link">
+    Generation Error
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-types" title="Multiple types" class="md-nav__link">
+    Multiple types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-schemas" title="Combining schemas" class="md-nav__link">
+    Combining schemas
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-additional-properties" title="Object Additional Properties" class="md-nav__link">
+    Object Additional Properties
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-keywords" title="Validation Keywords" class="md-nav__link">
+    Validation Keywords
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number-integer" title="Number / Integer" class="md-nav__link">
+    Number / Integer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arrays-tuples" title="Arrays / Tuples" class="md-nav__link">
+    Arrays / Tuples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#objects" title="Objects" class="md-nav__link">
+    Objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enumerated-values" title="Enumerated values" class="md-nav__link">
+    Enumerated values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="schemas">Schemas<a class="headerlink" href="#schemas" title="Permanent link">&para;</a></h1>
+<h2 id="about-schemas">About Schemas<a class="headerlink" href="#about-schemas" title="Permanent link">&para;</a></h2>
+<p>Any time a plugin needs to store its own data, or needs to ask the user for data, the Delphix Engine needs to be told about the format of that data:</p>
+<ul>
+<li>What is the set of data needed and what should they be called?</li>
+<li>What is the type of each piece of data: Strings? Integers? Booleans?</li>
+</ul>
+<p>Plugins use <a href="../Glossary/#schema">schemas</a> to describe the format of such data. Once a schema is defined, it is used in three ways</p>
+<ol>
+<li>It tells the Delphix Engine how to store the data for later use.</li>
+<li>It is used to autogenerate a custom user interface, and to validate user inputs.</li>
+<li>It is used to <a href="../Schemas_and_Autogenerated_Classes/">autogenerate Python classes</a> that can be used by plugin code to access and manipulate user input and stored data.</li>
+</ol>
+<p>There are five plugin-customizable data formats:</p>
+<table>
+<thead>
+<tr>
+<th>Delphix Object</th>
+<th>Schema</th>
+<th>Autogenerated Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../Glossary/#repository">Repository</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#repositorydefinition-schema">RepositoryDefinition</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#repositorydefintion-class">RepositoryDefinition</a></td>
+</tr>
+<tr>
+<td><a href="../Glossary/#source-config">Source Config</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#sourceconfigdefinition-schema">SourceConfigDefinition</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#sourceconfigdefinition-class">SourceConfigDefinition</a></td>
+</tr>
+<tr>
+<td><a href="../Glossary/#linked-source">Linked Source</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#linkedsourcedefinition-schema">LinkedSourceDefinition</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#linkedsourcedefinition-class">LinkedSourceDefinition</a></td>
+</tr>
+<tr>
+<td><a href="../Glossary/#virtual-source">Virtual Source</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#virtualsourcedefinition-schema">VirtualSourceDefinition</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#virtualsourcedefinition-class">VirtualSourceDefinition</a></td>
+</tr>
+<tr>
+<td><a href="../Glossary/#linked-source">Snapshot</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#snapshotdefinition-schema">SnapshotDefinition</a></td>
+<td><a href="../Schemas_and_Autogenerated_Classes/#snapshotdefinition-class">SnapshotDefinition</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="json-schemas">JSON Schemas<a class="headerlink" href="#json-schemas" title="Permanent link">&para;</a></h2>
+<p>Plugins use JSON schemas for their custom datatypes. There are three main things to understand about them, which are explained just below:</p>
+<ul>
+<li>What is JSON?</li>
+<li>What is a JSON schema?</li>
+<li>How has Delphix augmented JSON schemas?</li>
+</ul>
+<h3 id="json">JSON<a class="headerlink" href="#json" title="Permanent link">&para;</a></h3>
+<p>JSON stands for "Javascript Object Notation". JSON is a data-interchange format that is intended to be precise and also somewhat human-readable. Here are some simple examples of data in JSON format:</p>
+<table>
+<thead>
+<tr>
+<th>JSON</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"hello"</code></td>
+<td>A string. Note the double quotes.</td>
+</tr>
+<tr>
+<td><code>17</code></td>
+<td>An integer</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td>A boolean</td>
+</tr>
+<tr>
+<td><code>{"name": "Julie", "age": 37}</code></td>
+<td>A JSON object with two fields, <code>name</code> (a string), and <code>age</code> (an integer). Objects are denoted with curly braces.</td>
+</tr>
+<tr>
+<td><code>[ true, false, true]</code></td>
+<td>A JSON array with three booleans. Arrays are denoted with square brackets.</td>
+</tr>
+</tbody>
+</table>
+<p>For more details on JSON, please see <a href="https://www.json.org/">https://www.json.org/</a>.</p>
+<h3 id="json-schemas_1">JSON Schemas<a class="headerlink" href="#json-schemas_1" title="Permanent link">&para;</a></h3>
+<p>The "JSON schema" format is built on top of JSON. This adds some special rules and keywords that are intended to facilitate the <em>description</em> of the format of data (whereas "raw" JSON is intended for storing data).</p>
+<p>Here is an example of a JSON schema that defines a (simplified) US address:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;streetNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;street&quot;</span><span class="p">,</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;zip5&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;streetNumber&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;street&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;city&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;^[A-Z][A-Za-z ]*$&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;^[A-Z]{2}$&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;zip5&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;^[0-9]{5}&quot;</span><span class="p">},</span>
+        <span class="nt">&quot;zipPlus4&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;^[0-9]{4}&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Note that this is perfectly valid JSON data. It's a JSON object with four fields: <code>type</code> (a JSON string), <code>required</code> (A JSON array), <code>additionalProperties</code> (a JSON boolean), and <code>properties</code>. <code>properties</code>, in turn is a JSON object with with 8 fields, each of which is a JSON object, with its own properties, etc.</p>
+<p>But, this isn't <em>just</em> a JSON object. This is a JSON schema. It uses special keywords like <code>type</code> <code>required</code>, and <code>additionalProperties</code>. These have specially-defined meanings in the context of JSON schemas.</p>
+<p>Here is a list of the special keywords used by the above schema. Note that this is only a small subset of JSON schema keywords.</p>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>additionalProperties</code></td>
+<td>Determines whether the schema allows properties that are not explicitly listed in the <code>properties</code> specification. Must be a <code>true</code> or <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>pattern</code></td>
+<td>Used with string types to specify a regular expression that the property must conform to.</td>
+</tr>
+<tr>
+<td><code>required</code></td>
+<td>A list of required properties. Properties not listed in this list are optional.</td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td>Used with <code>type</code> to declare that a property must be a string.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>Specifies a datatype. Common values are <code>object</code>, <code>array</code>, <code>number</code>, <code>integer</code>, <code>boolean</code>, and <code>string</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Some points to note about the address schema above:</p>
+<ul>
+<li>Because of the <code>required</code> list, all valid addresses must have fields called <code>name</code>, <code>streetNumber</code> and so on.</li>
+<li><code>unit</code> and <code>zipPlus4</code> do not appear in the <code>required</code> list, and therefore are optional.</li>
+<li>Because of <code>additionalProperties</code> being <code>false</code>, valid addresses cannot make up their own fields like <code>nickname</code> or <code>doorbellLocation</code>.</li>
+<li>Because of the <code>pattern</code>, any <code>state</code> field in a valid address must consist of exactly two capital letters.</li>
+<li>Similarly, <code>city</code> must only contain letters and spaces, and <code>zip</code> and <code>zipPlus4</code> must only contain digits.</li>
+<li>Each property has its own valid subschema that describes its own type definition.</li>
+</ul>
+<p>Here is a JSON object that conforms to the above schema:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Delphix&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;streetNumber&quot;</span><span class="p">:</span> <span class="s2">&quot;220&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;street&quot;</span><span class="p">:</span> <span class="s2">&quot;Congress St.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;Boston&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;MA&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;zip&quot;</span><span class="p">:</span> <span class="s2">&quot;02210&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>A common point of confusion is the distinction between a JSON schema and a JSON object that conforms to a schema. Remember, a schema describes the form of data. In our example, the schema <em>describes</em> what an address looks like. The address itself is not a schema.</p>
+</div>
+<p>For much more detail on JSON schemas, including which keywords are available, what they mean, and where you can use them, see <a href="https://json-schema.org/understanding-json-schema/">https://json-schema.org/understanding-json-schema/</a>.</p>
+<h3 id="delphix-specific-extensions-to-json-schema">Delphix-specific Extensions to JSON Schema<a class="headerlink" href="#delphix-specific-extensions-to-json-schema" title="Permanent link">&para;</a></h3>
+<p>The JSON schema vocabulary is designed to be extensible for special uses, and Delphix has taken advantage of this to add some new Delphix-specific keywords.</p>
+<p>The list below outlines each of these keywords, and provides minimal examples of how they might be used.</p>
+<h4 id="description"><code>description</code><a class="headerlink" href="#description" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>In any property subschema, at the same level as <code>type</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>description</code> keyword can optionally appear on any property. If it does appear, it is used by the UI as explanatory text for the UI widget associated with the property. If it does not appear, then no explanatory text is shown.</p>
+<p>In this example, the UI would show "User-readable name for the provisioned database" in small text under the widget.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;User-readable name for the provisioned database&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="identityfields"><code>identityFields</code><a class="headerlink" href="#identityfields" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Required (for repository and source config schemas only)</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>At the top level of a repository or source config schema, at the same level as <code>type</code> and <code>properties</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>identityFields</code> is a list of property names that, together, serve as a unique identifier for a repository or source config.</p>
+<p>When a plugin's <a href="../Glossary/#automatic-discovery">automatic discovery</a> code is called, it will return a list of repositories (or source configs). The Delphix Engine needs to be able to compare this new list with whatever repositories it already knows about.</p>
+<p>For example, suppose the engine already knows about a single repository with data <code>{"dbname": "my_databsae", "path": "/var/db/db01"}</code> (note the misspelling!). And, then suppose that automatic discovery is re-run and it returns repository data <code>{ "dbname": "my_database", "path": "/var/db/db01"}</code>.</p>
+<p>What should the Delphix Engine do? Should it conclude that "my_databsae" has been deleted, and there is a completely new repository named "my_database"? Or, should it conclude that we still have the same old repository, but with an updated name?</p>
+<p><code>identityFields</code> is used to handle this. When the engine compares "new" data with "old" data, it concludes that they belong to the same repository if <strong>all</strong> of the identity fields match. If any of the identity fields do not match, then the "new" repository data is judged to represent a different repository than the old data.</p>
+<p><code>identityFields</code> is <strong>required</strong> for <a href="../Schemas_and_Autogenerated_Classes/#repositorydefinition-schema">RepositoryDefinition</a> and <a href="../Schemas_and_Autogenerated_Classes/#sourceconfigdefinition-schema">SourceConfigDefinition</a> schemas, and may not be used in any other schemas.</p>
+<p>In this example, we'll tell the Delphix Engine that <code>path</code> is the sole unique identifier.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;dbname&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+      <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="namefield"><code>nameField</code><a class="headerlink" href="#namefield" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Required (for repository and source config schemas only)</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>At the top level of a repository or source config schema, at the same level as <code>type</code> and <code>properties</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>nameField</code> keyword specifies a single property that is to be used to name the object in the Delphix Engine. The property must be a string field. This keyword is used at the same level as <code>properties</code>. It is <strong>required</strong> for <a href="../Schemas_and_Autogenerated_Classes/#repositorydefinition-schema">RepositoryDefinition</a> and <a href="../Schemas_and_Autogenerated_Classes/#sourceconfigdefinition-schema">SourceConfigDefinition</a> schemas, and may not be used in any other schemas.</p>
+<p>In this example, we will use the <code>path</code> property as the user-visible name.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span> <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;path&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>So, if we have an repository object that looks like</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/usr/bin&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8800</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>then the user will be able to refer to this object as <code>/usr/bin</code>.</p>
+<h4 id="ordering"><code>ordering</code><a class="headerlink" href="#ordering" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>At the top level, same level as <code>type</code> and <code>properties</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>ordering</code> keyword can be used to order the fields when the UI is autogenerated.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span> <span class="p">},</span>
+        <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span> <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;ordering&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>In the example above, the <code>port</code> will be the first field in the autogenerated UI wizard followed by <code>path</code>.</p>
+<h4 id="password"><code>password</code><a class="headerlink" href="#password" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>As the value for the <code>format</code> keyword in any string property's subschema.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>password</code> keyword can be used to specify the <code>format</code> of a <code>string</code>. (Note that <code>format</code> is a standard keyword and is not Delphix-specific). If a property is tagged as a password, then the UI will never show the value on screen, and the value will be encrypted before being stored as described <a href="../../Best_Practices/Sensitive_Data/">here</a>.</p>
+<p>In this example, the <code>dbPass</code> field on any object will be treated as a password.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;dbPass&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;password&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="prettyname"><code>prettyName</code><a class="headerlink" href="#prettyname" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>In any property subschema, at the same level as <code>type</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>prettyName</code> keyword can optionally appear on any property. If it does appear, it is used by the UI as a title for the UI widget associated with the property. If it does not appear, then the name of the property is used.</p>
+<p>In this example, the user would see "Name of Database" on the UI, instead of just "name".</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;prettyName&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of Database&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="unixpath"><code>unixpath</code><a class="headerlink" href="#unixpath" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>As the value for the <code>format</code> keyword in any string property's subschema.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>unixpath</code> keyword is used to specify the <code>format</code> of a string. This will allow the Delphix Engine to verify and enforce that a particular field can be parsed as a valid Unix path.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;datapath&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;unixpath&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="reference"><code>reference</code><a class="headerlink" href="#reference" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>As the value for the <code>format</code> keyword in any string property's subschema.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>reference</code> keyword is used to specify the <code>format</code> of a string.
+This will allow the plugin author to ask the user to select <a href="../Glossary/#environment.md">environments</a> and <a href="../Glossary/#environment-users">environment users</a> on the Delphix Engine.</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;properties&quot;</span><span class="err">:</span> <span class="p">{</span>
+  <span class="nt">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;UNIX_HOST_ENVIRONMENT&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;envUser&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;HOST_USER&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;matches”: &quot;</span><span class="err">env&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="referencetype"><code>referenceType</code><a class="headerlink" href="#referencetype" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>In any property subschema of type <code>string</code> and format <code>reference</code>, at the same level as type.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>referenceType</code> keyword is used to specify the <a href="#reference">reference</a> type. Possible values:</p>
+<ul>
+<li><a href="../Glossary/#environment.md">Environment</a>: <code>UNIX_HOST_ENVIRONMENT</code></li>
+<li><a href="../Glossary/#environment-user.md">Environment User</a>: <code>HOST_USER</code></li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;properties&quot;</span><span class="err">:</span> <span class="p">{</span>
+  <span class="nt">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;UNIX_HOST_ENVIRONMENT&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;envUser&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;HOST_USER&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;matches”: &quot;</span><span class="err">env&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="matches"><code>matches</code><a class="headerlink" href="#matches" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Summary</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required or Optional?</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Where?</td>
+<td>In any property subschema of type <code>string</code> and format <code>reference</code>, at the same level as type.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>matches</code> keyword is used to map an <a href="../Glossary/#environment-user.md">environment user</a> to an <a href="../Glossary/#environment.md">environment</a> by specifying the environment's property name.</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;properties&quot;</span><span class="err">:</span> <span class="p">{</span>
+  <span class="nt">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;UNIX_HOST_ENVIRONMENT&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;envUser&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;referenceType&quot;</span><span class="p">:</span> <span class="s2">&quot;HOST_USER&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;matches”: &quot;</span><span class="err">env&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>In the example above, environment user <code>envUser</code> maps to environment <code>env</code>.</p>
+<h2 id="json-schema-limitations">JSON Schema Limitations<a class="headerlink" href="#json-schema-limitations" title="Permanent link">&para;</a></h2>
+<p>To be able to autogenerate Python classes there are some restrictions to the JSON Schemas that are supported.</p>
+<h3 id="generation-error">Generation Error<a class="headerlink" href="#generation-error" title="Permanent link">&para;</a></h3>
+<p>There are some valid JSON schemas that will cause the property to not be generated in the autogenerated Python classes. Unfortunately the build command will silently fail so be sure to look at the generated classes and verify all the properties exist.</p>
+<h4 id="multiple-types">Multiple types<a class="headerlink" href="#multiple-types" title="Permanent link">&para;</a></h4>
+<p>For the <code>type</code> keyword, only a single type may be specified. Arrays of types are not supported.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The <code>data</code> property will not even exist:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="k">print</span><span class="p">(</span><span class="n">repository</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This would print:</p>
+<div class="codehilite"><pre><span></span>{}
+</pre></div>
+
+
+<h4 id="combining-schemas">Combining schemas<a class="headerlink" href="#combining-schemas" title="Permanent link">&para;</a></h4>
+<p>For the following keywords, if they are specified the property will not exist in the class.
+<em> anyOf
+</em> allOf
+<em> oneOf
+</em> not</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;any&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;anyOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;one&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;oneOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="nt">&quot;maximum&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The <code>any</code> and <code>one</code> properties would not exist:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="s2">&quot;string&quot;</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">one</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="k">print</span><span class="p">(</span><span class="n">repository</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This would print:</p>
+<div class="codehilite"><pre><span></span>{}
+</pre></div>
+
+
+<h4 id="object-additional-properties">Object Additional Properties<a class="headerlink" href="#object-additional-properties" title="Permanent link">&para;</a></h4>
+<p>The <code>additionalProperties</code> keyword inside the object property can either be a boolean or a JSON schema. If it is a schema it needs to have the keyword <code>type</code>. If the <code>additionalProperties</code> is set to a JSON schema then the <code>properties</code> keyword will be ignored. If the keyword is set to a boolean the behaviour will be the same regardless of if it was set to <code>true</code> or <code>false</code>.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;dataOne&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;dataTwo&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;dataThree&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;dataFour&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;dataFive&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;dataSix&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;addtionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;dataOne&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dataOne&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>From the schema above, the properties <code>dataOne</code> and <code>dataTwo</code>, <code>dataThree</code> and <code>dataFour</code>, and <code>dataFive</code> and <code>dataSix</code> will have an identical validations. The first two will validate that the object passed in is a dict with key and value both <code>string</code> type. The next two will create a new inner Python class called either <code>OtherDefinitionDataThree</code> or <code>OtherDefinitionDataFour</code>, they optomize for creating only one as they are identical. Inside that object will be one property <code>data</code>. The last two properties will validate that the object passed in is a dict with the key as a <code>string</code> type, and the value can be anything.</p>
+<h3 id="validation-keywords">Validation Keywords<a class="headerlink" href="#validation-keywords" title="Permanent link">&para;</a></h3>
+<p>In general all property types are supported however some validation keywords will be ignored during the execution of the Python code. This means that if these keywords are used, no error would be raised within Python if the object violates the schema. Listed below are the keywords ignored for each type that wouldn't validate. Some have examples to be more clear.</p>
+<h4 id="number-integer">Number / Integer<a class="headerlink" href="#number-integer" title="Permanent link">&para;</a></h4>
+<ul>
+<li>multipleOf</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;multipleOf&quot;</span><span class="p">:</span> <span class="mi">2</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This would work even though it would fail the schema check:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+
+<h4 id="arrays-tuples">Arrays / Tuples<a class="headerlink" href="#arrays-tuples" title="Permanent link">&para;</a></h4>
+<ul>
+<li>additionalItems</li>
+<li>minItems</li>
+<li>maxItems</li>
+<li>uniqueItems</li>
+<li>contains</li>
+<li>items<ul>
+<li>Must be a single type, not an array (tuples are not supported):</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This would work even though it would fail the schema check:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+
+<h4 id="objects">Objects<a class="headerlink" href="#objects" title="Permanent link">&para;</a></h4>
+<ul>
+<li>minProperties</li>
+<li>maxProperties</li>
+<li>patternProperties</li>
+<li>dependencies</li>
+<li>propertyNames</li>
+</ul>
+<h4 id="enumerated-values">Enumerated values<a class="headerlink" href="#enumerated-values" title="Permanent link">&para;</a></h4>
+<p>If the <code>enum</code> keyword is used within a subobject, <code>type</code> has to be <code>string</code>.</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;repositoryDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;stringData&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;arrayData&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;DO&quot;</span><span class="p">,</span> <span class="s2">&quot;RE&quot;</span><span class="p">,</span> <span class="s2">&quot;MI&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;objectData&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ONE&quot;</span><span class="p">,</span> <span class="s2">&quot;TWO&quot;</span><span class="p">,</span> <span class="s2">&quot;THREE&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;definedObjectData&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;objectStringData&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;o.A&quot;</span><span class="p">,</span> <span class="s2">&quot;o.B&quot;</span><span class="p">,</span> <span class="s2">&quot;o.C&quot;</span><span class="p">]</span>
+          <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;nameField&quot;</span><span class="p">:</span> <span class="s2">&quot;stringData&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityFields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;stringData&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>In the above example there are four properties: <code>stringData</code>, <code>arrayData</code>, <code>objectData</code>, and <code>definedObjectData</code>. Validation works for stringData but are skipped for the other three. In fact the definedObjectData which with properties would usually create a separte Python class does not at all.
+This means the following code would work even though it would fail the schema check:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">array_data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">object_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">defined_object_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+
+
+<p>And this code would actually fail with a <code>GeneratedClassesError</code> during the Python execution saying <code>Invalid enum value D for 'string_data', must be one of [A, B, C] if defined.</code>:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">generated.defintions</span> <span class="kn">import</span> <span class="n">RepositoryDefinition</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="n">RepositoryDefinition</span><span class="p">()</span>
+<span class="n">repository</span><span class="o">.</span><span class="n">string_data</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span>
+</pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Plugin_Operations/" title="Plugin Operations" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Plugin Operations
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Schemas and Autogenerated Classes
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>

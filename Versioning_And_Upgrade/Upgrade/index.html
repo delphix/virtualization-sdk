@@ -1,0 +1,1470 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Upgrade - Delphix Virtualization SDK 2.0.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#upgrade" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Delphix Virtualization SDK 2.0.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.0.0
+              </span>
+              <span class="md-header-nav__topic">
+                Upgrade
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.0.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Building_Your_First_Plugin/Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Upgrade
+      </label>
+    
+    <a href="./" title="Upgrade" class="md-nav__link md-nav__link--active">
+      Upgrade
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-migrations" title="Data Migrations" class="md-nav__link">
+    Data Migrations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-data-migration" title="What is a Data Migration?" class="md-nav__link">
+    What is a Data Migration?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-example" title="A Simple Example" class="md-nav__link">
+    A Simple Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rules-for-data-migrations" title="Rules for Data Migrations" class="md-nav__link">
+    Rules for Data Migrations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" title="Rules" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendations" title="Recommendations" class="md-nav__link">
+    Recommendations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-migration-example" title="Data Migration Example" class="md-nav__link">
+    Data Migration Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-data-migration-problems" title="Debugging Data Migration Problems" class="md-nav__link">
+    Debugging Data Migration Problems
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-concerns-prevent-detailed-error-messages" title="Security Concerns Prevent Detailed Error Messages" class="md-nav__link">
+    Security Concerns Prevent Detailed Error Messages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-solution-temporary-logging" title="One Solution: Temporary Logging" class="md-nav__link">
+    One Solution: Temporary Logging
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-data-migrations-are-insufficient" title="When Data Migrations Are Insufficient" class="md-nav__link">
+    When Data Migrations Are Insufficient
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autodiscovery-example" title="Autodiscovery Example" class="md-nav__link">
+    Autodiscovery Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-entry" title="Manual Entry" class="md-nav__link">
+    Manual Entry
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0/" title="Release - GA (v2.0.0)" class="md-nav__link">
+      Release - GA (v2.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0/" title="Release - GA (v1.0.0)" class="md-nav__link">
+      Release - GA (v1.0.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-migrations" title="Data Migrations" class="md-nav__link">
+    Data Migrations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-data-migration" title="What is a Data Migration?" class="md-nav__link">
+    What is a Data Migration?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-example" title="A Simple Example" class="md-nav__link">
+    A Simple Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rules-for-data-migrations" title="Rules for Data Migrations" class="md-nav__link">
+    Rules for Data Migrations
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" title="Rules" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendations" title="Recommendations" class="md-nav__link">
+    Recommendations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-migration-example" title="Data Migration Example" class="md-nav__link">
+    Data Migration Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-data-migration-problems" title="Debugging Data Migration Problems" class="md-nav__link">
+    Debugging Data Migration Problems
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-concerns-prevent-detailed-error-messages" title="Security Concerns Prevent Detailed Error Messages" class="md-nav__link">
+    Security Concerns Prevent Detailed Error Messages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-solution-temporary-logging" title="One Solution: Temporary Logging" class="md-nav__link">
+    One Solution: Temporary Logging
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-data-migrations-are-insufficient" title="When Data Migrations Are Insufficient" class="md-nav__link">
+    When Data Migrations Are Insufficient
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autodiscovery-example" title="Autodiscovery Example" class="md-nav__link">
+    Autodiscovery Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-entry" title="Manual Entry" class="md-nav__link">
+    Manual Entry
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="upgrade">Upgrade<a class="headerlink" href="#upgrade" title="Permanent link">&para;</a></h1>
+<p>Upgrade is the process of moving from an older version of a plugin to a newer version.
+Upgrading is not as simple as just replacing the installed plugin with a newer one.  The main complication comes when the new plugin version makes changes to its <a href="../../References/Glossary/#schema">schemas</a>.</p>
+<p>Consider the case of a plugin that works with collections of text files -- the user points it to a directory tree containing text files, and the plugin syncs the files from there.</p>
+<p>The first release of such a plugin might have no link-related user options. So the plugin's linked source schema might define no properties at all:</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;linkedSourceDefinition&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>And, the syncing code is very simple:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.linked.pre_snapshot</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">linked_pre_snapshot</span><span class="p">(</span><span class="n">direct_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">):</span>
+    <span class="n">libs</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span>
+        <span class="n">remote_connection</span> <span class="o">=</span> <span class="n">direct_source</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span>
+        <span class="n">source_directory</span> <span class="o">=</span> <span class="n">source_config</span><span class="o">.</span><span class="n">path</span>
+        <span class="p">)</span>
+</pre></div>
+
+
+<p>But, later, some users request a new feature -- they want to avoid syncing any backup or hidden files. So, a new plugin version is released. This time, there is a new boolean property in the linked source schema where users can elect to skip these files, if desired.</p>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;linkedSourceDefinition&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;additionalProperties&quot;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;skipHiddenAndBackup&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;properties&quot;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;skipHiddenAndBackup&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The plugin code that handles the syncing can now pay attention to this new boolean property:</p>
+<div class="codehilite"><pre><span></span><span class="n">_HIDDEN_AND_BACKUP_SPECS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;*.bak&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;*~&quot;</span><span class="p">,</span>  <span class="c1"># Backup files from certain editors</span>
+    <span class="s2">&quot;.*&quot;</span>  <span class="c1"># Unix-style hidden files</span>
+<span class="p">]</span>
+
+<span class="nd">@plugin.linked.pre_snapshot</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">linked_pre_snapshot</span><span class="p">(</span><span class="n">direct_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">):</span>
+    <span class="n">exclude_spec</span> <span class="o">=</span> <span class="n">_HIDDEN_AND_BACKUP_SPECS</span> <span class="k">if</span> <span class="n">direct_source</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">skip_hidden_and_backup</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="n">libs</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span>
+        <span class="n">remote_connection</span> <span class="o">=</span> <span class="n">direct_source</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span>
+        <span class="n">source_directory</span> <span class="o">=</span> <span class="n">source_config</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+        <span class="n">exclude_paths</span> <span class="o">=</span> <span class="n">exclude_spec</span>
+        <span class="p">)</span>
+</pre></div>
+
+
+<p>Suppose a user has an engine with linked sources created by the older version of this plugin. That is, the existing linked sources have no <code>skipHiddenAndBackup</code> property.</p>
+<p>If the user installs the new version of the plugin, we have a problem! The above <code>pre_snapshot</code> code from the new plugin will attempt to access the <code>skip_hidden_and_backup</code> property, which we've just seen will not exist!</p>
+<p>The solution to this problem is to use <a href="../../References/Glossary/#data-migration">data migrations</a>, explained below.</p>
+<div class="admonition info">
+<p class="admonition-title">Zero dSource and VDB downtime during plugin upgrade</p>
+<p>dSources and VDBs do not need to be disabled before a plugin upgrade is initiated. End users can continue to access data from existing VDBs during a plugin upgrade. However, while a particular plugin is in the process of being upgraded, no administrative Delphix Engine operations like: VDB Refresh, VDB Provision, dSource Disable/Enable etc will be allowed on the objects associated with that plugin. Objects associated with other plugins will not be affected.</p>
+</div>
+<h2 id="data-migrations">Data Migrations<a class="headerlink" href="#data-migrations" title="Permanent link">&para;</a></h2>
+<h3 id="what-is-a-data-migration">What is a Data Migration?<a class="headerlink" href="#what-is-a-data-migration" title="Permanent link">&para;</a></h3>
+<p>Whenever a new version of a plugin is installed on a Delphix Engine, the engine needs to migrate pre-existing data from its old format (as specified by the schemas in the old version of the plugin), to its new format (as specified by the schemas in the new version of the plugin).</p>
+<p>A <a href="../../References/Glossary/#data-migration">data migration</a> is a function that is responsible for doing this conversion. It is provided by the plugin.</p>
+<p>Thus, when the new plugin version is installed, the engine will call all applicable data migrations provided by the new plugin. This ensures that all data is always in the format expected by the new plugin.</p>
+<h3 id="a-simple-example">A Simple Example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h3>
+<p>Let's go back to the above example of the plugin that adds a new boolean option to allow users to avoid syncing backup and hidden files. Here is a data migration that the new plugin can provide to handle the data format change:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.upgrade.linked_source</span><span class="p">(</span><span class="s2">&quot;2019.11.20&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_skip_option</span><span class="p">(</span><span class="n">old_linked_source</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="s2">&quot;skipHiddenAndBackup&quot;</span><span class="p">:</span> <span class="n">false</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>The exact rules for data migrations are covered in detail <a href="./#rules-for-data-migrations">below</a>. Here, we'll just walk through this code line by line and make some observations.</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.upgrade.linked_source</span><span class="p">(</span><span class="s2">&quot;2019.11.20&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The above line is a <a href="../../References/Glossary/#decorator">decorator</a> that identifies the following function as a data migration. This particular migration will handle linked sources. It is given an ID of <code>2019.11.20</code> -- this controls when this migration is run in relation to other data migrations.</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">add_skip_option</span><span class="p">(</span><span class="n">old_linked_source</span><span class="p">):</span>
+</pre></div>
+
+
+<p>Note that the data migration takes an argument representing the old-format data. In this simple example, we know that there are no properties in the old-format data, so we can just ignore it.</p>
+<div class="codehilite"><pre><span></span>    <span class="k">return</span> <span class="p">{</span>
+      <span class="s2">&quot;skipHiddenAndBackup&quot;</span><span class="p">:</span> <span class="n">false</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>Here, we are returning a Python dictionary representing the new format of the data. In this example, the dictionary has only one field: <code>skipHiddenAndBackup</code>. Because the old version of the plugin had no ability to skip files, we default this property to <code>false</code> to match the new schema.</p>
+<h3 id="rules-for-data-migrations">Rules for Data Migrations<a class="headerlink" href="#rules-for-data-migrations" title="Permanent link">&para;</a></h3>
+<p>As shown above, the a data migration receives old-format input and produces new-format output. The rules and recommendations for data migrations follow:</p>
+<h4 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p>Input and output are Python dictionaries, with properties named exactly as specified in the schemas. Note that this differs from other plugin operations, where the inputs are defined with autogenerated Python <a href="../../References/Schemas_and_Autogenerated_Classes/">classes</a>, and whose properties use Python-style naming.</p>
+</li>
+<li>
+<p>Each data migration must be tagged with an ID string. This string must consist of one or more positive integers separated by periods.</p>
+</li>
+<li>
+<p>Data migration IDs must be numerically unique. Note that <code>"1.2"</code>, <code>"01.02"</code>, and "<code>1.2.0.0.0"</code> are all considered to be identical.</p>
+</li>
+<li>
+<p>Once released, a data migration must never be deleted. An attempted upgrade will fail if the already-installed plugin version has a data migration that does not appear in the to-be-installed version.</p>
+</li>
+<li>
+<p>At upgrade time, the engine will find the set of new migrations provided by the new version that are not already part of the already-installed version. Each of these migrations will then be run, in the order specified below.</p>
+</li>
+<li>
+<p>After running all applicable migrations, the engine will confirm that the resultant data conforms to the new version's schemas. If not, the upgrade will fail.</p>
+</li>
+<li>
+<p>Note that there is no requirement or guarantee that the input or output of any particular data migration will conform to a schema. We only guarantee that the input to the <strong>first</strong> data migration conforms to the schema of the already-installed plugin version. And, we only require that the output of the <strong>final</strong> data migration conforms to the schema of the new plugin version.</p>
+</li>
+<li>
+<p>Data migrations are run in the order specified by their IDs. The ordering is numerical, not lexicographical. Thus <code>"1"</code> would run before <code>"2"</code>, which would run before <code>"10"</code>.</p>
+</li>
+<li>
+<p>Data migrations have no access to <a href="../../References/Platform_Libraries/">Platform Libraries</a> or remote hosts. For example: If a data migration attempts to use <a href="../../References/Platform_Libraries/#run_bash">run_bash</a> the upgrade will fail.</p>
+</li>
+<li>
+<p>Note that the above rules imply that at least one data migration is required any time a schema change is made that would invalidate any data produced using a previous version of the plugin. For example: adding a <code>"required"</code> property to the new schema.</p>
+</li>
+</ul>
+<h4 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p>We recommend using a "Year.Month.Date" format like <code>"2019.11.04"</code> for migration IDs. You can use trailing integers as necessary (e.g. use <code>"2019.11.04.5"</code> if you need something to be run between <code>"2019.11.04"</code> and <code>"2019.11.05"</code>).</p>
+</li>
+<li>
+<p>Even though they follow similar naming rules, migration IDs are not the same thing as plugin versions. We do not recommend using your plugin version in your migration IDs.</p>
+</li>
+<li>
+<p>We recommend using small, single-purpose data migrations. That is, if you end up making four schema changes over the course of developing a new plugin version, we recommend writing four different data migrations, one for each change.</p>
+</li>
+</ul>
+<h3 id="data-migration-example">Data Migration Example<a class="headerlink" href="#data-migration-example" title="Permanent link">&para;</a></h3>
+<p>Here is a very simple data migration.</p>
+<div class="codehilite"><pre><span></span><span class="nd">@plugin.upgrade.repository</span><span class="p">(</span><span class="s2">&quot;2019.12.15&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_repo</span><span class="p">(</span><span class="n">old_repository</span><span class="p">):</span>
+  <span class="n">new_repository</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_repository</span><span class="p">)</span>
+  <span class="n">new_repository</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+  <span class="k">return</span> <span class="n">new_repository</span>
+</pre></div>
+
+
+<h3 id="debugging-data-migration-problems">Debugging Data Migration Problems<a class="headerlink" href="#debugging-data-migration-problems" title="Permanent link">&para;</a></h3>
+<p>During the process of upgrading to a new version, the Delphix Engine will run all applicable data migrations, and then ensure that the resulting object matches the new schema. But, what if there is a bug, and the resulting object does <strong>not</strong> match the schema?</p>
+<h4 id="security-concerns-prevent-detailed-error-messages">Security Concerns Prevent Detailed Error Messages<a class="headerlink" href="#security-concerns-prevent-detailed-error-messages" title="Permanent link">&para;</a></h4>
+<p>One problem here is that the Delphix Engine is limited in the information that it can provide in the error message. Ideally, the engine would say exactly what was wrong with the object (e.g.: "The field <code>port</code> has the value <code>15</code>, but the schema says it has to have a value between <code>256</code> and <code>1024</code>").</p>
+<p>But, the Delphix Engine cannot do this for security reasons. Ordinarily, the Delphix Engine knows which fields contain sensitive information, and can redact such fields from error messages. But, the only reason the Delphix Engine has that knowledge is because the schema provides that information. If an object does
+<strong>not</strong> conform to the schema, then the Delphix Engine can't know what is sensitive and what isn't.</p>
+<p>Therefore, the error message here might lack the detail necessary to debug the problem.</p>
+<h4 id="one-solution-temporary-logging">One Solution: Temporary Logging<a class="headerlink" href="#one-solution-temporary-logging" title="Permanent link">&para;</a></h4>
+<p>During development of a new plugin version, you may find yourself trying to find and fix such a bug.
+One technique is to use temporary logging.</p>
+<p>For example, while you are trying to locate and fix the bug, you could put a log statement at the very end of each of your data migrations, like so:</p>
+<div class="codehilite"><pre><span></span>  logger.debug(&quot;Migration 2010.03.01 returning {}&quot;.format(new_object))
+  return new_object
+</pre></div>
+
+
+<p>See the <a href="../../References/Logging/">Logging</a> section for more information about logging works.</p>
+<p>From the logs, you'll be able to see exactly what each migration is returning. From there, hopefully the problem will become apparent. As a supplemental tool, consider pasting these results (along with your schema) into an online JSON validator for more information.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is <strong>very important</strong> that you only use logging as a temporary debugging strategy. <strong>Such logging must be removed before you release the plugin to end users</strong>. If this logging ends up in your end product, it could cause a serious security concern. Please see our <a href="../../Best_Practices/Sensitive_Data/">sensitive data best practices</a> for more information.</p>
+</div>
+<h3 id="when-data-migrations-are-insufficient">When Data Migrations Are Insufficient<a class="headerlink" href="#when-data-migrations-are-insufficient" title="Permanent link">&para;</a></h3>
+<p>New versions of plugins often require some modification of data that was written using an older version of the same plugin. Data migrations handle this modification. Unfortunately, data migrations cannot always fully handle all possible upgrade scenarios by themselves.</p>
+<p>For example, a new plugin version might want to add a new required field to one of its schemas. But, the correct value for this new field might not be knowable while the upgrade is underway -- perhaps it must be entered by the user, or perhaps it would require automatic discovery to be rerun.</p>
+<p>Such a situation will require some user intervention after the upgrade.</p>
+<p>In all cases, of course you will want to <strong>clearly document</strong> to your users that there will extra work required so they can make sure they known what they are getting into before they decide to upgrade.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It should also be said that you should try to avoid cases like this.  As much as possible, try to make your post-upgrade plugin function with no user intervention. Only resort to user intervention as a last resort.</p>
+</div>
+<p>The recommended strategy here is to arrange for the affected objects to be in an "invalid" state, and for your plugin code to detect this state, and throw errors when the objects are used.</p>
+<p>For such a situation, we recommend the following process:</p>
+<ul>
+<li>Make your schema changes so that the affected property can be set in such a way that plugin code can identify it as being invalid. Typically this is done by allowing for some "sentinel" value. This may require you to have a less-strict schema definition than you might otherwise want.</li>
+<li>In your data migrations, make sure the affected properties are indeed marked invalid.</li>
+<li>In any plugin code that needs to use these properties, first check them for validity. If they are invalid, then raise an error that explains the situation to the user, and tells them what steps they need to take.</li>
+</ul>
+<p>Following are two examples of schema changes that need extra user intervention after upgrade. One will require a rediscovery, and the other will require the user to enter information.</p>
+<h4 id="autodiscovery-example">Autodiscovery Example<a class="headerlink" href="#autodiscovery-example" title="Permanent link">&para;</a></h4>
+<p>Suppose that a new plugin version adds a new required field to its repository schema. This new field specifies a full path to a database installation. The following listing shows what we'd ideally like the new repository schema to look like (<code>installationPath</code> is the new required property)</p>
+<div class="codehilite"><pre><span></span>&quot;repositoryDefinition&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;name&quot;: { &quot;type&quot;: &quot;string&quot; },
+        &quot;installationPath&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;unixpath&quot;}
+    },
+    &quot;required&quot;: [&quot;name&quot;, &quot;installationPath&quot;],
+    &quot;nameField&quot;: &quot;name&quot;,
+    &quot;identityFields&quot;: [&quot;name&quot;]
+}
+</pre></div>
+
+
+<p>The new plugin's autodiscovery code will know how to find this full path. Therefore, any repositories that are discovered (or rediscovered) after the upgrade will have this path filled in correctly.</p>
+<p>But, there may be repositories that were discovered before the upgrade. The data migrations will have to ensure that <em>some</em> value is provided for this new field. However, a data migration will not be able to determine what the correct final value is.</p>
+<p>One way to handle this is to modify the schema to allow a special value to indicate that the object needs to be rediscovered. In this example, we'll change the schema from the ideal version above, removing the <code>unixpath</code> constraint on this string:</p>
+<div class="codehilite"><pre><span></span>&quot;installationPath&quot;: { &quot;type&quot;: &quot;string&quot; }
+</pre></div>
+
+
+<p>Now, our data migration can set this property to some special sentinel value that will never be mistaken for an actual installation path.</p>
+<div class="codehilite"><pre><span></span>_REDISCOVERY_TOKEN = &quot;###_REPOSITORY_NEEDS_REDISCOVERY_###&quot;
+
+@plugin.upgrade.repository(&quot;2020.02.04.01&quot;)
+def repo_path(old_repository):
+    # We need to add in a repository path, but there is no way for us to know
+    # what the correct path is here, so we cannot set this to anything useful.
+    # Instead, we&#39;ll set a special sentinel value that will indicate that the
+    # repository is unusable until the remote host is rediscovered.
+    old_repository[&quot;installationPath&quot;] = _REDISCOVERY_TOKEN
+    return old_repository
+</pre></div>
+
+
+<p>Now, wherever the plugin needs to use this path, we'll need to check for this sentinel value, and error out if we find it.  For example, we might need a valid path during the <code>configure</code> operation:</p>
+<div class="codehilite"><pre><span></span>@plugin.virtual.configure()
+def configure(virtual_source, snapshot, repository):
+    if repository.installation_path == _REDISCOVERY_TOKEN:
+        # We cannot use this repository as/is -- it must be rediscovered.
+        msg = &#39;Unable to use repository &quot;{}&quot; because it has not been updated &#39; \
+        &#39;since upgrade. Please re-run discovery and try again&#39;
+        raise UserError(msg.format(repository.name))
+
+    # ... actual configure code goes here
+</pre></div>
+
+
+<h4 id="manual-entry">Manual Entry<a class="headerlink" href="#manual-entry" title="Permanent link">&para;</a></h4>
+<p>Above, we looked at an example where the plugin could handle filling in new values for a new field at discovery time, so the user was simply asked to rediscover.</p>
+<p>Sometimes, though, users themselves will have to be the ones to supply new values.</p>
+<p>Suppose that a new plugin version wants to add a required field to the <code>virtualSource</code> object. This new property will tell which port the database should be accessible on. Ideally, we might want our new field to look like this:</p>
+<div class="codehilite"><pre><span></span>&quot;port&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;minimum&quot;: 1024, &quot;maximum&quot;: 65535}
+</pre></div>
+
+
+<p>Again, however, the data migration will not know which value is correct here. This is something the user must decide. Still, the data migration must provide <em>some</em> value. As before, we'll change the schema a bit from what would be ideal:</p>
+<div class="codehilite"><pre><span></span>&quot;port&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;minimum&quot;: 0, &quot;maximum&quot;: 65535}
+</pre></div>
+
+
+<p>Now, our data migration can use the value <code>0</code> as code for "this VDB needs user intervention".</p>
+<div class="codehilite"><pre><span></span>@plugin.upgrade.virtual_source(&quot;2020.02.04.02&quot;)
+def add_dummy_port(old_virtual_source):
+    # Set the &quot;port&quot; property to 0 to act as a placeholder.
+    old_virtual_source[&quot;port&quot;] = 0
+    return old_virtual_source
+</pre></div>
+
+
+<p>As with the previous example, our plugin code will need to look for this special value, and raise an error so that the user knows what to do. This example shows the <a href="../../References/Plugin_Operations/#virtual-source-reconfigure">Virtual Source Reconfigure</a> operation, but of course, similar code will be needed anywhere else that the new <code>port</code> property is required.</p>
+<div class="codehilite"><pre><span></span>@plugin.virtual.reconfigure()
+def virtual_reconfigure(virtual_source, repository, source_config, snapshot):
+    if virtual_source.parameters.port == 0:
+        raise UserError(&#39;VDB &quot;{}&quot; cannot function properly. Please choose a &#39; \
+        &#39;port number for this VDB to use.&#39;.format(virtual_source.parameters.name))
+
+    # ... actual reconfigure code goes here
+</pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Versioning/" title="Versioning" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Versioning
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Compatibility/" title="Compatibility" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Compatibility
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>
