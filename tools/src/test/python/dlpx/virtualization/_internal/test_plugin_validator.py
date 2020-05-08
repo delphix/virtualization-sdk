@@ -189,3 +189,21 @@ class TestPluginValidator:
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
+
+    @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
+    @pytest.mark.parametrize('minimum_lua_version, expected', [
+        ('1-2-3', "'1-2-3' does not match"),
+        ('version1.0!', "'version1.0!' does not match"),
+        (None, "should never get here")
+    ])
+    def test_plugin_minimum_lua_version_format(src_dir, plugin_config_file,
+                                               plugin_config_content, expected):
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
+        except exceptions.SchemaValidationError as err_info:
+            message = err_info.message
+            assert expected in message

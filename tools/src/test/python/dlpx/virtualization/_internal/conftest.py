@@ -171,7 +171,8 @@ def artifact_file_created():
 @pytest.fixture
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
-                          schema_file, manual_discovery, build_number, lua_name):
+                          schema_file, manual_discovery, build_number, lua_name,
+                          minimum_lua_version):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
@@ -218,6 +219,9 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if lua_name:
         config['luaName'] = lua_name
+
+    if minimum_lua_version:
+        config['minimumLuaVersion'] = minimum_lua_version
 
     return config
 
@@ -280,6 +284,11 @@ def build_number():
 @pytest.fixture
 def lua_name():
     return 'lua-toolkit-1'
+
+
+@pytest.fixture
+def minimum_lua_version():
+    return "2.3.4"
 
 
 @pytest.fixture
@@ -570,6 +579,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '1.2.3',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
