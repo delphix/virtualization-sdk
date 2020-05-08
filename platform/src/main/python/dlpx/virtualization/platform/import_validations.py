@@ -3,10 +3,9 @@
 #
 import inspect
 
-from dlpx.virtualization.platform.import_util import (import_check,
-                                                      post_import_check,
-                                                      PluginModule)
 from dlpx.virtualization.platform import exceptions
+from dlpx.virtualization.platform.import_util import (import_check,
+                                                      post_import_check)
 
 
 @import_check(ordinal=1)
@@ -39,13 +38,12 @@ def validate_entry_point(plugin_module):
 @import_check(ordinal=3)
 def validate_plugin_object(plugin_module):
     plugin_object = getattr(plugin_module.module_content,
-                            plugin_module.entry_point,
-                            None)
+                            plugin_module.entry_point, None)
 
     if plugin_object is None:
         raise exceptions.UserError('Plugin object retrieved from the entry'
-                                   ' point {} is None'.format
-                                   (plugin_module.entry_point))
+                                   ' point {} is None'.format(
+                                       plugin_module.entry_point))
 
 
 @post_import_check(ordinal=1)
@@ -129,16 +127,18 @@ def check_upgrade_operations(plugin_module):
             if plugin_op_type != 'UpgradeOperations':
                 continue
 
-            warnings.extend(_check_upgrade_args(
-                plugin_attrib, plugin_module.expected_upgrade_args))
+            warnings.extend(
+                _check_upgrade_args(plugin_attrib,
+                                    plugin_module.expected_upgrade_args))
 
     return warnings
 
 
 def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
     """
-    Does named argument validation of all functions in dictionaries by looping
-    first through all the attributes in the UpgradeOperations for this plugin.
+    This function does named argument validation of all migration functions by
+    first looping through each of the migration helpers (platform_migrations
+    and lua_migrations) then looping through all those attributes.
     Any attributes that are not dictionaries that map migration_id ->
     upgrade_function are skipped. We then loop through every key/value pair
     of each of the dictionaries and validate that the argument in the defined
@@ -146,22 +146,24 @@ def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
     """
     warnings = []
 
-    for attribute_name, attribute in vars(upgrade_operations).items():
-        if attribute_name not in expected_upgrade_args.keys():
-            # Skip if not in one of the operation dicts we store functions in.
-            continue
-        #
-        # If the attribute_name was in the expected upgrade dicts then we know
-        # it is a dict containing migration id -> upgrade function that we can
-        # iterate on.
-        #
-        for migration_id, migration_func in attribute.items():
-            actual = inspect.getargspec(migration_func).args
-            expected = expected_upgrade_args[attribute_name]
-            warnings.extend(
-                _check_args(method_name=migration_func.__name__,
-                            expected_args=expected,
-                            actual_args=actual))
+    for migration_helper in vars(upgrade_operations).values():
+        # Next we must loop through each of the attributes (Should be just two)
+        for attribute_name, attribute in vars(migration_helper).items():
+            if attribute_name not in expected_upgrade_args.keys():
+                # Skip if not in one of the operation dictionaries.
+                continue
+            #
+            # If the attribute_name was in the expected upgrade dicts then we
+            # know it is a dict containing migration id -> upgrade function
+            # that we can iterate on.
+            #
+            for migration_func in attribute.values():
+                actual = inspect.getargspec(migration_func).args
+                expected = expected_upgrade_args[attribute_name]
+                warnings.extend(
+                    _check_args(method_name=migration_func.__name__,
+                                expected_args=expected,
+                                actual_args=actual))
 
     return warnings
 

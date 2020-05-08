@@ -1,8 +1,8 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-from dlpx.virtualization.common.exceptions import (
-    PlatformError, PluginRuntimeError)
+from dlpx.virtualization.common.exceptions import (PlatformError,
+                                                   PluginRuntimeError)
 
 
 class UserError(Exception):
@@ -24,7 +24,6 @@ class UserError(Exception):
         action (str): Suggested action to be taken.
         output (str): Output to be shown.
     """
-
     @property
     def message(self):
         return self.args[0]
@@ -39,7 +38,7 @@ class IncorrectReturnTypeError(PluginRuntimeError):
 
     Args:
         operation (Operation): The Operation enum of the operation being run
-        actual type (Type or List[Type]): type(s) returned from the operation
+        actual_type (Type or List[Type]): type(s) returned from the operation
         expected_type (Type): The type of the parameter that was expected.
 
     Attributes:
@@ -47,7 +46,6 @@ class IncorrectReturnTypeError(PluginRuntimeError):
             should be returning what type.
 
     """
-
     def __init__(self, operation, actual_type, expected_type):
         actual, expected = self.get_actual_and_expected_type(
             actual_type, expected_type)
@@ -62,7 +60,7 @@ class IncorrectUpgradeObjectTypeError(PluginRuntimeError):
     called with the incorrect object type to upgrade.
 
     Args:
-        actual type (platform_pb2.UpgradeRequest.Type): type that was passed in
+        actual_type (platform_pb2.UpgradeRequest.Type): type that was passed in
         expected_type (platform_pb2.UpgradeRequest.Type): expected type
 
     Attributes:
@@ -70,12 +68,30 @@ class IncorrectUpgradeObjectTypeError(PluginRuntimeError):
             should be returning what type.
 
     """
-
     def __init__(self, actual_type, expected_type):
         message = (
             'The upgrade operation received objects with {} type but should'
             ' have had type {}.'.format(actual_type, expected_type))
         super(IncorrectUpgradeObjectTypeError, self).__init__(message)
+
+
+class UnknownMigrationTypeError(PlatformError):
+    """UnknownMigrationTypeError gets thrown when the migration type that is
+    set on an upgrade migration decorator is not one of PLATFORM or LUA.
+
+    Args:
+        actual_type (MigrationType): type that was passed in
+
+    Attributes:
+        message (str): A localized user-readable message about what operation
+            should be returning what type.
+
+    """
+    def __init__(self, actual_type, expected_type):
+        message = (
+            'The upgrade migrationType received was {} type which is not'
+            ' supported.'.format(actual_type))
+        super(UnknownMigrationTypeError, self).__init__(message)
 
 
 class OperationAlreadyDefinedError(PlatformError):
@@ -152,9 +168,8 @@ class MigrationIdIncorrectFormatError(PlatformError):
     @classmethod
     def from_fields(cls, migration_id, function_name, format):
         message = ("The migration id '{}' used in the function '{}' does not"
-                   " follow the correct format '{}'.".format(migration_id,
-                                                             function_name,
-                                                             format))
+                   " follow the correct format '{}'.".format(
+                       migration_id, function_name, format))
         return cls(message)
 
 
@@ -171,11 +186,23 @@ class MigrationIdAlreadyUsedError(PlatformError):
         message (str): A localized user-readable message about what operation
         should be returning what type.
     """
-    def __init__(self, migration_id, std_migration_id, function_name):
+    def __init__(self, message):
+        super(MigrationIdAlreadyUsedError, self).__init__(message)
+
+    @classmethod
+    def fromMigrationId(cls, migration_id, std_migration_id, function_name):
         message = ("The migration id '{}' used in the function '{}' has the"
                    " same canonical form '{}' as another migration.".format(
-                        migration_id, function_name, std_migration_id))
-        super(MigrationIdAlreadyUsedError, self).__init__(message)
+                       migration_id, function_name, std_migration_id))
+        return cls(message)
+
+    @classmethod
+    def fromLuaVersion(cls, migration_id, function_name, decorator_name):
+        message = ("The lua major minor version '{}' used in the function"
+                   " '{}' decorated by '{}' has already been used.".format(
+                       migration_id, function_name, decorator_name))
+        return cls(message)
+
 
 class DecoratorNotFunctionError(PlatformError):
     """DecoratorNotFunctionError gets thrown when the decorated variable is
@@ -213,6 +240,7 @@ class IncorrectReferenceFormatError(PluginRuntimeError):
         message = ("Reference '{}' is not a correctly formatted host"
                    " environment reference.".format(reference))
         super(IncorrectReferenceFormatError, self).__init__(message)
+
 
 class IncorrectPluginCodeError(PluginRuntimeError):
     """

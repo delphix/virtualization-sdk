@@ -2,7 +2,7 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 # flake8: noqa
-from dlpx.virtualization.platform import Plugin, Status
+from dlpx.virtualization.platform import MigrationType, Plugin, Status
 
 direct = Plugin()
 
@@ -72,6 +72,16 @@ def stop(repository, source_config, virtual_source):
 @direct.virtual.unconfigure()
 def unconfigure(repository, source_config, virtual_source):
     pass
+
+
+@direct.upgrade.repository('1.3', MigrationType.LUA)
+def repo_upgrade(old_repository):
+    return old_repository
+
+
+@direct.upgrade.snapshot('1.3', MigrationType.LUA)
+def snap_upgrade(old_snapshot):
+    return old_snapshot
 
 
 @direct.upgrade.repository('2019.10.30')
