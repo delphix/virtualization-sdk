@@ -579,7 +579,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
-        'minimumLuaVersion': '1.2.3',
+        'minimumLuaVersion': '2.3.4',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -628,6 +628,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '2.3.4',
         'manifest': {}
     }
 
