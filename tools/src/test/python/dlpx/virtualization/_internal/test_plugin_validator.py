@@ -42,7 +42,7 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    def test_plugin_valid_content(src_dir, plugin_config_file,
+    def test_plugin_valid_content(plugin_config_file,
                                   plugin_config_content):
         validator = PluginValidator.from_config_content(
             plugin_config_file, plugin_config_content,
@@ -67,7 +67,7 @@ class TestPluginValidator:
                               (1.0, "1.0 is not of type 'string'"),
                               ('my_version', None), ('1.0.0', None),
                               ('1.0.0_HF', None)])
-    def test_plugin_version_format(src_dir, plugin_config_file,
+    def test_plugin_version_format(plugin_config_file,
                                    plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
@@ -88,7 +88,7 @@ class TestPluginValidator:
          ('staged_plugin::staged', "'staged_plugin::staged' does not match"),
          (':staged_plugin:staged:', "':staged_plugin:staged:' does not match"),
          ('staged_plugin:staged', None)])
-    def test_plugin_entry_point(src_dir, plugin_config_file,
+    def test_plugin_entry_point(plugin_config_file,
                                 plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
@@ -100,7 +100,7 @@ class TestPluginValidator:
             assert expected in message
 
     @staticmethod
-    def test_plugin_additional_properties(src_dir, plugin_config_file,
+    def test_plugin_additional_properties(plugin_config_file,
                                           plugin_config_content):
         # Adding an unknown key
         plugin_config_content['unknown_key'] = 'unknown_value'
@@ -138,7 +138,7 @@ class TestPluginValidator:
          ('STAGED', "'STAGED' does not match"),
          ('E3b69c61-4c30-44f7-92c0-504c8388b91e', None),
          ('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)])
-    def test_plugin_id(mock_import_plugin, src_dir, plugin_config_file,
+    def test_plugin_id(plugin_config_file,
                        plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
@@ -161,7 +161,7 @@ class TestPluginValidator:
                               ('0', "'0' does not match"),
                               ('0.0.00', "'0.0.00' does not match"),
                               ('0.1', None)])
-    def test_plugin_build_number_format(src_dir, plugin_config_file,
+    def test_plugin_build_number_format(plugin_config_file,
                                         plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
@@ -178,7 +178,7 @@ class TestPluginValidator:
         'lua_name, expected',
         [('lua toolkit', "'lua toolkit' does not match"),
          ('!lua#toolkit', "'!lua#toolkit' does not match")])
-    def test_plugin_lua_name_format(src_dir, plugin_config_file,
+    def test_plugin_lua_name_format(plugin_config_file,
                                     plugin_config_content, expected):
         try:
             validator = PluginValidator.from_config_content(
@@ -195,7 +195,7 @@ class TestPluginValidator:
                              [('1-2-3', "'1-2-3' does not match"),
                               ('version1.0!', "'version1.0!' does not match"),
                               ('2.3.4', "'2.3.4' does not match")])
-    def test_plugin_minimum_lua_version_format(src_dir, plugin_config_file,
+    def test_plugin_minimum_lua_version_format(plugin_config_file,
                                                plugin_config_content,
                                                expected):
         try:
@@ -210,7 +210,7 @@ class TestPluginValidator:
     @staticmethod
     @pytest.mark.parametrize('minimum_lua_version', [None])
     def test_plugin_lua_name_without_minimum_lua_version(
-            src_dir, plugin_config_file, plugin_config_content):
+            plugin_config_file, plugin_config_content):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -224,7 +224,7 @@ class TestPluginValidator:
     @staticmethod
     @pytest.mark.parametrize('lua_name', [None])
     def test_plugin_minimum_lua_version_without_lua_name(
-            src_dir, plugin_config_file, plugin_config_content):
+            plugin_config_file, plugin_config_content):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
