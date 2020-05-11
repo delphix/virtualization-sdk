@@ -213,7 +213,8 @@ class TestPluginValidator:
             plugin_config_content_missing_minimum_lua_version):
         try:
             validator = PluginValidator.from_config_content(
-                plugin_config_file, plugin_config_content_missing_minimum_lua_version,
+                plugin_config_file,
+                plugin_config_content_missing_minimum_lua_version,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
         except exceptions.ValidationFailedError as err_info:

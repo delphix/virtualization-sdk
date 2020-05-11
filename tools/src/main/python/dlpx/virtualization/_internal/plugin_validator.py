@@ -226,12 +226,14 @@ class PluginValidator:
         """
         warnings = defaultdict(list)
 
-        if self.__plugin_config_content.get('luaName') and not self.__plugin_config_content.get('minimumLuaVersion'):
+        if (self.__plugin_config_content.get('luaName') and not
+           self.__plugin_config_content.get('minimumLuaVersion')):
             msg = ('Failed to process property "luaName" without '
                    '"minimumLuaVersion" set in the plugin config.')
             warnings['exception'].append(exceptions.UserError(msg))
 
-        if self.__plugin_config_content.get('minimumLuaVersion') and not self.__plugin_config_content.get('luaName'):
+        if (self.__plugin_config_content.get('minimumLuaVersion') and not
+           self.__plugin_config_content.get('luaName')):
             msg = ('Failed to process property "minimumLuaVersion" without '
                    '"luaName" set in the plugin config.')
             warnings['exception'].append(exceptions.UserError(msg))
