@@ -208,13 +208,12 @@ class TestPluginValidator:
             assert expected in message
 
     @staticmethod
+    @pytest.mark.parametrize('minimum_lua_version', [None])
     def test_plugin_lua_name_without_minimum_lua_version(
-            src_dir, plugin_config_file,
-            plugin_config_content_missing_minimum_lua_version):
+            src_dir, plugin_config_file, plugin_config_content):
         try:
             validator = PluginValidator.from_config_content(
-                plugin_config_file,
-                plugin_config_content_missing_minimum_lua_version,
+                plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
         except exceptions.ValidationFailedError as err_info:
@@ -223,12 +222,12 @@ class TestPluginValidator:
                     '"minimumLuaVersion" set in the plugin config.' in message)
 
     @staticmethod
+    @pytest.mark.parametrize('lua_name', [None])
     def test_plugin_minimum_lua_version_without_lua_name(
-            src_dir, plugin_config_file,
-            plugin_config_content_missing_lua_name):
+            src_dir, plugin_config_file, plugin_config_content):
         try:
             validator = PluginValidator.from_config_content(
-                plugin_config_file, plugin_config_content_missing_lua_name,
+                plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
         except exceptions.ValidationFailedError as err_info:
