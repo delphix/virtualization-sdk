@@ -174,11 +174,11 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize('lua_name, expected', [
-        ('lua toolkit', "'lua toolkit' does not match"),
-        ('!lua#toolkit', "'!lua#toolkit' does not match"),
-        (None, "should never get here")
-    ])
+    @pytest.mark.parametrize(
+        'lua_name, expected',
+        [('lua toolkit', "'lua toolkit' does not match"),
+         ('!lua#toolkit', "'!lua#toolkit' does not match"),
+         (None, "should never get here")])
     def test_plugin_lua_name_format(src_dir, plugin_config_file,
                                     plugin_config_content, expected):
         try:
@@ -192,13 +192,14 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize('minimum_lua_version, expected', [
-        ('1-2-3', "'1-2-3' does not match"),
-        ('version1.0!', "'version1.0!' does not match"),
-        (None, "should never get here")
-    ])
+    @pytest.mark.parametrize('minimum_lua_version, expected',
+                             [('1-2-3', "'1-2-3' does not match"),
+                              ('version1.0!', "'version1.0!' does not match"),
+                              ('2.3.4', "'2.3.4' does not match"),
+                              (None, "should never get here")])
     def test_plugin_minimum_lua_version_format(src_dir, plugin_config_file,
-                                               plugin_config_content, expected):
+                                               plugin_config_content,
+                                               expected):
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,

@@ -214,11 +214,23 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     if plugin_config_content.get('externalVersion'):
         artifact['externalVersion'] = plugin_config_content['externalVersion']
 
-    if plugin_config_content.get('luaName'):
-        artifact['luaName'] = plugin_config_content['luaName']
+    if plugin_config_content.get(
+            'luaName') and not plugin_config_content.get('minimumLuaVersion'):
+        raise exceptions.UserError(
+            'Failed to process property "luaName" without "minimumLuaVersion" set in the plugin config.'
+        )
 
-    if plugin_config_content.get('minimumLuaVersion'):
-        artifact['minimumLuaVersion'] = plugin_config_content['minimumLuaVersion']
+    if plugin_config_content.get('minimumLuaVersion') and not \
+            plugin_config_content.get('luaName'):
+        raise exceptions.UserError(
+            'Failed to process property "minimumLuaVersion" without "luaName" set in the plugin config.'
+        )
+
+    if plugin_config_content.get('luaName') and plugin_config_content.get(
+            'minimumLuaVersion'):
+        artifact['luaName'] = plugin_config_content['luaName']
+        artifact['minimumLuaVersion'] = plugin_config_content[
+            'minimumLuaVersion']
 
     return artifact
 

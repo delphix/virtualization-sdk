@@ -320,7 +320,8 @@ class TestBuild:
 
     @staticmethod
     @mock.patch('compileall.compile_dir')
-    def test_zip_and_encode_source_files_compileall_fail(mock_compile, src_dir):
+    def test_zip_and_encode_source_files_compileall_fail(
+            mock_compile, src_dir):
         mock_compile.return_value = 0
         with pytest.raises(exceptions.UserError) as err_info:
             build.zip_and_encode_source_files(src_dir)
@@ -657,20 +658,44 @@ class TestPluginUtil:
         pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
         pytest.param(None, None)
     ])
-    def test_lua_name_parameter(plugin_config_content, src_dir,
-                                schema_content, expected):
+    def test_lua_name_parameter(plugin_config_content, src_dir, schema_content,
+                                expected):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
         assert expected == upload_artifact.get('luaName')
 
     @staticmethod
-    @pytest.mark.parametrize('minimum_lua_version, expected', [
-        pytest.param('2.3.4', '2.3.4'),
-        pytest.param(None, None)
-    ])
+    @pytest.mark.parametrize(
+        'minimum_lua_version, expected',
+        [pytest.param('2.3', '2.3'),
+         pytest.param(None, None)])
     def test_minimum_lua_version_parameter(plugin_config_content, src_dir,
                                            schema_content, expected):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
         assert expected == upload_artifact.get('minimumLuaVersion')
 
+    @staticmethod
+    def test_build_lua_name_without_lua_name(
+            plugin_config_content_missing_lua_name, src_dir, schema_content):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.prepare_upload_artifact(
+                plugin_config_content_missing_lua_name, src_dir,
+                schema_content, {})
+
+        message = err_info.value.message
+        assert ('Failed to process property "minimumLuaVersion" without "luaName" '
+                'set in the plugin config.' in message)
+
+    @staticmethod
+    def test_build_lua_name_without_minimum_lua_version(
+            plugin_config_content_missing_minimum_lua_version, src_dir,
+            schema_content):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.prepare_upload_artifact(
+                plugin_config_content_missing_minimum_lua_version, src_dir,
+                schema_content, {})
+
+        message = err_info.value.message
+        assert ('Failed to process property "luaName" without "minimumLuaVersion" '
+                'set in the plugin config.' in message)

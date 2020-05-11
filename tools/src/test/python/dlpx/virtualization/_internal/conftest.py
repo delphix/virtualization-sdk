@@ -171,8 +171,8 @@ def artifact_file_created():
 @pytest.fixture
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
-                          schema_file, manual_discovery, build_number, lua_name,
-                          minimum_lua_version):
+                          schema_file, manual_discovery, build_number,
+                          lua_name, minimum_lua_version):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
@@ -219,6 +219,116 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if lua_name:
         config['luaName'] = lua_name
+
+    if minimum_lua_version:
+        config['minimumLuaVersion'] = minimum_lua_version
+
+    return config
+
+
+@pytest.fixture
+def plugin_config_content_missing_minimum_lua_version(
+        plugin_id, plugin_name, external_version, language, host_types,
+        plugin_type, entry_point, src_dir, schema_file, manual_discovery,
+        build_number, lua_name):
+    """
+    This fixture is missing a minimumLuaVersion while luaName is defined.
+    """
+    config = {
+        'defaultLocale': 'en-us',
+        'rootSquashEnabled': True,
+    }
+
+    if plugin_id:
+        config['id'] = plugin_id
+
+    if plugin_name:
+        config['name'] = plugin_name
+
+    if external_version:
+        config['externalVersion'] = external_version
+
+    if language:
+        config['language'] = language
+
+    if host_types:
+        config['hostTypes'] = host_types
+
+    if plugin_type:
+        config['pluginType'] = plugin_type
+
+    if entry_point:
+        config['entryPoint'] = entry_point
+
+    if src_dir:
+        config['srcDir'] = src_dir
+
+    if schema_file:
+        config['schemaFile'] = schema_file
+
+    # Here we do an 'is not None' check because we will be passing in
+    # booleans as a parameter in tests.
+    if manual_discovery is not None:
+        config['manualDiscovery'] = manual_discovery
+
+    if build_number:
+        config['buildNumber'] = build_number
+
+    if lua_name:
+        config['luaName'] = lua_name
+
+    return config
+
+
+@pytest.fixture
+def plugin_config_content_missing_lua_name(plugin_id, plugin_name,
+                                           external_version, language,
+                                           host_types, plugin_type,
+                                           entry_point, src_dir, schema_file,
+                                           manual_discovery, build_number,
+                                           minimum_lua_version):
+    """
+    This fixture is missing a minimumLuaVersion while luaName is defined.
+    """
+    config = {
+        'defaultLocale': 'en-us',
+        'rootSquashEnabled': True,
+    }
+
+    if plugin_id:
+        config['id'] = plugin_id
+
+    if plugin_name:
+        config['name'] = plugin_name
+
+    if external_version:
+        config['externalVersion'] = external_version
+
+    if language:
+        config['language'] = language
+
+    if host_types:
+        config['hostTypes'] = host_types
+
+    if plugin_type:
+        config['pluginType'] = plugin_type
+
+    if entry_point:
+        config['entryPoint'] = entry_point
+
+    if src_dir:
+        config['srcDir'] = src_dir
+
+    if schema_file:
+        config['schemaFile'] = schema_file
+
+    # Here we do an 'is not None' check because we will be passing in
+    # booleans as a parameter in tests.
+    if manual_discovery is not None:
+        config['manualDiscovery'] = manual_discovery
+
+    if build_number:
+        config['buildNumber'] = build_number
 
     if minimum_lua_version:
         config['minimumLuaVersion'] = minimum_lua_version
@@ -288,7 +398,7 @@ def lua_name():
 
 @pytest.fixture
 def minimum_lua_version():
-    return "2.3.4"
+    return "2.3"
 
 
 @pytest.fixture
@@ -579,7 +689,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
-        'minimumLuaVersion': '2.3.4',
+        'minimumLuaVersion': '2.3',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -628,7 +738,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
-        'minimumLuaVersion': '2.3.4',
+        'minimumLuaVersion': '2.3',
         'manifest': {}
     }
 
