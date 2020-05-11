@@ -684,8 +684,8 @@ class TestPluginUtil:
                 schema_content, {})
 
         message = err_info.value.message
-        assert ('Failed to process property "minimumLuaVersion" without "luaName" '
-                'set in the plugin config.' in message)
+        assert ('Failed to process property "minimumLuaVersion" without '
+                '"luaName" set in the plugin config.' in message)
 
     @staticmethod
     def test_build_lua_name_without_minimum_lua_version(
@@ -697,5 +697,5 @@ class TestPluginUtil:
                 schema_content, {})
 
         message = err_info.value.message
-        assert ('Failed to process property "luaName" without "minimumLuaVersion" '
-                'set in the plugin config.' in message)
+        assert ('Failed to process property "luaName" without '
+                '"minimumLuaVersion" set in the plugin config.' in message)
