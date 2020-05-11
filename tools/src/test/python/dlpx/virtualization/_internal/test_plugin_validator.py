@@ -177,8 +177,7 @@ class TestPluginValidator:
     @pytest.mark.parametrize(
         'lua_name, expected',
         [('lua toolkit', "'lua toolkit' does not match"),
-         ('!lua#toolkit', "'!lua#toolkit' does not match"),
-         (None, "should never get here")])
+         ('!lua#toolkit', "'!lua#toolkit' does not match")])
     def test_plugin_lua_name_format(src_dir, plugin_config_file,
                                     plugin_config_content, expected):
         try:
@@ -195,8 +194,7 @@ class TestPluginValidator:
     @pytest.mark.parametrize('minimum_lua_version, expected',
                              [('1-2-3', "'1-2-3' does not match"),
                               ('version1.0!', "'version1.0!' does not match"),
-                              ('2.3.4', "'2.3.4' does not match"),
-                              (None, "should never get here")])
+                              ('2.3.4', "'2.3.4' does not match")])
     def test_plugin_minimum_lua_version_format(src_dir, plugin_config_file,
                                                plugin_config_content,
                                                expected):
@@ -208,3 +206,31 @@ class TestPluginValidator:
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
             assert expected in message
+
+    @staticmethod
+    def test_plugin_lua_name_without_minimum_lua_version(
+            src_dir, plugin_config_file,
+            plugin_config_content_missing_minimum_lua_version):
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content_missing_minimum_lua_version,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
+        except exceptions.ValidationFailedError as err_info:
+            message = err_info.message
+            assert ('Failed to process property "luaName" without '
+                    '"minimumLuaVersion" set in the plugin config.' in message)
+
+    @staticmethod
+    def test_plugin_minimum_lua_version_without_lua_name(
+            src_dir, plugin_config_file,
+            plugin_config_content_missing_lua_name):
+        try:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content_missing_lua_name,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
+        except exceptions.ValidationFailedError as err_info:
+            message = err_info.message
+            assert ('Failed to process property "minimumLuaVersion" without '
+                    '"luaName" set in the plugin config.' in message)
