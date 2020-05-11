@@ -656,7 +656,7 @@ class TestPluginUtil:
     @staticmethod
     @pytest.mark.parametrize('lua_name, expected', [
         pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
-        pytest.param(None, None)
+        pytest.param('nix_staged_python', 'nix_staged_python')
     ])
     def test_lua_name_parameter(plugin_config_content, src_dir, schema_content,
                                 expected):
@@ -668,7 +668,7 @@ class TestPluginUtil:
     @pytest.mark.parametrize(
         'minimum_lua_version, expected',
         [pytest.param('2.3', '2.3'),
-         pytest.param(None, None)])
+         pytest.param('2.4', '2.4')])
     def test_minimum_lua_version_parameter(plugin_config_content, src_dir,
                                            schema_content, expected):
         upload_artifact = build.prepare_upload_artifact(
