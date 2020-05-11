@@ -658,8 +658,8 @@ class TestPluginUtil:
         pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
         pytest.param('nix_staged_python', 'nix_staged_python')
     ])
-    def test_lua_name_parameter(plugin_config_content, src_dir, schema_content,
-                                expected):
+    def test_lua_name_parameter(plugin_config_content, src_dir,
+                                schema_content, expected):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
         assert expected == upload_artifact.get('luaName')
