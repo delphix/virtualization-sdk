@@ -44,23 +44,22 @@ class TestPluginImporter:
     """
     This class tests the plugin_importer module of sdk. Though some of these tests
     used mock initially to mock out the calls to subprocess, it was found
-    that the behaviour is different between windows and linux causing these tests 
+    that the behaviour is different between windows and linux causing these tests
     to fail on windows. So, some refactoring is done in plugin_importer
     to facilitate testing without the mocks.
-    
-    The issue is described in detail here : 
+
+    The issue is described in detail here:
     https://rhodesmill.org/brandon/2010/python-multiprocessing-linux-windows/
     """
     @staticmethod
-    def test_get_plugin_manifest(src_dir, plugin_type,
-                                 entry_point_module, entry_point_object,
-                                 plugin_module_content, plugin_manifest):
+    def test_get_plugin_manifest(src_dir, plugin_type, entry_point_module,
+                                 entry_point_object, plugin_module_content,
+                                 plugin_manifest):
         queue = Queue()
         manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
                                                 entry_point_object,
                                                 plugin_module_content,
-                                                plugin_type,
-                                                False, queue)
+                                                plugin_type, False, queue)
 
         assert manifest == plugin_manifest
 
@@ -70,54 +69,45 @@ class TestPluginImporter:
                                         entry_point_object):
         queue = Queue()
         manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
-                                                entry_point_object,
-                                                None,
-                                                plugin_type,
-                                                False, queue)
+                                                entry_point_object, None,
+                                                plugin_type, False, queue)
         assert manifest is None
 
     @staticmethod
-    def test_plugin_entry_object_none(src_dir, plugin_type,
-                                      entry_point_module, plugin_module_content):
+    def test_plugin_entry_object_none(src_dir, plugin_type, entry_point_module,
+                                      plugin_module_content):
         queue = Queue()
-        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
-                                                None,
-                                                plugin_module_content,
-                                                plugin_type,
-                                                False, queue)
+        plugin_importer.get_manifest(src_dir, entry_point_module, None,
+                                     plugin_module_content, plugin_type, False,
+                                     queue)
 
         message = str(queue.get('exception'))
         assert 'Plugin entry point object is None.' in message
 
     @staticmethod
     def test_plugin_entry_point_nonexistent(src_dir, plugin_type,
-                                            entry_point_module,
-                                            plugin_name,
+                                            entry_point_module, plugin_name,
                                             plugin_module_content):
         entry_point_name = "nonexistent entry point"
         queue = Queue()
-        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
-                                                entry_point_name,
-                                                plugin_module_content,
-                                                plugin_type,
-                                                False, queue)
+        plugin_importer.get_manifest(src_dir, entry_point_module,
+                                     entry_point_name, plugin_module_content,
+                                     plugin_type, False, queue)
 
         message = str(queue.get('exception'))
-        assert ("'{}' is not a symbol in module".format(entry_point_name) in
-                message)
+        assert ("'{}' is not a symbol in module".format(entry_point_name)
+                in message)
 
     @staticmethod
-    def test_plugin_object_none(src_dir, plugin_type, entry_point_module, plugin_name,
-                                plugin_module_content):
+    def test_plugin_object_none(src_dir, plugin_type, entry_point_module,
+                                plugin_name, plugin_module_content):
         none_entry_point = "none_entry_point"
         setattr(plugin_module_content, none_entry_point, None)
 
         queue = Queue()
-        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
-                                                none_entry_point,
-                                                plugin_module_content,
-                                                plugin_type,
-                                                False, queue)
+        plugin_importer.get_manifest(src_dir, entry_point_module,
+                                     none_entry_point, plugin_module_content,
+                                     plugin_type, False, queue)
 
         message = str(queue.get('exception'))
         assert ('Plugin object retrieved from the entry point {} is'

@@ -371,7 +371,8 @@ class TestCodegen:
             codegen._copy_generated_to_dir(src_dir, dst_dir)
 
         if os.name == 'nt':
-            assert err_info.value.strerror == 'The system cannot find the path specified'
+            assert err_info.value.strerror == 'The system cannot find the path' \
+                                              ' specified'
         else:
             assert err_info.value.strerror == 'No such file or directory'
 

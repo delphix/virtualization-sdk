@@ -354,5 +354,5 @@ class TestSchemaValidator:
             validator.validate()
 
         message = err_info.value.message
-        assert (
-            "'strings' is not valid under any of the given schemas" in message)
+        assert ("'strings' is not valid under any of the given schemas"
+                in message)

@@ -61,8 +61,7 @@ class TestPluginDependencyUtil:
         mock_build_wheel.side_effect = build_wheel
 
         pdu.install_deps(str(build_dir), local_vsdk_root='vsdk')
-        mock_install_to_dir.assert_called_once_with(packages,
-                                                    str(build_dir))
+        mock_install_to_dir.assert_called_once_with(packages, str(build_dir))
 
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')
