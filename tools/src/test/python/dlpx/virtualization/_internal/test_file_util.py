@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import os
@@ -34,13 +34,13 @@ class TestFileUtil:
 
         cwd = os.getcwd()
         try:
-            os.chdir(tmp_path.as_posix())
-            actual = file_util.get_src_dir_path('plugin/plugin_config.yml',
+            os.chdir(str(tmp_path))
+            actual = file_util.get_src_dir_path(os.path.join('plugin', 'plugin_config.yml'),
                                                 'src')
         finally:
             os.chdir(cwd)
 
-        assert actual == src_dir.as_posix()
+        assert actual == str(src_dir)
 
     @staticmethod
     def test_get_src_dir_path_is_abs_fail():
@@ -80,13 +80,13 @@ class TestFileUtil:
     @mock.patch('os.path.isabs', return_value=False)
     @pytest.mark.parametrize(
         'plugin_config_file_path, src_dir_path',
-        [(os.path.join(os.getenv('HOME'), 'plugin/file_name'), '.'),
+        [('plugin/file_name', '.'),
          ('/mongo/file_name', '/src'), ('/plugin/mongo/file_name', '/plugin'),
          ('/plugin/file_name', '/plugin/src/../..')])
     def test_get_src_dir_path_fail(mock_relative_path, mock_existing_path,
                                    mock_directory_path,
                                    plugin_config_file_path, src_dir_path):
-        expected_plugin_root_dir = os.path.dirname(plugin_config_file_path)
+        expected_plugin_root_dir = os.path.join(os.getcwd(), os.path.dirname(plugin_config_file_path))
 
         expected_plugin_root_dir = file_util.standardize_path(
             expected_plugin_root_dir)
@@ -113,12 +113,14 @@ class TestFileUtil:
         'plugin_config_file_path, src_dir_path',
         [(os.path.join(os.path.dirname(os.getcwd()),
                        'plugin/filename'), '../plugin/src'),
-         (os.path.join(os.getenv('HOME'), 'plugin/file_name'), '~/plugin/src'),
-         (os.path.join(os.getcwd(), 'plugin/file_name'), './plugin/src'),
-         ('/UPPERCASE/file_name', '/UPPERCASE/src'),
-         ('/mongo/file_name', '/mongo/src/main/python'),
-         ('~/plugin/file_name', '~/plugin/src'),
-         (r'windows\path\some_file', r'windows\path')])
+         (os.path.join(os.path.dirname(os.getcwd()),
+                       'plugin/filename'), './plugin/src'),
+         (os.path.join(os.path.dirname(os.getcwd()),
+                       '/UPPERCASE/file_name'), '/UPPERCASE/src'),
+         (os.path.join(os.path.dirname(os.getcwd()),
+                       '/mongo/file_name'), '/mongo/src/main/python'),
+         (os.path.join(os.path.dirname(os.getcwd()),
+                       r'windows\path\some_file'), r'windows\path')])
     def test_get_src_dir_path_success(mock_relative_path, mock_existing_path,
                                       mock_directory_path,
                                       plugin_config_file_path, src_dir_path):

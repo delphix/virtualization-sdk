@@ -1,14 +1,15 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 import exceptions
 import os
 import uuid
 from collections import OrderedDict
+from multiprocessing import Queue
 
-from dlpx.virtualization._internal.plugin_importer import PluginImporter
 from dlpx.virtualization._internal import (file_util, plugin_util,
-                                           plugin_validator)
+                                           plugin_validator, plugin_importer)
+from dlpx.virtualization._internal.plugin_importer import PluginImporter
 
 import mock
 import pytest
@@ -40,92 +41,85 @@ def get_plugin_importer(plugin_config_file):
 
 
 class TestPluginImporter:
+    """
+    This class tests the plugin_importer module of sdk. Though some of these tests
+    used mock initially to mock out the calls to subprocess, it was found
+    that the behaviour is different between windows and linux causing these tests 
+    to fail on windows. So, some refactoring is done in plugin_importer
+    to facilitate testing without the mocks.
+    
+    The issue is described in detail here : 
+    https://rhodesmill.org/brandon/2010/python-multiprocessing-linux-windows/
+    """
     @staticmethod
-    @mock.patch('importlib.import_module')
-    def test_get_plugin_manifest(mock_import, src_dir, plugin_type,
+    def test_get_plugin_manifest(src_dir, plugin_type,
                                  entry_point_module, entry_point_object,
                                  plugin_module_content, plugin_manifest):
-        mock_import.return_value = plugin_module_content
+        queue = Queue()
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_object,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
-        importer = PluginImporter(src_dir, entry_point_module,
-                                  entry_point_object, plugin_type, False)
-        importer.validate_plugin_module()
-
-        assert importer.result.plugin_manifest == plugin_manifest
+        assert manifest == plugin_manifest
 
     @staticmethod
-    @mock.patch('importlib.import_module')
-    def test_plugin_module_content_none(mock_import, src_dir, plugin_type,
+    def test_plugin_module_content_none(src_dir, plugin_type,
                                         entry_point_module,
                                         entry_point_object):
-        mock_import.return_value = None
-        importer = PluginImporter(src_dir, entry_point_module,
-                                  entry_point_object, plugin_type, False)
-        importer.validate_plugin_module()
-        result = importer.result
-
-        #
-        # If module_content is None, importer does not perform any validations
-        # and just does a return. So result should have an empty manifest and
-        # assert to make sure it is the case.
-        #
-        assert result.plugin_manifest == {}
+        queue = Queue()
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_object,
+                                                None,
+                                                plugin_type,
+                                                False, queue)
+        assert manifest is None
 
     @staticmethod
-    @mock.patch('importlib.import_module')
-    def test_plugin_entry_object_none(mock_import, src_dir, plugin_type,
-                                      plugin_name, plugin_module_content):
-        mock_import.return_value = plugin_module_content
-        result = ()
+    def test_plugin_entry_object_none(src_dir, plugin_type,
+                                      entry_point_module, plugin_module_content):
+        queue = Queue()
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                None,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
-        with pytest.raises(exceptions.UserError) as err_info:
-            importer = PluginImporter(src_dir, plugin_name, None, plugin_type,
-                                      False)
-            importer.validate_plugin_module()
-            result = importer.result
-
-        message = str(err_info)
-        assert result == ()
+        message = str(queue.get('exception'))
         assert 'Plugin entry point object is None.' in message
 
     @staticmethod
-    @mock.patch('importlib.import_module')
-    def test_plugin_entry_point_nonexistent(mock_import, src_dir, plugin_type,
+    def test_plugin_entry_point_nonexistent(src_dir, plugin_type,
+                                            entry_point_module,
                                             plugin_name,
                                             plugin_module_content):
         entry_point_name = "nonexistent entry point"
-        mock_import.return_value = plugin_module_content
-        result = ()
+        queue = Queue()
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                entry_point_name,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
-        with pytest.raises(exceptions.UserError) as err_info:
-            importer = PluginImporter(src_dir, plugin_name, entry_point_name,
-                                      plugin_type, False)
-            importer.validate_plugin_module()
-            result = importer.result
-
-        message = err_info.value.message
-        assert result == ()
-        assert ('\'{}\' is not a symbol in module'.format(entry_point_name) in
+        message = str(queue.get('exception'))
+        assert ("'{}' is not a symbol in module".format(entry_point_name) in
                 message)
 
     @staticmethod
-    @mock.patch('importlib.import_module')
-    def test_plugin_object_none(mock_import, src_dir, plugin_type, plugin_name,
+    def test_plugin_object_none(src_dir, plugin_type, entry_point_module, plugin_name,
                                 plugin_module_content):
         none_entry_point = "none_entry_point"
         setattr(plugin_module_content, none_entry_point, None)
 
-        mock_import.return_value = plugin_module_content
-        result = ()
+        queue = Queue()
+        manifest = plugin_importer.get_manifest(src_dir, entry_point_module,
+                                                none_entry_point,
+                                                plugin_module_content,
+                                                plugin_type,
+                                                False, queue)
 
-        with pytest.raises(exceptions.UserError) as err_info:
-            importer = PluginImporter(src_dir, plugin_name, none_entry_point,
-                                      plugin_type, False)
-            importer.validate_plugin_module()
-            result = importer.result
-
-        message = err_info.value.message
-        assert result == ()
+        message = str(queue.get('exception'))
         assert ('Plugin object retrieved from the entry point {} is'
                 ' None'.format(none_entry_point)) in message
 

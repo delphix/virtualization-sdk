@@ -1,7 +1,7 @@
 #
 # Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
-
+import os
 from dlpx.virtualization._internal import package_util
 
 import pytest
@@ -43,7 +43,7 @@ class TestPackageUtil:
     @staticmethod
     def test_get_internal_package_root():
         assert package_util.get_internal_package_root().endswith(
-            'dlpx/virtualization/_internal')
+            os.path.join('dlpx', 'virtualization', '_internal'))
 
     @staticmethod
     @pytest.mark.parametrize('version_string', [

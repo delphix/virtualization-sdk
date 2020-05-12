@@ -363,12 +363,16 @@ class TestCodegen:
 
     @staticmethod
     def test_copy_generated_to_dir_fail(tmpdir):
-        src_dir = '/not/a/real/dir'
+        src_dir = os.path.join('fake', 'dir')
         # dst_dir needs to be real so that making the dir inside it works.
         dst_dir = tmpdir.strpath
 
         with pytest.raises(OSError) as err_info:
             codegen._copy_generated_to_dir(src_dir, dst_dir)
 
-        assert err_info.value.strerror == 'No such file or directory'
-        assert err_info.value.filename.startswith('/not/a/real/dir')
+        if os.name == 'nt':
+            assert err_info.value.strerror == 'The system cannot find the path specified'
+        else:
+            assert err_info.value.strerror == 'No such file or directory'
+
+        assert err_info.value.filename.startswith(src_dir)
