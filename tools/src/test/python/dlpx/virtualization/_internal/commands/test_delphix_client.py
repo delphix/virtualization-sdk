@@ -224,27 +224,27 @@ class TestDelphixClient:
 
     JOB_RESP_FAIL = (('{"type": "OKResult", "status": "OK", "result": '
                       '{"jobState": "FAILED", "events": []}}'), {
-                         'X-Frame-Options': 'SAMEORIGIN',
-                         'X-Content-Type-Options': 'nosniff',
-                         'X-XSS-Protection': '1; mode=block',
-                         'Cache-Control': 'max-age=0',
-                         'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
-                         'Content-Type': 'application/json',
-                         'Content-Length': '71',
-                         'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
-                     })
+                          'X-Frame-Options': 'SAMEORIGIN',
+                          'X-Content-Type-Options': 'nosniff',
+                          'X-XSS-Protection': '1; mode=block',
+                          'Cache-Control': 'max-age=0',
+                          'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
+                          'Content-Type': 'application/json',
+                          'Content-Length': '71',
+                          'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
+                      })
 
     JOB_RESP_TIMED_OUT = (('{"type": "OKResult", "status": "OK", "result": '
                            '{"jobState": "RUNNING", "events": []}}'), {
-                              'X-Frame-Options': 'SAMEORIGIN',
-                              'X-Content-Type-Options': 'nosniff',
-                              'X-XSS-Protection': '1; mode=block',
-                              'Cache-Control': 'max-age=0',
-                              'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
-                              'Content-Type': 'application/json',
-                              'Content-Length': '71',
-                              'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
-                          })
+                               'X-Frame-Options': 'SAMEORIGIN',
+                               'X-Content-Type-Options': 'nosniff',
+                               'X-XSS-Protection': '1; mode=block',
+                               'Cache-Control': 'max-age=0',
+                               'Expires': 'Mon, 04 Feb 2019 23:12:00 GMT',
+                               'Content-Type': 'application/json',
+                               'Content-Length': '71',
+                               'Date': 'Mon, 09 Mar 2020 12:09:27 GMT'
+                           })
 
     PLUGIN_RESP_SUCCESS = (
         '{"type": "ListResult", "status": "OK", "result": ['

@@ -174,11 +174,11 @@ class TestPluginValidator:
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize('lua_name, expected', [
-        ('lua toolkit', "'lua toolkit' does not match"),
-        ('!lua#toolkit', "'!lua#toolkit' does not match"),
-        (None, "should never get here")
-    ])
+    @pytest.mark.parametrize(
+        'lua_name, expected',
+        [('lua toolkit', "'lua toolkit' does not match"),
+         ('!lua#toolkit', "'!lua#toolkit' does not match"),
+         (None, "should never get here")])
     def test_plugin_lua_name_format(src_dir, plugin_config_file,
                                     plugin_config_content, expected):
         try:

@@ -35,8 +35,8 @@ class TestFileUtil:
         cwd = os.getcwd()
         try:
             os.chdir(str(tmp_path))
-            actual = file_util.get_src_dir_path(os.path.join('plugin', 'plugin_config.yml'),
-                                                'src')
+            actual = file_util.get_src_dir_path(
+                os.path.join('plugin', 'plugin_config.yml'), 'src')
         finally:
             os.chdir(cwd)
 
@@ -78,15 +78,16 @@ class TestFileUtil:
     @mock.patch('os.path.isdir', return_value=True)
     @mock.patch('os.path.exists', return_value=True)
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize(
-        'plugin_config_file_path, src_dir_path',
-        [('plugin/file_name', '.'),
-         ('/mongo/file_name', '/src'), ('/plugin/mongo/file_name', '/plugin'),
-         ('/plugin/file_name', '/plugin/src/../..')])
+    @pytest.mark.parametrize('plugin_config_file_path, src_dir_path',
+                             [('plugin/file_name', '.'),
+                              ('/mongo/file_name', '/src'),
+                              ('/plugin/mongo/file_name', '/plugin'),
+                              ('/plugin/file_name', '/plugin/src/../..')])
     def test_get_src_dir_path_fail(mock_relative_path, mock_existing_path,
                                    mock_directory_path,
                                    plugin_config_file_path, src_dir_path):
-        expected_plugin_root_dir = os.path.join(os.getcwd(), os.path.dirname(plugin_config_file_path))
+        expected_plugin_root_dir = os.path.join(
+            os.getcwd(), os.path.dirname(plugin_config_file_path))
 
         expected_plugin_root_dir = file_util.standardize_path(
             expected_plugin_root_dir)
