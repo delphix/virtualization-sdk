@@ -217,6 +217,10 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     if plugin_config_content.get('luaName'):
         artifact['luaName'] = plugin_config_content['luaName']
 
+    if plugin_config_content.get('minimumLuaVersion'):
+        artifact['minimumLuaVersion'] = plugin_config_content[
+            'minimumLuaVersion']
+
     return artifact
 
 

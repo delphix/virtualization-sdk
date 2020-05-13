@@ -53,6 +53,10 @@
       "luaName":  {
           "type": "string",
           "pattern": "^[a-z0-9_:-]+$"
+      },
+      "minimumLuaVersion": {
+          "type": "string",
+          "pattern": "^([0-9]+)\\.([0-9]+)$"
       }
     },
     "additionalProperties": false,
