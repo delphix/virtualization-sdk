@@ -114,7 +114,7 @@ class PluginImporter:
             in a sub-process and on completion return the output.
         """
         queue = Queue()
-        process = Process(target=_get_manifest,
+        process = Process(target=_import_module_and_get_manifest,
                           args=(queue, src_dir, module, entry_point,
                                 plugin_type, validate))
         process.start()
@@ -184,7 +184,8 @@ class PluginImporter:
         return warnings
 
 
-def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
+def _import_module_and_get_manifest(queue, src_dir, module, entry_point,
+                                    plugin_type, validate):
     """
     Imports the plugin module, runs validations and returns the manifest.
     """
@@ -199,6 +200,26 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
         #
         return
 
+    manifest = get_manifest(src_dir, module, entry_point,
+                            module_content, plugin_type,
+                            validate, queue)
+    queue.put({'manifest': manifest})
+
+
+def get_manifest(src_dir, module, entry_point, module_content,
+                 plugin_type, validate, queue):
+    """
+    Helper method to run validations and prepare the manifest.
+
+    NOTE:
+         This code is moved out into a separate method to help running
+         unit tests on windows for validations. Since the behaviour of
+         multiprocessing.Process module is different for windows and linux,
+         unit testing validate_plugin_module method using mock has issues.
+
+         More details at :
+         https://rhodesmill.org/brandon/2010/python-multiprocessing-linux-windows/
+    """
     #
     # Create an instance of plugin module with associated state to pass around
     # to the validation code.
@@ -219,8 +240,7 @@ def _get_manifest(queue, src_dir, module, entry_point, plugin_type, validate):
     warnings = import_util.validate_post_import(plugin_module)
     _process_warnings(queue, warnings)
 
-    manifest = _prepare_manifest(entry_point, module_content)
-    queue.put({'manifest': manifest})
+    return _prepare_manifest(entry_point, module_content)
 
 
 def _import_helper(queue, src_dir, module):

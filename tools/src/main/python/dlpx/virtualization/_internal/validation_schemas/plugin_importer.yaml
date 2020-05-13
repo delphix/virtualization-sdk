@@ -140,15 +140,15 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - repository
 
 EXPECTED_UPGRADE_ARGS:
-  repository_id_to_impl:
+  _repository_id_to_impl:
     - old_repository
-  source_config_id_to_impl:
+  _source_config_id_to_impl:
     - old_source_config
-  linked_source_id_to_impl:
+  _linked_source_id_to_impl:
     - old_linked_source
-  virtual_source_id_to_impl:
+  _virtual_source_id_to_impl:
     - old_virtual_source
-  snapshot_id_to_impl:
+  _snapshot_id_to_impl:
     - old_snapshot
 
 REQUIRED_METHODS_BY_PLUGIN_TYPE:
