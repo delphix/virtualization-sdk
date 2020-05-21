@@ -75,12 +75,20 @@ Installing dependencies from Pipfile.lock (65135d)…
   🐍   ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ 14/14 — 00:00:03
 ```
 
-## Live Testing and Reviews
-The command `git docsdev-review` will handle publishing reviews, and putting your changes on a live docs server. For example, you can clone the `docsdev-server` image on DCOA, and then run `git docsdev-review -m <yourvm.dlpxdc.co>`. This will:
+## Live Testing via Github Pages
+To publish doc change to your individual fork for review, we use github pages. To set this up follow these following steps.
 
-- Push your doc changes to your VM
-- Give you a link to the docdev server so you can test your changes live in a browser
-- Publish a review
+1. Create a new local branch named `gh-pages`.
+2. Using the same virtual environment above run:
+```
+pipenv run mkdocs build --clean
+```
+This will generate the `site` directory which will contain all the gererated docs.
+3. Copy all these files to the root directory of the virtualization-sdk repo and delete all other files.
+4. Commit and push these changes to your individual fork.
+5. Go to your individual virtualization-sdk repo's settings, scroll to the bottom and verify under the GitHub Pages section the `Source` is set to `gh-pages branch`.
+6. Right above this will be a link exaplining where your docs are published.
+
 
 ## Workflow diagrams
 We create workflow diagrams using a tool called `draw.io` which allows us to import/export diagrams in html format. If you want to add a diagram or edit an existing one, simply create or import the html file in `docs/References/html` into `draw.io` and make your desired changes. When you are done, select your diagram and export it as a png file. You can think of the html files as source code, and the png files as build artifacts. After this step, you will be prompted to crop what was selected. You'll want this box checked to trim the whitespace around the diagram. After the diagrams are exported, check in the updated html file to `docs/References/html` and png file to `docs/References/images`.
