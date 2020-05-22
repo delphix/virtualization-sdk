@@ -21,7 +21,7 @@ A Lua Repository [Data Migration](/References/Glossary.md#data-migration) migrat
 **Optional.**<br/>
 
 !!! warning
-    You must ensure that all repository data will match your updated repository schema after an upgrade operation. 
+    You must ensure that all repository data will match your updated repository schema after an upgrade operation. Depending on how your schema has changed, this might imply that you       need to write one or more repository data migrations.
 
 ### Delphix Engine Operations
 

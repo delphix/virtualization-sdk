@@ -1,5 +1,5 @@
 # Plugin Config
-For all regular fields in a plugin config go [here](/References/Plugin_Config.md). The following fields are only want needs to be added to get lua to python upgrades working.
+For all regular fields in a plugin config go [here](/References/Plugin_Config.md). The following fields described are the ones needed to migrate lua toolkits to python plugins.
 
 ## Fields
 
