@@ -5,8 +5,8 @@ For all regular fields in a plugin config go [here](/References/Plugin_Config.md
 
 |Field Name|Required|Type|Description|
 |----------|:------:|:--:|-----------|
-|luaName|N|string|The name of the lua toolkit this plugin should upgrade from. This field is required if the luaMinimumVersion is defined.|
-| luaMinimumVersion |N|string|The lowest major minor vesrion of the lua toolkit that upgrade is supported from. This field is required if the luaName is defined.|
+|luaName|N|string|The name of the lua toolkit this plugin should upgrade from. This field is required if the minimumLuaVersion is defined.|
+|minimumLuaVersion|N|string|The lowest major minor vesrion of the lua toolkit that upgrade is supported from. This field is required if the luaName is defined.|
 
 ## Example
 Assume a lua toolkit with the following `main.json` file:
@@ -127,7 +127,7 @@ Here is a valid plugin config for a plugin that wants to be upgradable from the 
 id: ea009cb4-f76b-46dc-bbb6-689e7acecce4
 name: DelphixDB
 luaName: delphixdb
-luaMinimumVersion: "1.0"
+minimumLuaVersion: "1.0"
 language: PYTHON27
 hostTypes:
 - UNIX

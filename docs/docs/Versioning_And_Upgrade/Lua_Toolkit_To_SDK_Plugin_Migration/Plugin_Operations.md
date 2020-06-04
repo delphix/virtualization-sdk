@@ -40,7 +40,7 @@ A Lua Repository [Data Migration](/References/Glossary.md#data-migration) migrat
 Argument | Type | Description
 -------- | ---- | -----------
 lua_version | String | The lua version of the migration that the upgrade would be migrating from. This is the ID of this migration. The version here is actually just the major and minor version of the lua toolkit therefore each defined migration's lua_version per repository data migration must be unique.
-migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this field will default to MigrationType.PLATFORM.
+migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this operation will default to a regular [repository data migration](/References/Plugin_Operations.md#repository-data-migration).
 
 ### Function Arguments
 Argument | Type | Description
@@ -95,7 +95,7 @@ A Lua Source Config [Data Migration](/References/Glossary.md#data-migration) mig
 Argument | Type | Description
 -------- | ---- | -----------
 lua_version | String | The lua version of the migration that the upgrade would be migrating from. This is the ID of this migration. The version here is actually just the major and minor version of the lua toolkit therefore each defined migration's lua_version per source config data migration must be unique.
-migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this field will default to MigrationType.PLATFORM.
+migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this operation will default to a regular [source config data migration](/References/Plugin_Operations.md#source-config-data-migration).
 
 ### Function Arguments
 Argument | Type | Description
@@ -149,7 +149,7 @@ A Lua Linked Source [Data Migration](/References/Glossary.md#data-migration) mig
 Argument | Type | Description
 -------- | ---- | -----------
 lua_version | String | The lua version of the migration that the upgrade would be migrating from. This is the ID of this migration. The version here is actually just the major and minor version of the lua toolkit therefore each defined migration's lua_version per linked source data migration must be unique.
-migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this field will default to MigrationType.PLATFORM.
+migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this operation will default to a regular [linked source data migration](/References/Plugin_Operations.md#linked-source-data-migration).
 
 ### Function Arguments
 Argument | Type | Description
@@ -203,7 +203,7 @@ A Lua Virtual Source [Data Migration](/References/Glossary.md#data-migration) mi
 Argument | Type | Description
 -------- | ---- | -----------
 lua_version | String | The lua version of the migration that the upgrade would be migrating from. This is the ID of this migration. The version here is actually just the major and minor version of the lua toolkit therefore each defined migration's lua_version per virtual source data migration must be unique.
-migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this field will default to MigrationType.PLATFORM.
+migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this operation will default to a regular [virtual source data migration](/References/Plugin_Operations.md#virtual-source-data-migration).
 
 ### Function Arguments
 Argument | Type | Description
@@ -257,7 +257,7 @@ A Lua Snapshot [Data Migration](/References/Glossary.md#data-migration) migrates
 Argument | Type | Description
 -------- | ---- | -----------
 lua_version | String | The lua version of the migration that the upgrade would be migrating from. This is the ID of this migration. The version here is actually just the major and minor version of the lua toolkit therefore each defined migration's lua_version per snapshot data migration must be unique.
-migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this field will default to MigrationType.PLATFORM.
+migration_type | String | This migration type field indicates whether the operation is lua or just a regular data migration. Signify this as LUA so that the major minor version can be used. If not defined, this operation will default to a regular [snapshot data migration](/References/Plugin_Operations.md#snapshot-data-migration).
 
 ### Function Arguments
 Argument | Type | Description
