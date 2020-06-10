@@ -1,0 +1,44 @@
+name: Publish Python packages to Test PyPi
+
+on:
+  # Run on push when a tag is created or the version file has changed.
+  push:
+    tags:
+      - '*'
+    branches:
+      - master
+      - develop
+      - 'release/**'
+    paths:
+      - 'dvp/src/main/python/dlpx/virtualization/VERSION'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [2.7]
+        package: [common, dvp, libs, platform, tools]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Install dependencies necessary for building and publishing the package.
+      - name: Install dependencies
+        run: |
+          pip install setuptools wheel twine
+      # Build each Python package and publish it to Test PyPi.
+      - name: Build and publish ${{ matrix.package }} package
+        working-directory: ${{ matrix.package }}
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.VSDK_PYPI_TOKEN }}
+          TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
+
