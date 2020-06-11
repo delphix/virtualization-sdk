@@ -1,10 +1,8 @@
 name: Publish Python packages to Test PyPi
 
 on:
-  # Run on push when a tag is created or the version file has changed.
+  # Run on push when the version file has changed on selected branches.
   push:
-    tags:
-      - '*'
     branches:
       - master
       - develop
