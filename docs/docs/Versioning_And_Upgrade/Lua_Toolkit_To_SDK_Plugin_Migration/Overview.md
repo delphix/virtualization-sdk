@@ -16,3 +16,5 @@ The other way to migrate from a Lua toolkit to a plugin is to wait and write a p
 ## Supporting migrations with older versions of Lua
 Having the ability to define Lua upgrade operations in the new plugin code means that older Lua version migration scripts can be [converted](Converting_Migration_Scripts.md), enabling multi-step upgrades from older Lua versions to migrate and become plugins.
 
+!!! warning "New versions of a Lua toolkit is strongly discouraged after Python Plugin is written"
+	After having written a Plugin to migrate a specific Lua toolkit, while possible, you should avoid writing new major/minor versions of the toolkit in Lua. Patch releases with no schema changes can still be done. If you need to write a new Lua toolkit version please contact Delphix Support to get help on updating migrations accordingly.

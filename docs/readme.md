@@ -87,7 +87,7 @@ This will generate the `site` directory which will contain all the gererated doc
 3. Copy all these files to the root directory of the virtualization-sdk repo and delete all other files.
 4. Commit and push these changes to your individual fork.
 5. Go to your individual virtualization-sdk repo's settings, scroll to the bottom and verify under the GitHub Pages section the `Source` is set to `gh-pages branch`.
-6. Right above this will be a link exaplining where your docs are published.
+6. Right above this will be a link explaining where your docs are published.
 
 
 ## Workflow diagrams
