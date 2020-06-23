@@ -138,6 +138,6 @@ schemaFile: schema.json
 buildNumber: 2.0.0
 ```
 
-!!! info "ID and luaName fields in plugins versus vs name field in toolkits"
-    * If the ID field of the plugin being uploaded happens to match the name field in the toolkit already installed on the engine, the upload will fail regardless of what the luaName is. Otherwise, the luaName will be used to determine if an already uploaded lua toolkit is considered a lower version of the plugin being uploaded. If the luaName is not set then no lua toolkit will be upgraded.
-    * When uploading a plugin with the luaName set, that luaName and ID pair will be the only pair uploaded successfully. Uploading a new plugin with the same luaName but different ID will fail.
+!!! info "`id` and `luaName` fields in plugins versus `name` field in toolkits"
+    * If the `id` of the plugin being uploaded happens to match the `name` in the toolkit already installed on the engine, the upload will fail regardless of what the `luaName` is. Otherwise, the `luaName` will be used to determine if an already uploaded lua toolkit is considered a lower version of the plugin being uploaded. If the `luaName` is not set then no lua toolkit will be upgraded.
+    * When uploading a plugin with the `luaName` set, that `luaName` and `id` pair will be the only pair uploaded successfully. Uploading a new plugin with the same `luaName` but different `id` will fail.
