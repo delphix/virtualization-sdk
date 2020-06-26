@@ -15,7 +15,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 
 ## Lua Repository Data Migration
 
-A Lua Repository [Data Migration](/References/Glossary.md#data-migration) migrates repository data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format.
+A Lua Repository [Data Migration](/References/Glossary.md#data-migration) migrates repository data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format defined in the Python plugin.
 
 ### Required / Optional
 **Optional.**<br/>
@@ -70,7 +70,7 @@ def add_new_flag_to_repo(old_repository):
 
 ## Lua Source Config Data Migration
 
-A Lua Source Config [Data Migration](/References/Glossary.md#data-migration) migrates source config data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format.
+A Lua Source Config [Data Migration](/References/Glossary.md#data-migration) migrates source config data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format defined in the Python plugin.
 
 ### Required / Optional
 **Optional.**<br/>
@@ -124,7 +124,7 @@ def add_new_flag_to_source_config(old_source_config):
 ```
 ## Lua Linked Source Data Migration
 
-A Lua Linked Source [Data Migration](/References/Glossary.md#data-migration) migrates linked source data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format.
+A Lua Linked Source [Data Migration](/References/Glossary.md#data-migration) migrates linked source data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format defined in the Python plugin.
 
 ### Required / Optional
 **Optional.**<br/>
@@ -178,7 +178,7 @@ def add_new_flag_to_dsource(old_linked_source):
 ```
 ## Lua Virtual Source Data Migration
 
-A Lua Virtual Source [Data Migration](/References/Glossary.md#data-migration) migrates virtual source data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format.
+A Lua Virtual Source [Data Migration](/References/Glossary.md#data-migration) migrates virtual source data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format defined in the Python plugin.
 
 ### Required / Optional
 **Optional.**<br/>
@@ -232,7 +232,7 @@ def add_new_flag_to_vdb(old_virtual_source):
 ```
 ## Lua Snapshot Data Migration
 
-A Lua Snapshot [Data Migration](/References/Glossary.md#data-migration) migrates snapshot data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format.
+A Lua Snapshot [Data Migration](/References/Glossary.md#data-migration) migrates snapshot data from an older [schema](/References/Glossary.md#schema) format defined originally from a lua toolkit to an updated schema format defined in the Python plugin.
 
 ### Required / Optional
 **Optional.**<br/>

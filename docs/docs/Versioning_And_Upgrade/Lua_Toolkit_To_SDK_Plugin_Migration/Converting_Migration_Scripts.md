@@ -1,5 +1,5 @@
 # Converting Lua Upgrade Scripts to Python Data Migrations
-To convert migrations (a.k.a. "upgrade scripts") that were originally written in lua we need to get the version that the migration upgrades from, the object type the migration is written for, and lastly convert the code into python code using the [decorators](Decorators.md) described previously.
+To convert migrations (a.k.a. "upgrade scripts") that were originally written in lua, we need to get the version that the migration upgrades from, the object type the migration is written for, and lastly convert the code into python code using the [decorators](Decorators.md) described previously.
 
 ## Example
 Assume there are two versions of a lua toolkit, 1.0.0 and 1.1.0 where the 1.1.0 version is following the basic toolkit directory structure (actually containing all operations):
@@ -53,4 +53,4 @@ def upgrade_linked_source(old_linked_source):
   return new_linked_source
 ```
 
-You will need to determine how far back in the lua upgrade chain you want to support multi-step upgrade from, and convert all of the upgrade scripts accordingly. Remember that the execution of these scripts rely on there not being any missing migrations, and will be executed from the lowest version that exists to the highest version.
+You will need to determine how far back in the Lua upgrade chain you want to support multi-step upgrade from, and convert all of those upgrade scripts accordingly. Remember that the execution of these scripts relies on there not being any missing migrations from the `minimumLuaVersion` defined in the plugin config to the last toolkit version written. Lua migrations will be executed migrations from the lowest to highest version that exists. When executing, these migrations are run to the highest Lua toolkit version only. Any migrations needed to get from that toolkit to the Python plugin would need to be written as a regular Python migration.
