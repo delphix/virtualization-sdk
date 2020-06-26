@@ -162,8 +162,7 @@ During the process of upgrading to a new version, the Delphix Engine will run al
 #### Security Concerns Prevent Detailed Error Messages
 One problem here is that the Delphix Engine is limited in the information that it can provide in the error message. Ideally, the engine would say exactly what was wrong with the object (e.g.: "The field `port` has the value `15`, but the schema says it has to have a value between `256` and `1024`").
 
-But, the Delphix Engine cannot do this for security reasons. Ordinarily, the Delphix Engine knows which fields contain sensitive information, and can redact such fields from error messages. But, the only reason the Delphix Engine has that knowledge is because the schema provides that information. If an object does
-**not** conform to the schema, then the Delphix Engine can't know what is sensitive and what isn't.
+But, the Delphix Engine cannot do this for security reasons. Ordinarily, the Delphix Engine knows which fields contain sensitive information, and can redact such fields from error messages. But, the only reason the Delphix Engine has that knowledge is because the schema provides that information. If an object does **not** conform to the schema, then the Delphix Engine can't know what is sensitive and what isn't.
 
 Therefore, the error message here might lack the detail necessary to debug the problem.
 
