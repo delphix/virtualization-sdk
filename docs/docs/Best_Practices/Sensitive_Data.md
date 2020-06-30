@@ -35,7 +35,7 @@ This tells the Delphix Engine to take special precautions with this password pro
 4. Clients of the Delphix Engine's public API will not be able to access the password.
 
 !!! note
-  Removing a previously added password property from a field and running a [Data Migration](Glossary.md#data-migration) will expose the password in plaintext.
+  Removing a previously added password property from a field and running a [Data Migration](Glossary.md#data-migration) will expose the password in plaintext. If this is intentional, write a migration to ensure that the new property conforms to the new schema.
 
 # Using Environment Variables For Remote Data Passing
 
