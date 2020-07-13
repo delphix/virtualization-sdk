@@ -4,7 +4,7 @@ Before we begin to start writing plugin code, we will need to do some setup work
 
 The quoted examples in this section assume you're working on a Unix-like system.
 
-## Quick check
+## Quick Check
 
 First a reminder that it's highly recommended that you develop your plugin in a [virtual environment](https://virtualenv.pypa.io/en/latest/).
 
