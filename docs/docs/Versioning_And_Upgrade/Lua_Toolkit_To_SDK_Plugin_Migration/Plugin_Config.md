@@ -1,12 +1,12 @@
 # Plugin Config
-For all regular fields in a plugin config go [here](/References/Plugin_Config.md). The following fields described are the ones needed to migrate lua toolkits to python plugins.
+For all regular fields in a plugin config go [here](/References/Plugin_Config.md). The following fields described are the ones needed to migrate Lua toolkits to Python plugins.
 
 ## Fields
 
 |Field Name|Required|Type|Description|
 |----------|:------:|:--:|-----------|
-|luaName|N|string|The name of the lua toolkit this plugin should upgrade from. This field is required if the minimumLuaVersion is defined.|
-|minimumLuaVersion|N|string|The lowest major minor version of the lua toolkit that upgrade is supported from. This field is required if the luaName is defined.|
+|luaName|N|string|The name of the Lua toolkit this plugin should upgrade from. This field is required if the minimumLuaVersion is defined.|
+|minimumLuaVersion|N|string|The lowest major minor version of the Lua toolkit that upgrade is supported from. This field is required if the luaName is defined.|
 
 ## Example
 Assume a lua toolkit with the following `main.json` file:
@@ -139,5 +139,7 @@ buildNumber: 2.0.0
 ```
 
 !!! info "`id` and `luaName` fields in plugins versus `name` field in toolkits"
-    * If the `id` of the plugin being uploaded happens to match the `name` in the toolkit already installed on the engine, the upload will fail regardless of what the `luaName` is. Otherwise, the `luaName` will be used to determine if an already uploaded lua toolkit is considered a lower version of the plugin being uploaded. If the `luaName` is not set then no lua toolkit will be upgraded.
+    * The `luaName` will be used to determine if an already uploaded Lua toolkit is considered a lower version of the Pyhon plugin being uploaded.
+    * If the `luaName` is not set then no Lua toolkit will be upgraded.
+    * If the `id` of the plugin being uploaded happens to match the `name` in the Lua toolkit already installed on the Delphix Engine, the upload will fail regardless of what the `luaName` is.  
     * When uploading a plugin with the `luaName` set, that `luaName` and `id` pair will be the only pair uploaded successfully. Uploading a new plugin with the same `luaName` but different `id` will fail.

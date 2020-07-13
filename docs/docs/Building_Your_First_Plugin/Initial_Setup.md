@@ -53,14 +53,14 @@ To start, we will create a new directory where our new plugin code will live.
 Now that we are in our new plugin directory, we can use the `dvp` tool to create a plugin for us. This plugin will be a mere skeleton -- it will not do anything useful until we modify it in the subsequent pages.
 
 ```
-(venv) first_plugin$ dvp init -n first_plugin -s STAGED -p WINDOWS
+(venv) first_plugin$ dvp init -n first_plugin -s STAGED -t WINDOWS
 ```
 
 The `-n` argument here means "plugin name." We are using the name `first_plugin`.
 
 The `-s` argument tells which syncing strategy we want to use.
 
-The `-p` argument tells which host platform our plugin supports.
+The `-t` argument tells which host platform our plugin supports.
 
 You can type `dvp init -h` for more information about the options available.
 
