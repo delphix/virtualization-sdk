@@ -4,9 +4,10 @@
 
 import json
 
-import pytest
 from dlpx.virtualization._internal import delphix_client, exceptions
 from dlpx.virtualization._internal.commands import upload
+
+import pytest
 
 
 class FakeDelphixClient(object):
@@ -60,7 +61,7 @@ class FakeDelphixClient(object):
                     'id': 'exception.webservices.login.failed'
                 })
 
-    def upload_plugin(self, name, content):
+    def upload_plugin(self, name, content, wait):
         if content.get('discoveryDefinition') is None:
             raise exceptions.HttpError(
                 200, {
@@ -112,7 +113,7 @@ class TestUpload:
         user = 'admin'
         password = 'delphix'
 
-        upload.upload(fake_client.engine, user, artifact_file, password)
+        upload.upload(fake_client.engine, user, artifact_file, password, False)
 
         # Make sure that the fake client was passed in the correct contents.
         assert (
@@ -127,7 +128,8 @@ class TestUpload:
         password = 'delphix'
 
         with pytest.raises(exceptions.UserError) as err_info:
-            upload.upload(fake_client.engine, user, artifact_file, password)
+            upload.upload(fake_client.engine, user, artifact_file, password,
+                          False)
 
         message = err_info.value.message
         assert message == ("Unable to read upload artifact file"
@@ -147,7 +149,8 @@ class TestUpload:
         password = 'delphix'
 
         with pytest.raises(exceptions.UserError) as err_info:
-            upload.upload(fake_client.engine, user, artifact_file, password)
+            upload.upload(fake_client.engine, user, artifact_file, password,
+                          False)
 
         message = err_info.value.message
         assert message == (
@@ -171,7 +174,8 @@ class TestUpload:
         password = 'delphix'
 
         with pytest.raises(exceptions.HttpError) as err_info:
-            upload.upload(fake_client.engine, user, artifact_file, password)
+            upload.upload(fake_client.engine, user, artifact_file, password,
+                          False)
 
         error = err_info.value.error
         message = err_info.value.message
@@ -202,7 +206,8 @@ class TestUpload:
         password = 'delphix2'
 
         with pytest.raises(exceptions.HttpError) as err_info:
-            upload.upload(fake_client.engine, user, artifact_file, password)
+            upload.upload(fake_client.engine, user, artifact_file, password,
+                          False)
 
         error = err_info.value.error
         message = err_info.value.message
@@ -227,7 +232,8 @@ class TestUpload:
         password = 'delphix'
 
         with pytest.raises(exceptions.HttpError) as err_info:
-            upload.upload(fake_client.engine, user, artifact_file, password)
+            upload.upload(fake_client.engine, user, artifact_file, password,
+                          False)
 
         error = err_info.value.error
         message = err_info.value.message

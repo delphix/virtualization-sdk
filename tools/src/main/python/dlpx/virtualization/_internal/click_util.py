@@ -24,6 +24,10 @@ class ConfigSectionSchema(object):
         user = Param(type=str)
         password = Param(type=str)
 
+    @matches_section('dev')
+    class DevProperties(SectionSchema):
+        vsdk_root = Param(type=str)
+
 
 class ConfigFileProcessor(ConfigFileReader):
     """
@@ -34,7 +38,9 @@ class ConfigFileProcessor(ConfigFileReader):
         os.path.expanduser(os.path.join('~', CONFIG_DIR_NAME,
                                         CONFIG_FILE_NAME))
     ]
-    config_section_schemas = [ConfigSectionSchema.DvpProperties]
+    config_section_schemas = [
+        ConfigSectionSchema.DvpProperties, ConfigSectionSchema.DevProperties
+    ]
 
 
 def validate_option_exists(ctx, param, value):

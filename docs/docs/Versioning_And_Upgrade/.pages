@@ -1,0 +1,7 @@
+arrange:
+  - Overview.md
+  - Versioning.md
+  - Upgrade.md
+  - Compatibility.md
+  - Backports_And_Hotfixes.md
+  - Replication.md

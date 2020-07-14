@@ -3,3 +3,4 @@
 #
 
 include LICENSE
+include src/main/python/dlpx/virtualization/platform/VERSION

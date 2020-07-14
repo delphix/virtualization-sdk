@@ -3,7 +3,7 @@
 #
 
 import pytest
-from dlpx.virtualization import common_pb2
+from dlpx.virtualization.api import common_pb2
 from dlpx.virtualization.common._common_classes import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
 
@@ -63,7 +63,7 @@ class TestRemoteConnection:
             RemoteConnection.from_proto('')
         assert err_info.value.message == (
             "RemoteConnection's parameter 'connection' was"
-            " type 'str' but should be of class 'dlpx.virtualization"
+            " type 'str' but should be of class 'dlpx.virtualization.api"
             ".common_pb2.RemoteConnection'.")
 
 
@@ -115,7 +115,7 @@ class TestRemoteEnvironment:
             RemoteEnvironment.from_proto('')
         assert err_info.value.message == (
             "RemoteEnvironment's parameter 'environment' was"
-            " type 'str' but should be of class 'dlpx.virtualization"
+            " type 'str' but should be of class 'dlpx.virtualization.api"
             ".common_pb2.RemoteEnvironment'.")
 
 
@@ -177,7 +177,7 @@ class TestRemoteHost:
             RemoteHost.from_proto('')
         assert err_info.value.message == (
             "RemoteHost's parameter 'host' was"
-            " type 'str' but should be of class 'dlpx.virtualization"
+            " type 'str' but should be of class 'dlpx.virtualization.api"
             ".common_pb2.RemoteHost'.")
 
 
@@ -220,5 +220,5 @@ class TestRemoteUser:
             RemoteUser.from_proto('')
         assert err_info.value.message == (
             "RemoteUser's parameter 'user' was"
-            " type 'str' but should be of class 'dlpx.virtualization"
+            " type 'str' but should be of class 'dlpx.virtualization.api"
             ".common_pb2.RemoteUser'.")

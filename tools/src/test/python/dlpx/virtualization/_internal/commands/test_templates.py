@@ -9,8 +9,9 @@ import os
 import subprocess
 import sys
 
-import pytest
 from dlpx.virtualization._internal import codegen
+
+import pytest
 
 
 @pytest.fixture(scope='module')
@@ -130,10 +131,7 @@ class TestTemplateStringProperty:
         assert not test_object.string_property
 
         test_dict = test_object.to_dict()
-        assert test_dict == {
-            'requiredStringProperty': 'test string',
-            'stringProperty': None
-        }
+        assert test_dict == {'requiredStringProperty': 'test string'}
         from_dict_object = module.TestDefinition.from_dict(test_dict)
         assert test_object == from_dict_object
 
@@ -160,10 +158,7 @@ class TestTemplateStringProperty:
         assert not test_object.string_property
 
         test_dict = test_object.to_dict()
-        assert test_dict == {
-            'requiredStringProperty': u'test\u2345\u2603',
-            'stringProperty': None
-        }
+        assert test_dict == {'requiredStringProperty': u'test\u2345\u2603'}
         from_dict_object = module.TestDefinition.from_dict(test_dict)
         assert test_object == from_dict_object
 
@@ -342,9 +337,7 @@ class TestTemplateNumericProperty:
         test_dict = test_object.to_dict()
         assert test_dict == {
             'requiredNumberProperty': 200.5,
-            'numberProperty': None,
-            'requiredIntegerProperty': -50,
-            'integerProperty': None
+            'requiredIntegerProperty': -50
         }
         from_dict_object = module.TestDefinition.from_dict(test_dict)
         assert test_object == from_dict_object
@@ -1269,20 +1262,17 @@ class TestTemplateEnumProperty:
         test_dict = test_object.to_dict()
         assert test_dict == {
             'requiredStringProperty': 'A',
-            'stringProperty': None,
             'requiredObjectProperty': {
                 'TWO': 'dos',
                 'ONE': 'uno'
             },
-            'objectProperty': None,
-            'requiredArrayProperty': ['DO', 'RE', 'MI'],
-            'arrayProperty': None
+            'requiredArrayProperty': ['DO', 'RE', 'MI']
         }
         from_dict_object = module.TestDefinition.from_dict(test_dict)
         assert test_object == from_dict_object
 
     @staticmethod
-    def test_successs_setter(module):
+    def test_success_setter(module):
         test_object = module.TestDefinition(required_string_property='B',
                                             required_object_property={},
                                             required_array_property=[])
@@ -1300,14 +1290,11 @@ class TestTemplateEnumProperty:
         test_dict = test_object.to_dict()
         assert test_dict == {
             'requiredStringProperty': 'A',
-            'stringProperty': None,
             'requiredObjectProperty': {
                 'TWO': 'dos',
                 'ONE': 'uno'
             },
-            'objectProperty': None,
-            'requiredArrayProperty': ['DO', 'RE', 'MI'],
-            'arrayProperty': None
+            'requiredArrayProperty': ['DO', 'RE', 'MI']
         }
         from_dict_object = module.TestDefinition.from_dict(test_dict)
         assert test_object == from_dict_object

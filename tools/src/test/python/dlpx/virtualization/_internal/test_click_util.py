@@ -3,9 +3,10 @@
 #
 
 import click
-import pytest
 from click import testing as click_testing
 from dlpx.virtualization._internal import click_util
+
+import pytest
 
 
 class TestClickUtil:
