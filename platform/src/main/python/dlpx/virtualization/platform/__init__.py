@@ -4,9 +4,8 @@
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
-
-from dlpx.virtualization.platform.migration_id_set import *
 from dlpx.virtualization.platform.validation_util import *
+from dlpx.virtualization.platform.migration_helper import *
 from dlpx.virtualization.platform._plugin_classes import *
 from dlpx.virtualization.platform._discovery import *
 from dlpx.virtualization.platform._linked import *

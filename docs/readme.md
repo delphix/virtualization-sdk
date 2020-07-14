@@ -3,18 +3,14 @@
 This is the Markdown-based documentation for the Virtualization SDK.
 
 ## Local Testing
-Create a `virtualenv` using Python 3 and run `pipenv run mkdocs serve`
+Install dependencies for building documentation and run `pipenv run mkdocs serve`
 
 ```
-$ virtualenv -p /usr/local/bin/python3 .
-Running virtualenv with interpreter /usr/local/bin/python3
-Using base prefix '/usr/local/Cellar/python/3.7.2_1/Frameworks/Python.framework/Versions/3.7'
-New python executable in /Users/asarin/Documents/repos/virt-sdk-docs/env/bin/python3.7
-Also creating executable in /Users/asarin/Documents/repos/virt-sdk-docs/env/bin/python
-Installing setuptools, pip, wheel...
-done.
-
-$ source bin/activate
+$ pipenv install
+Installing dependencies from Pipfile.lock (cf5b7c)...
+  🐍   ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ 16/16 — 00:00:02
+To activate this project's virtualenv, run pipenv shell.
+Alternatively, run a command inside the virtualenv with pipenv run.
 
 $ pipenv run mkdocs serve
 INFO    -  Building documentation... 
@@ -75,12 +71,29 @@ Installing dependencies from Pipfile.lock (65135d)…
   🐍   ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ 14/14 — 00:00:03
 ```
 
-## Live Testing and Reviews
-The command `git docsdev-review` will handle publishing reviews, and putting your changes on a live docs server. For example, you can clone the `docsdev-server` image on DCOA, and then run `git docsdev-review -m <yourvm.dlpxdc.co>`. This will:
+## Live Testing via Github Pages
+To publish doc change to your individual fork for review, we use github pages. To set this up follow these following steps.
 
-- Push your doc changes to your VM
-- Give you a link to the docdev server so you can test your changes live in a browser
-- Publish a review
+1. Create a new local branch named `gh-pages`.
+2. Using the same virtual environment above run:
+```
+pipenv run mkdocs build --clean
+```
+This will generate the `site` directory which will contain all the gererated docs.
+3. Copy all these files to the root directory of the virtualization-sdk repo and delete all other files.
+4. Commit and push these changes to your individual fork.
+5. Go to your individual virtualization-sdk repo's settings, scroll to the bottom and verify under the GitHub Pages section the `Source` is set to `gh-pages branch`.
+6. Right above this will be a link explaining where your docs are published.
+
+You can also utilize the GitHub workflow for publishing docs (`.github/workflows/publish-docs.yml`) associated with a pull request. 
+The workflow is present on the `develop` branch. Create a branch called `docs/x.y.z` off `develop` on your fork of the repository
+to ensure that your docs branch triggers the workflow. If you have more than one `docs/x.y.z` branch in your fork,
+you have to push your doc changes to the docs branch with the latest `x.y.z` version. Otherwise, the workflow won't run.
+You also have to make sure to choose `gh-pages` branch on your fork as the [publishing source](https://help.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source).
+Once you push doc changes to the `docs/.x.y.z` branch, the docs site should be available under
+`<your-github-username>.github.io/virtualization-sdk` shortly after. You can see the status of publishing under 
+`https://github.com/<your-github-username>/virtualization-sdk/actions`. This is a fast way to give a preview of your
+changes in a pull request.
 
 ## Workflow diagrams
 We create workflow diagrams using a tool called `draw.io` which allows us to import/export diagrams in html format. If you want to add a diagram or edit an existing one, simply create or import the html file in `docs/References/html` into `draw.io` and make your desired changes. When you are done, select your diagram and export it as a png file. You can think of the html files as source code, and the png files as build artifacts. After this step, you will be prompted to crop what was selected. You'll want this box checked to trim the whitespace around the diagram. After the diagrams are exported, check in the updated html file to `docs/References/html` and png file to `docs/References/images`.

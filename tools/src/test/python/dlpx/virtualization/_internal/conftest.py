@@ -171,7 +171,8 @@ def artifact_file_created():
 @pytest.fixture
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
-                          schema_file, manual_discovery, build_number):
+                          schema_file, manual_discovery, build_number,
+                          lua_name, minimum_lua_version):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
@@ -215,6 +216,12 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if build_number:
         config['buildNumber'] = build_number
+
+    if lua_name:
+        config['luaName'] = lua_name
+
+    if minimum_lua_version:
+        config['minimumLuaVersion'] = minimum_lua_version
 
     return config
 
@@ -272,6 +279,16 @@ def manual_discovery():
 @pytest.fixture
 def build_number():
     return '2.0.0'
+
+
+@pytest.fixture
+def lua_name():
+    return 'lua-toolkit-1'
+
+
+@pytest.fixture
+def minimum_lua_version():
+    return "2.3"
 
 
 @pytest.fixture
@@ -561,6 +578,8 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'engineApi': engine_api,
         'rootSquashEnabled': True,
         'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '2.3',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -608,6 +627,8 @@ def artifact_content(engine_api, virtual_source_definition,
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
         'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '2.3',
         'manifest': {}
     }
 
@@ -637,7 +658,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 2}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 3}
 
 
 @pytest.fixture

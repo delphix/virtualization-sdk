@@ -4,9 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-mkdocs = "*"
-mkdocs-material = "*"
-markdown-include = "*"
-mkdocs-awesome-pages-plugin = "*"
+mkdocs = "==0.17.5"
+mkdocs-material = "==2.9.2"
+markdown-include = "==0.5.1"
+mkdocs-awesome-pages-plugin = "==1.2.0"
+
+[requires]
+python_version = "3.7"
 
 [dev-packages]

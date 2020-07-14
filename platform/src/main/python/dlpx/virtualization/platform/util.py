@@ -3,6 +3,7 @@
 #
 import dlpx.virtualization.api
 
+
 def get_virtualization_api_version():
     """Returns the Virutalization API version string.
 

@@ -4,6 +4,7 @@
 
 from enum import Enum, unique
 
+
 @unique
 class Operation(Enum):
     DISCOVERY_REPOSITORY = 'discovery.repository()'

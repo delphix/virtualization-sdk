@@ -3,32 +3,27 @@
 #
 
 # -*- coding: utf-8 -*-
-
 """LinkedOperations for the Virtualization Platform
 
 """
 import json
-from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
-from dlpx.virtualization.api import common_pb2
-from dlpx.virtualization.api import platform_pb2
-from dlpx.virtualization.common.exceptions import PluginRuntimeError
-from dlpx.virtualization.platform import Status
-from dlpx.virtualization.platform import DirectSource
-from dlpx.virtualization.platform import StagedSource
-from dlpx.virtualization.platform import Mount
-from dlpx.virtualization.platform import MountSpecification
-from dlpx.virtualization.platform import validation_util as v
-from dlpx.virtualization.platform.operation import Operation as Op
-from dlpx.virtualization.platform.exceptions import (
-    IncorrectReturnTypeError, OperationNotDefinedError,
-    OperationAlreadyDefinedError)
 
+from dlpx.virtualization.api import common_pb2, platform_pb2
+from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
+from dlpx.virtualization.common.exceptions import PluginRuntimeError
+from dlpx.virtualization.platform import (DirectSource, Mount,
+                                          MountSpecification, StagedSource,
+                                          Status)
+from dlpx.virtualization.platform import validation_util as v
+from dlpx.virtualization.platform.exceptions import (
+    IncorrectReturnTypeError, OperationAlreadyDefinedError,
+    OperationNotDefinedError)
+from dlpx.virtualization.platform.operation import Operation as Op
 
 __all__ = ['LinkedOperations']
 
 
 class LinkedOperations(object):
-
     def __init__(self):
         self.pre_snapshot_impl = None
         self.post_snapshot_impl = None
@@ -45,6 +40,7 @@ class LinkedOperations(object):
             self.pre_snapshot_impl = v.check_function(pre_snapshot_impl,
                                                       Op.LINKED_PRE_SNAPSHOT)
             return pre_snapshot_impl
+
         return pre_snapshot_decorator
 
     def post_snapshot(self):
@@ -54,6 +50,7 @@ class LinkedOperations(object):
             self.post_snapshot_impl = v.check_function(post_snapshot_impl,
                                                        Op.LINKED_POST_SNAPSHOT)
             return post_snapshot_impl
+
         return post_snapshot_decorator
 
     def start_staging(self):
@@ -63,6 +60,7 @@ class LinkedOperations(object):
             self.start_staging_impl = v.check_function(start_staging_impl,
                                                        Op.LINKED_START_STAGING)
             return start_staging_impl
+
         return start_staging_decorator
 
     def stop_staging(self):
@@ -72,6 +70,7 @@ class LinkedOperations(object):
             self.stop_staging_impl = v.check_function(stop_staging_impl,
                                                       Op.LINKED_STOP_STAGING)
             return stop_staging_impl
+
         return stop_staging_decorator
 
     def status(self):
@@ -80,6 +79,7 @@ class LinkedOperations(object):
                 raise OperationAlreadyDefinedError(Op.LINKED_STATUS)
             self.status_impl = v.check_function(status_impl, Op.LINKED_STATUS)
             return status_impl
+
         return status_decorator
 
     def worker(self):
@@ -88,16 +88,17 @@ class LinkedOperations(object):
                 raise OperationAlreadyDefinedError(Op.LINKED_WORKER)
             self.worker_impl = v.check_function(worker_impl, Op.LINKED_WORKER)
             return worker_impl
+
         return worker_decorator
 
     def mount_specification(self):
         def mount_specification_decorator(mount_specification_impl):
             if self.mount_specification_impl:
-                raise OperationAlreadyDefinedError(
-                    Op.LINKED_MOUNT_SPEC)
+                raise OperationAlreadyDefinedError(Op.LINKED_MOUNT_SPEC)
             self.mount_specification_impl = v.check_function(
                 mount_specification_impl, Op.LINKED_MOUNT_SPEC)
             return mount_specification_impl
+
         return mount_specification_decorator
 
     def _internal_direct_pre_snapshot(self, request):
@@ -132,7 +133,8 @@ class LinkedOperations(object):
             json.loads(request.direct_source.linked_source.parameters.json))
         direct_source = DirectSource(
             guid=request.direct_source.linked_source.guid,
-            connection=RemoteConnection.from_proto(request.direct_source.connection),
+            connection=RemoteConnection.from_proto(
+                request.direct_source.connection),
             parameters=direct_source_definition)
 
         repository = RepositoryDefinition.from_dict(
@@ -140,10 +142,9 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.pre_snapshot_impl(
-            direct_source=direct_source,
-            repository=repository,
-            source_config=source_config)
+        self.pre_snapshot_impl(direct_source=direct_source,
+                               repository=repository,
+                               source_config=source_config)
 
         direct_pre_snapshot_response = platform_pb2.DirectPreSnapshotResponse()
         direct_pre_snapshot_response.return_value.CopyFrom(
@@ -187,7 +188,8 @@ class LinkedOperations(object):
             json.loads(request.direct_source.linked_source.parameters.json))
         direct_source = DirectSource(
             guid=request.direct_source.linked_source.guid,
-            connection=RemoteConnection.from_proto(request.direct_source.connection),
+            connection=RemoteConnection.from_proto(
+                request.direct_source.connection),
             parameters=direct_source_definition)
 
         repository = RepositoryDefinition.from_dict(
@@ -195,15 +197,14 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        snapshot = self.post_snapshot_impl(
-            direct_source=direct_source,
-            repository=repository,
-            source_config=source_config)
+        snapshot = self.post_snapshot_impl(direct_source=direct_source,
+                                           repository=repository,
+                                           source_config=source_config)
 
         # Validate that this is a SnapshotDefinition object
         if not isinstance(snapshot, SnapshotDefinition):
-            raise IncorrectReturnTypeError(
-                Op.LINKED_POST_SNAPSHOT, type(snapshot), SnapshotDefinition)
+            raise IncorrectReturnTypeError(Op.LINKED_POST_SNAPSHOT,
+                                           type(snapshot), SnapshotDefinition)
 
         direct_post_snapshot_response = (
             platform_pb2.DirectPostSnapshotResponse())
@@ -245,16 +246,18 @@ class LinkedOperations(object):
         staged_source_definition = (LinkedSourceDefinition.from_dict(
             json.loads(linked_source.parameters.json)))
         staged_mount = request.staged_source.staged_mount
-        mount = Mount(
-            remote_environment=RemoteEnvironment.from_proto(staged_mount.remote_environment),
-            mount_path=staged_mount.mount_path,
-            shared_path=staged_mount.shared_path)
+        mount = Mount(remote_environment=RemoteEnvironment.from_proto(
+            staged_mount.remote_environment),
+                      mount_path=staged_mount.mount_path,
+                      shared_path=staged_mount.shared_path)
         staged_source = StagedSource(
             guid=linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -263,11 +266,10 @@ class LinkedOperations(object):
         snapshot_parameters = SnapshotParametersDefinition.from_dict(
             json.loads(request.snapshot_parameters.parameters.json))
 
-        self.pre_snapshot_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config,
-            snapshot_parameters=snapshot_parameters)
+        self.pre_snapshot_impl(staged_source=staged_source,
+                               repository=repository,
+                               source_config=source_config,
+                               snapshot_parameters=snapshot_parameters)
 
         response = platform_pb2.StagedPreSnapshotResponse()
         response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
@@ -309,19 +311,20 @@ class LinkedOperations(object):
             raise OperationNotDefinedError(Op.LINKED_POST_SNAPSHOT)
 
         staged_source_definition = LinkedSourceDefinition.from_dict(
-            json.loads(
-                request.staged_source.linked_source.parameters.json))
+            json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=
-            RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment),
+            remote_environment=RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -338,8 +341,8 @@ class LinkedOperations(object):
 
         # Validate that this is a SnapshotDefinition object
         if not isinstance(snapshot, SnapshotDefinition):
-            raise IncorrectReturnTypeError(
-                Op.LINKED_POST_SNAPSHOT, type(snapshot), SnapshotDefinition)
+            raise IncorrectReturnTypeError(Op.LINKED_POST_SNAPSHOT,
+                                           type(snapshot), SnapshotDefinition)
 
         response = platform_pb2.StagedPostSnapshotResponse()
         response.return_value.snapshot.CopyFrom(to_protobuf(snapshot))
@@ -375,29 +378,29 @@ class LinkedOperations(object):
             raise OperationNotDefinedError(Op.LINKED_START_STAGING)
 
         staged_source_definition = LinkedSourceDefinition.from_dict(
-            json.loads(
-                request.staged_source.linked_source.parameters.json))
+            json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=(
-                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.start_staging_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+        self.start_staging_impl(staged_source=staged_source,
+                                repository=repository,
+                                source_config=source_config)
 
         start_staging_response = platform_pb2.StartStagingResponse()
         start_staging_response.return_value.CopyFrom(
@@ -434,29 +437,29 @@ class LinkedOperations(object):
             raise OperationNotDefinedError(Op.LINKED_STOP_STAGING)
 
         staged_source_definition = LinkedSourceDefinition.from_dict(
-            json.loads(
-                request.staged_source.linked_source.parameters.json))
+            json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=(
-                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.stop_staging_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+        self.stop_staging_impl(staged_source=staged_source,
+                               repository=repository,
+                               source_config=source_config)
 
         stop_staging_response = platform_pb2.StopStagingResponse()
         stop_staging_response.return_value.CopyFrom(
@@ -495,31 +498,32 @@ class LinkedOperations(object):
         staged_source_definition = LinkedSourceDefinition.from_dict(
             json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=(
-                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        status = self.status_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+        status = self.status_impl(staged_source=staged_source,
+                                  repository=repository,
+                                  source_config=source_config)
 
         # Validate that this is a Status object.
         if not isinstance(status, Status):
-            raise IncorrectReturnTypeError(
-                Op.LINKED_STATUS, type(status), Status)
+            raise IncorrectReturnTypeError(Op.LINKED_STATUS, type(status),
+                                           Status)
 
         staged_status_response = platform_pb2.StagedStatusResponse()
         staged_status_response.return_value.status = status.value
@@ -555,29 +559,29 @@ class LinkedOperations(object):
             raise OperationNotDefinedError(Op.LINKED_WORKER)
 
         staged_source_definition = LinkedSourceDefinition.from_dict(
-            json.loads(
-                request.staged_source.linked_source.parameters.json))
+            json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=(
-                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.worker_impl(
-            staged_source=staged_source,
-            repository=repository,
-            source_config=source_config)
+        self.worker_impl(staged_source=staged_source,
+                         repository=repository,
+                         source_config=source_config)
 
         staged_worker_response = platform_pb2.StagedWorkerResponse()
         staged_worker_response.return_value.CopyFrom(
@@ -630,30 +634,30 @@ class LinkedOperations(object):
         staged_source_definition = LinkedSourceDefinition.from_dict(
             json.loads(request.staged_source.linked_source.parameters.json))
         mount = Mount(
-            remote_environment=(
-                RemoteEnvironment.from_proto(request.staged_source.staged_mount.remote_environment)),
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
             mount_path=request.staged_source.staged_mount.mount_path,
             shared_path=request.staged_source.staged_mount.shared_path)
         staged_source = StagedSource(
             guid=request.staged_source.linked_source.guid,
-            source_connection=RemoteConnection.from_proto(request.staged_source.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
             parameters=staged_source_definition,
             mount=mount,
-            staged_connection=RemoteConnection.from_proto(request.staged_source.staged_connection))
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
 
-        mount_spec = self.mount_specification_impl(
-            staged_source=staged_source,
-            repository=repository)
+        mount_spec = self.mount_specification_impl(staged_source=staged_source,
+                                                   repository=repository)
 
         # Validate that this is a MountSpecification object.
         if not isinstance(mount_spec, MountSpecification):
-            raise IncorrectReturnTypeError(
-                Op.LINKED_MOUNT_SPEC,
-                type(mount_spec),
-                MountSpecification)
+            raise IncorrectReturnTypeError(Op.LINKED_MOUNT_SPEC,
+                                           type(mount_spec),
+                                           MountSpecification)
 
         # Only one mount is supported for linked sources.
         mount_len = len(mount_spec.mounts)

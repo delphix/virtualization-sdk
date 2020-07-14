@@ -5,3 +5,4 @@ arrange:
   - Compatibility.md
   - Backports_And_Hotfixes.md
   - Replication.md
+  - Lua_Toolkit_To_SDK_Plugin_Migration

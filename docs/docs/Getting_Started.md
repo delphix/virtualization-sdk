@@ -14,7 +14,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
 - Python 2.7 (Python 3 is not supported)
 - Java 7+
-- Delphix Engine 6.0.2.0 or above
+- Delphix Engine 6.0.3.0 or above
 
 ## Installation
 To install the latest version of the SDK run:
