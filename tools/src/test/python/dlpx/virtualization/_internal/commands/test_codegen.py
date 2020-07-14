@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import errno
@@ -7,10 +7,8 @@ import json
 import os
 import subprocess
 
-from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           util_classes)
-
 import pytest
+from dlpx.virtualization._internal import codegen, const, exceptions, file_util
 
 
 class TestCodegen:
@@ -140,7 +138,7 @@ class TestCodegen:
         assert popen_helper.package_name == codegen.CODEGEN_PACKAGE
         assert popen_helper.module_name == codegen.CODEGEN_MODULE
         expected_output_dir = os.path.join(gen_py.plugin_content_dir,
-                                           util_classes.OUTPUT_DIR_NAME)
+                                           const.OUTPUT_DIR_NAME)
         assert popen_helper.output_dir == expected_output_dir
 
         # Validate that the "generated" file were copied.
@@ -159,7 +157,7 @@ class TestCodegen:
 
     @staticmethod
     def test_get_build_dir_success(tmpdir):
-        testdir = os.path.join(tmpdir.strpath, util_classes.OUTPUT_DIR_NAME)
+        testdir = os.path.join(tmpdir.strpath, const.OUTPUT_DIR_NAME)
         file_util.make_dir(testdir, True)
         assert os.path.exists(testdir)
         assert os.path.isdir(testdir)
@@ -365,12 +363,17 @@ class TestCodegen:
 
     @staticmethod
     def test_copy_generated_to_dir_fail(tmpdir):
-        src_dir = '/not/a/real/dir'
+        src_dir = os.path.join('fake', 'dir')
         # dst_dir needs to be real so that making the dir inside it works.
         dst_dir = tmpdir.strpath
 
         with pytest.raises(OSError) as err_info:
             codegen._copy_generated_to_dir(src_dir, dst_dir)
 
-        assert err_info.value.strerror == 'No such file or directory'
-        assert err_info.value.filename.startswith('/not/a/real/dir')
+        if os.name == 'nt':
+            assert err_info.value.strerror == 'The system cannot find the path' \
+                                              ' specified'
+        else:
+            assert err_info.value.strerror == 'No such file or directory'
+
+        assert err_info.value.filename.startswith(src_dir)

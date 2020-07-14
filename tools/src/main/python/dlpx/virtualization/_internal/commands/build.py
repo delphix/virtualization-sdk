@@ -13,8 +13,7 @@ import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            package_util,
-                                           plugin_dependency_util, plugin_util,
-                                           util_classes)
+                                           plugin_dependency_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +53,10 @@ def build(plugin_config,
         local_vsdk_root = os.path.expanduser(local_vsdk_root)
 
     # Read content of the plugin config  file provided and perform validations
-    logger.info('Reading and validating plugin config file %s', plugin_config)
+    logger.info('Validating plugin config file %s', plugin_config)
     try:
-        result = plugin_util.read_and_validate_plugin_config_file(
-            plugin_config, not generate_only, False, skip_id_validation)
+        result = plugin_util.validate_plugin_config_file(
+            plugin_config, not generate_only, skip_id_validation)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -69,11 +68,11 @@ def build(plugin_config,
         plugin_config, plugin_config_content['schemaFile'])
 
     # Read schemas from the file provided in the config and validate them
-    logger.info('Reading and validating schemas from %s', schema_file)
+    logger.info('Validating schemas from %s', schema_file)
 
     try:
-        result = plugin_util.read_and_validate_schema_file(
-            schema_file, not generate_only)
+        result = plugin_util.validate_schema_file(schema_file,
+                                                  not generate_only)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -113,17 +112,12 @@ def build(plugin_config,
                                                  plugin_config_content,
                                                  not generate_only,
                                                  skip_id_validation)
-    except exceptions.UserError as err:
+    except (exceptions.UserError, exceptions.SDKToolingError) as err:
         raise exceptions.BuildFailedError(err)
 
     plugin_manifest = {}
     if result:
         plugin_manifest = result.plugin_manifest
-        if result.warnings:
-            warning_msg = util_classes.MessageUtils.warning_msg(
-                result.warnings)
-            logger.warn('{}\n{} Warning(s). {} Error(s).'.format(
-                warning_msg, len(result.warnings['warning']), 0))
 
     #
     # Setup a build directory for the plugin in its root. Dependencies are
@@ -165,7 +159,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     # This is the output dictionary that will be written
     # to the upload_artifact.
     #
-    return {
+    artifact = {
         # Hard code the type to a set default.
         'type':
         TYPE,
@@ -180,8 +174,6 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['id'].lower(),
         'prettyName':
         plugin_config_content['name'],
-        'version':
-        plugin_config_content['version'],
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
@@ -192,6 +184,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         plugin_config_content['hostTypes'],
         'entryPoint':
         plugin_config_content['entryPoint'],
+        'buildNumber':
+        plugin_util.get_standardized_build_number(
+            plugin_config_content['buildNumber']),
         'buildApi':
         package_util.get_build_api_version(),
         'engineApi':
@@ -215,6 +210,18 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'manifest':
         manifest
     }
+
+    if plugin_config_content.get('externalVersion'):
+        artifact['externalVersion'] = plugin_config_content['externalVersion']
+
+    if plugin_config_content.get('luaName'):
+        artifact['luaName'] = plugin_config_content['luaName']
+
+    if plugin_config_content.get('minimumLuaVersion'):
+        artifact['minimumLuaVersion'] = plugin_config_content[
+            'minimumLuaVersion']
+
+    return artifact
 
 
 def get_linked_source_definition_type(plugin_config_content):

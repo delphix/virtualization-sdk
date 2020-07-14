@@ -139,23 +139,35 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - virtual_source
       - repository
 
+EXPECTED_UPGRADE_ARGS:
+  _repository_id_to_impl:
+    - old_repository
+  _source_config_id_to_impl:
+    - old_source_config
+  _linked_source_id_to_impl:
+    - old_linked_source
+  _virtual_source_id_to_impl:
+    - old_virtual_source
+  _snapshot_id_to_impl:
+    - old_snapshot
+
 REQUIRED_METHODS_BY_PLUGIN_TYPE:
   DIRECT:
-    hasRepositoryDiscovery: discovery.repository(),
-    hasSourceConfigDiscovery: discovery.source_config(),
-    hasLinkedPostSnapshot: linked.post_snapshot(),
-    hasVirtualConfigure: virtual.configure(),
-    hasVirtualReconfigure: virtual.reconfigure(),
-    hasVirtualPostSnapshot: virtual.post_snapshot(),
+    hasRepositoryDiscovery: discovery.repository()
+    hasSourceConfigDiscovery: discovery.source_config()
+    hasLinkedPostSnapshot: linked.post_snapshot()
+    hasVirtualConfigure: virtual.configure()
+    hasVirtualReconfigure: virtual.reconfigure()
+    hasVirtualPostSnapshot: virtual.post_snapshot()
     hasVirtualMountSpecification: virtual.mount_specification()
   STAGED:
-    hasRepositoryDiscovery: discovery.repository(),
-    hasSourceConfigDiscovery: discovery.source_config(),
-    hasLinkedPostSnapshot: linked.post_snapshot(),
-    hasLinkedMountSpecification: linked.mount_specification(),
-    hasVirtualConfigure: virtual.configure(),
-    hasVirtualReconfigure: virtual.reconfigure(),
-    hasVirtualPostSnapshot: virtual.post_snapshot(),
+    hasRepositoryDiscovery: discovery.repository()
+    hasSourceConfigDiscovery: discovery.source_config()
+    hasLinkedPostSnapshot: linked.post_snapshot()
+    hasLinkedMountSpecification: linked.mount_specification()
+    hasVirtualConfigure: virtual.configure()
+    hasVirtualReconfigure: virtual.reconfigure()
+    hasVirtualPostSnapshot: virtual.post_snapshot()
     hasVirtualMountSpecification: virtual.mount_specification()
 
 REQUIRED_METHODS_DESCRIPTION:

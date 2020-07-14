@@ -1,12 +1,12 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import os
 
 import click.testing as click_testing
 import yaml
-from dlpx.virtualization._internal import cli, exceptions, util_classes
+from dlpx.virtualization._internal import cli, const, exceptions
 
 import mock
 import pytest
@@ -107,10 +107,8 @@ class TestCli:
         assert result.output == 'codegen_error\n'
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
@@ -124,10 +122,8 @@ class TestCli:
         assert 'Internal error, please contact Delphix.\n' in result.output
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
 
 class TestInitCli:
@@ -141,26 +137,21 @@ class TestInitCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
 
         # 'DIRECT' and os.getcwd() are the expected defaults
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
     def test_non_default_params(mock_init, plugin_name):
         runner = click_testing.CliRunner()
 
-        result = runner.invoke(cli.delphix_sdk, [
-            'init', '-s', util_classes.STAGED_TYPE, '-r', '.', '-n',
-            plugin_name
-        ])
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-s', const.STAGED_TYPE, '-r', '.', '-n', plugin_name])
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.STAGED_TYPE,
-                                          plugin_name,
-                                          util_classes.UNIX_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.STAGED_TYPE,
+                                          plugin_name, const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_invalid_ingestion_strategy(plugin_name):
@@ -185,8 +176,8 @@ class TestInitCli:
         runner = click_testing.CliRunner()
 
         result = runner.invoke(cli.delphix_sdk, [
-            'init', '-t', '{},{}'.format(util_classes.UNIX_HOST_TYPE,
-                                         util_classes.WINDOWS_HOST_TYPE)
+            'init', '-t', '{},{}'.format(const.UNIX_HOST_TYPE,
+                                         const.WINDOWS_HOST_TYPE)
         ])
 
         assert result.exit_code != 0
@@ -199,12 +190,10 @@ class TestInitCli:
 
         result = runner.invoke(
             cli.delphix_sdk,
-            ['init', '-n', plugin_name, '-t', util_classes.WINDOWS_HOST_TYPE])
+            ['init', '-n', plugin_name, '-t', const.WINDOWS_HOST_TYPE])
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_init.assert_called_once_with(os.getcwd(),
-                                          util_classes.DIRECT_TYPE,
-                                          plugin_name,
-                                          util_classes.WINDOWS_HOST_TYPE)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          plugin_name, const.WINDOWS_HOST_TYPE)
 
     @staticmethod
     def test_invalid_host_type():
@@ -329,14 +318,14 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk build [OPTIONS]'
-                                 u'\nTry "delphix-sdk build -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-c" /'
-                                 u' "--plugin-config": File'
-                                 u' "/not/a/real/file/plugin_config.yml"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
+                                 u"\nTry 'delphix-sdk build -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-c' /"
+                                 u" '--plugin-config': File"
+                                 u" '/not/a/real/file/plugin_config.yml'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     def test_option_a_and_g_set(plugin_config_file, artifact_file):
@@ -417,7 +406,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -434,7 +423,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -463,7 +452,7 @@ class TestUploadCli:
             '\nAction: Try with a different set of credentials.'
             '\n')
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('artifact_file',
@@ -481,14 +470,14 @@ class TestUploadCli:
         ])
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]'
-                                 u'\nTry "delphix-sdk upload -h" for help.'
-                                 u'\n'
-                                 u'\nError: Invalid value for "-a" /'
-                                 u' "--upload-artifact": File'
-                                 u' "/not/a/real/file/artifact.json"'
-                                 u' does not exist.'
-                                 u'\n')
+        assert result.output == (u"Usage: delphix-sdk upload [OPTIONS]"
+                                 u"\nTry 'delphix-sdk upload -h' for help."
+                                 u"\n"
+                                 u"\nError: Invalid value for '-a' /"
+                                 u" '--upload-artifact': File"
+                                 u" '/not/a/real/file/artifact.json'"
+                                 u" does not exist."
+                                 u"\n")
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -508,7 +497,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.upload.upload')
@@ -528,7 +517,7 @@ class TestUploadCli:
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_upload.assert_called_once_with(engine, user, artifact_file,
-                                            password)
+                                            password, False)
 
     @staticmethod
     @pytest.mark.parametrize('dvp_config_properties', [{
@@ -549,8 +538,8 @@ class TestUploadCli:
         assert result.exit_code == 2
         assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]\n'
                                  u'\n'
-                                 u'Error: Invalid value for "-e" / '
-                                 u'"--engine": Option is required '
+                                 u'Error: Invalid value for \'-e\' / '
+                                 u'\'--engine\': Option is required '
                                  u'and must be specified via the command line.'
                                  u'\n')
 
@@ -612,12 +601,12 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")
 
     @staticmethod
     @mock.patch(
@@ -666,14 +655,14 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-d" /'
-            u' "--directory": Directory'
-            u' "/not/a/real/directory"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-d' /"
+            u" '--directory': Directory"
+            u" '/not/a/real/directory'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -692,14 +681,14 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]'
-            u'\nTry "delphix-sdk download-logs -h" for help.'
-            u'\n'
-            u'\nError: Invalid value for "-c" /'
-            u' "--plugin-config": File'
-            u' "/not/a/real/file/plugin_config.yml"'
-            u' does not exist.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]"
+            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\n"
+            u"\nError: Invalid value for '-c' /"
+            u" '--plugin-config': File"
+            u" '/not/a/real/file/plugin_config.yml'"
+            u" does not exist."
+            u"\n")
 
     @staticmethod
     @mock.patch(
@@ -761,9 +750,9 @@ class TestDownloadCli:
 
         assert result.exit_code == 2
         assert result.output == (
-            u'Usage: delphix-sdk download-logs [OPTIONS]\n'
-            u'\n'
-            u'Error: Invalid value for "-e" / '
-            u'"--engine": Option is required '
-            u'and must be specified via the command line.'
-            u'\n')
+            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
+            u"\n"
+            u"Error: Invalid value for '-e' / "
+            u"'--engine': Option is required "
+            u"and must be specified via the command line."
+            u"\n")

@@ -40,17 +40,9 @@ Once the virtualization-sdk repository is forked, clone the forked repository in
 
 `git clone git@github.com:your-username/virtualization-sdk.git`
 
-### Build the virtualization-sdk Repository
+### Development
 
-The virtualization-sdk repository has a Gradle task that creates a virtualenv and builds the code locally. It can be triggered from the root directory of the source tree using the command:
-
-`./gradlew build`
-
-### Run Unit Tests
-
-Unit tests for the virtualization-sdk repository can be triggered from the root directory of the source tree using Gradle with the command:
-
-`./gradlew test`
+For development instructions, refer to [README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/README-dev.md).
 
 ## Asking for Help
 Please raise a GitHub issue to ask for help with appropriate GitHub tag <TBD - Label for help>.
@@ -74,7 +66,7 @@ Some guidelines for Pull Requests:
 Once the pull request has required approvals from code owners of the repository, the code owner will merge the pull request into the actual virtualization-sdk repository.
 
 ### Code Owners
-Code owners defined by the codeowners file in the repository are the gatekeepers of the repository. For a pull request to be merged, it requires approval from at least 2 codeowners.
+Code owners defined by the codeowners file in the repository are the gatekeepers of the repository. For a pull request to be merged, it requires approval from at least one codeowner.
 
 ## Testing and CI/CD
 CI/CD for this repository is managed through GitHub Actions. All the checks need to succeed for the pull request to be merged.
@@ -90,5 +82,6 @@ Commit messages for new changes must meet the following guidelines:
     `Fixes #123 Format of error is incorrect`
 
     `Optional Description of the issue`
+* If the commit doesn't address a specific issue, it should include a description of changes.
 
 

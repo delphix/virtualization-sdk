@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import os
@@ -51,18 +51,17 @@ class TestPluginDependencyUtil:
             dist_path.touch()
 
             global packages
-            packages.add(dist_path.as_posix())
+            packages.add(str(dist_path))
 
         def clean_up(a, b, c):
-            file_util.delete_paths(wheel_dir.as_posix())
+            file_util.delete_paths(str(wheel_dir))
 
-        mock_tmpdir.return_value.__enter__.return_value = wheel_dir.as_posix()
+        mock_tmpdir.return_value.__enter__.return_value = str(wheel_dir)
         mock_tmpdir.return_value.__exit__.side_effect = clean_up
         mock_build_wheel.side_effect = build_wheel
 
-        pdu.install_deps(build_dir.as_posix(), local_vsdk_root='vsdk')
-        mock_install_to_dir.assert_called_once_with(packages,
-                                                    build_dir.as_posix())
+        pdu.install_deps(str(build_dir), local_vsdk_root='vsdk')
+        mock_install_to_dir.assert_called_once_with(packages, str(build_dir))
 
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')
@@ -135,9 +134,8 @@ class TestPluginDependencyUtil:
         with pytest.raises(RuntimeError) as excinfo:
             pdu._build_wheel(tmp_path.as_posix())
 
-        assert excinfo.value.message == (
-            'No setup.py file exists in directory '
-            '{}'.format(tmp_path.as_posix()))
+        assert str(excinfo.value) == ('No setup.py file exists in directory '
+                                      '{}'.format(tmp_path.as_posix()))
 
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')

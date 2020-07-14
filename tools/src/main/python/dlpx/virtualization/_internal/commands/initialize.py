@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import logging
@@ -10,8 +10,8 @@ from collections import OrderedDict
 
 import jinja2
 import yaml
-from dlpx.virtualization._internal import (codegen, exceptions, file_util,
-                                           plugin_util, util_classes)
+from dlpx.virtualization._internal import (codegen, const, exceptions,
+                                           file_util, plugin_util)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ DEFAULT_ENTRY_POINT_FILE = 'plugin_runner.py'
 DEFAULT_ENTRY_POINT_SYMBOL = 'plugin'
 DEFAULT_ENTRY_POINT = '{}:{}'.format(DEFAULT_ENTRY_POINT_FILE[:-3],
                                      DEFAULT_ENTRY_POINT_SYMBOL)
+DEFAULT_BUILD_NUMBER = '0.1.0'
 
 # Internal constants for the template directory.
 ENTRY_POINT_TEMPLATE_NAME = 'entry_point.py.template'
@@ -103,9 +104,8 @@ def init(root, ingestion_strategy, name, host_type):
         logger.info('Writing schema file at %s.', schema_file_path)
         shutil.copyfile(SCHEMA_TEMPLATE_PATH, schema_file_path)
 
-        # Read and valida the schema file
-        result = plugin_util.read_and_validate_schema_file(
-            schema_file_path, False)
+        # Validate the schema file.
+        result = plugin_util.validate_schema_file(schema_file_path, False)
 
         # Generate the definitions based on the schema file
         codegen.generate_python(name, src_dir_path,
@@ -123,7 +123,8 @@ def init(root, ingestion_strategy, name, host_type):
             config = _get_default_plugin_config(plugin_id, ingestion_strategy,
                                                 name, DEFAULT_ENTRY_POINT,
                                                 DEFAULT_SRC_DIRECTORY,
-                                                DEFAULT_SCHEMA_FILE, host_type)
+                                                DEFAULT_SCHEMA_FILE, host_type,
+                                                DEFAULT_BUILD_NUMBER)
             yaml.dump(config, f, default_flow_style=False)
 
         #
@@ -164,15 +165,15 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy, host_type):
 
     template = env.get_template(ENTRY_POINT_TEMPLATE_NAME)
 
-    if host_type == util_classes.WINDOWS_HOST_TYPE:
+    if host_type == const.WINDOWS_HOST_TYPE:
         default_mount_path = "C:\\\\tmp\\\\dlpx_staged_mounts\\\\{}"
-    elif host_type == util_classes.UNIX_HOST_TYPE:
+    elif host_type == const.UNIX_HOST_TYPE:
         default_mount_path = "/tmp/dlpx_staged_mounts/{}"
 
-    if ingestion_strategy == util_classes.DIRECT_TYPE:
+    if ingestion_strategy == const.DIRECT_TYPE:
         linked_operations = env.get_template(
             DIRECT_OPERATIONS_TEMPLATE_NAME).render()
-    elif ingestion_strategy == util_classes.STAGED_TYPE:
+    elif ingestion_strategy == const.STAGED_TYPE:
         linked_operations = env.get_template(
             STAGED_OPERATIONS_TEMPLATE_NAME).render(
                 default_mount_path=default_mount_path)
@@ -188,7 +189,7 @@ def _get_entry_point_contents(plugin_name, ingestion_strategy, host_type):
 
 def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
                                entry_point, src_dir_path, schema_file_path,
-                               host_type):
+                               host_type, default_build_number):
     """
     Returns a valid plugin configuration as an OrderedDict.
 
@@ -209,12 +210,14 @@ def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
     # Ensure values are type 'str'. If they are type unicode yaml prints
     # them with '!!python/unicode' prepended to the value.
     config = OrderedDict([('id', plugin_id.encode('utf-8')),
-                          ('name', name.encode('utf-8')), ('version', '0.1.0'),
+                          ('name', name.encode('utf-8')),
                           ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
                           ('pluginType', ingestion_strategy.encode('utf-8')),
                           ('entryPoint', entry_point.encode('utf-8')),
                           ('srcDir', src_dir_path.encode('utf-8')),
                           ('schemaFile', schema_file_path.encode('utf-8')),
-                          ('hostTypes', [host_type.encode('utf-8')])])
+                          ('hostTypes', [host_type.encode('utf-8')]),
+                          ('buildNumber', default_build_number.encode('utf-8'))
+                          ])
 
     return config

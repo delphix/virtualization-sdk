@@ -4,6 +4,7 @@
 
 from enum import Enum, unique
 
+
 @unique
 class Operation(Enum):
     DISCOVERY_REPOSITORY = 'discovery.repository()'
@@ -27,3 +28,9 @@ class Operation(Enum):
     VIRTUAL_STATUS = 'virtual.status()'
     VIRTUAL_INITIALIZE = 'virtual.initialize()'
     VIRTUAL_MOUNT_SPEC = 'virtual.mount_specification()'
+
+    UPGRADE_REPOSITORY = 'upgrade.repository()'
+    UPGRADE_SOURCE_CONFIG = 'upgrade.source_config()'
+    UPGRADE_LINKED_SOURCE = 'upgrade.linked_source()'
+    UPGRADE_VIRTUAL_SOURCE = 'upgrade.virtual_source()'
+    UPGRADE_SNAPSHOT = 'upgrade.snapshot()'

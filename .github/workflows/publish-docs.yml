@@ -1,0 +1,77 @@
+name: Publish docs to GitHub pages
+
+on:
+  create:
+    branches:
+      - 'docs/**'
+  push:
+    branches:
+      - 'docs/**'
+    paths:
+      - 'docs/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+        package: [docs]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow.
+          # Set fetch-depth: 0 to fetch all history for all branches and tags.
+          fetch-depth: 0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set the current branch environment variable
+        working-directory: ${{ matrix.package }}
+        run: |
+          CURRENT_BRANCH_VAR=${GITHUB_REF#refs/heads/}
+          echo "Current branch: $CURRENT_BRANCH_VAR"
+          # Set CURRENT_BRANCH environment variable to the current branch name.
+          echo "::set-env name=CURRENT_BRANCH::$(echo $CURRENT_BRANCH_VAR)"
+      - name: Display all remote branches
+        working-directory: ${{ matrix.package }}
+        run: |
+          # Display all remote branches
+          git branch -r
+      - name: Set the latest docs branch environment variable
+        working-directory: ${{ matrix.package }}
+        run: |
+          # Get only docs branches, extract the "docs/x.y.z" part, sort them in descending order, and get the first one.
+          LATEST_DOCS_BRANCH_VAR=$(git branch -r | grep -e ".*\/*docs\/[0-9].[0-9].[0-9]" | sed -n "s/.*\/*\(docs\/[0-9].[0-9].[0-9]\).*/\1/p" | sort -r | head -n 1)
+          echo "Latest docs branch: $LATEST_DOCS_BRANCH_VAR"
+          # Set the LATEST_DOCS_BRANCH environment variable.
+          echo "::set-env name=LATEST_DOCS_BRANCH::$(echo $LATEST_DOCS_BRANCH_VAR)"
+      - name: Check that the current branch is the latest docs branch, fail otherwise
+        working-directory: ${{ matrix.package }}
+        run: |
+          if [ $CURRENT_BRANCH != $LATEST_DOCS_BRANCH ]; then
+            echo "The action is running on branch $CURRENT_BRANCH which is not the latest docs branch ($LATEST_DOCS_BRANCH)."
+            exit 1
+          else
+            echo "The action is running on the latest docs branch."
+          fi
+      - name: Install Pipenv
+        uses: dschep/install-pipenv-action@v1
+      - name: Install dependencies for building documenation
+        working-directory: ${{ matrix.package }}
+        run: |
+          pipenv install
+      - name: Build documentation
+        working-directory: ${{ matrix.package }}
+        run: |
+          pipenv run mkdocs build --clean
+      - name: Deploy the contents of docs/site to gh-pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/site
+          commit_message: Deploy to gh-pages 🚀
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"

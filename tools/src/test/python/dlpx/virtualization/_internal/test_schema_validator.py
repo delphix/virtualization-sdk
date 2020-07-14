@@ -1,15 +1,13 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import json
 import os
 
-from dlpx.virtualization._internal import exceptions, util_classes
-from dlpx.virtualization._internal.schema_validator import SchemaValidator
-from dlpx.virtualization._internal.util_classes import ValidationMode
-
 import pytest
+from dlpx.virtualization._internal import const, exceptions, plugin_util
+from dlpx.virtualization._internal.schema_validator import SchemaValidator
 
 
 class TestSchemaValidator:
@@ -19,21 +17,19 @@ class TestSchemaValidator:
         f = tmpdir.join(schema_filename)
         f.write(meta_schema)
         with pytest.raises(exceptions.UserError) as err_info:
-            validator = SchemaValidator(schema_file, f, ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, f)
             validator.validate()
 
         message = err_info.value.message
-        assert ('Failed to load schemas because {!r} is not a valid json file.'
-                ' Error: Extra data: line 2 column 1 - line 2 column 9'
-                ' (char 19 - 27)'.format(schema_file)) in message
+        assert ("Failed to load schemas because '{}' is not a valid json file."
+                " Error: Extra data: line 2 column 1 - line 2 column 9"
+                " (char 19 - 27)".format(schema_file)) in message
 
     @staticmethod
     def test_bad_schema_file(schema_file):
         os.remove(schema_file)
         with pytest.raises(exceptions.UserError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -43,8 +39,7 @@ class TestSchemaValidator:
 
     @staticmethod
     def test_valid_schema(schema_file):
-        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
-                                    ValidationMode.ERROR)
+        validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
         validator.validate()
 
     @staticmethod
@@ -69,8 +64,7 @@ class TestSchemaValidator:
         # this test will not raise validation errors even though type
         # is not specified and will pass.
         #
-        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
-                                    ValidationMode.ERROR)
+        validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
         validator.validate()
 
     @staticmethod
@@ -92,9 +86,7 @@ class TestSchemaValidator:
                              }])
     def test_bad_root_type_num(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -119,9 +111,7 @@ class TestSchemaValidator:
                              }])
     def test_bad_root_type(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -145,9 +135,7 @@ class TestSchemaValidator:
                              }])
     def test_missing_identity_fields(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -171,9 +159,7 @@ class TestSchemaValidator:
                              }])
     def test_missing_name_field(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -200,8 +186,7 @@ class TestSchemaValidator:
         # this test will not raise validation errors even though type
         # is not specified and will pass.
         #
-        validator = SchemaValidator(schema_file, util_classes.PLUGIN_SCHEMA,
-                                    ValidationMode.ERROR)
+        validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
         validator.validate()
 
     @staticmethod
@@ -223,9 +208,7 @@ class TestSchemaValidator:
                              }])
     def test_bad_sub_type(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -250,9 +233,7 @@ class TestSchemaValidator:
                              }])
     def test_bad_sub_type_num(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -279,9 +260,7 @@ class TestSchemaValidator:
         #
         pytest.skip("required fields validation is not working yet")
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -305,9 +284,7 @@ class TestSchemaValidator:
                              }])
     def test_multiple_validation_errors(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
@@ -315,8 +292,6 @@ class TestSchemaValidator:
         assert "'identityFields' is a required property" in message
 
     @staticmethod
-    @pytest.mark.parametrize('validation_mode',
-                             [ValidationMode.INFO, ValidationMode.WARNING])
     @pytest.mark.parametrize('source_config_definition',
                              [{
                                  'type': 'object',
@@ -333,13 +308,10 @@ class TestSchemaValidator:
                                  'nameField': 'name',
                                  'identityFields': ['name']
                              }])
-    def test_bad_sub_type_info_warn_mode(schema_file, validation_mode):
+    def test_bad_sub_type_info_warn_mode(schema_file):
         err_info = None
         try:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        validation_mode)
-            validator.validate()
+            plugin_util.validate_schema_file(schema_file, False)
         except Exception as e:
             err_info = e
 
@@ -378,11 +350,9 @@ class TestSchemaValidator:
         }])
     def test_bad_type_in_array(schema_file):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:
-            validator = SchemaValidator(schema_file,
-                                        util_classes.PLUGIN_SCHEMA,
-                                        ValidationMode.ERROR)
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
             validator.validate()
 
         message = err_info.value.message
-        assert (
-            "'strings' is not valid under any of the given schemas" in message)
+        assert ("'strings' is not valid under any of the given schemas"
+                in message)

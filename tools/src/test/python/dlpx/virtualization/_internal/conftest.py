@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import configparser
@@ -8,8 +8,7 @@ import json
 import os
 
 import yaml
-from dlpx.virtualization._internal import (cli, click_util, package_util,
-                                           util_classes)
+from dlpx.virtualization._internal import cli, click_util, const, package_util
 
 import pytest
 
@@ -45,18 +44,6 @@ def plugin_config_file(tmpdir, plugin_config_filename, plugin_config_content):
 @pytest.fixture
 def plugin_config_filename():
     return 'plugin_config.yml'
-
-
-@pytest.fixture
-def fake_staged_plugin_config():
-    return os.path.join(os.path.dirname(__file__),
-                        'fake_plugin/staged/plugin_config.yml')
-
-
-@pytest.fixture
-def fake_direct_plugin_config():
-    return os.path.join(os.path.dirname(__file__),
-                        'fake_plugin/direct/plugin_config.yml')
 
 
 @pytest.fixture
@@ -182,27 +169,39 @@ def artifact_file_created():
 
 
 @pytest.fixture
-def plugin_config_content(plugin_id, plugin_name, src_dir, schema_file,
-                          language, manual_discovery, plugin_type):
+def plugin_config_content(plugin_id, plugin_name, external_version, language,
+                          host_types, plugin_type, entry_point, src_dir,
+                          schema_file, manual_discovery, build_number,
+                          lua_name, minimum_lua_version):
     """
     This fixutre creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
     """
     config = {
-        'version': '2.0.0',
-        'hostTypes': ['UNIX'],
-        'entryPoint': 'python_vfiles:vfiles',
         'defaultLocale': 'en-us',
         'rootSquashEnabled': True,
     }
-    if id:
+
+    if plugin_id:
         config['id'] = plugin_id
 
     if plugin_name:
         config['name'] = plugin_name
 
+    if external_version:
+        config['externalVersion'] = external_version
+
+    if language:
+        config['language'] = language
+
+    if host_types:
+        config['hostTypes'] = host_types
+
     if plugin_type:
         config['pluginType'] = plugin_type
+
+    if entry_point:
+        config['entryPoint'] = entry_point
 
     if src_dir:
         config['srcDir'] = src_dir
@@ -210,88 +209,21 @@ def plugin_config_content(plugin_id, plugin_name, src_dir, schema_file,
     if schema_file:
         config['schemaFile'] = schema_file
 
-    if language:
-        config['language'] = language
-
-    # Here we do is not None check because we will be passing in
+    # Here we do an 'is not None' check because we will be passing in
     # booleans as a parameter in tests.
     if manual_discovery is not None:
         config['manualDiscovery'] = manual_discovery
 
+    if build_number:
+        config['buildNumber'] = build_number
+
+    if lua_name:
+        config['luaName'] = lua_name
+
+    if minimum_lua_version:
+        config['minimumLuaVersion'] = minimum_lua_version
+
     return config
-
-
-@pytest.fixture
-def plugin_entry_point_name():
-    return 'vfiles'
-
-
-@pytest.fixture
-def plugin_module_content(plugin_entry_point_name):
-    class Object(object):
-        pass
-
-    discovery = Object()
-    discovery.repository_impl = True
-    discovery.source_config_impl = True
-
-    linked = Object()
-    linked.pre_snapshot_impl = True
-    linked.post_snapshot_impl = True
-    linked.start_staging_impl = True
-    linked.stop_staging_impl = False
-    linked.status_impl = True
-    linked.worker_impl = False
-    linked.mount_specification_impl = True
-
-    virtual = Object()
-    virtual.configure_impl = True
-    virtual.unconfigure_impl = False
-    virtual.reconfigure_impl = True
-    virtual.start_impl = True
-    virtual.stop_impl = False
-    virtual.pre_snapshot_impl = True
-    virtual.post_snapshot_impl = True
-    virtual.mount_specification_impl = True
-    virtual.status_impl = False
-    virtual.initialize_impl = False
-
-    plugin_object = Object()
-    plugin_object.discovery = discovery
-    plugin_object.linked = linked
-    plugin_object.virtual = virtual
-
-    plugin_module = Object()
-    setattr(plugin_module, plugin_entry_point_name, plugin_object)
-
-    return plugin_module
-
-
-@pytest.fixture
-def plugin_manifest():
-    manifest = {
-        'type': 'PluginManifest',
-        'hasRepositoryDiscovery': True,
-        'hasSourceConfigDiscovery': True,
-        'hasLinkedPreSnapshot': True,
-        'hasLinkedPostSnapshot': True,
-        'hasLinkedStartStaging': True,
-        'hasLinkedStopStaging': False,
-        'hasLinkedStatus': True,
-        'hasLinkedWorker': False,
-        'hasLinkedMountSpecification': True,
-        'hasVirtualConfigure': True,
-        'hasVirtualUnconfigure': False,
-        'hasVirtualReconfigure': True,
-        'hasVirtualStart': True,
-        'hasVirtualStop': False,
-        'hasVirtualPreSnapshot': True,
-        'hasVirtualPostSnapshot': True,
-        'hasVirtualMountSpecification': True,
-        'hasVirtualStatus': False,
-        'hasInitialize': False
-    }
-    return manifest
 
 
 @pytest.fixture
@@ -305,8 +237,38 @@ def plugin_name():
 
 
 @pytest.fixture
+def external_version():
+    return '2.0.0'
+
+
+@pytest.fixture
 def language():
     return 'PYTHON27'
+
+
+@pytest.fixture
+def host_types():
+    return ['UNIX']
+
+
+@pytest.fixture
+def plugin_type():
+    return const.DIRECT_TYPE
+
+
+@pytest.fixture
+def entry_point(entry_point_module, entry_point_object):
+    return '{}:{}'.format(entry_point_module, entry_point_object)
+
+
+@pytest.fixture
+def entry_point_module():
+    return 'python_vfiles'
+
+
+@pytest.fixture
+def entry_point_object():
+    return 'vfiles'
 
 
 @pytest.fixture
@@ -315,13 +277,168 @@ def manual_discovery():
 
 
 @pytest.fixture
+def build_number():
+    return '2.0.0'
+
+
+@pytest.fixture
+def lua_name():
+    return 'lua-toolkit-1'
+
+
+@pytest.fixture
+def minimum_lua_version():
+    return "2.3"
+
+
+@pytest.fixture
 def artifact_manual_discovery():
     return True
 
 
 @pytest.fixture
-def plugin_type():
-    return util_classes.DIRECT_TYPE
+def plugin_module_content(entry_point_object, discovery_operation,
+                          linked_operation, virtual_operation,
+                          upgrade_operation):
+    class Object(object):
+        pass
+
+    plugin_object = Object()
+    plugin_object.discovery = discovery_operation
+    plugin_object.linked = linked_operation
+    plugin_object.virtual = virtual_operation
+    plugin_object.upgrade = upgrade_operation
+
+    plugin_module = Object()
+    setattr(plugin_module, entry_point_object, plugin_object)
+
+    return plugin_module
+
+
+@pytest.fixture
+def discovery_operation():
+    class DiscoveryOperations(object):
+        pass
+
+    discovery = DiscoveryOperations()
+
+    def repository_discovery(source_connection):
+        return None
+
+    def source_config_discovery(source_connection, repository):
+        return None
+
+    discovery.repository_impl = repository_discovery
+    discovery.source_config_impl = source_config_discovery
+
+    return discovery
+
+
+@pytest.fixture
+def linked_operation():
+    class LinkedOperations(object):
+        pass
+
+    linked = LinkedOperations()
+
+    def pre_snapshot(direct_source, repository, source_config):
+        pass
+
+    def post_snapshot(direct_source, repository, source_config):
+        return None
+
+    linked.pre_snapshot_impl = pre_snapshot
+    linked.post_snapshot_impl = post_snapshot
+    linked.start_staging_impl = None
+    linked.stop_staging_impl = None
+    linked.status_impl = None
+    linked.worker_impl = None
+    linked.mount_specification_impl = None
+
+    return linked
+
+
+@pytest.fixture
+def virtual_operation():
+    class VirtualOperations(object):
+        pass
+
+    virtual = VirtualOperations()
+
+    def configure(virtual_source, repository, snapshot):
+        return None
+
+    def reconfigure(virtual_source, repository, source_config, snapshot):
+        pass
+
+    def start(virtual_source, repository, source_config):
+        pass
+
+    def pre_snapshot(virtual_source, repository, source_config):
+        pass
+
+    def post_snapshot(virtual_source, repository, source_config):
+        return None
+
+    def mount_specification(virtual_source, repository):
+        return None
+
+    virtual.configure_impl = configure
+    virtual.unconfigure_impl = None
+    virtual.reconfigure_impl = reconfigure
+    virtual.start_impl = start
+    virtual.stop_impl = None
+    virtual.pre_snapshot_impl = pre_snapshot
+    virtual.post_snapshot_impl = post_snapshot
+    virtual.mount_specification_impl = mount_specification
+    virtual.status_impl = None
+    virtual.initialize_impl = None
+
+    return virtual
+
+
+@pytest.fixture
+def upgrade_operation():
+    class UpgradeOperation(object):
+        pass
+
+    upgrade = UpgradeOperation()
+    upgrade.migration_id_list = []
+    upgrade.repository_id_to_impl = {}
+    upgrade.source_config_id_to_impl = {}
+    upgrade.linked_source_id_to_impl = {}
+    upgrade.virtual_source_id_to_impl = {}
+    upgrade.snapshot_id_to_impl = {}
+
+    return upgrade
+
+
+@pytest.fixture
+def plugin_manifest(upgrade_operation):
+    manifest = {
+        'type': 'PluginManifest',
+        'hasRepositoryDiscovery': True,
+        'hasSourceConfigDiscovery': True,
+        'hasLinkedPreSnapshot': True,
+        'hasLinkedPostSnapshot': True,
+        'hasLinkedStartStaging': False,
+        'hasLinkedStopStaging': False,
+        'hasLinkedStatus': False,
+        'hasLinkedWorker': False,
+        'hasLinkedMountSpecification': False,
+        'hasVirtualConfigure': True,
+        'hasVirtualUnconfigure': False,
+        'hasVirtualReconfigure': True,
+        'hasVirtualStart': True,
+        'hasVirtualStop': False,
+        'hasVirtualPreSnapshot': True,
+        'hasVirtualPostSnapshot': True,
+        'hasVirtualMountSpecification': True,
+        'hasVirtualStatus': False,
+        'hasInitialize': False,
+        'migrationIdList': upgrade_operation.migration_id_list
+    }
+    return manifest
 
 
 @pytest.fixture
@@ -452,7 +569,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'type': 'Plugin',
         'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
         'prettyName': 'python_vfiles',
-        'version': '2.0.0',
+        'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
         'hostTypes': ['UNIX'],
@@ -460,6 +577,9 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'engineApi': engine_api,
         'rootSquashEnabled': True,
+        'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '2.3',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
     }
@@ -498,7 +618,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'type': 'Plugin',
         'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
         'prettyName': 'python_vfiles',
-        'version': '2.0.0',
+        'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
         'hostTypes': ['UNIX'],
@@ -506,6 +626,9 @@ def artifact_content(engine_api, virtual_source_definition,
         'buildApi': package_util.get_build_api_version(),
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'rootSquashEnabled': True,
+        'buildNumber': '2',
+        'luaName': 'lua-toolkit-1',
+        'minimumLuaVersion': '2.3',
         'manifest': {}
     }
 
@@ -535,7 +658,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 10, 'micro': 5}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 3}
 
 
 @pytest.fixture
