@@ -320,7 +320,8 @@ class TestBuild:
 
     @staticmethod
     @mock.patch('compileall.compile_dir')
-    def test_zip_and_encode_source_files_compileall_fail(mock_compile, src_dir):
+    def test_zip_and_encode_source_files_compileall_fail(
+            mock_compile, src_dir):
         mock_compile.return_value = 0
         with pytest.raises(exceptions.UserError) as err_info:
             build.zip_and_encode_source_files(src_dir)
@@ -432,16 +433,17 @@ class TestPluginUtil:
         assert not mock_generate_python.called
 
     @staticmethod
-    @pytest.mark.parametrize('src_dir', ['/not/a/real/dir/src'])
+    @pytest.mark.parametrize('src_dir', [os.path.join('fake', 'dir')])
     @mock.patch('os.path.isabs', return_value=False)
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     def test_plugin_no_src_dir(mock_generate_python, mock_path_is_relative,
-                               plugin_config_file, artifact_file):
+                               plugin_config_file, artifact_file, tmpdir):
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert message == "The path '/not/a/real/dir/src' does not exist."
+        assert message == "The path '{}' does not exist.".format(
+            tmpdir.join(os.path.join('fake', 'dir')).strpath)
 
         assert not mock_generate_python.called
 
@@ -499,7 +501,17 @@ class TestPluginUtil:
                                         plugin_config_file, artifact_file,
                                         schema_file):
         # Make it so we can't read the file
-        os.chmod(schema_file, 0000)
+        if os.name == 'nt':
+            pytest.skip(
+                'skipping this test on windows as os.chmod has issues removing'
+                ' permissions on file')
+            #
+            # The schema_file can be made unreadable on windows using pypiwin32 but
+            # since it adds dependency on pypiwin32 for the sdk, skipping this test
+            # instead of potentially destabilizing the sdk by adding this dependency.
+            #
+        else:
+            os.chmod(schema_file, 0000)
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False, False)
 
@@ -651,3 +663,25 @@ class TestPluginUtil:
             plugin_config_content, src_dir, schema_content, {})
 
         assert expected == upload_artifact['buildNumber']
+
+    @staticmethod
+    @pytest.mark.parametrize('lua_name, expected', [
+        pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
+        pytest.param('nix_staged_python', 'nix_staged_python')
+    ])
+    def test_lua_name_parameter(plugin_config_content, src_dir, schema_content,
+                                expected):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert expected == upload_artifact.get('luaName')
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'minimum_lua_version, expected',
+        [pytest.param('2.3', '2.3'),
+         pytest.param('2.4', '2.4')])
+    def test_minimum_lua_version_parameter(plugin_config_content, src_dir,
+                                           schema_content, expected):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert expected == upload_artifact.get('minimumLuaVersion')

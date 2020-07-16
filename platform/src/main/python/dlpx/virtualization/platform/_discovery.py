@@ -3,26 +3,23 @@
 #
 
 # -*- coding: utf-8 -*-
-
 """DiscoveryOperations for the Virtualization Platform
 
 """
 import json
-from dlpx.virtualization.common import RemoteConnection
-from dlpx.virtualization.api import common_pb2
-from dlpx.virtualization.api import platform_pb2
-from dlpx.virtualization.platform import validation_util as v
-from dlpx.virtualization.platform.operation import Operation as Op
-from dlpx.virtualization.platform.exceptions import (
-    IncorrectReturnTypeError, OperationNotDefinedError,
-    OperationAlreadyDefinedError)
 
+from dlpx.virtualization.api import common_pb2, platform_pb2
+from dlpx.virtualization.common import RemoteConnection
+from dlpx.virtualization.platform import validation_util as v
+from dlpx.virtualization.platform.exceptions import (
+    IncorrectReturnTypeError, OperationAlreadyDefinedError,
+    OperationNotDefinedError)
+from dlpx.virtualization.platform.operation import Operation as Op
 
 __all__ = ['DiscoveryOperations']
 
 
 class DiscoveryOperations(object):
-
     def __init__(self):
         self.repository_impl = None
         self.source_config_impl = None
@@ -35,6 +32,7 @@ class DiscoveryOperations(object):
             self.repository_impl = v.check_function(repository_impl,
                                                     Op.DISCOVERY_REPOSITORY)
             return repository_impl
+
         return repository_decorator
 
     def source_config(self):
@@ -44,6 +42,7 @@ class DiscoveryOperations(object):
             self.source_config_impl = v.check_function(
                 source_config_impl, Op.DISCOVERY_SOURCE_CONFIG)
             return source_config_impl
+
         return source_config_decorator
 
     def _internal_repository(self, request):
@@ -76,20 +75,20 @@ class DiscoveryOperations(object):
             raise OperationNotDefinedError(Op.DISCOVERY_REPOSITORY)
 
         repositories = self.repository_impl(
-            source_connection=RemoteConnection.from_proto(request.source_connection))
+            source_connection=RemoteConnection.from_proto(
+                request.source_connection))
 
         # Validate that this is a list of Repository objects
         if not isinstance(repositories, list):
-            raise IncorrectReturnTypeError(
-                Op.DISCOVERY_REPOSITORY,
-                type(repositories),
-                [RepositoryDefinition])
+            raise IncorrectReturnTypeError(Op.DISCOVERY_REPOSITORY,
+                                           type(repositories),
+                                           [RepositoryDefinition])
 
-        if not all(isinstance(repo, RepositoryDefinition)
-                   for repo in repositories):
+        if not all(
+                isinstance(repo, RepositoryDefinition)
+                for repo in repositories):
             raise IncorrectReturnTypeError(
-                Op.DISCOVERY_REPOSITORY,
-                [type(repo) for repo in repositories],
+                Op.DISCOVERY_REPOSITORY, [type(repo) for repo in repositories],
                 [RepositoryDefinition])
 
         repository_discovery_response = (
@@ -137,27 +136,29 @@ class DiscoveryOperations(object):
             json.loads(request.repository.parameters.json))
 
         source_configs = self.source_config_impl(
-            source_connection=RemoteConnection.from_proto(request.source_connection),
+            source_connection=RemoteConnection.from_proto(
+                request.source_connection),
             repository=repository_definition)
 
         # Validate that this is a list of SourceConfigDefinition objects
         if not isinstance(source_configs, list):
-            raise IncorrectReturnTypeError(
-                Op.DISCOVERY_SOURCE_CONFIG,
-                type(source_configs),
-                [SourceConfigDefinition])
+            raise IncorrectReturnTypeError(Op.DISCOVERY_SOURCE_CONFIG,
+                                           type(source_configs),
+                                           [SourceConfigDefinition])
 
-        if not all(isinstance(config, SourceConfigDefinition)
-                   for config in source_configs):
+        if not all(
+                isinstance(config, SourceConfigDefinition)
+                for config in source_configs):
             raise IncorrectReturnTypeError(
                 Op.DISCOVERY_SOURCE_CONFIG,
-                [type(config) for config in source_configs],
-                [SourceConfigDefinition])
+                [type(config)
+                 for config in source_configs], [SourceConfigDefinition])
 
         source_config_discovery_response = (
             platform_pb2.SourceConfigDiscoveryResponse())
-        source_config_protobuf_list = [to_protobuf(config)
-                                       for config in source_configs]
+        source_config_protobuf_list = [
+            to_protobuf(config) for config in source_configs
+        ]
         source_config_discovery_response.return_value.source_configs.extend(
             source_config_protobuf_list)
         return source_config_discovery_response

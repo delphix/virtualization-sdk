@@ -10,7 +10,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [2.7]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         package: [common, libs, platform, tools]
 
     steps:
@@ -67,7 +67,7 @@ jobs:
     
       - name: Run flake8 on test directory
         working-directory: ${{ matrix.package }}
-        run: python -m flake8 test/main/python --max-line-length 88
+        run: python -m flake8 src/test/python --max-line-length 88
 
   #format:
     #name: Check format ${{ matrix.package}}

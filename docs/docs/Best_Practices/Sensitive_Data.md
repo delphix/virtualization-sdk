@@ -34,6 +34,9 @@ This tells the Delphix Engine to take special precautions with this password pro
 3. The Delphix Engine's UI and CLI will not display the password.
 4. Clients of the Delphix Engine's public API will not be able to access the password.
 
+!!! note
+    Removing a previously added password property from a field and running a [Data Migration](/References/Glossary.md#data-migration) will expose the password in plaintext. If this is intentional, write a migration to ensure that the new property conforms to the new schema.
+
 # Using Environment Variables For Remote Data Passing
 
 Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary.md#staging-environment), and that database command will need to use a password.

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import logging
@@ -62,8 +62,8 @@ def standardize_path(path):
     if standardized_path == '.':
         standardized_path = os.path.realpath(standardized_path)
     else:
-        standardized_path = os.path.normpath(standardized_path)
-    standardized_path = os.path.normcase(standardized_path)
+        standardized_path = os.path.abspath(standardized_path)
+    standardized_path = os.path.abspath(standardized_path)
     return standardized_path
 
 
@@ -95,7 +95,6 @@ def get_src_dir_path(config_file_path, src_dir):
     # absolute for comparison later.
     plugin_root_dir = os.path.dirname(config_file_path)
     plugin_root_dir = standardize_path(plugin_root_dir)
-    plugin_root_dir = os.path.abspath(plugin_root_dir)
 
     # The plugin's src directory is relative to the plugin root not to the
     # current working directory. os.path.abspath makes a relative path
@@ -109,8 +108,13 @@ def get_src_dir_path(config_file_path, src_dir):
     if not os.path.isdir(src_dir_absolute):
         raise exceptions.PathTypeError(src_dir_absolute, 'directory')
 
-    if not src_dir_absolute.startswith(
-            plugin_root_dir) or src_dir_absolute == plugin_root_dir:
+    normcase_src_dir = os.path.normcase(src_dir_absolute)
+    normcase_plugin_root = os.path.normcase(plugin_root_dir)
+
+    if (
+            not normcase_src_dir.startswith(normcase_plugin_root)
+            or normcase_src_dir == normcase_plugin_root
+    ):
         raise exceptions.UserError(
             "The src directory {} is not a subdirectory "
             "of the plugin root at {}".format(src_dir_absolute,

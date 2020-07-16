@@ -40,7 +40,8 @@ class PluginValidator:
         self.__pre_import_checks = [
             self.__validate_plugin_config_content,
             self.__validate_plugin_entry_point,
-            self.__check_for_undefined_names
+            self.__check_for_undefined_names,
+            self.__check_for_lua_name_and_min_version
         ]
 
     @property
@@ -214,6 +215,28 @@ class PluginValidator:
                     msg = "{} on line {} in {}".format(result[3], result[1],
                                                        checker.filename)
                     warnings['exception'].append(exceptions.UserError(msg))
+
+        if warnings and len(warnings) > 0:
+            raise exceptions.ValidationFailedError(warnings)
+
+    def __check_for_lua_name_and_min_version(self):
+        """
+        Check if both lua name and minimum lua version are present if either
+        property is set.
+        """
+        warnings = defaultdict(list)
+
+        if (self.__plugin_config_content.get('luaName') and not
+           self.__plugin_config_content.get('minimumLuaVersion')):
+            msg = ('Failed to process property "luaName" without '
+                   '"minimumLuaVersion" set in the plugin config.')
+            warnings['exception'].append(exceptions.UserError(msg))
+
+        if (self.__plugin_config_content.get('minimumLuaVersion') and not
+           self.__plugin_config_content.get('luaName')):
+            msg = ('Failed to process property "minimumLuaVersion" without '
+                   '"luaName" set in the plugin config.')
+            warnings['exception'].append(exceptions.UserError(msg))
 
         if warnings and len(warnings) > 0:
             raise exceptions.ValidationFailedError(warnings)
