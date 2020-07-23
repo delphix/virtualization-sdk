@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
 #
 
 import base64
@@ -216,6 +216,12 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
 
     if plugin_config_content.get('luaName'):
         artifact['luaName'] = plugin_config_content['luaName']
+
+    if plugin_config_content.get('extendedStartStopHooks'):
+        artifact['extendedStartStopHooks'] = plugin_config_content[
+            'extendedStartStopHooks']
+    else:
+        artifact['extendedStartStopHooks'] = False
 
     if plugin_config_content.get('minimumLuaVersion'):
         artifact['minimumLuaVersion'] = plugin_config_content[

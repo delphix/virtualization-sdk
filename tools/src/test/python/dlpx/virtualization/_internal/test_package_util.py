@@ -10,7 +10,7 @@ import pytest
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '2.1.0.dev3'
+        assert package_util.get_version() == '2.1.0.dev4'
 
     @staticmethod
     def test_get_virtualization_api_version():
