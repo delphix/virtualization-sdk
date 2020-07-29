@@ -56,9 +56,13 @@
 
 ![Screenshot](images/VirtualSourceEnable.png)
 
+Note: pre- and post-start hooks are only run if `extendedStartStopHooks` is set to `true` in the [plugin config](Plugin_Config.md).
+
 ## Virtual Source Disable
 
 ![Screenshot](images/VirtualSourceDisable.png)
+
+Note: pre- and post-stop hooks are only run if `extendedStartStopHooks` is set to `true` in the [plugin config](Plugin_Config.md).
 
 ## Upgrade
 

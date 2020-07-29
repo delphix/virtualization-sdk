@@ -665,6 +665,18 @@ class TestPluginUtil:
         assert expected == upload_artifact['buildNumber']
 
     @staticmethod
+    @pytest.mark.parametrize('extended_start_stop_hooks, expected', [
+        pytest.param(True, True),
+        pytest.param(False, False),
+        pytest.param(None, False),
+    ])
+    def test_extended_hooks_parameter(plugin_config_content, src_dir,
+                                      schema_content, expected):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert expected == upload_artifact.get('extendedStartStopHooks')
+
+    @staticmethod
     @pytest.mark.parametrize('lua_name, expected', [
         pytest.param('lua-toolkit-1', 'lua-toolkit-1'),
         pytest.param('nix_staged_python', 'nix_staged_python')

@@ -172,9 +172,10 @@ def artifact_file_created():
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
                           schema_file, manual_discovery, build_number,
-                          lua_name, minimum_lua_version):
+                          extended_start_stop_hooks, lua_name,
+                          minimum_lua_version):
     """
-    This fixutre creates the dict expected in the properties yaml file the
+    This fixture creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
     """
     config = {
@@ -219,6 +220,9 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if lua_name:
         config['luaName'] = lua_name
+
+    if extended_start_stop_hooks:
+        config['extendedStartStopHooks'] = extended_start_stop_hooks
 
     if minimum_lua_version:
         config['minimumLuaVersion'] = minimum_lua_version
@@ -279,6 +283,11 @@ def manual_discovery():
 @pytest.fixture
 def build_number():
     return '2.0.0'
+
+
+@pytest.fixture
+def extended_start_stop_hooks():
+    return False
 
 
 @pytest.fixture
@@ -579,6 +588,7 @@ def basic_artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
+        'extendedStartStopHooks': False,
         'minimumLuaVersion': '2.3',
         'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
         'manifest': {}
@@ -628,6 +638,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
+        'extendedStartStopHooks': False,
         'minimumLuaVersion': '2.3',
         'manifest': {}
     }
