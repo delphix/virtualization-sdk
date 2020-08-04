@@ -1,0 +1,2213 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../images/logo.png">
+      <meta name="generator" content="mkdocs-0.17.5, mkdocs-material-2.9.2">
+    
+    
+      
+        <title>Plugin Operations - Delphix Virtualization SDK 2.1.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.fbb7f3af.css">
+      
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica+Neue:300,400,400i,700|Ubuntu+Mono">
+        <style>body,input{font-family:"Helvetica Neue","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#plugin-operations" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../../.." title="Delphix Virtualization SDK 2.1.0" class="md-header-nav__button md-logo">
+          
+            <img src="../../../images/delphix-logo-white.png" width="153" height="15">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Delphix Virtualization SDK 2.1.0
+              </span>
+              <span class="md-header-nav__topic">
+                Plugin Operations
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../../../images/delphix-logo-white.png" width="48" height="48">
+      
+    </span>
+    Delphix Virtualization SDK 2.1.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Welcome!" class="md-nav__link">
+      Welcome!
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../Getting_Started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Building Your First Plugin
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Building Your First Plugin
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Building_Your_First_Plugin/Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Building_Your_First_Plugin/Initial_Setup/" title="Initial Setup" class="md-nav__link">
+      Initial Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Building_Your_First_Plugin/Discovery/" title="Discovery" class="md-nav__link">
+      Discovery
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Building_Your_First_Plugin/Data_Ingestion/" title="Data Ingestion" class="md-nav__link">
+      Data Ingestion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Building_Your_First_Plugin/Provisioning/" title="Provisioning" class="md-nav__link">
+      Provisioning
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Versioning And Upgrade
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Versioning And Upgrade
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Versioning/" title="Versioning" class="md-nav__link">
+      Versioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Upgrade/" title="Upgrade" class="md-nav__link">
+      Upgrade
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Compatibility/" title="Compatibility" class="md-nav__link">
+      Compatibility
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Backports_And_Hotfixes/" title="Backports and Hotfixes" class="md-nav__link">
+      Backports and Hotfixes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Replication/" title="Replication" class="md-nav__link">
+      Replication
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-7" type="checkbox" id="nav-4-7" checked>
+    
+    <label class="md-nav__link" for="nav-4-7">
+      Lua Toolkit To SDK Plugin Migration
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-7">
+        Lua Toolkit To SDK Plugin Migration
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Plugin Operations
+      </label>
+    
+    <a href="./" title="Plugin Operations" class="md-nav__link md-nav__link--active">
+      Plugin Operations
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-repository-data-migration" title="Lua Repository Data Migration" class="md-nav__link">
+    Lua Repository Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-source-config-data-migration" title="Lua Source Config Data Migration" class="md-nav__link">
+    Lua Source Config Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_1" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_1" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_1" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_1" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_1" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_1" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-linked-source-data-migration" title="Lua Linked Source Data Migration" class="md-nav__link">
+    Lua Linked Source Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_2" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_2" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_2" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_2" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_2" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_2" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-virtual-source-data-migration" title="Lua Virtual Source Data Migration" class="md-nav__link">
+    Lua Virtual Source Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_3" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_3" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_3" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_3" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_3" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_3" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_3" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_3" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-snapshot-data-migration" title="Lua Snapshot Data Migration" class="md-nav__link">
+    Lua Snapshot Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_4" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_4" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_4" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_4" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_4" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_4" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_4" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_4" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Converting_Migration_Scripts/" title="Converting Lua Upgrade Scripts to Python Data Migrations" class="md-nav__link">
+      Converting Lua Upgrade Scripts to Python Data Migrations
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      References
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/CLI/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Plugin_Config/" title="Plugin Config" class="md-nav__link">
+      Plugin Config
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Plugin_Operations/" title="Plugin Operations" class="md-nav__link">
+      Plugin Operations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Schemas/" title="Schemas" class="md-nav__link">
+      Schemas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Schemas_and_Autogenerated_Classes/" title="Schemas and Autogenerated Classes" class="md-nav__link">
+      Schemas and Autogenerated Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Platform_Libraries/" title="Platform Libraries" class="md-nav__link">
+      Platform Libraries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Workflows/" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../References/Glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Best Practices
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Best Practices
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/CLI_Configuration_File/" title="CLI Configuration File" class="md-nav__link">
+      CLI Configuration File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/Code_Sharing/" title="Code Sharing" class="md-nav__link">
+      Code Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/Managing_Scripts_For_Remote_Execution/" title="Managing Scripts for Remote Execution" class="md-nav__link">
+      Managing Scripts for Remote Execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/User_Visible_Errors/" title="User Visible Errors" class="md-nav__link">
+      User Visible Errors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/Sensitive_Data/" title="Dealing With Sensitive Data" class="md-nav__link">
+      Dealing With Sensitive Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
+      Working with Unicode Data
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Best_Practices/Working_with_Powershell/" title="Working with Powershell" class="md-nav__link">
+      Working with Powershell
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Release Notes
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Release Notes
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+    
+    <label class="md-nav__link" for="nav-7-1">
+      2.1.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-1">
+        2.1.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/2.1.0/2.1.0/" title="Release - v2.1.0" class="md-nav__link">
+      Release - v2.1.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-2" type="checkbox" id="nav-7-2">
+    
+    <label class="md-nav__link" for="nav-7-2">
+      2.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-2">
+        2.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/2.0.0/2.0.0/" title="Release - v2.0.0" class="md-nav__link">
+      Release - v2.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.2.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
+    
+    <label class="md-nav__link" for="nav-7-3">
+      1.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-3">
+        1.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/1.0.0/1.0.0/" title="Release - v1.0.0" class="md-nav__link">
+      Release - v1.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/1.0.0/1.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.1.0.0)" class="md-nav__link">
+      Breaking Changes - GA (v.1.0.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-4" type="checkbox" id="nav-7-4">
+    
+    <label class="md-nav__link" for="nav-7-4">
+      0.4.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-4">
+        0.4.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/0.4.0/0.4.0/" title="Release - Early Preview 2 (v0.4.0)" class="md-nav__link">
+      Release - Early Preview 2 (v0.4.0)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Release_Notes/0.4.0/0.4.0_Breaking_Changes/" title="Breaking Changes - Early Preview 2 (v.0.4.0)" class="md-nav__link">
+      Breaking Changes - Early Preview 2 (v.0.4.0)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-repository-data-migration" title="Lua Repository Data Migration" class="md-nav__link">
+    Lua Repository Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-source-config-data-migration" title="Lua Source Config Data Migration" class="md-nav__link">
+    Lua Source Config Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_1" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_1" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_1" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_1" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_1" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_1" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-linked-source-data-migration" title="Lua Linked Source Data Migration" class="md-nav__link">
+    Lua Linked Source Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_2" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_2" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_2" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_2" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_2" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_2" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-virtual-source-data-migration" title="Lua Virtual Source Data Migration" class="md-nav__link">
+    Lua Virtual Source Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_3" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_3" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_3" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_3" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_3" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_3" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_3" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_3" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lua-snapshot-data-migration" title="Lua Snapshot Data Migration" class="md-nav__link">
+    Lua Snapshot Data Migration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-optional_4" title="Required / Optional" class="md-nav__link">
+    Required / Optional
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delphix-engine-operations_4" title="Delphix Engine Operations" class="md-nav__link">
+    Delphix Engine Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signature_4" title="Signature" class="md-nav__link">
+    Signature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator_4" title="Decorator" class="md-nav__link">
+    Decorator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decorator-arguments_4" title="Decorator Arguments" class="md-nav__link">
+    Decorator Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-arguments_4" title="Function Arguments" class="md-nav__link">
+    Function Arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns_4" title="Returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_4" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="plugin-operations">Plugin Operations<a class="headerlink" href="#plugin-operations" title="Permanent link">&para;</a></h1>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Plugin operations related to Lua migrations are listed below. Information regarding other operations is <a href="../../../References/Plugin_Operations/">here</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Plugin Operation</th>
+<th><strong>Required</strong></th>
+<th>Decorator</th>
+<th>Delphix Engine Operations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#lua-repository-data-migration">Lua Repository Data Migration</a></td>
+<td><strong>No</strong></td>
+<td><code>upgrade.repository(lua_version, MigrationType.LUA)</code></td>
+<td><a href="../../../References/Workflows/#upgrade">Upgrade</a></td>
+</tr>
+<tr>
+<td><a href="#lua-source-config-data-migration">Lua Source Config Data Migration</a></td>
+<td><strong>No</strong></td>
+<td><code>upgrade.source_config(lua_version, MigrationType.LUA)</code></td>
+<td><a href="../../../References/Workflows/#upgrade">Upgrade</a></td>
+</tr>
+<tr>
+<td><a href="#lua-linked-source-data-migration">Lua Linked Source Data Migration</a></td>
+<td><strong>No</strong></td>
+<td><code>upgrade.linked_source(lua_version, MigrationType.LUA)</code></td>
+<td><a href="../../../References/Workflows/#upgrade">Upgrade</a></td>
+</tr>
+<tr>
+<td><a href="#lua-virtual-source-data-migration">Lua Virtual Source Data Migration</a></td>
+<td><strong>No</strong></td>
+<td><code>upgrade.virtual_source(lua_version, MigrationType.LUA)</code></td>
+<td><a href="../../../References/Workflows/#upgrade">Upgrade</a></td>
+</tr>
+<tr>
+<td><a href="#snapshot-data-migration">Lua Snapshot Data Migration</a></td>
+<td><strong>No</strong></td>
+<td><code>upgrade.snapshot(lua_version, MigrationType.LUA)</code></td>
+<td><a href="../../../References/Workflows/#upgrade">Upgrade</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="lua-repository-data-migration">Lua Repository Data Migration<a class="headerlink" href="#lua-repository-data-migration" title="Permanent link">&para;</a></h2>
+<p>A Lua Repository <a href="../../../References/Glossary/#data-migration">Data Migration</a> migrates repository data from an older <a href="../../../References/Glossary/#schema">schema</a> format defined originally from a Lua toolkit to an updated schema format defined in the Python plugin.</p>
+<h3 id="required-optional">Required / Optional<a class="headerlink" href="#required-optional" title="Permanent link">&para;</a></h3>
+<p><strong>Optional.</strong><br/></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must ensure that all repository data will match your updated repository schema after an upgrade operation. Depending on how your schema has changed, this might imply that you need to write one or more repository data migrations.</p>
+</div>
+<h3 id="delphix-engine-operations">Delphix Engine Operations<a class="headerlink" href="#delphix-engine-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../../../References/Workflows/#upgrade">Upgrade</a></li>
+</ul>
+<h3 id="signature">Signature<a class="headerlink" href="#signature" title="Permanent link">&para;</a></h3>
+<p><code>def migrate_repository(old_repository)</code></p>
+<h3 id="decorator">Decorator<a class="headerlink" href="#decorator" title="Permanent link">&para;</a></h3>
+<p><code>upgrade.repository(lua_version, MigrationType.LUA)</code></p>
+<h3 id="decorator-arguments">Decorator Arguments<a class="headerlink" href="#decorator-arguments" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua_version</td>
+<td>String</td>
+<td>The Lua version of the toolkit that this migration would be applicable to. This is the ID of this migration. The version here is actually just the major and minor version of the Lua toolkit. Therefore the <code>lua_version</code> for each repository data migration must be unique.</td>
+</tr>
+<tr>
+<td>migration_type</td>
+<td>String</td>
+<td>This field indicates whether the operation is a Lua migration or just a regular data migration. Specify this as LUA to indicate a Lua migration. If not defined, this operation will default to a regular <a href="../../../References/Plugin_Operations/#repository-data-migration">repository data migration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="function-arguments">Function Arguments<a class="headerlink" href="#function-arguments" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old_repository</td>
+<td>Dictionary</td>
+<td>The plugin-specific data associated with a repository, that conforms to the previous schema defined in Lua.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function argument <code>old_repository</code> is a Python dictionary, where each property name appears exactly as described in the previous repository schema. This differs from non-upgrade-related operations, where the function arguments are <a href="../../../References/Schemas_and_Autogenerated_Classes/">autogenerated classes</a> based on the schema.</p>
+</div>
+<h3 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h3>
+<p>Dictionary<br/>
+A migrated version of the <code>old_repository</code> input that must conform to the updated repository schema.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">repository</span><span class="p">(</span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span> <span class="n">MigrationType</span><span class="o">.</span><span class="n">LUA</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_repository</span><span class="p">(</span><span class="n">old_repository</span><span class="p">):</span>
+  <span class="n">new_repository</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_repository</span><span class="p">)</span>
+  <span class="n">new_repository</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">new_repository</span>
+</code></pre></div>
+
+
+<h2 id="lua-source-config-data-migration">Lua Source Config Data Migration<a class="headerlink" href="#lua-source-config-data-migration" title="Permanent link">&para;</a></h2>
+<p>A Lua Source Config <a href="../../../References/Glossary/#data-migration">Data Migration</a> migrates source config data from an older <a href="../../../References/Glossary/#schema">schema</a> format defined originally from a Lua toolkit to an updated schema format defined in the Python plugin.</p>
+<h3 id="required-optional_1">Required / Optional<a class="headerlink" href="#required-optional_1" title="Permanent link">&para;</a></h3>
+<p><strong>Optional.</strong><br/></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must ensure that all source config data will match your source config schema after an upgrade operation. Depending on how your schema has changed, this might imply that you need to write one or more source config data migrations.</p>
+</div>
+<h3 id="delphix-engine-operations_1">Delphix Engine Operations<a class="headerlink" href="#delphix-engine-operations_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../../../References/Workflows/#upgrade">Upgrade</a></li>
+</ul>
+<h3 id="signature_1">Signature<a class="headerlink" href="#signature_1" title="Permanent link">&para;</a></h3>
+<p><code>def migrate_source_config(old_source_config)</code></p>
+<h3 id="decorator_1">Decorator<a class="headerlink" href="#decorator_1" title="Permanent link">&para;</a></h3>
+<p><code>upgrade.source_config(lua_version, MigrationType.LUA)</code></p>
+<h3 id="decorator-arguments_1">Decorator Arguments<a class="headerlink" href="#decorator-arguments_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua_version</td>
+<td>String</td>
+<td>The Lua version of the toolkit that this migration would be applicable to. This is the ID of this migration. The version here is actually just the major and minor version of the Lua toolkit. Therefore the <code>lua_version</code> for each repository data migration must be unique.</td>
+</tr>
+<tr>
+<td>migration_type</td>
+<td>String</td>
+<td>This field indicates whether the operation is a Lua migration or just a regular data migration. Specify this as LUA to indicate a Lua migration. If not defined, this operation will default to a regular <a href="../../../References/Plugin_Operations/#source-config-data-migration">source config data migration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="function-arguments_1">Function Arguments<a class="headerlink" href="#function-arguments_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old_source_config</td>
+<td>Dictionary</td>
+<td>The plugin-specific data associated with a source config, that conforms to the previous schema.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function argument <code>old_source_config</code> is a Python dictionary, where each property name appears exactly as described in the previous source config schema. This differs from non-upgrade-related operations, where the function arguments are <a href="../../../References/Schemas_and_Autogenerated_Classes/">autogenerated classes</a> based on the schema.</p>
+</div>
+<h3 id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h3>
+<p>Dictionary<br/>
+A migrated version of the <code>old_source_config</code> input that must conform to the updated source config schema.</p>
+<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">source_config</span><span class="p">(</span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span> <span class="n">MigrationType</span><span class="o">.</span><span class="n">LUA</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_source_config</span><span class="p">(</span><span class="n">old_source_config</span><span class="p">):</span>
+  <span class="n">new_source_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_source_config</span><span class="p">)</span>
+  <span class="n">new_source_config</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">new_source_config</span>
+</code></pre></div>
+
+
+<h2 id="lua-linked-source-data-migration">Lua Linked Source Data Migration<a class="headerlink" href="#lua-linked-source-data-migration" title="Permanent link">&para;</a></h2>
+<p>A Lua Linked Source <a href="../../../References/Glossary/#data-migration">Data Migration</a> migrates linked source data from an older <a href="../../../References/Glossary/#schema">schema</a> format defined originally from a Lua toolkit to an updated schema format defined in the Python plugin.</p>
+<h3 id="required-optional_2">Required / Optional<a class="headerlink" href="#required-optional_2" title="Permanent link">&para;</a></h3>
+<p><strong>Optional.</strong><br/></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must ensure that all linked source data will match your linked source schema after an upgrade operation. Depending on how your schema has changed, this might imply that you need to write one or more linked source data migrations.</p>
+</div>
+<h3 id="delphix-engine-operations_2">Delphix Engine Operations<a class="headerlink" href="#delphix-engine-operations_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../../../References/Workflows/#upgrade">Upgrade</a></li>
+</ul>
+<h3 id="signature_2">Signature<a class="headerlink" href="#signature_2" title="Permanent link">&para;</a></h3>
+<p><code>def migrate_linked_source(old_linked_source)</code></p>
+<h3 id="decorator_2">Decorator<a class="headerlink" href="#decorator_2" title="Permanent link">&para;</a></h3>
+<p><code>upgrade.linked_source(lua_version, MigrationType.LUA)</code></p>
+<h3 id="decorator-arguments_2">Decorator Arguments<a class="headerlink" href="#decorator-arguments_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua_version</td>
+<td>String</td>
+<td>The Lua version of the toolkit that this migration would be applicable to. This is the ID of this migration. The version here is actually just the major and minor version of the Lua toolkit. Therefore the <code>lua_version</code> for each repository data migration must be unique.</td>
+</tr>
+<tr>
+<td>migration_type</td>
+<td>String</td>
+<td>This field indicates whether the operation is a Lua migration or just a regular data migration. Specify this as LUA to indicate a Lua migration. If not defined, this operation will default to a regular <a href="../../../References/Plugin_Operations/#linked-source-data-migration">linked source data migration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="function-arguments_2">Function Arguments<a class="headerlink" href="#function-arguments_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old_linked_source</td>
+<td>Dictionary</td>
+<td>The plugin-specific data associated with a linked source, that conforms to the previous schema.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function argument <code>old_linked_source</code> is a Python dictionary, where each property name appears exactly as described in the previous linked source schema. This differs from non-upgrade-related operations, where the function arguments are <a href="../../../References/Schemas_and_Autogenerated_Classes/">autogenerated classes</a> based on the schema.</p>
+</div>
+<h3 id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h3>
+<p>Dictionary<br/>
+A migrated version of the <code>old_linked_source</code> input that must conform to the updated linked source schema.</p>
+<h3 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">linked_source</span><span class="p">(</span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span> <span class="n">MigrationType</span><span class="o">.</span><span class="n">LUA</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_linked_source</span><span class="p">(</span><span class="n">old_linked_source</span><span class="p">):</span>
+  <span class="n">new_linked_source</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_linked_source</span><span class="p">)</span>
+  <span class="n">new_linked_source</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">new_linked_source</span>
+</code></pre></div>
+
+
+<h2 id="lua-virtual-source-data-migration">Lua Virtual Source Data Migration<a class="headerlink" href="#lua-virtual-source-data-migration" title="Permanent link">&para;</a></h2>
+<p>A Lua Virtual Source <a href="../../../References/Glossary/#data-migration">Data Migration</a> migrates virtual source data from an older <a href="../../../References/Glossary/#schema">schema</a> format defined originally from a Lua toolkit to an updated schema format defined in the Python plugin.</p>
+<h3 id="required-optional_3">Required / Optional<a class="headerlink" href="#required-optional_3" title="Permanent link">&para;</a></h3>
+<p><strong>Optional.</strong><br/></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must ensure that all virtual source data will match your virtual source schema after an upgrade operation. Depending on how your schema has changed, this might imply that you need to write one or more virtual source data migrations.</p>
+</div>
+<h3 id="delphix-engine-operations_3">Delphix Engine Operations<a class="headerlink" href="#delphix-engine-operations_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../../../References/Workflows/#upgrade">Upgrade</a></li>
+</ul>
+<h3 id="signature_3">Signature<a class="headerlink" href="#signature_3" title="Permanent link">&para;</a></h3>
+<p><code>def migrate_virtual_source(old_virtual_source)</code></p>
+<h3 id="decorator_3">Decorator<a class="headerlink" href="#decorator_3" title="Permanent link">&para;</a></h3>
+<p><code>upgrade.virtual_source(lua_version, MigrationType.LUA)</code></p>
+<h3 id="decorator-arguments_3">Decorator Arguments<a class="headerlink" href="#decorator-arguments_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua_version</td>
+<td>String</td>
+<td>The Lua version of the toolkit that this migration would be applicable to. This is the ID of this migration. The version here is actually just the major and minor version of the Lua toolkit. Therefore the <code>lua_version</code> for each repository data migration must be unique.</td>
+</tr>
+<tr>
+<td>migration_type</td>
+<td>String</td>
+<td>This field indicates whether the operation is a Lua migration or just a regular data migration. Specify this as LUA to indicate a Lua migration. If not defined, this operation will default to a regular <a href="../../../References/Plugin_Operations/#virtual-source-data-migration">virtual source data migration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="function-arguments_3">Function Arguments<a class="headerlink" href="#function-arguments_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old_virtual_source</td>
+<td>Dictionary</td>
+<td>The plugin-specific data associated with a virtual source, that conforms to the previous schema.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function argument <code>old_virtual_source</code> is a Python dictionary, where each property name appears exactly as described in the previous virtual source schema. This differs from non-upgrade-related operations, where the function arguments are <a href="../../../References/Schemas_and_Autogenerated_Classes/">autogenerated classes</a> based on the schema.</p>
+</div>
+<h3 id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h3>
+<p>Dictionary<br/>
+A migrated version of the <code>old_virtual_source</code> input that must conform to the updated virtual source schema.</p>
+<h3 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">virtual_source</span><span class="p">(</span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span> <span class="n">MigrationType</span><span class="o">.</span><span class="n">LUA</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_virtual_source</span><span class="p">(</span><span class="n">old_virtual_source</span><span class="p">):</span>
+  <span class="n">new_virtual_source</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_virtual_source</span><span class="p">)</span>
+  <span class="n">new_virtual_source</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">new_virtual_source</span>
+</code></pre></div>
+
+
+<h2 id="lua-snapshot-data-migration">Lua Snapshot Data Migration<a class="headerlink" href="#lua-snapshot-data-migration" title="Permanent link">&para;</a></h2>
+<p>A Lua Snapshot <a href="../../../References/Glossary/#data-migration">Data Migration</a> migrates snapshot data from an older <a href="../../../References/Glossary/#schema">schema</a> format defined originally from a Lua toolkit to an updated schema format defined in the Python plugin.</p>
+<h3 id="required-optional_4">Required / Optional<a class="headerlink" href="#required-optional_4" title="Permanent link">&para;</a></h3>
+<p><strong>Optional.</strong><br/></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must ensure that all snapshot data will match your snapshot schema after an upgrade operation. Depending on how your schema has changed, this might imply that you need to write one or more snapshot migrations.</p>
+</div>
+<h3 id="delphix-engine-operations_4">Delphix Engine Operations<a class="headerlink" href="#delphix-engine-operations_4" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../../../References/Workflows/#upgrade">Upgrade</a></li>
+</ul>
+<h3 id="signature_4">Signature<a class="headerlink" href="#signature_4" title="Permanent link">&para;</a></h3>
+<p><code>def migrate_snapshot(old_snapshot)</code></p>
+<h3 id="decorator_4">Decorator<a class="headerlink" href="#decorator_4" title="Permanent link">&para;</a></h3>
+<p><code>upgrade.snapshot(lua_version, MigrationType.LUA)</code></p>
+<h3 id="decorator-arguments_4">Decorator Arguments<a class="headerlink" href="#decorator-arguments_4" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua_version</td>
+<td>String</td>
+<td>The Lua version of the toolkit that this migration would be applicable to. This is the ID of this migration. The version here is actually just the major and minor version of the Lua toolkit. Therefore the <code>lua_version</code> for each repository data migration must be unique.</td>
+</tr>
+<tr>
+<td>migration_type</td>
+<td>String</td>
+<td>This field indicates whether the operation is a Lua migration or just a regular data migration. Specify this as LUA to indicate a Lua migration. If not defined, this operation will default to a regular <a href="../../../References/Plugin_Operations/#snapshot-data-migration">snapshot data migration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="function-arguments_4">Function Arguments<a class="headerlink" href="#function-arguments_4" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old_snapshot</td>
+<td>Dictionary</td>
+<td>The plugin-specific data associated with a snapshot, that conforms to the previous schema.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function argument <code>old_snapshot</code> is a Python dictionary, where each property name appears exactly as described in the previous snapshot schema. This differs from non-upgrade-related operations, where the function arguments are <a href="../../../References/Schemas_and_Autogenerated_Classes/">autogenerated classes</a> based on the schema.</p>
+</div>
+<h3 id="returns_4">Returns<a class="headerlink" href="#returns_4" title="Permanent link">&para;</a></h3>
+<p>Dictionary<br/>
+A migrated version of the <code>old_snapshot</code> input that must conform to the updated snapshot schema.</p>
+<h3 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dlpx.virtualization.platform</span> <span class="kn">import</span> <span class="n">Plugin</span>
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">()</span>
+
+<span class="nd">@plugin</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span> <span class="n">MigrationType</span><span class="o">.</span><span class="n">LUA</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_new_flag_to_snapshot</span><span class="p">(</span><span class="n">old_snapshot</span><span class="p">):</span>
+  <span class="n">new_snapshot</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old_snapshot</span><span class="p">)</span>
+  <span class="n">new_snapshot</span><span class="p">[</span><span class="s2">&quot;useNewFeature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">new_snapshot</span>
+</code></pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Decorators/" title="Decorators" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Decorators
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Converting_Migration_Scripts/" title="Converting Lua Upgrade Scripts to Python Data Migrations" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Converting Lua Upgrade Scripts to Python Data Migrations
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Delphix Corp.
+          </div>
+        
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../../assets/fonts/font-awesome.css">
+    
+      <a href="https://www.delphix.com/" class="md-footer-social__link fa fa-sitemap"></a>
+    
+      <a href="https://www.facebook.com/DelphixCorp/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://twitter.com/delphix" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://www.linkedin.com/company/delphix" class="md-footer-social__link fa fa-linkedin"></a>
+    
+      <a href="https://github.com/delphix" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.878fdd8d.js"></script>
+      
+      <script>app.initialize({version:"0.17.5",url:{base:"../../.."}})</script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-35429885-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>
