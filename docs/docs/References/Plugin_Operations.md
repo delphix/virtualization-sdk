@@ -655,7 +655,9 @@ def configure(virtual_source, repository, snapshot):
 
 ## Virtual Source Unconfigure
 
-Quiesces the virtual source on a target environment. For database data files, shutting down and unregistering a database on a host.
+Prepares for the removal of virtual source data from a target host. Depending on your dataset, this might involve unregistering this dataset from the DBMS, modifying/deleting config files on the remote host, etc.
+
+It's important to clean up anything VDB-specific from the target host during this operation. For example, if you've stored such data in the [scratch path](/Best_Practices/Scratch_Paths), then you should delete it during unconfigure.
 
 ### Required / Optional
 **Optional.**
@@ -664,6 +666,7 @@ Quiesces the virtual source on a target environment. For database data files, sh
 
 * [Virtual Source Refresh](Workflows.md#virtual-source-refresh)
 * [Virtual Source Delete](Workflows.md#virtual-source-delete)
+* [Virtual Source Disable](Workflows.md#virtual-source-disable)
 
 ### Signature
 

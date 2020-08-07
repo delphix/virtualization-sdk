@@ -203,7 +203,8 @@ Field | Type | Description
 name | String | Host address.
 reference | String | Unique identifier for the host.
 binary_path | String | Path to Delphix provided binaries on the host, which are present in the toolkit pushed to the remote host like `dlpx_db_exec`, `dlpx_pfexec`, etc. This property is only available for Unix hosts.
-scratch_path | String | Path to scratch path on the host.
+scratch_path | String | Path to scratch area on the host. See details [here](/Best_Practices/Scratch_Paths.md).
+
 
 ## RemoteUser
 
