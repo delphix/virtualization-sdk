@@ -6,7 +6,7 @@ more-itertools==5.0.0 ; python_version <= '2.7'
 packaging==19.2
 pathlib2==2.3.5 ; python_version < '3.6'
 pluggy==0.13.0
-py==1.8.0
+py==1.9.0
 pyparsing==2.4.5
 pytest==4.6.11
 scandir==1.10.0 ; python_version < '3.5'
