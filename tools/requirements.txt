@@ -23,7 +23,7 @@ pluggy==0.13.1
 py==1.8.1
 pycodestyle==2.5.0
 pyflakes==2.1.1
-pyparsing==2.4.6
+pyparsing==2.4.7
 pytest-cov==2.8.1
 pytest==4.6.11
 scandir==1.10.0 ; python_version < '3.5'
