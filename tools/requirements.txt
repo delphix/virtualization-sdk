@@ -30,4 +30,4 @@ scandir==1.10.0 ; python_version < '3.5'
 six==1.13.0
 typing==3.7.4.1 ; python_version < '3.5'
 yapf==0.28
-zipp==0.6.0
+zipp==1.2.0
