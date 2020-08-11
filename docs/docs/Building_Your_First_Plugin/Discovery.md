@@ -164,7 +164,7 @@ The Delphix Engine will pass us information about the source environment in an a
     return [RepositoryDefinition(name='1e87dc30-3cdb-4f0a-9634-07ce017d20d1')]
 ```
 
-This creates and returns a Python object that corresponds to the format defined by our repository schema. Because out repository has exactly one string property called `name`, therefore this Python object has one property called `name`.
+This creates and returns a Python object that corresponds to the format defined by our repository schema. Because our repository has exactly one string property called `name`, therefore this Python object has one property called `name`.
 
 Notice that the code generator has filled in the value of `name` with a random string. This results in a plugin operation that works, but which will not be very helpful for the user. We'll change this later.
 
