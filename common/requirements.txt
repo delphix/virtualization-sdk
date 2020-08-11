@@ -10,5 +10,5 @@ py==1.8.0
 pyparsing==2.4.5
 pytest==4.6.11
 scandir==1.10.0 ; python_version < '3.5'
-six==1.13.0
+six==1.15.0
 zipp==0.6.0
