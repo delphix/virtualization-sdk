@@ -29,5 +29,5 @@ pytest==4.6.11
 scandir==1.10.0 ; python_version < '3.5'
 six==1.13.0
 typing==3.7.4.1 ; python_version < '3.5'
-yapf==0.28
+yapf==0.30.0
 zipp==0.6.0
