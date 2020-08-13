@@ -2,8 +2,10 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-from dlpx.virtualization.api import common_pb2
+from abc import ABCMeta
+from dlpx.virtualization.api import common_pb2, libs_pb2
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
+from enum import IntEnum
 
 """Classes used for Plugin Operations
 
@@ -17,7 +19,10 @@ __all__ = [
     "RemoteConnection",
     "RemoteEnvironment",
     "RemoteHost",
-    "RemoteUser"]
+    "RemoteUser",
+    "Credentials",
+    "PasswordCredentials",
+    "KeyPairCredentials"]
 
 
 class RemoteConnection(object):
@@ -293,3 +298,121 @@ class RemoteUser(object):
                 common_pb2.RemoteUser)
         remote_user = RemoteUser(name=user.name, reference=user.reference)
         return remote_user
+
+
+class Credentials(object):
+    """Plugin base class for CredentialsResult to be used for plugin operations
+    and library functions.
+
+    Plugin authors should use this instead of the corresponding protobuf generated
+    class.
+
+    Args:
+        username: User name.
+    """
+    def __init__(self, username):
+        if not isinstance(username, basestring):
+            raise IncorrectTypeError(
+                Credentials,
+                'username',
+                type(username),
+                basestring)
+        self.__username = username
+
+    __metaclass__ = ABCMeta
+
+    @property
+    def username(self):
+        return self.__username
+
+
+class PasswordCredentials(Credentials):
+    """Plugin class for CredentialsResult with password to be used for plugin operations
+    and library functions.
+
+    Plugin authors should use this instead of the corresponding protobuf generated
+    class.
+
+    Args:
+        username: User name.
+        password: Password.
+    """
+    def __init__(self, username, password):
+        super(PasswordCredentials, self).__init__(username)
+        if not isinstance(password, basestring):
+            raise IncorrectTypeError(
+                PasswordCredentials,
+                'password',
+                type(password),
+                basestring)
+        self.__password = password
+
+    @property
+    def password(self):
+        return self.__password
+
+    @staticmethod
+    def from_proto(credentials_result):
+        """Converts protobuf class libs_pb2.CredentialsResult to plugin class PasswordCredentials
+        """
+        if not isinstance(credentials_result, libs_pb2.CredentialsResult):
+            raise IncorrectTypeError(
+                PasswordCredentials,
+                'credentials_result',
+                type(credentials_result),
+                libs_pb2.CredentialsResult)
+        return PasswordCredentials(
+            username=credentials_result.username, password=credentials_result.pasword)
+
+
+class KeyPairCredentials(Credentials):
+    """Plugin class for CredentialsResult with key pair to be used for plugin operations
+    and library functions.
+
+    Plugin authors should use this instead of the corresponding protobuf generated
+    class.
+
+    Args:
+        username (str): User name.
+        private_key (str): Private key.
+        public_key (str): Public key corresponding to private key. Empty string if not present.
+    """
+    def __init__(self, username, private_key, public_key):
+        super(KeyPairCredentials, self).__init__(username)
+        if not isinstance(private_key, basestring):
+            raise IncorrectTypeError(
+                KeyPairCredentials,
+                'private_key',
+                type(private_key),
+                basestring)
+        self.__private_key = private_key
+        if not isinstance(public_key, basestring):
+            raise IncorrectTypeError(
+                KeyPairCredentials,
+                'public_key',
+                type(public_key),
+                basestring)
+        self.__public_key = public_key
+
+    @property
+    def private_key(self):
+        return self.__private_key
+
+    @property
+    def public_key(self):
+        return self.__public_key
+
+    @staticmethod
+    def from_proto(credentials_result):
+        """Converts protobuf class libs_pb2.CredentialsResult to plugin class KeyPairCredentials
+        """
+        if not isinstance(credentials_result, libs_pb2.CredentialsResult):
+            raise IncorrectTypeError(
+                KeyPairCredentials,
+                'credentials_result',
+                type(credentials_result),
+                libs_pb2.CredentialsResult)
+        return KeyPairCredentials(
+            username=credentials_result.username,
+            private_key=credentials_result.key_pair.private_key,
+            public_key=credentials_result.key_pair.public_key)
