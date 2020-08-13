@@ -9,6 +9,7 @@ from dlpx.virtualization.api import libs_pb2
 from dlpx.virtualization import libs
 from dlpx.virtualization.libs.exceptions import (
     IncorrectArgumentTypeError, LibraryError, PluginScriptError)
+from google.protobuf import json_format
 
 
 class TestLibsRunBash:
@@ -773,3 +774,91 @@ class TestLibsRunExpect:
                    " type 'dict of basestring:basestring' if defined.")
         assert (err_info.value.message == message.format('int', 'str') or
                 err_info.value.message == message.format('str', 'int'))
+
+
+class TestLibsRetrieveCredentials:
+    @staticmethod
+    def test_retrieve_password_credentials():
+        expected_retrieve_credentials_response = libs_pb2.CredentialsResponse()
+        expected_retrieve_credentials_response.return_value.username = 'some user'
+        expected_retrieve_credentials_response.return_value.password = 'some password'
+
+        expected_credentials_supplier = {'some supplier property': 'some supplier value'}
+
+        def mock_retrieve_credentials(actual_retrieve_credentials_request):
+            assert json_format.MessageToDict(actual_retrieve_credentials_request.credentials_supplier) == \
+                   expected_credentials_supplier
+
+            return expected_retrieve_credentials_response
+
+        with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
+                        side_effect=mock_retrieve_credentials, create=True):
+            actual_retrieve_credentials_result = libs.retrieve_credentials(expected_credentials_supplier)
+
+        expected = expected_retrieve_credentials_response.return_value
+        assert actual_retrieve_credentials_result.username == expected.username
+        assert actual_retrieve_credentials_result.password == expected.password
+
+    @staticmethod
+    def test_retrieve_keypair_credentials():
+        expected_retrieve_credentials_response = libs_pb2.CredentialsResponse()
+        expected_retrieve_credentials_response.return_value.username = 'some user'
+        expected_retrieve_credentials_response.return_value.key_pair.private_key = 'some private key'
+        expected_retrieve_credentials_response.return_value.key_pair.public_key = 'some public key'
+
+        expected_credentials_supplier = {'some supplier property': 'some supplier value'}
+
+        def mock_retrieve_credentials(actual_retrieve_credentials_request):
+            assert json_format.MessageToDict(actual_retrieve_credentials_request.credentials_supplier) == \
+                   expected_credentials_supplier
+
+            return expected_retrieve_credentials_response
+
+        with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
+                        side_effect=mock_retrieve_credentials, create=True):
+            actual_retrieve_credentials_result = libs.retrieve_credentials(expected_credentials_supplier)
+
+        expected = expected_retrieve_credentials_response.return_value
+        assert actual_retrieve_credentials_result.username == expected.username
+        assert actual_retrieve_credentials_result.private_key == expected.key_pair.private_key
+        assert actual_retrieve_credentials_result.public_key == expected.key_pair.public_key
+
+    @staticmethod
+    def test_retrieve_credentials_with_actionable_error():
+        expected_id = 15
+        expected_message = 'Some message'
+
+        response = libs_pb2.CredentialsResponse()
+        response.error.actionable_error.id = expected_id
+        response.error.actionable_error.message = expected_message
+
+        with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
+                        return_value=response, create=True):
+            with pytest.raises(LibraryError) as err_info:
+                libs.retrieve_credentials({'some supplier property': 'some supplier value'})
+
+        assert err_info.value._id == expected_id
+        assert err_info.value.message == expected_message
+
+    @staticmethod
+    def test_retrieve_credentials_with_nonactionable_error():
+        response = libs_pb2.CredentialsResponse()
+        na_error = libs_pb2.NonActionableLibraryError()
+        response.error.non_actionable_error.CopyFrom(na_error)
+
+        with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
+                        return_value=response, create=True):
+            with pytest.raises(SystemExit):
+                libs.retrieve_credentials({'some supplier property': 'some supplier value'})
+
+    @staticmethod
+    def test_retrieve_credentials_bad_supplier():
+        # Set the supplier be an int instead of a dictionary.
+        credentials_supplier = 10
+
+        with pytest.raises(IncorrectArgumentTypeError) as err_info:
+            libs.retrieve_credentials(credentials_supplier)
+
+        assert err_info.value.message == (
+            "The function retrieve_credentials's argument 'credentials_supplier' was"
+            " type 'int' but should be of type 'dict'.")

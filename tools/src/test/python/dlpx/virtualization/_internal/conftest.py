@@ -520,7 +520,7 @@ def source_config_definition():
 def virtual_source_definition():
     return {
         'type': 'object',
-        'additionalProperties': False,
+        'additionalProperties': True,
         'properties': {
             'path': {
                 'type': 'string'
@@ -532,6 +532,66 @@ def virtual_source_definition():
 @pytest.fixture
 def linked_source_definition():
     return {'type': 'object', 'additionalProperties': False, 'properties': {}}
+
+
+@pytest.fixture
+def linked_source_definition_with_refs():
+    return {
+        'type': 'object',
+        'additionalProperties': True,
+        'properties': {
+            'path': {
+                'type': 'string'
+            },
+            'credentials': {
+                '$ref': 'https://delphix.com/platform/api#credentialsSupplier'
+            },
+            'credentialsContainer': {
+                'type': 'object',
+                'properties': {
+                    'nestedCredentials': {
+                        '$ref': 'https://delphix.com/platform/api#credentialsSupplier'
+                    },
+                }
+            },
+            'credentialsArray': {
+                'type': 'array',
+                'items': [
+                    {'$ref': 'https://delphix.com/platform/api#credentialsSupplier'}
+                ]
+            }
+        }
+    }
+
+
+@pytest.fixture
+def linked_source_definition_with_opaque_refs():
+    return {
+        'type': 'object',
+        'additionalProperties': True,
+        'properties': {
+            'path': {
+                'type': 'string'
+            },
+            'credentials': {
+                'type': 'object'
+            },
+            'credentialsContainer': {
+                'type': 'object',
+                'properties': {
+                    'nestedCredentials': {
+                        'type': 'object'
+                    },
+                }
+            },
+            'credentialsArray': {
+                'type': 'array',
+                'items': [
+                    {'type': 'object'}
+                ]
+            }
+        }
+    }
 
 
 @pytest.fixture
