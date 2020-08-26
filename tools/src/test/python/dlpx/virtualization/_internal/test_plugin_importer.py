@@ -248,10 +248,10 @@ class TestPluginImporter:
     @staticmethod
     @pytest.mark.parametrize(
         'entry_point,plugin_type,expected_errors',
-         [('successful:ne_symbol', 'DIRECT', [
-             "Error: Entry point 'successful:ne_symbol' does not exist.",
-             "'ne_symbol' is not a symbol in module ",
-         ])])
+        [('successful:ne_symbol', 'DIRECT', [
+            "Error: Entry point 'successful:ne_symbol' does not exist.",
+            "'ne_symbol' is not a symbol in module ",
+        ])])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_non_existing_symbol_in_module(mock_file_util, plugin_config_file,
                                            fake_src_dir, expected_errors):
