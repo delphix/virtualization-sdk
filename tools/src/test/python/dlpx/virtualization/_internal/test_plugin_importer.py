@@ -248,8 +248,7 @@ class TestPluginImporter:
     @staticmethod
     @pytest.mark.parametrize(
         'entry_point,plugin_type,expected_errors',
-         [
-         ('successful:ne_symbol', 'DIRECT', [
+         [('successful:ne_symbol', 'DIRECT', [
              "Error: Entry point 'successful:ne_symbol' does not exist.",
              "'ne_symbol' is not a symbol in module ",
          ])])
