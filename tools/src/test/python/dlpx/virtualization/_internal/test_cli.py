@@ -427,14 +427,10 @@ class TestBuildCli:
                                ['build', '-c', plugin_config_file])
 
         assert result.exit_code == 2
-        assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
-                                 u"\nTry 'delphix-sdk build -h' for help."
-                                 u"\n"
-                                 u"\nError: Invalid value for '-c' /"
-                                 u" '--plugin-config': File"
-                                 u" ''"
-                                 u" is a directory."
-                                 u"\n")
+        expected_error_strings = ("Error: Invalid value for '-c'",
+                                  "is a directory")
+        for expected_error in expected_error_strings:
+            assert expected_error in result.output
 
     @staticmethod
     @pytest.mark.parametrize('artifact_file',
@@ -446,14 +442,10 @@ class TestBuildCli:
                                 '-a', artifact_file])
 
         assert result.exit_code == 2
-        assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
-                                 u"\nTry 'delphix-sdk build -h' for help."
-                                 u"\n"
-                                 u"\nError: Invalid value for '-a' /"
-                                 u" '--upload-artifact': File"
-                                 u" ''"
-                                 u" is a directory."
-                                 u"\n")
+        expected_error_strings = ("Error: Invalid value for '-a'",
+                                  "is a directory")
+        for expected_error in expected_error_strings:
+            assert expected_error in result.output
 
 
 class TestUploadCli:
