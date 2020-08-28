@@ -304,7 +304,7 @@ class TestPluginImporter:
         [('undefined_name:plugin',
           "SDK Error: name 'directplugin' is not defined")])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
-    def test_import_error(mock_file_util, plugin_config_file,
+    def test_undefined_name_error(mock_file_util, plugin_config_file,
                           fake_src_dir, expected_error):
         mock_file_util.return_value = fake_src_dir
 
