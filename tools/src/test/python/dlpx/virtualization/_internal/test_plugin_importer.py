@@ -264,3 +264,53 @@ class TestPluginImporter:
         message = err_info.value.message
         for error in expected_errors:
             assert error in message
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,expected_error',
+        [('import_error:plugin',
+          "Error: No module named dlpxxx.virtualization.platform")])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_import_error(mock_file_util, plugin_config_file,
+                          fake_src_dir, expected_error):
+        mock_file_util.return_value = fake_src_dir
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            importer = get_plugin_importer(plugin_config_file)
+            importer.validate_plugin_module()
+
+        message = err_info.value.message
+        assert expected_error in message
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,expected_error',
+        [('bad_syntax:plugin', "SDK Error: invalid syntax")])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_bad_syntax(mock_file_util, plugin_config_file,
+                        fake_src_dir, expected_error):
+        mock_file_util.return_value = fake_src_dir
+
+        with pytest.raises(exceptions.SDKToolingError) as err_info:
+            importer = get_plugin_importer(plugin_config_file)
+            importer.validate_plugin_module()
+
+        message = err_info.value.message
+        assert expected_error in message
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        'entry_point,expected_error',
+        [('undefined_name:plugin',
+          "SDK Error: name 'directplugin' is not defined")])
+    @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
+    def test_import_error(mock_file_util, plugin_config_file,
+                          fake_src_dir, expected_error):
+        mock_file_util.return_value = fake_src_dir
+
+        with pytest.raises(exceptions.SDKToolingError) as err_info:
+            importer = get_plugin_importer(plugin_config_file)
+            importer.validate_plugin_module()
+
+        message = err_info.value.message
+        assert expected_error in message
