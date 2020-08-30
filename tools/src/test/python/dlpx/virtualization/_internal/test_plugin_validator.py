@@ -118,6 +118,7 @@ class TestPluginValidator:
     @staticmethod
     @pytest.mark.parametrize('host_types', [['xxx']])
     @pytest.mark.parametrize('src_dir', [None])
+    @pytest.mark.parametrize('plugin_type', ['INDIRECT'])
     def test_multiple_validation_errors(plugin_config_file,
                                         plugin_config_content):
         with pytest.raises(exceptions.SchemaValidationError) as err_info:

@@ -699,6 +699,23 @@ class TestPluginUtil:
         assert expected == upload_artifact.get('minimumLuaVersion')
 
     @staticmethod
+    def test_build_change_and_build_again(plugin_config_content, src_dir,
+                                          schema_content):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        print upload_artifact
+        print "Chnaging"
+        changed_build_number = '7.2.12'
+        changed_host_type = ['WINDOWS']
+        plugin_config_content['buildNumber'] = changed_build_number
+        plugin_config_content['hostTypes'] = ['WINDOWS']
+        upload_artifact_2 = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        print upload_artifact_2
+        assert changed_build_number == upload_artifact_2.get('buildNumber')
+        assert changed_host_type == upload_artifact_2.get('hostTypes')
+
+    @staticmethod
     @pytest.mark.parametrize('repository_definition',
                              [{
                                  'type': 'object',
