@@ -699,19 +699,21 @@ class TestPluginUtil:
         assert expected == upload_artifact.get('minimumLuaVersion')
 
     @staticmethod
+    @pytest.mark.parametrize('build_number, expected', [
+        pytest.param('1.0.1', '1.0.1'),
+    ])
     def test_build_change_and_build_again(plugin_config_content, src_dir,
-                                          schema_content):
+                                          schema_content, expected):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
-        print upload_artifact
-        print "Chnaging"
+        assert expected == upload_artifact['buildNumber']
+        print plugin_config_content
         changed_build_number = '7.2.12'
         changed_host_type = ['WINDOWS']
         plugin_config_content['buildNumber'] = changed_build_number
-        plugin_config_content['hostTypes'] = ['WINDOWS']
+        plugin_config_content['hostTypes'] = changed_host_type
         upload_artifact_2 = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
-        print upload_artifact_2
         assert changed_build_number == upload_artifact_2.get('buildNumber')
         assert changed_host_type == upload_artifact_2.get('hostTypes')
 
@@ -741,8 +743,7 @@ class TestPluginUtil:
         assert not mock_generate_python.called
 
     @staticmethod
-    @pytest.mark.parametrize(
-        'host_types', [''])
+    @pytest.mark.parametrize('host_types', [''])
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     def test_empty_host_type(mock_generate_python, plugin_config_file,
                              artifact_file):
@@ -750,7 +751,19 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert "'hostTypes' is a required property" in message
+        assert "Validation failed" in message
+        assert not mock_generate_python.called
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_name', [''])
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_empty_plugin_name_type(mock_generate_python, plugin_config_file,
+                                    artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        assert "Validation failed" in message
         assert not mock_generate_python.called
 
     @staticmethod
