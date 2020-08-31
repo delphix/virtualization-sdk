@@ -757,8 +757,8 @@ class TestPluginUtil:
     @staticmethod
     @pytest.mark.parametrize('plugin_name', [''])
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
-    def test_empty_plugin_name_type(mock_generate_python, plugin_config_file,
-                                    artifact_file):
+    def test_empty_plugin_name(mock_generate_python, plugin_config_file,
+                               artifact_file):
         with pytest.raises(exceptions.UserError) as err_info:
             build.build(plugin_config_file, artifact_file, False, False)
 
