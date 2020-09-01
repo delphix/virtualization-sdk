@@ -164,6 +164,39 @@ class TestInitCli:
         assert result.exit_code != 0
 
     @staticmethod
+    def test_blank_ingestion_strategy(plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-s', ''])
+
+        assert result.exit_code != 0
+        assert "invalid choice" in result.output
+
+    @staticmethod
+    def test_non_existent_root_dir(plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-r', '/file/does/not/exist'])
+
+        assert result.exit_code != 0
+        assert "'/file/does/not/exist' does not exist" in result.output
+
+    @staticmethod
+    def test_empty_root_dir(plugin_name):
+        runner = click_testing.CliRunner()
+
+        result = runner.invoke(
+            cli.delphix_sdk,
+            ['init', '-n', plugin_name, '-r', ''])
+
+        assert result.exit_code != 0
+        assert "Invalid value for '-r'" in result.output
+
+    @staticmethod
     def test_name_required():
         runner = click_testing.CliRunner()
 
@@ -384,6 +417,35 @@ class TestBuildCli:
 
         assert result.exit_code == 2
         assert not mock_build.called, 'build should not have been called'
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_config_file',
+                             [''])
+    def test_empty_config_file(plugin_config_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['build', '-c', plugin_config_file])
+
+        assert result.exit_code == 2
+        expected_error_strings = ("Error: Invalid value for '-c'",
+                                  "is a directory")
+        for expected_error in expected_error_strings:
+            assert expected_error in result.output
+
+    @staticmethod
+    @pytest.mark.parametrize('artifact_file',
+                             [''])
+    def test_empty_artifact_file(plugin_config_file, artifact_file):
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk,
+                               ['build', '-c', plugin_config_file,
+                                '-a', artifact_file])
+
+        assert result.exit_code == 2
+        expected_error_strings = ("Error: Invalid value for '-a'",
+                                  "is a directory")
+        for expected_error in expected_error_strings:
+            assert expected_error in result.output
 
 
 class TestUploadCli:

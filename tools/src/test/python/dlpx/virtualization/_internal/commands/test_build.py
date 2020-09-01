@@ -697,3 +697,81 @@ class TestPluginUtil:
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
         assert expected == upload_artifact.get('minimumLuaVersion')
+
+    @staticmethod
+    @pytest.mark.parametrize('build_number', ['1.0.1'])
+    def test_build_change_and_build_again(plugin_config_content, src_dir,
+                                          schema_content):
+        upload_artifact = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert plugin_config_content['buildNumber'] == upload_artifact['buildNumber']
+        changed_build_number = '7.2.12'
+        changed_host_type = ['WINDOWS']
+        plugin_config_content['buildNumber'] = changed_build_number
+        plugin_config_content['hostTypes'] = changed_host_type
+        upload_artifact_2 = build.prepare_upload_artifact(
+            plugin_config_content, src_dir, schema_content, {})
+        assert changed_build_number == upload_artifact_2.get('buildNumber')
+        assert changed_host_type == upload_artifact_2.get('hostTypes')
+
+    @staticmethod
+    @pytest.mark.parametrize('repository_definition',
+                             [{
+                                 'type': 'object',
+                                 'properties': {
+                                     'name': {
+                                         'type': 'badDataType'
+                                     }
+                                 },
+                                 'nameField': 'name',
+                                 'identityFields': ['name']
+                             }])
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_bad_data_type_in_schema(mock_generate_python,
+                                     plugin_config_file,
+                                     artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        exp_error = "'badDataType' is not valid under any of the given schemas"
+        assert exp_error in message
+
+        assert not mock_generate_python.called
+
+    @staticmethod
+    @pytest.mark.parametrize('host_types', [''])
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_empty_host_type(mock_generate_python, plugin_config_file,
+                             artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        assert "Validation failed" in message
+        assert not mock_generate_python.called
+
+    @staticmethod
+    @pytest.mark.parametrize('plugin_name', [''])
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_empty_plugin_name(mock_generate_python, plugin_config_file,
+                               artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        assert "Validation failed" in message
+        assert not mock_generate_python.called
+
+    @staticmethod
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_non_existing_entry_file(mock_relative_path, plugin_config_file,
+                                     plugin_config_content, artifact_file):
+        entry_module, _ = plugin_config_content['entryPoint'].split(':')
+
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        exp_message = "No module named {module}".format(module=entry_module)
+        assert exp_message in message
