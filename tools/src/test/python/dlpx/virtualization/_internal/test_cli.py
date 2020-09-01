@@ -191,7 +191,7 @@ class TestInitCli:
 
         result = runner.invoke(
             cli.delphix_sdk,
-            ['init', '-n', plugin_name, '-r', ""])
+            ['init', '-n', plugin_name, '-r', ''])
 
         assert result.exit_code != 0
         assert "Invalid value for '-r'" in result.output

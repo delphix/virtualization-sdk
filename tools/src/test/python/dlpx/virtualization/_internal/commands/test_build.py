@@ -699,15 +699,12 @@ class TestPluginUtil:
         assert expected == upload_artifact.get('minimumLuaVersion')
 
     @staticmethod
-    @pytest.mark.parametrize('build_number, expected', [
-        pytest.param('1.0.1', '1.0.1'),
-    ])
+    @pytest.mark.parametrize('build_number', ['1.0.1'])
     def test_build_change_and_build_again(plugin_config_content, src_dir,
-                                          schema_content, expected):
+                                          schema_content):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
-        assert expected == upload_artifact['buildNumber']
-        print plugin_config_content
+        assert plugin_config_content['buildNumber'] == upload_artifact['buildNumber']
         changed_build_number = '7.2.12'
         changed_host_type = ['WINDOWS']
         plugin_config_content['buildNumber'] = changed_build_number

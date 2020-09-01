@@ -129,6 +129,7 @@ class TestPluginValidator:
         message = err_info.value.message
         assert "'srcDir' is a required property" in message
         assert "'xxx' is not one of ['UNIX', 'WINDOWS']" in message
+        assert "'INDIRECT' is not one of ['DIRECT', 'STAGED']" in message
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
