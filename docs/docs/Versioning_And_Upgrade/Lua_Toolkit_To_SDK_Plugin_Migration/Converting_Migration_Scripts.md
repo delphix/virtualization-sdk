@@ -1,8 +1,8 @@
 # Converting Lua Upgrade Scripts to Python Data Migrations
-To convert migrations (a.k.a. "upgrade scripts") that were originally written in lua, we need to get the version that the migration upgrades from, the object type the migration is written for, and lastly convert the code into python code using the [decorators](Decorators.md) described previously.
+To convert migrations (a.k.a. "upgrade scripts") that were originally written in Lua, we need to get the version that the migration upgrades from, the object type the migration is written for, and lastly convert the code into Python code using the [decorators](Decorators.md) described previously.
 
 ## Example
-Assume there are two versions of a lua toolkit, 1.0.0 and 1.1.0 where the 1.1.0 version is following the basic toolkit directory structure (actually containing all operations):
+Assume there are two versions of a lua toolkit, `1.0.0` and `1.1.0` where the `1.1.0` version is following the basic toolkit directory structure (actually containing all operations):
 
 ```
 ├── main.json

@@ -104,6 +104,9 @@ The process by which the Delphix Engine ingests data from a dataset on a [source
 ## Target Environment
 An [environment](#environment) on which Delphix-provided virtualized datasets can be used.
 
+## Lua Toolkit
+Legacy model for writing "plugins" in Lua, with limited documentation and support for writing, building and uploading toolkits. This was the predecessor to the Virtualization SDK. 
+
 ## Upgrade Operation
 A special plugin operation that takes data produced by an older version of a plugin, and transforms it into the format expected by the new version of the plugin.
 
