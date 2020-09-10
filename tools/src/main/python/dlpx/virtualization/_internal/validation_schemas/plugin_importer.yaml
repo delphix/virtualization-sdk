@@ -75,7 +75,6 @@ EXPECTED_STAGED_ARGS_BY_OP:
     initialize_impl:
       - virtual_source
       - repository
-      - source_config
     mount_specification_impl:
       - virtual_source
       - repository
@@ -134,7 +133,6 @@ EXPECTED_DIRECT_ARGS_BY_OP:
     initialize_impl:
       - virtual_source
       - repository
-      - source_config
     mount_specification_impl:
       - virtual_source
       - repository

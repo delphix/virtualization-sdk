@@ -32,6 +32,10 @@
 
 ![Screenshot](images/VirtualSourceSnapshot.png)
 
+## Virtual Source Create Empty VDB
+
+![Screenshot](images/VirtualSourceCreateEmpty.png)
+
 ## Virtual Source Refresh
 
 ![Screenshot](images/VirtualSourceRefresh.png)

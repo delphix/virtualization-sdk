@@ -686,25 +686,24 @@ class TestPlugin:
     def test_virtual_initialize(my_plugin, virtual_source, repository,
                                 source_config):
         @my_plugin.virtual.initialize()
-        def virtual_initialize_impl(virtual_source, repository, source_config):
+        def virtual_initialize_impl(virtual_source, repository):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
-                                          repository=repository,
-                                          source_config=source_config)
-            return
+                                          repository=repository)
+            return SourceConfigDefinition(repository.name)
 
         initialize_request = platform_pb2.InitializeRequest()
         TestPlugin.setup_request(request=initialize_request,
                                  virtual_source=virtual_source,
-                                 repository=repository,
-                                 source_config=source_config)
+                                 repository=repository)
 
-        expected_result = platform_pb2.InitializeResult()
+        expected_source_config = TEST_REPOSITORY_JSON
         initialize_response = my_plugin.virtual._internal_initialize(
             initialize_request)
 
         # Check that the response's oneof is set to return_value and not error
         assert initialize_response.WhichOneof('result') == 'return_value'
-        assert initialize_response.return_value == expected_result
+        actual_source_config = initialize_response.return_value.source_config
+        assert actual_source_config.parameters.json == TEST_REPOSITORY_JSON
 
     @staticmethod
     def test_virtual_mount_spec(my_plugin, virtual_source, repository):
