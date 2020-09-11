@@ -207,6 +207,8 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         prepare_discovery_definition(plugin_config_content, schemas),
         'snapshotSchema':
         schemas['snapshotDefinition'],
+        'snapshotParametersDefinition':
+        schemas['snapshotParametersDefinition'],
         'manifest':
         manifest
     }

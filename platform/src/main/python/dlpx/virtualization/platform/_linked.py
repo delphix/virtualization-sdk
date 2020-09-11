@@ -121,6 +121,7 @@ class LinkedOperations(object):
         from generated.definitions import RepositoryDefinition
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotParametersDefinition
 
         #
         # While linked.pre_snapshot() is not a required operation, this should
@@ -141,10 +142,14 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
+        snapshot_parameters = SnapshotParametersDefinition.from_dict(
+            json.loads(request.snapshot_parameters.parameters.json))
 
-        self.pre_snapshot_impl(direct_source=direct_source,
-                               repository=repository,
-                               source_config=source_config)
+        self.pre_snapshot_impl(
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            optional_snapshot_parameters=snapshot_parameters)
 
         direct_pre_snapshot_response = platform_pb2.DirectPreSnapshotResponse()
         direct_pre_snapshot_response.return_value.CopyFrom(
@@ -173,6 +178,7 @@ class LinkedOperations(object):
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
         from generated.definitions import SnapshotDefinition
+        from generated.definitions import SnapshotParametersDefinition
 
         def to_protobuf(snapshot):
             parameters = common_pb2.PluginDefinedObject()
@@ -196,10 +202,14 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
+        snapshot_parameters = SnapshotParametersDefinition.from_dict(
+            json.loads(request.snapshot_parameters.parameters.json))
 
-        snapshot = self.post_snapshot_impl(direct_source=direct_source,
-                                           repository=repository,
-                                           source_config=source_config)
+        snapshot = self.post_snapshot_impl(
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            optional_snapshot_parameters=snapshot_parameters)
 
         # Validate that this is a SnapshotDefinition object
         if not isinstance(snapshot, SnapshotDefinition):
@@ -266,10 +276,11 @@ class LinkedOperations(object):
         snapshot_parameters = SnapshotParametersDefinition.from_dict(
             json.loads(request.snapshot_parameters.parameters.json))
 
-        self.pre_snapshot_impl(staged_source=staged_source,
-                               repository=repository,
-                               source_config=source_config,
-                               snapshot_parameters=snapshot_parameters)
+        self.pre_snapshot_impl(
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            optional_snapshot_parameters=snapshot_parameters)
 
         response = platform_pb2.StagedPreSnapshotResponse()
         response.return_value.CopyFrom(platform_pb2.StagedPreSnapshotResult())
@@ -337,7 +348,7 @@ class LinkedOperations(object):
             staged_source=staged_source,
             repository=repository,
             source_config=source_config,
-            snapshot_parameters=snapshot_parameters)
+            optional_snapshot_parameters=snapshot_parameters)
 
         # Validate that this is a SnapshotDefinition object
         if not isinstance(snapshot, SnapshotDefinition):

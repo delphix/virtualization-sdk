@@ -179,7 +179,8 @@
     "sourceConfigDefinition",
     "virtualSourceDefinition",
     "linkedSourceDefinition",
-    "snapshotDefinition"
+    "snapshotDefinition",
+    "snapshotParametersDefinition"
   ],
   "properties": {
     "repositoryDefinition": {
@@ -209,6 +210,9 @@
       "$ref": "#/definitions/jsonSchema"
     },
     "snapshotDefinition": {
+      "$ref": "#/definitions/jsonSchema"
+    },
+    "snapshotParametersDefinition": {
       "$ref": "#/definitions/jsonSchema"
     }
   },

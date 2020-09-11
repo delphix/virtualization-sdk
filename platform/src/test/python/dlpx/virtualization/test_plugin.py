@@ -813,19 +813,23 @@ class TestPlugin:
 
     @staticmethod
     def test_direct_pre_snapshot(my_plugin, direct_source, repository,
-                                 source_config):
+                                 source_config, snapshot_parameters):
         @my_plugin.linked.pre_snapshot()
-        def mock_direct_pre_snapshot(direct_source, repository, source_config):
-            TestPlugin.assert_plugin_args(direct_source=direct_source,
-                                          repository=repository,
-                                          source_config=source_config)
+        def mock_direct_pre_snapshot(direct_source, repository, source_config,
+                                     optional_snapshot_parameters):
+            TestPlugin.assert_plugin_args(
+                direct_source=direct_source,
+                repository=repository,
+                source_config=source_config,
+                snapshot_parameters=optional_snapshot_parameters)
             return
 
         direct_pre_snapshot_request = platform_pb2.DirectPreSnapshotRequest()
         TestPlugin.setup_request(request=direct_pre_snapshot_request,
                                  direct_source=direct_source,
                                  repository=repository,
-                                 source_config=source_config)
+                                 source_config=source_config,
+                                 snapshot_parameters=snapshot_parameters)
 
         expected_result = platform_pb2.DirectPreSnapshotResult()
         direct_pre_snapshot_response = (
@@ -839,20 +843,24 @@ class TestPlugin:
 
     @staticmethod
     def test_direct_post_snapshot(my_plugin, direct_source, repository,
-                                  source_config):
+                                  source_config, snapshot_parameters):
         @my_plugin.linked.post_snapshot()
-        def direct_post_snapshot_impl(direct_source, repository,
-                                      source_config):
-            TestPlugin.assert_plugin_args(direct_source=direct_source,
-                                          repository=repository,
-                                          source_config=source_config)
+        def direct_post_snapshot_impl(direct_source, repository, source_config,
+                                      optional_snapshot_parameters):
+            TestPlugin.assert_plugin_args(
+                direct_source=direct_source,
+                repository=repository,
+                source_config=source_config,
+                snapshot_parameters=optional_snapshot_parameters)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
         direct_post_snapshot_request = platform_pb2.DirectPostSnapshotRequest()
-        TestPlugin.setup_request(request=direct_post_snapshot_request,
-                                 direct_source=direct_source,
-                                 repository=repository,
-                                 source_config=source_config)
+        TestPlugin.setup_request(
+            request=direct_post_snapshot_request,
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         direct_post_snapshot_response = (
             my_plugin.linked._internal_direct_post_snapshot(
@@ -866,20 +874,21 @@ class TestPlugin:
                                  source_config, snapshot_parameters):
         @my_plugin.linked.pre_snapshot()
         def staged_pre_snapshot_impl(staged_source, repository, source_config,
-                                     snapshot_parameters):
+                                     optional_snapshot_parameters):
             TestPlugin.assert_plugin_args(
                 staged_source=staged_source,
                 repository=repository,
                 source_config=source_config,
-                snapshot_parameters=snapshot_parameters)
+                snapshot_parameters=optional_snapshot_parameters)
             return
 
         staged_pre_snapshot_request = platform_pb2.StagedPreSnapshotRequest()
-        TestPlugin.setup_request(request=staged_pre_snapshot_request,
-                                 staged_source=staged_source,
-                                 repository=repository,
-                                 source_config=source_config,
-                                 snapshot_parameters=snapshot_parameters)
+        TestPlugin.setup_request(
+            request=staged_pre_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         expected_result = platform_pb2.StagedPreSnapshotResult()
         response = my_plugin.linked._internal_staged_pre_snapshot(
@@ -894,20 +903,21 @@ class TestPlugin:
                                   source_config, snapshot_parameters):
         @my_plugin.linked.post_snapshot()
         def staged_post_snapshot_impl(staged_source, repository, source_config,
-                                      snapshot_parameters):
+                                      optional_snapshot_parameters):
             TestPlugin.assert_plugin_args(
                 staged_source=staged_source,
                 repository=repository,
                 source_config=source_config,
-                snapshot_parameters=snapshot_parameters)
+                snapshot_parameters=optional_snapshot_parameters)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
         staged_post_snapshot_request = platform_pb2.StagedPostSnapshotRequest()
-        TestPlugin.setup_request(request=staged_post_snapshot_request,
-                                 staged_source=staged_source,
-                                 repository=repository,
-                                 source_config=source_config,
-                                 snapshot_parameters=snapshot_parameters)
+        TestPlugin.setup_request(
+            request=staged_post_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         response = my_plugin.linked._internal_staged_post_snapshot(
             staged_post_snapshot_request)
