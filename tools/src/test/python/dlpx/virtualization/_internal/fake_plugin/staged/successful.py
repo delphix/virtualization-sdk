@@ -65,6 +65,9 @@ def staged_worker(repository, source_config, staged_source):
 def configure(virtual_source, repository, snapshot):
     return None
 
+@staged.virtual.initialize()
+def initialize(virtual_source, repository):
+    return None
 
 @staged.virtual.mount_specification()
 def mount_specification(virtual_source, repository):
