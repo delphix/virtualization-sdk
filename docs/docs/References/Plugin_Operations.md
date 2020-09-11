@@ -611,7 +611,7 @@ As with the `configure` operation, this `initialize` operation must return sourc
 
 ### Signature
 
-`def initialize_empty_dataset(virtual_source, repository)`
+`def initialize(virtual_source, repository)`
 
 ### Decorator
 
@@ -636,7 +636,7 @@ from generated.defintions import SourceConfigDefinition
 plugin = Plugin()
 
 @plugin.virtual.initialize()
-def initialize(virtual_source, snapshot):
+def initialize(virtual_source, repository):
   source_config = SourceConfigDefinition(name="config_name")
   return source_config
 ```
