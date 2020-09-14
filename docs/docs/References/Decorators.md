@@ -13,13 +13,13 @@ plugin = Plugin()
 # Use the decorator to annotate the function that corresponds to the "Virtual Source Start" Plugin Operation
 @plugin.virtual_source.start()
 def my_start(virtual_source, repository, source_config):
-  print "running start" 
+  print "running start"
 ```
 
 !!! info
     Decorators exposed by the Virtualization SDK are inherently python function calls and needs parentheses `()` appended at the end.
 
-Assuming the name of the object, is `plugin` as above, the table below lists the corresponding decorators for each plugin operation.
+Assuming the name of the object is `plugin` as above, the table below lists the corresponding decorators for each plugin operation.
 
 Plugin Operation | Decorator
 ---------------- |  --------
@@ -35,6 +35,7 @@ Plugin Operation | Decorator
 [Staged Linked Source Worker](Plugin_Operations.md#staged-linked-source-worker) | `@plugin.linked.worker()`
 [Staged Linked Source Mount Specification](Plugin_Operations.md#staged-linked-source-mount-specification) | `@plugin.linked.mount_specification()`
 [Virtual Source Configure](Plugin_Operations.md#virtual-source-configure) | `@plugin.virtual.configure()`
+[Virtual Source Initialize](Plugin_Operations.md#virtual-source-initialize) | `@plugin.virtual.initialize()`
 [Virtual Source Unconfigure](Plugin_Operations.md#virtual-source-unconfigure) | `@plugin.virtual.unconfigure()`
 [Virtual Source Reconfigure](Plugin_Operations.md#virtual-source-reconfigure) | `@plugin.virtual.reconfigure()`
 [Virtual Source Start](Plugin_Operations.md#virtual-source-start) | `@plugin.virtual.start()`

@@ -33,6 +33,11 @@ def configure(virtual_source, repository, snapshot):
     name = "VDB mounted to " + path
     return None
 
+@direct.virtual.initialize()
+def initialize(virtual_source, repository):
+    path = virtual_source.parameters.path
+    name = "VDB mounted to " + path
+    return None
 
 @direct.virtual.mount_specification()
 def mount_specification(repository, virtual_source):

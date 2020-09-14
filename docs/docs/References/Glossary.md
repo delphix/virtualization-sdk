@@ -28,6 +28,13 @@ The process by which the Delphix Engine learns about how a particular environmen
 ## dSource
 See [Linked Dataset](#linked-dataset)
 
+## Empty VDB
+A VDB that is created from scratch, without provisioning from another dataset. Users can create empty VDBs when they want to construct a brand-new dataset from within Delphix, instead of creating it externally and then ingesting it.
+
+This "empty" VDB, of course, will typically not stay empty for long. Data will be added as users work with the new dataset.
+
+A plugin can support this functionality by implementing the [initialize](Plugin_Operations.md#virtual-source-initialize) operation.
+
 ## Environment
 A remote system that the Delphix Engine can interact with. An environment can be used as a [source](#source-environment), [staging](#staging-environment) or [target](#target-environment) environment (or any combination of those).  For example, a Linux machine that the Delphix Engine can connect to is an environment.
 
@@ -105,7 +112,7 @@ The process by which the Delphix Engine ingests data from a dataset on a [source
 An [environment](#environment) on which Delphix-provided virtualized datasets can be used.
 
 ## Lua Toolkit
-Legacy model for writing "plugins" in Lua, with limited documentation and support for writing, building and uploading toolkits. This was the predecessor to the Virtualization SDK. 
+Legacy model for writing "plugins" in Lua, with limited documentation and limited support for writing, building and uploading toolkits. This was the predecessor to the Virtualization SDK.
 
 ## Upgrade Operation
 A special plugin operation that takes data produced by an older version of a plugin, and transforms it into the format expected by the new version of the plugin.
