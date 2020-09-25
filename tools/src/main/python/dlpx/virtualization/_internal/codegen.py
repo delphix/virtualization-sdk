@@ -26,24 +26,6 @@ SWAGGER_JSON_FORMAT = {
     'definitions': {}
 }
 
-#
-# The default snapshot params we currently support. This is so that in the
-# future when we want to support plugin author defined schemas for snapshot
-# params the upgrade case will be relatively simple.
-#
-
-SNAPSHOT_PARAMS_JSON = {
-    'snapshotParametersDefinition': {
-        'type': 'object',
-        'additionalProperties': False,
-        'properties': {
-            'resync': {
-                'type': 'boolean'
-            }
-        }
-    }
-}
-
 SWAGGER_FILE_NAME = 'swagger.json'
 CODEGEN_PACKAGE = 'generated'
 CODEGEN_MODULE = 'definitions'
@@ -111,9 +93,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
 def _write_swagger_file(name, schema_dict, output_dir):
     swagger_json = copy.deepcopy(SWAGGER_JSON_FORMAT)
     swagger_json['info']['title'] = name
-    swagger_json['definitions'] = copy.deepcopy(schema_dict)
-    # Add in the snapshot param definition
-    swagger_json['definitions'].update(SNAPSHOT_PARAMS_JSON)
+    swagger_json['definitions'] = schema_dict
 
     swagger_file = os.path.join(output_dir, SWAGGER_FILE_NAME)
     logger.info('Writing swagger file to {}'.format(swagger_file))
