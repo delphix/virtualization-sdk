@@ -112,6 +112,9 @@ Here is a JSON object that conforms to the above schema:
 
 For much more detail on JSON schemas, including which keywords are available, what they mean, and where you can use them, see <https://json-schema.org/understanding-json-schema/>.
 
+!!! info
+    Be careful when using the JSON schema keyword `default`. This keyword is commonly misunderstood. Specifically, it does not mean "If the user does not provide a value, then this default value will be auto-substituted instead", as you might expect. In fact, in JSON schemas, `default` has no semantic meaning at all!
+
 
 ### Delphix-specific Extensions to JSON Schema
 
@@ -309,7 +312,7 @@ This will allow the plugin author to ask the user to select [environments](/Refe
     "type": "string",
     "format": "reference",
     "referenceType": "HOST_USER",
-    "matches”: "env"
+    "matches": "env"
   }
 }
 ```
@@ -337,7 +340,7 @@ The `referenceType` keyword is used to specify the [reference](#reference) type.
     "type": "string",
     "format": "reference",
     "referenceType": "HOST_USER",
-    "matches”: "env"
+    "matches": "env"
   }
 }
 ```
@@ -362,7 +365,7 @@ The `matches` keyword is used to map an [environment user](/References/Glossary.
     "type": "string",
     "format": "reference",
     "referenceType": "HOST_USER",
-    "matches”: "env"
+    "matches": "env"
   }
 }
 ```
