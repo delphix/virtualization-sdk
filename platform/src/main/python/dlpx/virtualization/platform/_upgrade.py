@@ -3,7 +3,6 @@
 #
 
 # -*- coding: utf-8 -*-
-
 """UpgradeOperations for the Virtualization Platform
 
 There are 5 different objects that we can upgrade. All migration ids must be
@@ -15,12 +14,12 @@ will be the function that was implemented.
 """
 import json
 import logging
+
 from dlpx.virtualization.api import platform_pb2
-from dlpx.virtualization.platform import MigrationIdSet
-from dlpx.virtualization.platform import validation_util as v
-from dlpx.virtualization.platform.operation import Operation as Op
+from dlpx.virtualization.platform import (LuaUpgradeMigrations, MigrationType,
+                                          PlatformUpgradeMigrations)
 from dlpx.virtualization.platform.exceptions import (
-    IncorrectUpgradeObjectTypeError)
+    IncorrectUpgradeObjectTypeError, UnknownMigrationTypeError)
 
 logger = logging.getLogger(__name__)
 
@@ -28,64 +27,88 @@ __all__ = ['UpgradeOperations']
 
 
 class UpgradeOperations(object):
-
     def __init__(self):
-        self.__migration_id_set = MigrationIdSet()
+        self.platform_migrations = PlatformUpgradeMigrations()
+        self.lua_migrations = LuaUpgradeMigrations()
 
-        self.repository_id_to_impl = {}
-        self.source_config_id_to_impl = {}
-        self.linked_source_id_to_impl = {}
-        self.virtual_source_id_to_impl = {}
-        self.snapshot_id_to_impl = {}
-
-    def repository(self, migration_id):
+    def repository(self, migration_id, migration_type=MigrationType.PLATFORM):
         def repository_decorator(repository_impl):
-            std_mig_id = self.__migration_id_set.add(
-                migration_id, repository_impl.__name__)
-            self.repository_id_to_impl[std_mig_id] = v.check_function(
-                repository_impl, Op.UPGRADE_REPOSITORY)
+            if migration_type == MigrationType.PLATFORM:
+                self.platform_migrations.add_repository(
+                    migration_id, repository_impl)
+            elif migration_type == MigrationType.LUA:
+                self.lua_migrations.add_repository(migration_id,
+                                                   repository_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return repository_impl
+
         return repository_decorator
 
-    def source_config(self, migration_id):
+    def source_config(self,
+                      migration_id,
+                      migration_type=MigrationType.PLATFORM):
         def source_config_decorator(source_config_impl):
-            std_mig_id = self.__migration_id_set.add(
-                migration_id, source_config_impl.__name__)
-            self.source_config_id_to_impl[std_mig_id] = v.check_function(
-                source_config_impl, Op.UPGRADE_SOURCE_CONFIG)
+            if migration_type == MigrationType.PLATFORM:
+                self.platform_migrations.add_source_config(
+                    migration_id, source_config_impl)
+            elif migration_type == MigrationType.LUA:
+                self.lua_migrations.add_source_config(migration_id,
+                                                      source_config_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return source_config_impl
+
         return source_config_decorator
 
-    def linked_source(self, migration_id):
+    def linked_source(self,
+                      migration_id,
+                      migration_type=MigrationType.PLATFORM):
         def linked_source_decorator(linked_source_impl):
-            std_mig_id = self.__migration_id_set.add(
-                migration_id, linked_source_impl.__name__)
-            self.linked_source_id_to_impl[std_mig_id] = v.check_function(
-                linked_source_impl, Op.UPGRADE_LINKED_SOURCE)
+            if migration_type == MigrationType.PLATFORM:
+                self.platform_migrations.add_linked_source(
+                    migration_id, linked_source_impl)
+            elif migration_type == MigrationType.LUA:
+                self.lua_migrations.add_linked_source(migration_id,
+                                                      linked_source_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return linked_source_impl
+
         return linked_source_decorator
 
-    def virtual_source(self, migration_id):
+    def virtual_source(self,
+                       migration_id,
+                       migration_type=MigrationType.PLATFORM):
         def virtual_source_decorator(virtual_source_impl):
-            std_mig_id = self.__migration_id_set.add(
-                migration_id, virtual_source_impl.__name__)
-            self.virtual_source_id_to_impl[std_mig_id] = v.check_function(
-                virtual_source_impl, Op.UPGRADE_VIRTUAL_SOURCE)
+            if migration_type == MigrationType.PLATFORM:
+                self.platform_migrations.add_virtual_source(
+                    migration_id, virtual_source_impl)
+            elif migration_type == MigrationType.LUA:
+                self.lua_migrations.add_virtual_source(migration_id,
+                                                       virtual_source_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return virtual_source_impl
+
         return virtual_source_decorator
 
-    def snapshot(self, migration_id):
+    def snapshot(self, migration_id, migration_type=MigrationType.PLATFORM):
         def snapshot_decorator(snapshot_impl):
-            std_mig_id = self.__migration_id_set.add(
-                migration_id, snapshot_impl.__name__)
-            self.snapshot_id_to_impl[std_mig_id] = v.check_function(
-                snapshot_impl, Op.UPGRADE_SNAPSHOT)
+            if migration_type == MigrationType.PLATFORM:
+                self.platform_migrations.add_snapshot(migration_id,
+                                                      snapshot_impl)
+            elif migration_type == MigrationType.LUA:
+                self.lua_migrations.add_snapshot(migration_id, snapshot_impl)
+            else:
+                raise UnknownMigrationTypeError(migration_type)
             return snapshot_impl
+
         return snapshot_decorator
 
     @property
     def migration_id_list(self):
-        return self.__migration_id_set.get_sorted_ids()
+        return self.platform_migrations.get_sorted_ids()
 
     @staticmethod
     def _success_upgrade_response(upgraded_dict):
@@ -95,28 +118,31 @@ class UpgradeOperations(object):
             return_value=upgrade_result)
         return upgrade_response
 
-    def __process_upgrade_request(self, request, id_to_impl):
-        """Iterate through all objects in the pre_upgrade_parameters map,
-        invoke all available migrations on each object and its metadata,
-        and return a map containing the updated metadata for each object.
+    @staticmethod
+    def _run_migration_upgrades(request, lua_impls_getter,
+                                platform_impls_getter):
+        """
+        Given the list of lua and platform migration to run, iterate and
+        invoke these migrations on each object and its metadata, and return a
+        dict containing the upgraded parameters.
         """
         post_upgrade_parameters = {}
+        #
+        # For the request.migration_ids list, protobuf will preserve the
+        # ordering of repeated elements, so we can rely on the backend to
+        # give us the already sorted list of migrations
+        #
+        impls_list = lua_impls_getter(
+            request.lua_upgrade_version) + platform_impls_getter(
+                request.migration_ids)
         for (object_ref, metadata) in request.pre_upgrade_parameters.items():
             # Load the object metadata into a dictionary
             current_metadata = json.loads(metadata)
-            #
-            # Loop through all migrations that were passed into the upgrade
-            # request. Protobuf will preserve the ordering of repeated
-            # elements, so we can rely on the backend to sort the migration
-            # ids before packing them into the request.
-            #
-            for migration_id in request.migration_ids:
-                # Only try to execute the function if the id exists in the map.
-                if migration_id in id_to_impl:
-                    current_metadata = id_to_impl[migration_id](current_metadata)
+            for migration_function in impls_list:
+                current_metadata = migration_function(current_metadata)
             post_upgrade_parameters[object_ref] = json.dumps(current_metadata)
 
-        return self._success_upgrade_response(post_upgrade_parameters)
+        return post_upgrade_parameters
 
     def _internal_repository(self, request):
         """Upgrade repositories for plugins.
@@ -125,10 +151,13 @@ class UpgradeOperations(object):
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.REPOSITORY)
 
-        logger.debug('Upgrade repositories [{}]'.format(
-            ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
+        logger.debug('Upgrade repositories [{}]'.format(', '.join(
+            sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self.__process_upgrade_request(request, self.repository_id_to_impl)
+        post_upgrade_parameters = self._run_migration_upgrades(
+            request, self.lua_migrations.get_repository_impls_to_exec,
+            self.platform_migrations.get_repository_impls_to_exec)
+        return self._success_upgrade_response(post_upgrade_parameters)
 
     def _internal_source_config(self, request):
         """Upgrade source configs for plugins.
@@ -137,10 +166,13 @@ class UpgradeOperations(object):
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.SOURCECONFIG)
 
-        logger.debug('Upgrade source configs [{}]'.format(
-            ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
+        logger.debug('Upgrade source configs [{}]'.format(', '.join(
+            sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self.__process_upgrade_request(request, self.source_config_id_to_impl)
+        post_upgrade_parameters = self._run_migration_upgrades(
+            request, self.lua_migrations.get_source_config_impls_to_exec,
+            self.platform_migrations.get_source_config_impls_to_exec)
+        return self._success_upgrade_response(post_upgrade_parameters)
 
     def _internal_linked_source(self, request):
         """Upgrade linked source for plugins.
@@ -149,10 +181,13 @@ class UpgradeOperations(object):
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.LINKEDSOURCE)
 
-        logger.debug('Upgrade linked sources [{}]'.format(
-            ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
+        logger.debug('Upgrade linked sources [{}]'.format(', '.join(
+            sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self.__process_upgrade_request(request, self.linked_source_id_to_impl)
+        post_upgrade_parameters = self._run_migration_upgrades(
+            request, self.lua_migrations.get_linked_source_impls_to_exec,
+            self.platform_migrations.get_linked_source_impls_to_exec)
+        return self._success_upgrade_response(post_upgrade_parameters)
 
     def _internal_virtual_source(self, request):
         """Upgrade virtual sources for plugins.
@@ -161,10 +196,13 @@ class UpgradeOperations(object):
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.VIRTUALSOURCE)
 
-        logger.debug('Upgrade virtual sources [{}]'.format(
-            ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
+        logger.debug('Upgrade virtual sources [{}]'.format(', '.join(
+            sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self.__process_upgrade_request(request, self.virtual_source_id_to_impl)
+        post_upgrade_parameters = self._run_migration_upgrades(
+            request, self.lua_migrations.get_virtual_source_impls_to_exec,
+            self.platform_migrations.get_virtual_source_impls_to_exec)
+        return self._success_upgrade_response(post_upgrade_parameters)
 
     def _internal_snapshot(self, request):
         """Upgrade snapshots for plugins.
@@ -173,7 +211,10 @@ class UpgradeOperations(object):
             raise IncorrectUpgradeObjectTypeError(
                 request.type, platform_pb2.UpgradeRequest.SNAPSHOT)
 
-        logger.debug('Upgrade snapshots [{}]'.format(
-            ', '.join(sorted(request.pre_upgrade_parameters.keys()))))
+        logger.debug('Upgrade snapshots [{}]'.format(', '.join(
+            sorted(request.pre_upgrade_parameters.keys()))))
 
-        return self.__process_upgrade_request(request, self.snapshot_id_to_impl)
+        post_upgrade_parameters = self._run_migration_upgrades(
+            request, self.lua_migrations.get_snapshot_impls_to_exec,
+            self.platform_migrations.get_snapshot_impls_to_exec)
+        return self._success_upgrade_response(post_upgrade_parameters)

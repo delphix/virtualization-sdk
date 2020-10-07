@@ -3,30 +3,25 @@
 #
 
 # -*- coding: utf-8 -*-
-
 """VirtualOperations for the Virtualization Platform
 
 """
 import json
-from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
-from dlpx.virtualization.api import common_pb2
-from dlpx.virtualization.api import platform_pb2
-from dlpx.virtualization.platform import VirtualSource
-from dlpx.virtualization.platform import Status
-from dlpx.virtualization.platform import Mount
-from dlpx.virtualization.platform import MountSpecification
-from dlpx.virtualization.platform import validation_util as v
-from dlpx.virtualization.platform.operation import Operation as Op
-from dlpx.virtualization.platform.exceptions import (
-    IncorrectReturnTypeError, OperationNotDefinedError,
-    OperationAlreadyDefinedError)
 
+from dlpx.virtualization.api import common_pb2, platform_pb2
+from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
+from dlpx.virtualization.platform import (Mount, MountSpecification, Status,
+                                          VirtualSource)
+from dlpx.virtualization.platform import validation_util as v
+from dlpx.virtualization.platform.exceptions import (
+    IncorrectReturnTypeError, OperationAlreadyDefinedError,
+    OperationNotDefinedError)
+from dlpx.virtualization.platform.operation import Operation as Op
 
 __all__ = ['VirtualOperations']
 
 
 class VirtualOperations(object):
-
     def __init__(self):
         self.configure_impl = None
         self.unconfigure_impl = None
@@ -46,6 +41,7 @@ class VirtualOperations(object):
             self.configure_impl = v.check_function(configure_impl,
                                                    Op.VIRTUAL_CONFIGURE)
             return configure_impl
+
         return configure_decorator
 
     def unconfigure(self):
@@ -55,6 +51,7 @@ class VirtualOperations(object):
             self.unconfigure_impl = v.check_function(unconfigure_impl,
                                                      Op.VIRTUAL_UNCONFIGURE)
             return unconfigure_impl
+
         return unconfigure_decorator
 
     def reconfigure(self):
@@ -64,6 +61,7 @@ class VirtualOperations(object):
             self.reconfigure_impl = v.check_function(reconfigure_impl,
                                                      Op.VIRTUAL_RECONFIGURE)
             return reconfigure_impl
+
         return reconfigure_decorator
 
     def start(self):
@@ -72,6 +70,7 @@ class VirtualOperations(object):
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_START)
             self.start_impl = v.check_function(start_impl, Op.VIRTUAL_START)
             return start_impl
+
         return start_decorator
 
     def stop(self):
@@ -80,6 +79,7 @@ class VirtualOperations(object):
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_STOP)
             self.stop_impl = v.check_function(stop_impl, Op.VIRTUAL_STOP)
             return stop_impl
+
         return stop_decorator
 
     def pre_snapshot(self):
@@ -89,6 +89,7 @@ class VirtualOperations(object):
             self.pre_snapshot_impl = v.check_function(pre_snapshot_impl,
                                                       Op.VIRTUAL_PRE_SNAPSHOT)
             return pre_snapshot_impl
+
         return pre_snapshot_decorator
 
     def post_snapshot(self):
@@ -98,6 +99,7 @@ class VirtualOperations(object):
             self.post_snapshot_impl = v.check_function(
                 post_snapshot_impl, Op.VIRTUAL_POST_SNAPSHOT)
             return post_snapshot_impl
+
         return post_snapshot_decorator
 
     def status(self):
@@ -106,6 +108,7 @@ class VirtualOperations(object):
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_STATUS)
             self.status_impl = v.check_function(status_impl, Op.VIRTUAL_STATUS)
             return status_impl
+
         return status_decorator
 
     def initialize(self):
@@ -115,24 +118,25 @@ class VirtualOperations(object):
             self.initialize_impl = v.check_function(initialize_impl,
                                                     Op.VIRTUAL_INITIALIZE)
             return initialize_impl
+
         return initialize_decorator
 
     def mount_specification(self):
         def mount_specification_decorator(mount_specification_impl):
             if self.mount_specification_impl:
-                raise OperationAlreadyDefinedError(
-                    Op.VIRTUAL_MOUNT_SPEC)
+                raise OperationAlreadyDefinedError(Op.VIRTUAL_MOUNT_SPEC)
             self.mount_specification_impl = v.check_function(
                 mount_specification_impl, Op.VIRTUAL_MOUNT_SPEC)
             return mount_specification_impl
+
         return mount_specification_decorator
 
     @staticmethod
     def _from_protobuf_single_subset_mount(single_subset_mount):
-        return Mount(
-            remote_environment=RemoteEnvironment.from_proto(single_subset_mount.remote_environment),
-            mount_path=single_subset_mount.mount_path,
-            shared_path=single_subset_mount.shared_path)
+        return Mount(remote_environment=RemoteEnvironment.from_proto(
+            single_subset_mount.remote_environment),
+                     mount_path=single_subset_mount.mount_path,
+                     shared_path=single_subset_mount.shared_path)
 
     def _internal_configure(self, request):
         """Configure operation wrapper.
@@ -167,29 +171,30 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
 
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         snapshot = SnapshotDefinition.from_dict(
             json.loads(request.snapshot.parameters.json))
 
-        config = self.configure_impl(
-            virtual_source=virtual_source,
-            repository=repository,
-            snapshot=snapshot)
+        config = self.configure_impl(virtual_source=virtual_source,
+                                     repository=repository,
+                                     snapshot=snapshot)
 
         # Validate that this is a SourceConfigDefinition object.
         if not isinstance(config, SourceConfigDefinition):
-            raise IncorrectReturnTypeError(
-                Op.VIRTUAL_CONFIGURE, type(config), SourceConfigDefinition)
+            raise IncorrectReturnTypeError(Op.VIRTUAL_CONFIGURE, type(config),
+                                           SourceConfigDefinition)
 
         configure_response = platform_pb2.ConfigureResponse()
         configure_response.return_value.source_config.parameters.json = (
@@ -225,24 +230,25 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
 
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.unconfigure_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        self.unconfigure_impl(repository=repository,
+                              source_config=source_config,
+                              virtual_source=virtual_source)
 
         unconfigure_response = platform_pb2.UnconfigureResponse()
         unconfigure_response.return_value.CopyFrom(
@@ -273,13 +279,15 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         snapshot = SnapshotDefinition.from_dict(
             json.loads(request.snapshot.parameters.json))
@@ -288,16 +296,16 @@ class VirtualOperations(object):
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
 
-        config = self.reconfigure_impl(
-            snapshot=snapshot,
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        config = self.reconfigure_impl(snapshot=snapshot,
+                                       repository=repository,
+                                       source_config=source_config,
+                                       virtual_source=virtual_source)
 
         # Validate that this is a SourceConfigDefinition object.
         if not isinstance(config, SourceConfigDefinition):
-            raise IncorrectReturnTypeError(
-                Op.VIRTUAL_RECONFIGURE, type(config), SourceConfigDefinition)
+            raise IncorrectReturnTypeError(Op.VIRTUAL_RECONFIGURE,
+                                           type(config),
+                                           SourceConfigDefinition)
 
         reconfigure_response = platform_pb2.ReconfigureResponse()
         reconfigure_response.return_value.source_config.parameters.json = (
@@ -331,23 +339,24 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.start_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        self.start_impl(repository=repository,
+                        source_config=source_config,
+                        virtual_source=virtual_source)
 
         start_response = platform_pb2.StartResponse()
         start_response.return_value.CopyFrom(platform_pb2.StartResult())
@@ -379,23 +388,24 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.stop_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        self.stop_impl(repository=repository,
+                       source_config=source_config,
+                       virtual_source=virtual_source)
 
         stop_response = platform_pb2.StopResponse()
         stop_response.return_value.CopyFrom(platform_pb2.StopResult())
@@ -432,23 +442,24 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.pre_snapshot_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        self.pre_snapshot_impl(repository=repository,
+                               source_config=source_config,
+                               virtual_source=virtual_source)
 
         virtual_pre_snapshot_response = (
             platform_pb2.VirtualPreSnapshotResponse())
@@ -491,28 +502,29 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        snapshot = self.post_snapshot_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        snapshot = self.post_snapshot_impl(repository=repository,
+                                           source_config=source_config,
+                                           virtual_source=virtual_source)
 
         # Validate that this is a SnapshotDefinition object
         if not isinstance(snapshot, SnapshotDefinition):
-            raise IncorrectReturnTypeError(
-                Op.VIRTUAL_POST_SNAPSHOT, type(snapshot), SnapshotDefinition)
+            raise IncorrectReturnTypeError(Op.VIRTUAL_POST_SNAPSHOT,
+                                           type(snapshot), SnapshotDefinition)
 
         virtual_post_snapshot_response = (
             platform_pb2.VirtualPostSnapshotResponse())
@@ -549,28 +561,29 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        virtual_status = self.status_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        virtual_status = self.status_impl(repository=repository,
+                                          source_config=source_config,
+                                          virtual_source=virtual_source)
 
         # Validate that this is a Status object.
         if not isinstance(virtual_status, Status):
-            raise IncorrectReturnTypeError(
-                Op.VIRTUAL_STATUS, type(virtual_status), Status)
+            raise IncorrectReturnTypeError(Op.VIRTUAL_STATUS,
+                                           type(virtual_status), Status)
 
         virtual_status_response = platform_pb2.VirtualStatusResponse()
         virtual_status_response.return_value.status = virtual_status.value
@@ -601,23 +614,24 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.initialize_impl(
-            repository=repository,
-            source_config=source_config,
-            virtual_source=virtual_source)
+        self.initialize_impl(repository=repository,
+                             source_config=source_config,
+                             virtual_source=virtual_source)
         initialize_response = platform_pb2.InitializeResponse()
         initialize_response.return_value.CopyFrom(
             platform_pb2.InitializeResult())
@@ -668,27 +682,27 @@ class VirtualOperations(object):
 
         virtual_source_definition = VirtualSourceDefinition.from_dict(
             json.loads(request.virtual_source.parameters.json))
-        mounts = [VirtualOperations._from_protobuf_single_subset_mount(m)
-                  for m in request.virtual_source.mounts]
-        virtual_source = VirtualSource(
-            guid=request.virtual_source.guid,
-            connection=RemoteConnection.from_proto(request.virtual_source.connection),
-            parameters=virtual_source_definition,
-            mounts=mounts)
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
 
         virtual_mount_spec = self.mount_specification_impl(
-            repository=repository,
-            virtual_source=virtual_source)
+            repository=repository, virtual_source=virtual_source)
 
         # Validate that this is a MountSpecification object
         if not isinstance(virtual_mount_spec, MountSpecification):
-            raise IncorrectReturnTypeError(
-                Op.VIRTUAL_MOUNT_SPEC,
-                type(virtual_mount_spec),
-                MountSpecification)
+            raise IncorrectReturnTypeError(Op.VIRTUAL_MOUNT_SPEC,
+                                           type(virtual_mount_spec),
+                                           MountSpecification)
 
         virtual_mount_spec_response = platform_pb2.VirtualMountSpecResponse()
 
@@ -698,7 +712,8 @@ class VirtualOperations(object):
             virtual_mount_spec_response.return_value.ownership_spec.CopyFrom(
                 ownership_spec)
 
-        mounts_list = [to_protobuf_single_mount(m)
-                       for m in virtual_mount_spec.mounts]
+        mounts_list = [
+            to_protobuf_single_mount(m) for m in virtual_mount_spec.mounts
+        ]
         virtual_mount_spec_response.return_value.mounts.extend(mounts_list)
         return virtual_mount_spec_response

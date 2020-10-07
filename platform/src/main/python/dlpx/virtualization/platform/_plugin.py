@@ -3,7 +3,6 @@
 #
 
 # -*- coding: utf-8 -*-
-
 """Plugin for the Virtualization Platform
 
 This module contains a skeleton of a plugin that allows users to extend the
@@ -81,10 +80,8 @@ fail. The internal methods should only be called by the platform so it's safe
 to have the import in the methods as the objects will exist at runtime.
 """
 from dlpx.virtualization.platform import (DiscoveryOperations,
-                                          LinkedOperations,
-                                          VirtualOperations,
-                                          UpgradeOperations)
-
+                                          LinkedOperations, UpgradeOperations,
+                                          VirtualOperations)
 
 __all__ = ['Plugin']
 
