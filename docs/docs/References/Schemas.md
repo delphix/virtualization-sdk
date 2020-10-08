@@ -113,7 +113,7 @@ Here is a JSON object that conforms to the above schema:
 For much more detail on JSON schemas, including which keywords are available, what they mean, and where you can use them, see <https://json-schema.org/understanding-json-schema/>.
 
 !!! info
-    Be careful when using the JSON schema keyword `default`. This keyword is commonly misunderstood. Specifically, it does not mean "If the user does not provide a value, then this default value will be auto-substituted instead", as you might expect. In fact, in JSON schemas, `default` has no semantic meaning at all!
+    Be careful when using the JSON schema keyword `default`. This keyword is commonly misunderstood. Specifically, it does not mean "If the user does not provide a value, then this default value will be auto-substituted instead", as you might expect. In fact, in JSON schemas, `default` has no semantic meaning at all! Currently, the only thing the Delphix Engine will use this for is to pre-fill widgets on the UI.
 
 
 ### Delphix-specific Extensions to JSON Schema
