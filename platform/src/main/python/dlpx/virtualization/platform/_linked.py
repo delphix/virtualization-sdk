@@ -142,8 +142,10 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
-        snapshot_parameters = SnapshotParametersDefinition.from_dict(
-            json.loads(request.snapshot_parameters.parameters.json))
+        snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        snapshot_parameters = (
+            None if snap_params is None else
+            SnapshotParametersDefinition.from_dict(snap_params))
 
         self.pre_snapshot_impl(
             direct_source=direct_source,
@@ -202,8 +204,10 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
-        snapshot_parameters = SnapshotParametersDefinition.from_dict(
-            json.loads(request.snapshot_parameters.parameters.json))
+        snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        snapshot_parameters = (
+            None if snap_params is None else
+            SnapshotParametersDefinition.from_dict(snap_params))
 
         snapshot = self.post_snapshot_impl(
             direct_source=direct_source,
@@ -273,8 +277,10 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
-        snapshot_parameters = SnapshotParametersDefinition.from_dict(
-            json.loads(request.snapshot_parameters.parameters.json))
+        snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        snapshot_parameters = (
+            None if snap_params is None else
+            SnapshotParametersDefinition.from_dict(snap_params))
 
         self.pre_snapshot_impl(
             staged_source=staged_source,
@@ -341,8 +347,10 @@ class LinkedOperations(object):
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
-        snapshot_parameters = SnapshotParametersDefinition.from_dict(
-            json.loads(request.snapshot_parameters.parameters.json))
+        snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        snapshot_parameters = (
+            None if snap_params is None else
+            SnapshotParametersDefinition.from_dict(snap_params))
 
         snapshot = self.post_snapshot_impl(
             staged_source=staged_source,
