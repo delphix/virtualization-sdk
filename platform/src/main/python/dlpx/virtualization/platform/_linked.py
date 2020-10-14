@@ -143,6 +143,11 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
         snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        #
+        # The snapshot_parameters object should be set to None if the json from
+        # the protobuf is None to differentiate no snapshot parameters vs empty
+        # snapshot parameters.
+        #
         snapshot_parameters = (
             None if snap_params is None else
             SnapshotParametersDefinition.from_dict(snap_params))
@@ -205,6 +210,11 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
         snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        #
+        # The snapshot_parameters object should be set to None if the json from
+        # the protobuf is None to differentiate no snapshot parameters vs empty
+        # snapshot parameters.
+        #
         snapshot_parameters = (
             None if snap_params is None else
             SnapshotParametersDefinition.from_dict(snap_params))
@@ -278,6 +288,11 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
         snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        #
+        # The snapshot_parameters object should be set to None if the json from
+        # the protobuf is None to differentiate no snapshot parameters vs empty
+        # snapshot parameters.
+        #
         snapshot_parameters = (
             None if snap_params is None else
             SnapshotParametersDefinition.from_dict(snap_params))
@@ -348,6 +363,11 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
         snap_params = json.loads(request.snapshot_parameters.parameters.json)
+        #
+        # The snapshot_parameters object should be set to None if the json from
+        # the protobuf is None to differentiate no snapshot parameters vs empty
+        # snapshot parameters.
+        #
         snapshot_parameters = (
             None if snap_params is None else
             SnapshotParametersDefinition.from_dict(snap_params))
