@@ -706,6 +706,28 @@ class TestPlugin:
         assert actual_source_config.parameters.json == TEST_REPOSITORY_JSON
 
     @staticmethod
+    def test_virtual_initialize_return_none(my_plugin, virtual_source,
+                                            repository, source_config):
+        @my_plugin.virtual.initialize()
+        def virtual_initialize_impl(virtual_source, repository):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository)
+            # Will return none.
+
+        initialize_request = platform_pb2.InitializeRequest()
+        TestPlugin.setup_request(request=initialize_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository)
+
+        with pytest.raises(IncorrectReturnTypeError) as err_info:
+            my_plugin.virtual._internal_initialize(initialize_request)
+        message = err_info.value.message
+        assert message == (
+            "The returned object for the virtual.initialize() operation was"
+            " type 'NoneType' but should be of class 'dlpx.virtualization."
+            "fake_generated_definitions.SourceConfigDefinition'.")
+
+    @staticmethod
     def test_virtual_mount_spec(my_plugin, virtual_source, repository):
 
         from dlpx.virtualization.platform import (Mount, MountSpecification,
