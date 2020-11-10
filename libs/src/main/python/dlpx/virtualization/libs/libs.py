@@ -30,7 +30,10 @@ from dlpx.virtualization.api import libs_pb2
 from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
                                                  LibraryError,
                                                  PluginScriptError)
-from dlpx.virtualization.common._common_classes import RemoteConnection
+from dlpx.virtualization.common._common_classes import (RemoteConnection,
+                                                        PasswordCredentials,
+                                                        KeyPairCredentials)
+from google.protobuf.struct_pb2 import Struct
 
 import logging
 
@@ -39,8 +42,10 @@ __all__ = [
     "run_bash",
     "run_sync",
     "run_powershell",
-    "run_expect"
+    "run_expect",
+    "retrieve_credentials"
 ]
+
 
 
 def _handle_response(response):
@@ -410,3 +415,34 @@ def _log_request(message, log_level):
 
     response = internal_libs.log(log_request)
     _handle_response(response)
+
+
+def retrieve_credentials(credentials_supplier):
+    """This is an internal wrapper around the Virtualization library's credentials retrieval API.
+    Given a supplier provided by Virtualization, retrieves the credentials from that supplier.
+
+    Args:
+        credentials_supplier (dict): Properties that make up a supplier of credentials.
+    Return:
+        Subclass of Credentials retrieved from supplier. Either a PasswordCredentials or a KeyPairCredentials
+        from dlpx.virtualization.common._common_classes.
+    """
+    from dlpx.virtualization._engine import libs as internal_libs
+
+    if not isinstance(credentials_supplier, dict):
+        raise IncorrectArgumentTypeError('credentials_supplier', type(credentials_supplier), dict)
+
+    credentials_request = libs_pb2.CredentialsRequest()
+    credentials_struct = Struct()
+    credentials_struct.update(credentials_supplier)
+    credentials_request.credentials_supplier.CopyFrom(credentials_struct)
+
+    response = internal_libs.retrieve_credentials(credentials_request)
+
+    credentials_result = _handle_response(response)
+    if credentials_result.password != "":
+        return PasswordCredentials(credentials_result.username, credentials_result.password)
+    return KeyPairCredentials(
+        credentials_result.username,
+        credentials_result.key_pair.private_key,
+        credentials_result.key_pair.public_key)

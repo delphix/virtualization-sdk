@@ -10,22 +10,22 @@ import pytest
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '2.2.0.dev1'
+        assert package_util.get_version() == '3.0.0.dev2'
 
     @staticmethod
     def test_get_virtualization_api_version():
-        assert package_util.get_virtualization_api_version() == '1.3.0'
+        assert package_util.get_virtualization_api_version() == '1.4.0'
 
     @staticmethod
     def test_get_engine_api_version():
-        assert package_util.get_engine_api_version_from_settings() == '1.11.3'
+        assert package_util.get_engine_api_version_from_settings() == '1.12.0'
 
     @staticmethod
     def test_get_build_api_version_json():
         build_api_version = {
             'type': 'APIVersion',
             'major': 1,
-            'minor': 3,
+            'minor': 4,
             'micro': 0
         }
         assert package_util.get_build_api_version() == build_api_version
@@ -35,8 +35,8 @@ class TestPackageUtil:
         engine_api_version = {
             'type': 'APIVersion',
             'major': 1,
-            'minor': 11,
-            'micro': 3
+            'minor': 12,
+            'micro': 0
         }
         assert package_util.get_engine_api_version() == engine_api_version
 

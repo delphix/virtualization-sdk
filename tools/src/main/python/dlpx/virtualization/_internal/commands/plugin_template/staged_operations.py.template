@@ -2,7 +2,7 @@
 def linked_post_snapshot(staged_source,
                          repository,
                          source_config,
-                         snapshot_parameters):
+                         optional_snapshot_parameters):
     return SnapshotDefinition()
 
 
