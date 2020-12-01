@@ -268,7 +268,6 @@ class TestBuildCli:
             mock_build.assert_called_once_with(plugin_config_file,
                                                artifact_file,
                                                False,
-                                               False,
                                                local_vsdk_root=None)
 
     @staticmethod
@@ -290,7 +289,6 @@ class TestBuildCli:
             mock_build.assert_called_once_with(plugin_config_file,
                                                None,
                                                True,
-                                               False,
                                                local_vsdk_root=None)
 
     @staticmethod
@@ -304,7 +302,6 @@ class TestBuildCli:
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
         mock_build.assert_called_once_with(plugin_config_file,
                                            artifact_file,
-                                           False,
                                            False,
                                            local_vsdk_root=None)
 
@@ -322,24 +319,6 @@ class TestBuildCli:
                                            os.path.join(
                                                os.getcwd(), artifact_filename),
                                            False,
-                                           False,
-                                           local_vsdk_root=None)
-
-    @staticmethod
-    @mock.patch('dlpx.virtualization._internal.commands.build.build')
-    def test_skip_id_validation(mock_build, plugin_config_file, artifact_file):
-        runner = click_testing.CliRunner()
-
-        result = runner.invoke(cli.delphix_sdk, [
-            'build', '-c', plugin_config_file, '-a', artifact_file,
-            '--skip-id-validation'
-        ])
-
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
-        mock_build.assert_called_once_with(plugin_config_file,
-                                           artifact_file,
-                                           False,
-                                           True,
                                            local_vsdk_root=None)
 
     @staticmethod
@@ -402,7 +381,6 @@ class TestBuildCli:
         assert result.exit_code == 0
         mock_build.assert_called_once_with(plugin_config_file,
                                            artifact_file,
-                                           False,
                                            False,
                                            local_vsdk_root='/path/to/vsdk/dir')
 

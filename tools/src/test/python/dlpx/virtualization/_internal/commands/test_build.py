@@ -377,15 +377,12 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize(('plugin_id', 'skip_id_validation'),
-                             [('77f18ce4-4425-4cd6-b9a7-23653254d660', False),
-                              ('77f18ce4-4425-4cd6-b9a7-23653254d660', True),
-                              ('mongo', True)])
+    @pytest.mark.parametrize('plugin_id',
+                             ['77f18ce4-4425-4cd6-b9a7-23653254d660'])
     def test_id_validation_positive(mock_relative_path, mock_install_deps,
                                     mock_import_plugin, plugin_config_file,
-                                    artifact_file, skip_id_validation):
-        build.build(plugin_config_file, artifact_file, False,
-                    skip_id_validation)
+                                    artifact_file):
+        build.build(plugin_config_file, artifact_file, False)
 
     @staticmethod
     @mock.patch.object(PluginImporter,
@@ -665,19 +662,6 @@ class TestPluginUtil:
 
         assert expected == upload_artifact['discoveryDefinition'][
             'manualSourceConfigDiscovery']
-
-    @staticmethod
-    def test_plugin_config_schemas_diff():
-        with open(const.PLUGIN_CONFIG_SCHEMA) as f:
-            config_schema = json.load(f)
-
-        with open(const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
-            config_schema_no_id = json.load(f)
-
-        # Only the id's pattern should be different so remove it.
-        config_schema['properties']['id'].pop('pattern')
-
-        assert config_schema == config_schema_no_id
 
     @staticmethod
     @pytest.mark.parametrize('build_number, expected', [
