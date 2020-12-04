@@ -188,7 +188,7 @@ class DelphixClient(object):
             # and make sure the plugin hasn't been replicated.
             # The 'name' field will be converted to 'id' in the future.
             #
-            if p['name'] == plugin_id and p['namespace'] is None:
+            if p['identifier'] == plugin_id and p['namespace'] is None:
                 return p['reference']
 
         raise exceptions.MissingPluginError(plugin_name, self.__engine)

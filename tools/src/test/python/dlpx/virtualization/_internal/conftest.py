@@ -577,8 +577,8 @@ def artifact_content(engine_api, virtual_source_definition,
     """
     artifact = {
         'type': 'Plugin',
-        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
-        'prettyName': 'python_vfiles',
+        'pluginId': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
+        'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
