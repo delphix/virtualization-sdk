@@ -10,6 +10,7 @@ from dlpx.virtualization import libs
 from dlpx.virtualization.libs.exceptions import (
     IncorrectArgumentTypeError, LibraryError, PluginScriptError)
 from google.protobuf import json_format
+from dlpx.virtualization.common._common_classes import (PasswordCredentials)
 
 
 class TestLibsRunBash:
@@ -862,3 +863,69 @@ class TestLibsRetrieveCredentials:
         assert err_info.value.message == (
             "The function retrieve_credentials's argument 'credentials_supplier' was"
             " type 'int' but should be of type 'dict'.")
+
+
+class TestLibsUpgradePassword:
+    @staticmethod
+    def test_upgrade_password():
+        expected_password = 'some password'
+
+        expected_credentials_supplier = {'type': 'NamedPasswordCredential', 'password': expected_password}
+        expected_upgrade_password_response = libs_pb2.UpgradePasswordResponse()
+        expected_upgrade_password_response.return_value.credentials_supplier.update(expected_credentials_supplier)
+
+        def mock_upgrade_password(actual_upgrade_password_request):
+            assert actual_upgrade_password_request.password == expected_password
+
+            return expected_upgrade_password_response
+
+        with mock.patch('dlpx.virtualization._engine.libs.upgrade_password',
+                        side_effect=mock_upgrade_password, create=True):
+            actual_upgrade_password_result = libs.upgrade_password(expected_password)
+
+        assert actual_upgrade_password_result == expected_credentials_supplier
+
+    @staticmethod
+    def test_upgrade_password_with_username():
+        expected_password = 'some password'
+        expected_username = 'some user name'
+
+        expected_credentials_supplier = {'type': 'NamedPasswordCredential', 'password': expected_password, 'username': expected_username}
+        expected_upgrade_password_response = libs_pb2.UpgradePasswordResponse()
+        expected_upgrade_password_response.return_value.credentials_supplier.update(expected_credentials_supplier)
+
+        def mock_upgrade_password(actual_upgrade_password_request):
+            assert actual_upgrade_password_request.password == expected_password
+            assert actual_upgrade_password_request.username == expected_username
+
+            return expected_upgrade_password_response
+
+        with mock.patch('dlpx.virtualization._engine.libs.upgrade_password',
+                        side_effect=mock_upgrade_password, create=True):
+            actual_upgrade_password_result = libs.upgrade_password(expected_password, username=expected_username)
+
+        assert actual_upgrade_password_result == expected_credentials_supplier
+
+    @staticmethod
+    def test_upgrade_password_invalid_password():
+        expected_password = 10
+        expected_username = 'some user name'
+
+        with pytest.raises(IncorrectArgumentTypeError) as err_info:
+            libs.upgrade_password(expected_password, username=expected_username)
+
+        assert err_info.value.message == (
+            "The function upgrade_password's argument 'password' was"
+            " type 'int' but should be of type 'basestring'.")
+
+    @staticmethod
+    def test_upgrade_password_invalid_username():
+        expected_password = 'some password'
+        expected_username = 10
+
+        with pytest.raises(IncorrectArgumentTypeError) as err_info:
+            libs.upgrade_password(expected_password, username=expected_username)
+
+        assert err_info.value.message == (
+            "The function upgrade_password's argument 'username' was"
+            " type 'int' but should be of type 'basestring' if defined.")
