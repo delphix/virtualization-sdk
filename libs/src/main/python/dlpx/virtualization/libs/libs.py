@@ -33,6 +33,7 @@ from dlpx.virtualization.libs.exceptions import (IncorrectArgumentTypeError,
 from dlpx.virtualization.common._common_classes import (RemoteConnection,
                                                         PasswordCredentials,
                                                         KeyPairCredentials)
+from google.protobuf import json_format
 from google.protobuf.struct_pb2 import Struct
 
 import logging
@@ -43,9 +44,9 @@ __all__ = [
     "run_sync",
     "run_powershell",
     "run_expect",
-    "retrieve_credentials"
+    "retrieve_credentials",
+    "upgrade_password"
 ]
-
 
 
 def _handle_response(response):
@@ -446,3 +447,32 @@ def retrieve_credentials(credentials_supplier):
         credentials_result.username,
         credentials_result.key_pair.private_key,
         credentials_result.key_pair.public_key)
+
+
+def upgrade_password(password, username=None):
+    """This is an internal wrapper around Virtualization's credentials-supplier conversion  API.
+    It is intended for use during plugin upgrade when a plugin needs to transform a password
+    value into a more generic credentials supplier object.
+
+    Args:
+        password (basestring): Plain password string.
+        username (basestring, defaults to None): User name contained in the password credential supplier to return.
+    Return:
+        Credentials supplier (dict) that supplies the given password and username.
+    """
+    from dlpx.virtualization._engine import libs as internal_libs
+
+    if not isinstance(password, basestring):
+        raise IncorrectArgumentTypeError('password', type(password), basestring)
+    if username and not isinstance(username, basestring):
+        raise IncorrectArgumentTypeError('username', type(username), basestring, required=False)
+
+    upgrade_password_request = libs_pb2.UpgradePasswordRequest()
+    upgrade_password_request.password = password
+    if username:
+        upgrade_password_request.username = username
+
+    response = internal_libs.upgrade_password(upgrade_password_request)
+
+    upgrade_password_result = _handle_response(response)
+    return json_format.MessageToDict(upgrade_password_result.credentials_supplier)

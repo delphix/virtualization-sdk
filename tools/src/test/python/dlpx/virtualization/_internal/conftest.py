@@ -9,6 +9,7 @@ import os
 
 import yaml
 from dlpx.virtualization._internal import cli, click_util, const, package_util
+from dlpx.virtualization._internal.commands import build
 
 import pytest
 
@@ -733,6 +734,36 @@ def linked_source_def_type(plugin_type):
         return 'PluginLinkedDirectSourceDefinition'
     else:
         return 'PluginLinkedStagedSourceDefinition'
+
+
+@pytest.fixture
+def protobuf_dir(tmpdir):
+    path = tmpdir.join('src', 'google', 'protobuf').strpath
+    os.makedirs(path)
+    return path
+
+
+@pytest.fixture
+def json_format_file(protobuf_dir):
+    json_format_path = os.path.join(protobuf_dir, 'json_format.py')
+    with open(json_format_path, 'w') as f:
+        f.write('a = 1\n')
+        f.write(build.UNPAIRED_SURROGATE_DEFINITION)
+        f.write('b = 2\n')
+        f.write(build.UNPAIRED_SURROGATE_SEARCH)
+        f.write('c = 3\n')
+    return json_format_path
+
+
+@pytest.fixture
+def json_format_file_patched(json_format_file, tmpdir):
+    dir = tmpdir.join('build', 'src', 'google', 'protobuf', 'json_format.py')
+    return dir.strpath
+
+
+@pytest.fixture
+def json_format_content():
+    return 'a = 1\nb = 2\nc = 3\n'
 
 
 @pytest.fixture
