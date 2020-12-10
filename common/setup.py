@@ -4,7 +4,7 @@ import setuptools
 PYTHON_SRC = 'src/main/python'
 
 install_requires = [
-  "dvp-api == 1.4.0.dev13",
+  "dvp-api == 1.4.0.dev18",
 ]
 
 with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/common/VERSION')) as version_file:

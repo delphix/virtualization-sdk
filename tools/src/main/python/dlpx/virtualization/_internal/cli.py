@@ -188,18 +188,12 @@ def init(root, ingestion_strategy, name, host_type):
     mutually_exclusive=['upload_artifact'],
     help=('Only generate the Python classes from the schema definitions. '
           'Do not do a full build or create an upload artifact.'))
-@click.option('--skip-id-validation',
-              is_flag=True,
-              hidden=True,
-              help=('An internal flag that does not enforce the format '
-                    'of the id. Use of this flag is unsupported.'))
 @click.option('--dev',
               is_flag=True,
               hidden=True,
               help=('An internal flag that installs dev builds of the '
                     'wrappers. This should only be used by SDK developers.'))
-def build(plugin_config, upload_artifact, generate_only, skip_id_validation,
-          dev):
+def build(plugin_config, upload_artifact, generate_only, dev):
     """
     Build the plugin code and generate upload artifact file using the
     configuration provided in the plugin config file.
@@ -225,7 +219,6 @@ def build(plugin_config, upload_artifact, generate_only, skip_id_validation,
         build_internal.build(plugin_config,
                              upload_artifact,
                              generate_only,
-                             skip_id_validation,
                              local_vsdk_root=local_vsdk_root)
 
 
