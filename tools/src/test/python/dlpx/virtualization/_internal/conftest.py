@@ -637,8 +637,8 @@ def artifact_content(engine_api, virtual_source_definition,
     """
     artifact = {
         'type': 'Plugin',
-        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
-        'prettyName': 'python_vfiles',
+        'pluginId': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
+        'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
@@ -690,7 +690,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 12, 'micro': 0}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 6}
 
 
 @pytest.fixture
