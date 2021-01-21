@@ -18,12 +18,14 @@ def source_config_discovery(source_connection, repository):
 
 
 @vfiles.linked.pre_snapshot()
-def direct_pre_snapshot(direct_source, repository, source_config):
+def direct_pre_snapshot(direct_source, repository, source_config,
+                        optional_snapshot_parameters):
     return
 
 
 @vfiles.linked.post_snapshot()
-def direct_post_snapshot(direct_source, repository, source_config):
+def direct_post_snapshot(direct_source, repository, source_config,
+                         optional_snapshot_parameters):
     return None
 
 
@@ -40,12 +42,12 @@ def mount_specification(repository, virtual_source):
 
 
 @vfiles.virtual.post_snapshot()
-def postSnapshot(repository, source_config, virtual_source):
+def post_snapshot(repository, source_config, virtual_source):
     return None
 
 
 @vfiles.virtual.pre_snapshot()
-def preSnapshot(repository, source_config, virtual_source):
+def pre_snapshot(repository, source_config, virtual_source):
     pass
 
 

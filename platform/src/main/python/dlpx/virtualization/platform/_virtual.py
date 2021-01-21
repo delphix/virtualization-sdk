@@ -626,15 +626,18 @@ class VirtualOperations(object):
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
-        source_config = SourceConfigDefinition.from_dict(
-            json.loads(request.source_config.parameters.json))
 
-        self.initialize_impl(repository=repository,
-                             source_config=source_config,
+        config = self.initialize_impl(repository=repository,
                              virtual_source=virtual_source)
+
+        # Validate that this is a SourceConfigDefinition object.
+        if not isinstance(config, SourceConfigDefinition):
+            raise IncorrectReturnTypeError(Op.VIRTUAL_INITIALIZE, type(config),
+                                           SourceConfigDefinition)
+
         initialize_response = platform_pb2.InitializeResponse()
-        initialize_response.return_value.CopyFrom(
-            platform_pb2.InitializeResult())
+        initialize_response.return_value.source_config.parameters.json = (
+            json.dumps(config.to_dict()))
         return initialize_response
 
     def _internal_mount_specification(self, request):

@@ -37,7 +37,8 @@ def plugin_config_file(tmpdir, plugin_config_filename, plugin_config_content):
                                           default_flow_style=False)
 
     f = tmpdir.join(plugin_config_filename)
-    f.write(plugin_config_content)
+    if plugin_config_content:
+        f.write(plugin_config_content)
     return f.strpath
 
 
@@ -172,9 +173,10 @@ def artifact_file_created():
 def plugin_config_content(plugin_id, plugin_name, external_version, language,
                           host_types, plugin_type, entry_point, src_dir,
                           schema_file, manual_discovery, build_number,
-                          lua_name, minimum_lua_version):
+                          extended_start_stop_hooks, lua_name,
+                          minimum_lua_version):
     """
-    This fixutre creates the dict expected in the properties yaml file the
+    This fixture creates the dict expected in the properties yaml file the
     customer must provide for the build and compile commands.
     """
     config = {
@@ -219,6 +221,9 @@ def plugin_config_content(plugin_id, plugin_name, external_version, language,
 
     if lua_name:
         config['luaName'] = lua_name
+
+    if extended_start_stop_hooks:
+        config['extendedStartStopHooks'] = extended_start_stop_hooks
 
     if minimum_lua_version:
         config['minimumLuaVersion'] = minimum_lua_version
@@ -279,6 +284,11 @@ def manual_discovery():
 @pytest.fixture
 def build_number():
     return '2.0.0'
+
+
+@pytest.fixture
+def extended_start_stop_hooks():
+    return False
 
 
 @pytest.fixture
@@ -444,7 +454,8 @@ def plugin_manifest(upgrade_operation):
 @pytest.fixture
 def schema_content(repository_definition, source_config_definition,
                    virtual_source_definition, linked_source_definition,
-                   snapshot_definition, additional_definition):
+                   snapshot_definition, snapshot_parameters_definition,
+                   additional_definition):
 
     schema = {}
 
@@ -463,18 +474,11 @@ def schema_content(repository_definition, source_config_definition,
     if snapshot_definition:
         schema['snapshotDefinition'] = snapshot_definition
 
-    if additional_definition:
-        schema['additionalDefinition'] = additional_definition
-
-    return schema
-
-
-@pytest.fixture
-def swagger_schema_content(schema_content, snapshot_parameters_definition):
-
-    schema = schema_content
     if snapshot_parameters_definition:
         schema['snapshotParametersDefinition'] = snapshot_parameters_definition
+
+    if additional_definition:
+        schema['additionalDefinition'] = additional_definition
 
     return schema
 
@@ -562,52 +566,9 @@ def additional_definition():
 
 
 @pytest.fixture
-def basic_artifact_content(engine_api, virtual_source_definition,
-                           linked_source_definition, discovery_definition,
-                           snapshot_definition):
-    artifact = {
-        'type': 'Plugin',
-        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
-        'prettyName': 'python_vfiles',
-        'externalVersion': '2.0.0',
-        'defaultLocale': 'en-us',
-        'language': 'PYTHON27',
-        'hostTypes': ['UNIX'],
-        'entryPoint': 'python_vfiles:vfiles',
-        'buildApi': package_util.get_build_api_version(),
-        'engineApi': engine_api,
-        'rootSquashEnabled': True,
-        'buildNumber': '2',
-        'luaName': 'lua-toolkit-1',
-        'minimumLuaVersion': '2.3',
-        'sourceCode': 'UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==',
-        'manifest': {}
-    }
-    if virtual_source_definition:
-        artifact['virtualSourceDefinition'] = {
-            'type': 'PluginVirtualSourceDefinition',
-            'parameters': virtual_source_definition
-        }
-
-    if linked_source_definition:
-        artifact['linkedSourceDefinition'] = {
-            'type': 'PluginLinkedDirectSourceDefinition',
-            'parameters': linked_source_definition
-        }
-
-    if discovery_definition:
-        artifact['discoveryDefinition'] = discovery_definition
-
-    if snapshot_definition:
-        artifact['snapshotSchema'] = snapshot_definition
-
-    return artifact
-
-
-@pytest.fixture
 def artifact_content(engine_api, virtual_source_definition,
                      linked_source_definition, discovery_definition,
-                     snapshot_definition):
+                     snapshot_definition, snapshot_parameters_definition):
     """
     This fixture creates base artifact that was generated from build and
     used in upload. If any fields besides engine_api needs to be changed,
@@ -616,8 +577,8 @@ def artifact_content(engine_api, virtual_source_definition,
     """
     artifact = {
         'type': 'Plugin',
-        'name': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
-        'prettyName': 'python_vfiles',
+        'pluginId': '16bef554-9470-11e9-b2e3-8c8590d4a42c',
+        'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
         'language': 'PYTHON27',
@@ -628,6 +589,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'rootSquashEnabled': True,
         'buildNumber': '2',
         'luaName': 'lua-toolkit-1',
+        'extendedStartStopHooks': False,
         'minimumLuaVersion': '2.3',
         'manifest': {}
     }
@@ -653,12 +615,22 @@ def artifact_content(engine_api, virtual_source_definition,
     if snapshot_definition:
         artifact['snapshotSchema'] = snapshot_definition
 
+    if snapshot_parameters_definition:
+        artifact['snapshotParametersDefinition'] = (
+            snapshot_parameters_definition)
+
+    if snapshot_parameters_definition:
+        artifact['snapshotParametersDefinition'] = {
+            'type': 'PluginSnapshotParametersDefinition',
+            'schema': snapshot_parameters_definition,
+        }
+
     return artifact
 
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 3}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 6}
 
 
 @pytest.fixture

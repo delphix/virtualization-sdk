@@ -43,8 +43,7 @@ def validate_error_handler(plugin_file, validation_mode):
 
 
 def validate_plugin_config_file(plugin_config,
-                                stop_build,
-                                skip_id_validation=False):
+                                stop_build):
     """
     Reads a plugin config file and validates the contents using a
     pre-defined schema. If stop_build is True, will report exception
@@ -55,10 +54,8 @@ def validate_plugin_config_file(plugin_config,
     """
     validation_mode = (ValidationMode.ERROR
                        if stop_build else ValidationMode.WARNING)
-    plugin_config_schema_file = (const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION
-                                 if skip_id_validation else
-                                 const.PLUGIN_CONFIG_SCHEMA)
-    validator = PluginValidator(plugin_config, plugin_config_schema_file)
+
+    validator = PluginValidator(plugin_config, const.PLUGIN_CONFIG_SCHEMA)
 
     with validate_error_handler(plugin_config, validation_mode):
         validator.validate_plugin_config()
@@ -68,8 +65,7 @@ def validate_plugin_config_file(plugin_config,
 
 def get_plugin_manifest(plugin_config_file,
                         plugin_config_content,
-                        stop_build,
-                        skip_id_validation=False):
+                        stop_build):
     """
     Validates the given plugin config content using a pre-defined schema.
     Plugin config file name is used to get the absolute path of plugin source
@@ -115,7 +111,7 @@ def get_plugin_config_property(plugin_config_path, prop):
     """
     Returns the value for a specific property from the plugin config file.
     """
-    result = validate_plugin_config_file(plugin_config_path, False, False)
+    result = validate_plugin_config_file(plugin_config_path, False)
     return result.plugin_config_content[prop]
 
 
