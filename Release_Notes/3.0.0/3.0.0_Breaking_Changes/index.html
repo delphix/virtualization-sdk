@@ -36,7 +36,7 @@
     
     
       
-        <title>Release - v2.0.0 - Delphix Virtualization SDK 3.0.0</title>
+        <title>Breaking Changes - v.3.0.0 - Delphix Virtualization SDK 3.0.0</title>
       
     
     
@@ -73,7 +73,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#release-v200" tabindex="1" class="md-skip">
+      <a href="#breaking-changes-v300" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -99,7 +99,7 @@
                 Delphix Virtualization SDK 3.0.0
               </span>
               <span class="md-header-nav__topic">
-                Release - v2.0.0
+                Breaking Changes - v.3.0.0
               </span>
             
           
@@ -753,10 +753,12 @@
           
           
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-1" type="checkbox" id="nav-7-1" checked>
     
     <label class="md-nav__link" for="nav-7-1">
       3.0.0
@@ -774,7 +776,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../3.0.0/3.0.0/" title="Release - v3.0.0" class="md-nav__link">
+    <a href="../3.0.0/" title="Release - v3.0.0" class="md-nav__link">
       Release - v3.0.0
     </a>
   </li>
@@ -784,11 +786,144 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../3.0.0/3.0.0_Breaking_Changes/" title="Breaking Changes - v.3.0.0" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Breaking Changes - v.3.0.0
+      </label>
+    
+    <a href="./" title="Breaking Changes - v.3.0.0" class="md-nav__link md-nav__link--active">
       Breaking Changes - v.3.0.0
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#new-required-schema" title="New required schema" class="md-nav__link">
+    New required schema
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-parameter-in-direct-prepost-snapshot-functions" title="New Parameter in Direct Pre/Post-Snapshot Functions" class="md-nav__link">
+    New Parameter in Direct Pre/Post-Snapshot Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected_1" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail_1" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it_1" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-renamed-in-staged-prepost-snapshot-functions" title="Parameter Renamed in Staged Pre/Post-Snapshot Functions" class="md-nav__link">
+    Parameter Renamed in Staged Pre/Post-Snapshot Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected_2" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail_2" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it_2" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -837,12 +972,10 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-3" type="checkbox" id="nav-7-3">
     
     <label class="md-nav__link" for="nav-7-3">
       2.0.0
@@ -858,56 +991,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Release - v2.0.0
-      </label>
-    
-    <a href="./" title="Release - v2.0.0" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../2.0.0/2.0.0/" title="Release - v2.0.0" class="md-nav__link">
       Release - v2.0.0
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#new-improved" title="New &amp; Improved" class="md-nav__link">
-    New &amp; Improved
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#breaking-changes" title="Breaking Changes" class="md-nav__link">
-    Breaking Changes
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -917,7 +1005,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
+    <a href="../../2.0.0/2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-nav__link">
       Breaking Changes - GA (v.2.0.0)
     </a>
   </li>
@@ -1050,16 +1138,104 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#new-improved" title="New &amp; Improved" class="md-nav__link">
-    New &amp; Improved
+  <a href="#new-required-schema" title="New required schema" class="md-nav__link">
+    New required schema
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#breaking-changes" title="Breaking Changes" class="md-nav__link">
-    Breaking Changes
+  <a href="#new-parameter-in-direct-prepost-snapshot-functions" title="New Parameter in Direct Pre/Post-Snapshot Functions" class="md-nav__link">
+    New Parameter in Direct Pre/Post-Snapshot Functions
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected_1" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail_1" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it_1" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-renamed-in-staged-prepost-snapshot-functions" title="Parameter Renamed in Staged Pre/Post-Snapshot Functions" class="md-nav__link">
+    Parameter Renamed in Staged Pre/Post-Snapshot Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-affected_2" title="What is affected" class="md-nav__link">
+    What is affected
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-it-fail_2" title="How does it fail" class="md-nav__link">
+    How does it fail
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-fix-it_2" title="How to fix it" class="md-nav__link">
+    How to fix it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1080,30 +1256,75 @@
               
                 
                 
-                <h1 id="release-v200">Release - v2.0.0<a class="headerlink" href="#release-v200" title="Permanent link">&para;</a></h1>
-<p>To install or upgrade the SDK, refer to instructions <a href="../../../Getting_Started/#installation">here</a>.</p>
-<h2 id="new-improved">New &amp; Improved<a class="headerlink" href="#new-improved" title="Permanent link">&para;</a></h2>
+                <h1 id="breaking-changes-v300">Breaking Changes - v.3.0.0<a class="headerlink" href="#breaking-changes-v300" title="Permanent link">&para;</a></h1>
+<h2 id="new-required-schema">New required schema<a class="headerlink" href="#new-required-schema" title="Permanent link">&para;</a></h2>
+<p><a href="../../../References/Schemas_and_Autogenerated_Classes/#snapshotparametersdefinition-schema">Snapshot Parameters Definition</a> allows plugin authors to define <a href="../../../References/Glossary/#snapshot-parameters">snapshot parameters</a> which can be displayed to an end-user whenever a linked source snapshot is taken.</p>
+<h3 id="what-is-affected">What is affected<a class="headerlink" href="#what-is-affected" title="Permanent link">&para;</a></h3>
+<p>All plugins built with v2.0.0 or below will be affected. The <a href="../../../References/Schemas">Schema</a> must contain a <code>snapshotParametersDefinition</code>.</p>
+<h3 id="how-does-it-fail">How does it fail<a class="headerlink" href="#how-does-it-fail" title="Permanent link">&para;</a></h3>
+<p><a href="../../../References/CLI/#build">dvp build</a> will fail with the following error message if the <a href="../../../References/Schemas_and_Autogenerated_Classes/#snapshotparametersdefinition-schema">SnapshotParametersDefinition Schema</a> is not added to the schema file:</p>
+<div class="codehilite"><pre><span></span><code>$ dvp build
+Error: <span class="s1">&#39;snapshotParametersDefinition&#39;</span> is a required property on <span class="o">[</span><span class="s1">&#39;required&#39;</span><span class="o">]</span>
+
+Validation failed on /private/var/tmp/fp/schemas/schema.json.
+<span class="m">0</span> Warning<span class="o">(</span>s<span class="o">)</span>. <span class="m">1</span> Error<span class="o">(</span>s<span class="o">)</span>
+
+BUILD FAILED.
+</code></pre></div>
+
+
+<h3 id="how-to-fix-it">How to fix it<a class="headerlink" href="#how-to-fix-it" title="Permanent link">&para;</a></h3>
+<p>Add a <a href="../../../References/Schemas_and_Autogenerated_Classes/#snapshotparametersdefinition-schema">SnapshotParametersDefinition Schema</a> to the <code>schemaFile</code> defined in the <a href="../../../References/Plugin_Config">Plugin Config</a>.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="s2">&quot;snapshotParametersDefinition&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;resync&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h2 id="new-parameter-in-direct-prepost-snapshot-functions">New Parameter in Direct Pre/Post-Snapshot Functions<a class="headerlink" href="#new-parameter-in-direct-prepost-snapshot-functions" title="Permanent link">&para;</a></h2>
+<p><code>optional_snapshot_parameters</code> has been added as a parameter in <a href="../../../References/Plugin_Operations/#direct-linked-source-pre-snapshot">Direct Linked Source Pre-Snapshot</a> and <a href="../../../References/Plugin_Operations/#direct-linked-source-post-snapshot">Direct Linked Source Post-Snapshot</a>.</p>
+<h3 id="what-is-affected_1">What is affected<a class="headerlink" href="#what-is-affected_1" title="Permanent link">&para;</a></h3>
+<p>All direct plugins built with v2.1.0 or below will be affected.</p>
+<h3 id="how-does-it-fail_1">How does it fail<a class="headerlink" href="#how-does-it-fail_1" title="Permanent link">&para;</a></h3>
+<p><a href="../../../References/CLI/#build">dvp build</a> will fail with the following error message if the <code>optional_snapshot_parameters</code> is not added:</p>
+<div class="codehilite"><pre><span></span><code>$ dvp build
+Error: Named argument mismatch in method linked_post_snapshot. Expected: <span class="o">[</span><span class="s1">&#39;staged_source&#39;</span>, <span class="s1">&#39;repository&#39;</span>, <span class="s1">&#39;source_config&#39;</span>, <span class="s1">&#39;optional_snapshot_parameters&#39;</span><span class="o">]</span>, Found: <span class="o">[</span><span class="s1">&#39;staged_source&#39;</span>, <span class="s1">&#39;repository&#39;</span>, <span class="s1">&#39;source_config&#39;</span><span class="o">]</span>.
+
+<span class="m">0</span> Warning<span class="o">(</span>s<span class="o">)</span>. <span class="m">1</span> Error<span class="o">(</span>s<span class="o">)</span>.
+
+BUILD FAILED.
+</code></pre></div>
+
+
+<h3 id="how-to-fix-it_1">How to fix it<a class="headerlink" href="#how-to-fix-it_1" title="Permanent link">&para;</a></h3>
+<p>Add <code>optional_snapshot_parameters</code> as a parameter in <a href="../../../References/Plugin_Operations/#direct-linked-source-pre-snapshot">Direct Linked Source Pre-Snapshot</a> and <a href="../../../References/Plugin_Operations/#direct-linked-source-post-snapshot">Direct Linked Source Post-Snapshot</a>.</p>
 <ul>
-<li>
-<p>Added the ability for plugins to upgrade across plugin versions with schema changes. Some highlights:</p>
-<ul>
-<li>Schema updates using data migrations.</li>
-<li>Flexiblity for plugins to pick any release strategy.</li>
-<li>Plugin upgrades supported across multiple plugin versions. </li>
-<li>Zero dSource and VDB downtime during plugin upgrade.</li>
+<li>Previous releases</li>
 </ul>
-<p>More details about Plugin Upgrade can be found <a href="../../../Versioning_And_Upgrade/Upgrade/">here</a>.</p>
-</li>
-<li>
-<p>Added a new field <code>externalVersion</code> to the <a href="../../../References/Plugin_Config/">Plugin Config</a> that allows plugins to display an end-user friendly version. More details <a href="../../../Versioning_And_Upgrade/Versioning/#external-version">here</a>.</p>
-</li>
-<li>Added a new option to <a href="../../../References/CLI/#init">init</a> to select a host type for the plugin (<code>Unix</code> or <code>Windows</code>) to make it easier to get started with plugins that support either host platform.</li>
-<li>Added a new option to <a href="../../../References/CLI/#upload">upload</a> to block and wait for the upload job to finish on the Delphix Engine before the command returns.</li>
-</ul>
-<h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code> <span class="nd">@plugin</span><span class="o">.</span><span class="n">linked</span><span class="o">.</span><span class="n">post_snapshot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">linked_post_snapshot</span><span class="p">(</span><span class="n">direct_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">()</span>
+</code></pre></div>
+
+
 <ul>
-<li>
-<p>The following field in the <a href="../../../References/Plugin_Config/">Plugin Config</a> was renamed:</p>
+<li>3.0.0</li>
+</ul>
+<div class="codehilite"><pre><span></span><code> <span class="nd">@plugin</span><span class="o">.</span><span class="n">linked</span><span class="o">.</span><span class="n">post_snapshot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">linked_post_snapshot</span><span class="p">(</span><span class="n">direct_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">,</span> <span class="n">optional_snapshot_parameters</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">()</span>
+</code></pre></div>
+
+
+<h2 id="parameter-renamed-in-staged-prepost-snapshot-functions">Parameter Renamed in Staged Pre/Post-Snapshot Functions<a class="headerlink" href="#parameter-renamed-in-staged-prepost-snapshot-functions" title="Permanent link">&para;</a></h2>
+<p>The following parameter was renamed in the <a href="../../../References/Plugin_Operations/#staged-linked-source-pre-snapshot">Staged Linked Source Pre-Snapshot</a> and <a href="../../../References/Plugin_Operations/#staged-linked-source-post-snapshot">Staged Linked Source Post-Snapshot</a> functions:</p>
 <table>
 <thead>
 <tr>
@@ -1113,15 +1334,42 @@
 </thead>
 <tbody>
 <tr>
-<td><code>version</code></td>
-<td><code>buidNumber</code></td>
+<td><code>snapshot_parameters</code></td>
+<td><code>optional_snapshot_parameters</code></td>
 </tr>
 </tbody>
 </table>
-<p>Additionally <code>buildNumber</code> has to conform to the format described <a href="../../../Versioning_And_Upgrade/Versioning/#build-number-format-rules">here</a>.</p>
-<p><a href="../2.0.0_Breaking_Changes/#plugin-config-field-renamed"><strong>Detailed steps to detect and make changes.</strong></a></p>
-</li>
+<h3 id="what-is-affected_2">What is affected<a class="headerlink" href="#what-is-affected_2" title="Permanent link">&para;</a></h3>
+<p>All staged plugins built with v2.1.0 or below will be affected.</p>
+<h3 id="how-does-it-fail_2">How does it fail<a class="headerlink" href="#how-does-it-fail_2" title="Permanent link">&para;</a></h3>
+<p><a href="../../../References/CLI/#build">dvp build</a> will fail with the following error message if the parameter is not renamed from <code>snapshot_parameters</code> to <code>optional_snapshot_parameters</code>:</p>
+<div class="codehilite"><pre><span></span><code>$ dvp build
+Error: Named argument mismatch in method linked_post_snapshot. Expected: <span class="o">[</span><span class="s1">&#39;staged_source&#39;</span>, <span class="s1">&#39;repository&#39;</span>, <span class="s1">&#39;source_config&#39;</span>, <span class="s1">&#39;optional_snapshot_parameters&#39;</span><span class="o">]</span>, Found: <span class="o">[</span><span class="s1">&#39;staged_source&#39;</span>, <span class="s1">&#39;repository&#39;</span>, <span class="s1">&#39;source_config&#39;</span>, <span class="s1">&#39;snapshot_parameters&#39;</span><span class="o">]</span>.
+
+<span class="m">0</span> Warning<span class="o">(</span>s<span class="o">)</span>. <span class="m">1</span> Error<span class="o">(</span>s<span class="o">)</span>.
+
+BUILD FAILED.
+</code></pre></div>
+
+
+<h3 id="how-to-fix-it_2">How to fix it<a class="headerlink" href="#how-to-fix-it_2" title="Permanent link">&para;</a></h3>
+<p>Rename <code>snapshot_parameters</code> to <code>optional_snapshot_parameters</code> in <a href="../../../References/Plugin_Operations/#staged-linked-source-pre-snapshot">Staged Linked Source Pre-Snapshot</a> and <a href="../../../References/Plugin_Operations/#staged-linked-source-post-snapshot">Staged Linked Source Post-Snapshot</a>.</p>
+<ul>
+<li>Previous releases</li>
 </ul>
+<div class="codehilite"><pre><span></span><code> <span class="nd">@plugin</span><span class="o">.</span><span class="n">linked</span><span class="o">.</span><span class="n">post_snapshot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">linked_post_snapshot</span><span class="p">(</span><span class="n">staged_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">,</span> <span class="n">snapshot_parameters</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">()</span>
+</code></pre></div>
+
+
+<ul>
+<li>3.0.0</li>
+</ul>
+<div class="codehilite"><pre><span></span><code> <span class="nd">@plugin</span><span class="o">.</span><span class="n">linked</span><span class="o">.</span><span class="n">post_snapshot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">linked_post_snapshot</span><span class="p">(</span><span class="n">staged_source</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">source_config</span><span class="p">,</span> <span class="n">optional_snapshot_parameters</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">()</span>
+</code></pre></div>
                 
                   
                 
@@ -1142,7 +1390,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../2.1.0/2.1.0/" title="Release - v2.1.0" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../3.0.0/" title="Release - v3.0.0" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1151,19 +1399,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Release - v2.1.0
+                Release - v3.0.0
               </span>
             </div>
           </a>
         
         
-          <a href="../2.0.0_Breaking_Changes/" title="Breaking Changes - GA (v.2.0.0)" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../../2.1.0/2.1.0/" title="Release - v2.1.0" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Breaking Changes - GA (v.2.0.0)
+                Release - v2.1.0
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
