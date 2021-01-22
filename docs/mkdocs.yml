@@ -1,4 +1,4 @@
-site_name: Delphix Virtualization SDK 2.1.0
+site_name: Delphix Virtualization SDK 3.0.0
 theme:
   name: material
   custom_dir: 'material/'
@@ -10,8 +10,9 @@ theme:
   font:
     text: Helvetica Neue
     code: Ubuntu Mono
+  feature:
 
-copyright: Copyright &copy; 2019 Delphix Corp.
+copyright: Copyright &copy; 2021 Delphix Corp.
 
 google_analytics:
   - 'UA-35429885-3'
