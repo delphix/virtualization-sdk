@@ -77,3 +77,4 @@ jobs:
           commit_message: Deploy to gh-pages 🚀
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
+          cname: developer.delphix.com
