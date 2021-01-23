@@ -9,6 +9,7 @@ on:
       - 'docs/**'
     paths:
       - 'docs/**'
+      - '.github/workflows/publish-docs.yml'
 
 jobs:
   publish:
