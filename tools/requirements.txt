@@ -4,7 +4,7 @@
 backports.functools-lru-cache==1.6.1 ; python_version < '3.2'
 bump2version==0.5.11
 contextlib2==0.6.0.post1 ; python_version < '3'
-coverage==5.0.2
+coverage==5.4
 entrypoints==0.3
 enum34==1.1.6
 flake8==3.7.9
