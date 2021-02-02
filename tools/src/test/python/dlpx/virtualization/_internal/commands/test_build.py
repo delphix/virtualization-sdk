@@ -8,6 +8,7 @@ import os
 import yaml
 from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization._internal.commands import build
+from dlpx.virtualization._internal.commands import initialize as init
 from dlpx.virtualization._internal.plugin_importer import PluginImporter
 
 import mock
@@ -48,6 +49,9 @@ class TestBuild:
                                                      gen_py.plugin_content_dir,
                                                      gen_py.schema_dict)
         mock_plugin_manifest.assert_called()
+        mock_install_deps.assert_called()
+        mock_relative_path.assert_called()
+
         # After running build this file should now exist.
         assert os.path.exists(artifact_file)
 
@@ -55,6 +59,31 @@ class TestBuild:
             content = json.load(f)
 
         assert content == artifact_content
+
+    @staticmethod
+    @pytest.mark.parametrize('ingestion_strategy',
+                             [const.DIRECT_TYPE, const.STAGED_TYPE])
+    @pytest.mark.parametrize('host_type',
+                             [const.UNIX_HOST_TYPE, const.WINDOWS_HOST_TYPE])
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_success_from_init(mock_relative_path, mock_install_deps,
+                                     tmpdir, ingestion_strategy, host_type,
+                                     plugin_name, artifact_file):
+        # Initialize an empty directory.
+        init.init(tmpdir.strpath, ingestion_strategy, plugin_name, host_type)
+        plugin_config_file = os.path.join(
+            tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE)
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        build.build(plugin_config_file, artifact_file, False, False)
+
+        mock_relative_path.assert_called()
+        mock_install_deps.assert_called()
+
+        assert os.path.exists(artifact_file)
 
     @staticmethod
     @pytest.mark.parametrize('artifact_filename', ['somefile.json'])
@@ -284,13 +313,13 @@ class TestBuild:
         assert actual_discovery_definition == discovery_definition
 
     @staticmethod
-    def test_prepare_upload_artifact_success(basic_artifact_content,
+    def test_prepare_upload_artifact_success(artifact_content,
                                              plugin_config_content, src_dir,
                                              schema_content):
         upload_artifact = build.prepare_upload_artifact(
             plugin_config_content, src_dir, schema_content, {})
 
-        assert upload_artifact == basic_artifact_content
+        assert upload_artifact == artifact_content
 
     @staticmethod
     def test_generate_upload_artifact_success(tmpdir, artifact_content):
@@ -348,15 +377,12 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
-    @pytest.mark.parametrize(('plugin_id', 'skip_id_validation'),
-                             [('77f18ce4-4425-4cd6-b9a7-23653254d660', False),
-                              ('77f18ce4-4425-4cd6-b9a7-23653254d660', True),
-                              ('mongo', True)])
+    @pytest.mark.parametrize('plugin_id',
+                             ['77f18ce4-4425-4cd6-b9a7-23653254d660'])
     def test_id_validation_positive(mock_relative_path, mock_install_deps,
                                     mock_import_plugin, plugin_config_file,
-                                    artifact_file, skip_id_validation):
-        build.build(plugin_config_file, artifact_file, False,
-                    skip_id_validation)
+                                    artifact_file):
+        build.build(plugin_config_file, artifact_file, False)
 
     @staticmethod
     @mock.patch.object(PluginImporter,
@@ -636,19 +662,6 @@ class TestPluginUtil:
 
         assert expected == upload_artifact['discoveryDefinition'][
             'manualSourceConfigDiscovery']
-
-    @staticmethod
-    def test_plugin_config_schemas_diff():
-        with open(const.PLUGIN_CONFIG_SCHEMA) as f:
-            config_schema = json.load(f)
-
-        with open(const.PLUGIN_CONFIG_SCHEMA_NO_ID_VALIDATION) as f:
-            config_schema_no_id = json.load(f)
-
-        # Only the id's pattern should be different so remove it.
-        config_schema['properties']['id'].pop('pattern')
-
-        assert config_schema == config_schema_no_id
 
     @staticmethod
     @pytest.mark.parametrize('build_number, expected', [

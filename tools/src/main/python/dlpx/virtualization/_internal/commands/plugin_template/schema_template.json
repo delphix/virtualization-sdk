@@ -31,5 +31,10 @@
         "type" : "object",
         "additionalProperties" : false,
         "properties" : {}
+    },
+    "snapshotParametersDefinition": {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {}
     }
 }

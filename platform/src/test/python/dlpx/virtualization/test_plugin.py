@@ -706,6 +706,28 @@ class TestPlugin:
         assert actual_source_config.parameters.json == TEST_REPOSITORY_JSON
 
     @staticmethod
+    def test_virtual_initialize_return_none(my_plugin, virtual_source,
+                                            repository, source_config):
+        @my_plugin.virtual.initialize()
+        def virtual_initialize_impl(virtual_source, repository):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository)
+            # Will return none.
+
+        initialize_request = platform_pb2.InitializeRequest()
+        TestPlugin.setup_request(request=initialize_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository)
+
+        with pytest.raises(IncorrectReturnTypeError) as err_info:
+            my_plugin.virtual._internal_initialize(initialize_request)
+        message = err_info.value.message
+        assert message == (
+            "The returned object for the virtual.initialize() operation was"
+            " type 'NoneType' but should be of class 'dlpx.virtualization."
+            "fake_generated_definitions.SourceConfigDefinition'.")
+
+    @staticmethod
     def test_virtual_mount_spec(my_plugin, virtual_source, repository):
 
         from dlpx.virtualization.platform import (Mount, MountSpecification,
@@ -813,19 +835,55 @@ class TestPlugin:
 
     @staticmethod
     def test_direct_pre_snapshot(my_plugin, direct_source, repository,
-                                 source_config):
+                                 source_config, snapshot_parameters):
         @my_plugin.linked.pre_snapshot()
-        def mock_direct_pre_snapshot(direct_source, repository, source_config):
-            TestPlugin.assert_plugin_args(direct_source=direct_source,
-                                          repository=repository,
-                                          source_config=source_config)
+        def mock_direct_pre_snapshot(direct_source, repository, source_config,
+                                     optional_snapshot_parameters):
+            TestPlugin.assert_plugin_args(
+                direct_source=direct_source,
+                repository=repository,
+                source_config=source_config,
+                snapshot_parameters=optional_snapshot_parameters)
             return
 
         direct_pre_snapshot_request = platform_pb2.DirectPreSnapshotRequest()
         TestPlugin.setup_request(request=direct_pre_snapshot_request,
                                  direct_source=direct_source,
                                  repository=repository,
-                                 source_config=source_config)
+                                 source_config=source_config,
+                                 snapshot_parameters=snapshot_parameters)
+
+        expected_result = platform_pb2.DirectPreSnapshotResult()
+        direct_pre_snapshot_response = (
+            my_plugin.linked._internal_direct_pre_snapshot(
+                direct_pre_snapshot_request))
+
+        # Check that the response's oneof is set to return_value and not error
+        assert direct_pre_snapshot_response.WhichOneof(
+            'result') == 'return_value'
+        assert direct_pre_snapshot_response.return_value == expected_result
+
+    @staticmethod
+    def test_direct_pre_snapshot_null_snapparams(my_plugin, direct_source,
+                                                 repository, source_config):
+        @my_plugin.linked.pre_snapshot()
+        def mock_direct_pre_snapshot(direct_source, repository, source_config,
+            optional_snapshot_parameters):
+            TestPlugin.assert_direct_source(direct_source)
+            TestPlugin.assert_repository(repository)
+            TestPlugin.assert_source_config(source_config)
+            assert not optional_snapshot_parameters
+            return
+
+        snapshot_parameters = common_pb2.SnapshotParameters()
+        snapshot_parameters.parameters.json = 'null'
+
+        direct_pre_snapshot_request = platform_pb2.DirectPreSnapshotRequest()
+        TestPlugin.setup_request(request=direct_pre_snapshot_request,
+                                 direct_source=direct_source,
+                                 repository=repository,
+                                 source_config=source_config,
+                                 snapshot_parameters=snapshot_parameters)
 
         expected_result = platform_pb2.DirectPreSnapshotResult()
         direct_pre_snapshot_response = (
@@ -839,20 +897,54 @@ class TestPlugin:
 
     @staticmethod
     def test_direct_post_snapshot(my_plugin, direct_source, repository,
-                                  source_config):
+                                  source_config, snapshot_parameters):
         @my_plugin.linked.post_snapshot()
-        def direct_post_snapshot_impl(direct_source, repository,
-                                      source_config):
-            TestPlugin.assert_plugin_args(direct_source=direct_source,
-                                          repository=repository,
-                                          source_config=source_config)
+        def direct_post_snapshot_impl(direct_source, repository, source_config,
+                                      optional_snapshot_parameters):
+            TestPlugin.assert_plugin_args(
+                direct_source=direct_source,
+                repository=repository,
+                source_config=source_config,
+                snapshot_parameters=optional_snapshot_parameters)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
         direct_post_snapshot_request = platform_pb2.DirectPostSnapshotRequest()
-        TestPlugin.setup_request(request=direct_post_snapshot_request,
-                                 direct_source=direct_source,
-                                 repository=repository,
-                                 source_config=source_config)
+        TestPlugin.setup_request(
+            request=direct_post_snapshot_request,
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
+
+        direct_post_snapshot_response = (
+            my_plugin.linked._internal_direct_post_snapshot(
+                direct_post_snapshot_request))
+        expected_snapshot = TEST_SNAPSHOT_JSON
+        snapshot = direct_post_snapshot_response.return_value.snapshot
+        assert snapshot.parameters.json == expected_snapshot
+
+    @staticmethod
+    def test_direct_post_snapshot_null_snapparams(my_plugin, direct_source,
+        repository, source_config):
+        @my_plugin.linked.post_snapshot()
+        def direct_post_snapshot_impl(direct_source, repository, source_config,
+            optional_snapshot_parameters):
+            TestPlugin.assert_direct_source(direct_source)
+            TestPlugin.assert_repository(repository)
+            TestPlugin.assert_source_config(source_config)
+            assert not optional_snapshot_parameters
+            return SnapshotDefinition(TEST_SNAPSHOT)
+
+        snapshot_parameters = common_pb2.SnapshotParameters()
+        snapshot_parameters.parameters.json = 'null'
+
+        direct_post_snapshot_request = platform_pb2.DirectPostSnapshotRequest()
+        TestPlugin.setup_request(
+            request=direct_post_snapshot_request,
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         direct_post_snapshot_response = (
             my_plugin.linked._internal_direct_post_snapshot(
@@ -866,20 +958,52 @@ class TestPlugin:
                                  source_config, snapshot_parameters):
         @my_plugin.linked.pre_snapshot()
         def staged_pre_snapshot_impl(staged_source, repository, source_config,
-                                     snapshot_parameters):
+                                     optional_snapshot_parameters):
             TestPlugin.assert_plugin_args(
                 staged_source=staged_source,
                 repository=repository,
                 source_config=source_config,
-                snapshot_parameters=snapshot_parameters)
+                snapshot_parameters=optional_snapshot_parameters)
             return
 
         staged_pre_snapshot_request = platform_pb2.StagedPreSnapshotRequest()
-        TestPlugin.setup_request(request=staged_pre_snapshot_request,
-                                 staged_source=staged_source,
-                                 repository=repository,
-                                 source_config=source_config,
-                                 snapshot_parameters=snapshot_parameters)
+        TestPlugin.setup_request(
+            request=staged_pre_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
+
+        expected_result = platform_pb2.StagedPreSnapshotResult()
+        response = my_plugin.linked._internal_staged_pre_snapshot(
+            staged_pre_snapshot_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert response.WhichOneof('result') == 'return_value'
+        assert (response.return_value == expected_result)
+
+    @staticmethod
+    def test_staged_pre_snapshot_null_snapparams(my_plugin, staged_source,
+                                                 repository, source_config):
+        @my_plugin.linked.pre_snapshot()
+        def staged_pre_snapshot_impl(staged_source, repository, source_config,
+            optional_snapshot_parameters):
+            TestPlugin.assert_staged_source(staged_source)
+            TestPlugin.assert_repository(repository)
+            TestPlugin.assert_source_config(source_config)
+            assert not optional_snapshot_parameters
+            return
+
+        snapshot_parameters = common_pb2.SnapshotParameters()
+        snapshot_parameters.parameters.json = 'null'
+
+        staged_pre_snapshot_request = platform_pb2.StagedPreSnapshotRequest()
+        TestPlugin.setup_request(
+            request=staged_pre_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         expected_result = platform_pb2.StagedPreSnapshotResult()
         response = my_plugin.linked._internal_staged_pre_snapshot(
@@ -894,20 +1018,50 @@ class TestPlugin:
                                   source_config, snapshot_parameters):
         @my_plugin.linked.post_snapshot()
         def staged_post_snapshot_impl(staged_source, repository, source_config,
-                                      snapshot_parameters):
+                                      optional_snapshot_parameters):
             TestPlugin.assert_plugin_args(
                 staged_source=staged_source,
                 repository=repository,
                 source_config=source_config,
-                snapshot_parameters=snapshot_parameters)
+                snapshot_parameters=optional_snapshot_parameters)
             return SnapshotDefinition(TEST_SNAPSHOT)
 
         staged_post_snapshot_request = platform_pb2.StagedPostSnapshotRequest()
-        TestPlugin.setup_request(request=staged_post_snapshot_request,
-                                 staged_source=staged_source,
-                                 repository=repository,
-                                 source_config=source_config,
-                                 snapshot_parameters=snapshot_parameters)
+        TestPlugin.setup_request(
+            request=staged_post_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
+
+        response = my_plugin.linked._internal_staged_post_snapshot(
+            staged_post_snapshot_request)
+        expected = TEST_SNAPSHOT_JSON
+
+        assert response.return_value.snapshot.parameters.json == expected
+
+    @staticmethod
+    def test_staged_post_snapshot_null_snapparams(my_plugin, staged_source,
+                                                  repository, source_config):
+        @my_plugin.linked.post_snapshot()
+        def staged_post_snapshot_impl(staged_source, repository, source_config,
+            optional_snapshot_parameters):
+            TestPlugin.assert_staged_source(staged_source)
+            TestPlugin.assert_repository(repository)
+            TestPlugin.assert_source_config(source_config)
+            assert not optional_snapshot_parameters
+            return SnapshotDefinition(TEST_SNAPSHOT)
+
+        snapshot_parameters = common_pb2.SnapshotParameters()
+        snapshot_parameters.parameters.json = 'null'
+
+        staged_post_snapshot_request = platform_pb2.StagedPostSnapshotRequest()
+        TestPlugin.setup_request(
+            request=staged_post_snapshot_request,
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot_parameters=snapshot_parameters)
 
         response = my_plugin.linked._internal_staged_post_snapshot(
             staged_post_snapshot_request)

@@ -125,14 +125,14 @@ To run blackbox tests, follow these steps:
 2. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
 see the next sections.
 
-At a minimum, each pull request should pass `appdata_python_samples` and `appdata_sanity` tests with a direct or staged plugin.
+At a minimum, each pull request should pass `appdata_python_samples` and `appdata_basic` tests with a direct or staged plugin.
 See the section below for the description of each test suite.
 
 #### Blackbox tests targeting wrappers (mostly Delphix Engine workflows)
 * appdata_python_samples (sample plugins from the app-gate):
 `git blackbox -s appdata_python_samples --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
-* appdata_sanity with a direct Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_DIRECT_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
-* appdata_sanity with a staged Python plugin on CentOS 7.3: `git blackbox -s appdata_sanity -c APPDATA_PYTHON_STAGED_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
+* appdata_basic with a direct Python plugin on CentOS 7.3: `git blackbox -s appdata_basic -c APPDATA_PYTHON_DIRECT_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`,
+* appdata_basic with a staged Python plugin on CentOS 7.3: `git blackbox -s appdata_basic -c APPDATA_PYTHON_STAGED_CENTOS73 -a --extra-params="-p virt-sdk-repo=https://github.com/<username>/virtualization-sdk.git -p virt-sdk-branch=my-feature"`.
 
 #### Blackbox tests targeting the CLI (~80% CLI tests)
 * virtualization_sdk (installs and tests a direct Python plugin on Ubuntu 18): 

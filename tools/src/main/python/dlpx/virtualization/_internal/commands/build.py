@@ -23,6 +23,7 @@ VIRTUAL_SOURCE_TYPE = 'PluginVirtualSourceDefinition'
 DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
 STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
+SNAPSHOT_PARAMETERS_DEFINITION_TYPE = 'PluginSnapshotParametersDefinition'
 
 BUILD_DIR_NAME = 'build'
 
@@ -30,7 +31,6 @@ BUILD_DIR_NAME = 'build'
 def build(plugin_config,
           upload_artifact,
           generate_only,
-          skip_id_validation,
           local_vsdk_root=None):
     """This builds the plugin using the configurations provided in config yaml
     file provided as input. It reads schemas and source code from the files
@@ -41,7 +41,6 @@ def build(plugin_config,
         plugin_config: Plugin config file used for building plugin.
         upload_artifact: The file to which output of build  is written to.
         generate_only: Only generate python classes from schema definitions.
-        skip_id_validation: Skip validation of the plugin id.
         local_vsdk_root: The local path to the root of the Virtualization SDK
             repository.
     """
@@ -56,7 +55,7 @@ def build(plugin_config,
     logger.info('Validating plugin config file %s', plugin_config)
     try:
         result = plugin_util.validate_plugin_config_file(
-            plugin_config, not generate_only, skip_id_validation)
+            plugin_config, not generate_only)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
 
@@ -110,8 +109,7 @@ def build(plugin_config,
     try:
         result = plugin_util.get_plugin_manifest(plugin_config,
                                                  plugin_config_content,
-                                                 not generate_only,
-                                                 skip_id_validation)
+                                                 not generate_only)
     except (exceptions.UserError, exceptions.SDKToolingError) as err:
         raise exceptions.BuildFailedError(err)
 
@@ -163,16 +161,9 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         # Hard code the type to a set default.
         'type':
         TYPE,
-        #
-        # Delphix Engine still accepts only name and prettyName and
-        # hence name is mapped to id and prettyName to name.
-        # Delphix Engine does not accept upper case letters for name field,
-        # so we convert the name to lowercase letters.
-        # This will be changed as part of POST GA task PYT-628
-        #
+        'pluginId':
+        plugin_config_content['id'],
         'name':
-        plugin_config_content['id'].lower(),
-        'prettyName':
         plugin_config_content['name'],
         # set default value of locale to en-us
         'defaultLocale':
@@ -207,6 +198,10 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         prepare_discovery_definition(plugin_config_content, schemas),
         'snapshotSchema':
         schemas['snapshotDefinition'],
+        'snapshotParametersDefinition': {
+            'type': SNAPSHOT_PARAMETERS_DEFINITION_TYPE,
+            'schema': schemas['snapshotParametersDefinition']
+        },
         'manifest':
         manifest
     }

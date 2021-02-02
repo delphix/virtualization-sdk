@@ -18,12 +18,14 @@ def source_config_discovery(source_connection, repository):
 
 
 @direct.linked.pre_snapshot()
-def direct_pre_snapshot(direct_source, repository, source_config):
+def direct_pre_snapshot(direct_source, repository, source_config,
+                        optional_snapshot_parameters):
     return
 
 
 @direct.linked.post_snapshot()
-def direct_post_snapshot(direct_source, repository, source_config):
+def direct_post_snapshot(direct_source, repository, source_config,
+                         optional_snapshot_parameters):
     return None
 
 
