@@ -189,6 +189,25 @@ class TestCodegen:
         assert content['info']['title'] == name
 
     @staticmethod
+    def test_write_swagger_file_with_delphix_refs(
+            tmpdir, schema_content, linked_source_definition_with_refs,
+            linked_source_definition_with_opaque_refs):
+        name = 'test'
+        expected_file = tmpdir.join(codegen.SWAGGER_FILE_NAME).strpath
+        schema_content['linkedSourceDefinition'] = linked_source_definition_with_refs
+        codegen._write_swagger_file(name, schema_content, tmpdir.strpath)
+        assert os.path.exists(expected_file)
+        assert os.path.isfile(expected_file)
+
+        with open(expected_file, 'rb') as f:
+            content = json.load(f)
+
+        schema_content['linkedSourceDefinition'] = \
+            linked_source_definition_with_opaque_refs
+        assert content['definitions'] == schema_content
+        assert content['info']['title'] == name
+
+    @staticmethod
     def test_execute_swagger_codegen_success(tmpdir, schema_content,
                                              popen_helper):
         name = 'test'
