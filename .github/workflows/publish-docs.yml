@@ -9,6 +9,7 @@ on:
       - 'docs/**'
     paths:
       - 'docs/**'
+      - '.github/workflows/publish-docs.yml'
 
 jobs:
   publish:
@@ -17,6 +18,7 @@ jobs:
       matrix:
         python-version: [3.7]
         package: [docs]
+        repository: ['delphix/virtualization-sdk']
 
     steps:
       - uses: actions/checkout@v2
@@ -69,7 +71,18 @@ jobs:
         working-directory: ${{ matrix.package }}
         run: |
           pipenv run mkdocs build --clean
-      - name: Deploy the contents of docs/site to gh-pages 🚀
+      - name: Deploy the contents of docs/site to gh-pages (developer.delphix.com) 🚀
+        if: ${{ github.repository == matrix.repository }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/site
+          commit_message: Deploy to gh-pages 🚀
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          cname: developer.delphix.com
+      - name: Deploy the contents of docs/site to personal gh-pages 🚀
+        if: ${{ github.repository != matrix.repository }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
