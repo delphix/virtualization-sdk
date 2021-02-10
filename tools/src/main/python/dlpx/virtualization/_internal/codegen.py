@@ -90,10 +90,37 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
     _copy_generated_to_dir(output_dir, source_dir)
 
 
+#
+# Makes all references to platform json schema definitions "opaque" by replacing
+# them with plain object types.
+#
+def _make_url_refs_opaque(json):
+    if isinstance(json, dict):
+        for key in json:
+            if key == '$ref' and isinstance(json[key], basestring)\
+              and json[key].startswith('https://delphix.com/platform/api#'):
+                json.pop(key)
+                json['type'] = 'object'
+            else:
+                _make_url_refs_opaque(json[key])
+    elif isinstance(json, list):
+        for element in json:
+            _make_url_refs_opaque(element)
+
+
 def _write_swagger_file(name, schema_dict, output_dir):
     swagger_json = copy.deepcopy(SWAGGER_JSON_FORMAT)
     swagger_json['info']['title'] = name
-    swagger_json['definitions'] = schema_dict
+    swagger_json['definitions'] = copy.deepcopy(schema_dict)
+    #
+    # When resolving URL $refs in JSON schemas, Swagger tries to actually access those
+    # URLs. But URL $refs are only meant to be identifiers. Also, specifically, plugin
+    # developers shouldn't have to manipulate credentials objects, which are passed to
+    # plugins by Virtualization and only intended for passing in call-backs to
+    # Virtualization. Thus, we replace $refs for plugin API objects with generic, opaque
+    # objects.
+    #
+    _make_url_refs_opaque(swagger_json['definitions'])
 
     swagger_file = os.path.join(output_dir, SWAGGER_FILE_NAME)
     logger.info('Writing swagger file to {}'.format(swagger_file))

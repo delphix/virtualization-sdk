@@ -1,5 +1,6 @@
 bump2version==0.5.11
 contextlib2==0.6.0.post1 ; python_version < '3'
+enum34==1.1.6
 funcsigs==1.0.2 ; python_version < '3.0'
 importlib-metadata==0.23 ; python_version < '3.8'
 more-itertools==5.0.0 ; python_version <= '2.7'
