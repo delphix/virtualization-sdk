@@ -199,3 +199,93 @@ Field | Type | Description
 ----- | ---- | -----------
 name | String | User name.
 reference | String | Unique identifier for the user.
+
+
+## Credentials
+
+Abstract class representing credentials that include a user name. Instances of this class are returned by the [`retrieve_credentials`](Platform_Libraries.md#retrieve_credentials) library call.
+
+```python
+from dlpx.virtualization import libs
+from dlpx.virtualization.common import Credentials
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+    credentials = libs.retrieve_credentials(virtual_source.parameters.credentials_supplier)
+    assert isinstance(credentials, Credentials)
+    environment_vars = {
+        "DATABASE_USERNAME" : credentials.username
+    }
+    ...
+```
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+username | String | User name. Empty string if not present.
+
+
+## KeyPairCredentials
+
+Concrete subclass of [Credentials](#credentials) that represents key-pair credentials. Instances of this class may returned by the [`retrieve_credentials`](Platform_Libraries.md#retrieve_credentials) library call.
+
+```python
+from dlpx.virtualization import libs
+from dlpx.virtualization.common import KeyPairCredentials
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+    credentials = libs.retrieve_credentials(virtual_source.parameters.key_pair_supplier)
+    assert isinstance(credentials, KeyPairCredentials)
+    environment_vars = {
+        "DATABASE_USERNAME" : credentials.username,
+        "DATABASE_PRIVATE_KEY" : credentials.private_key,
+        "DATABASE_PUBLIC_KEY" : credentials.public_key
+    }
+    ...
+```
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+username | String | User name. Empty string if not present.
+private_key | String | Private key.
+public_key | String | Public key corresponding to private key. Empty string if not present.
+
+
+## PasswordCredentials
+
+Concrete subclass of [Credentials](#credentials) that represents password credentials. Instances of this class may returned by the [`retrieve_credentials`](Platform_Libraries.md#retrieve_credentials) library call.
+
+```python
+from dlpx.virtualization import libs
+from dlpx.virtualization.common import PasswordCredentials
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+    credentials = libs.retrieve_credentials(virtual_source.parameters.password_supplier)
+    assert isinstance(credentials, PasswordCredentials)
+    environment_vars = {
+        "DATABASE_USERNAME" : credentials.username,
+        "DATABASE_PASSWORD" : credentials.password
+    }
+    ...
+```
+
+### Fields
+
+Field | Type | Description
+----- | ---- | -----------
+username | String | User name. Empty string if not present.
+password | String | Password.
