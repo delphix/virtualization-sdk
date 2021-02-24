@@ -132,7 +132,9 @@ As shown above, the a data migration receives old-format input and produces new-
 
 * Data migrations are run in the order specified by their IDs. The ordering is numerical, not lexicographical. Thus `"1"` would run before `"2"`, which would run before `"10"`.
 
-* Data migrations have no access to [Platform Libraries](/References/Platform_Libraries.md) or remote hosts. For example: If a data migration attempts to use [run_bash](/References/Platform_Libraries.md#run_bash) the upgrade will fail.
+* With the exception of [`upgrade_password`](/References/Platform_Libraries.md#upgrade_password), data migrations have no access to most [Platform Libraries](/References/Platform_Libraries.md) or remote hosts. For example: If a data migration attempts to use [run_bash](/References/Platform_Libraries.md#run_bash) the upgrade will fail.
+
+* Password properties can be generalized to [credential-supplying objects](/References/Schemas.md#credentialssupplier) that offer alternative mechanisms for obtaining passwords and secrets, such as password vaults. To achieve that, a data migration must call [`upgrade_password`](/References/Platform_Libraries.md#upgrade_password).
 
 * Note that the above rules imply that at least one data migration is required any time a schema change is made that would invalidate any data produced using a previous version of the plugin. For example: adding a `"required"` property to the new schema.
 

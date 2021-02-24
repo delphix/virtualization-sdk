@@ -1,6 +1,47 @@
 # Platform Libraries
 Set of functions that plugins can use these for executing remote commands, etc.
 
+## retrieve_credentials
+
+Takes a [credentials-supplier](Schemas.md#credentialssupplier) object and returns a [`PasswordCredentials`](Classes.md#passwordcredentials) or [`KeyPairCredentials`](Classes.md#keypaircredentials) object. If the credentials supplier refers to a password vault, the operation obtains the credentials from that vault.
+
+The operation accepts only credentials-supplier objects exactly as provided by parameters of the plugin operation, without any changes. Credential suppliers are effectively opaque to plugin code; their internals can change without notice.
+
+### Signature
+
+`def retrieve_credentials(credentials_supplier)`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+credentials_supplier | dict | Unmodified object provided within the `parameters` field of a plugin operation parameter that conforms to [`credentialsSupplier`](Schemas.md#credentialssupplier), [`passwordCredentialsSupplier`](Schemas.md#passwordcredentialssupplier), or [`keyCredentialsSupplier`](Schemas.md#keycredentialssupplier).
+
+### Returns
+An object of the abstract type [`Credentials`](Classes.md#credentials). Concretely, a [`PasswordCredentials`](Classes.md#passwordcredentials) or [`KeyPairCredentials`](Classes.md#keypaircredentials).
+
+### Throws
+An exception with a descriptive `message` attribute if either:
+
+1. The secret is returned by the vault and the type of this secret does not match the type(s) required by the [`expectedSecretType`](Schemas.md#option-3-cyberark-vault-credentials) property of the credentials supplier. For example, this occurs when the secret is a `keyPair` but `expectedSecretType` is set to `password`. Or,
+1. The `credentials_supplier` parameter does not equal any credentials supplier passed to the plugin by the engine.
+
+### Example
+
+```python
+from dlpx.virtualization import libs
+from dlpx.virtualization.common import PasswordCredentials
+
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+    credentials = libs.retrieve_credentials(virtual_source.parameters.db_credentials_supplier)
+    environment_vars = { "DATABASE_USERNAME" : credentials.username }
+    if isinstance(credentials, PasswordCredentials):
+        environment_vars["DATABASE_PASSWORD"] = credentials.password
+    else:
+        environment_vars["DATABASE_KEY"] = credentials.private_key
+```
+
 ## run_bash
 
 Executes a bash command on a remote Unix host.
@@ -189,4 +230,39 @@ exclude_paths = ["/path1", "/path2"]
 sym_links_to_follow = ["/path3", "/path4"]
 
 libs.run_sync(connection, source_directory, rsync_user, exclude_paths, sym_links_to_follow)
+```
+
+## upgrade_password
+
+Takes a plain password and, optionally, a user name and converts them to an object that conforms to [`credentialsSupplier`](Schemas.md#credentialssupplier). This function generalizes an existing password property to allow users to later select an alternative source, such as a password vault.
+
+This function can be called only from [data migrations](/Versioning_And_Upgrade/Upgrade/#data-migrations). The resulting object can be assigned to a property of type [`credentialsSupplier`](Schemas.md#credentialssupplier) or  [`passwordCredentialsSupplier`](Schemas.md#passwordcredentialssupplier).
+
+### Signature
+
+`def upgrade_password(password, username=None)`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+password | String | A plain password.
+username | String | **Optional**. A user name.
+
+### Returns
+A `dict` object that conforms to [`passwordCredentialsSupplier`](Schemas.md#passwordcredentialssupplier).
+
+### Example
+
+```python
+from dlpx.virtualization import libs
+
+@plugin.upgrade.linked_source("2021.02.15")
+def convert_password_to_credentials_supplier(old_linked_source):
+    new_linked_source = dict(old_linked_source)
+    password = old_linked_source["credentials"]
+    username = old_linked_source["username"]
+    new_linked_source["credentials"] = libs.upgrade_password(password, username)
+    del new_linked_source["username"]
+    return new_linked_source
 ```
