@@ -10,7 +10,7 @@ Plugins must be careful to handle sensitive data appropriately. Three tips for h
 
 Each of these tips are explained below.
 
-# Marking Your Data As Sensitive
+## Marking Your Data As Sensitive
 
 Because the Delphix Engine manages the storing and retrieving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](/References/Glossary.md#schema), by using the special [`password`](/References/Schemas.md#password) keyword.
 
@@ -37,11 +37,45 @@ This tells the Delphix Engine to take special precautions with this password pro
 !!! note
     Removing a previously added password property from a field and running a [Data Migration](/References/Glossary.md#data-migration) will expose the password in plaintext. If this is intentional, write a migration to ensure that the new property conforms to the new schema.
 
-# Using Environment Variables For Remote Data Passing
+## Protecting Sensitive Data with Password Vaults
+
+Plugins can also leverage the password vaults configured in the Delphix engine to avoid storing sensitive data in the engine itself. In addition, vaults can rotate secrets seamlessly behind the scenes without requiring Delphix users to update those secrets in the engine. To give users the option to choose between directly entering a secret, such as a password or private key, or retrieving it from a vault, Delphix provides [pre-defined credential types](/References/Schemas.md#delphix-specific-pre-defined-types).
+
+When using these special types, the example above becomes:
+
+```json
+{
+    "type": "object",
+    "properties": {
+        "db_connectionPort": {"type": "string"},
+        "db_credentials_supplier": {
+          "$ref": "https://delphix.com/platform/api#/definitions/passwordCredentialsSupplier"
+        }
+    }
+}
+```
+
+For details on how the user can provide the information required for a property such as `db_credentials_supplier`, see the [section on pre-defined types](/References/Schemas.md#delphix-specific-pre-defined-types).
+
+At runtime, the plugin code must convert the credentials information provided by the user into an actual set of credentials that the plugin can use. To do this, the plugin must call the library function [`retrieve_credentials`](/References/Platform_Libraries.md#retrieve_credentials). For example:
+
+```python
+from dlpx.virtualization import libs
+from dlpx.virtualization.common import PasswordCredentials
+...
+@plugin.virtual.stop()
+def my_virtual_stop(virtual_source, repository, source_config):
+  credentials = libs.retrieve_credentials(virtual_source.parameters.db_credentials_supplier)
+  assert isinstance(credentials, PasswordCredentials)
+  connect_to_dbms(credentials.username, credentials.password)
+```
+
+
+## Using Environment Variables For Remote Data Passing
 
 Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary.md#staging-environment), and that database command will need to use a password.
 
-## Example
+### Example
 Let us take a look at a very simple example where we need to shutdown a database called "inventory" on a target environment by using the `db_cmd shutdown inventory` command. This command will ask for a password on `stdin`, and for our example our password is "hunter2".
 
 If we were running this command by hand, it might look like this:
@@ -59,7 +93,7 @@ Since a plugin cannot type in the password by hand, it will do something like th
 $ echo "hunter2" | db_cmd shutdown inventory
 ```
 
-## Don't Do This
+### Don't Do This
 
 First, let us take a look at how **not** to do this! Here is a bit of plugin python code that will run the above command.
 
@@ -80,7 +114,7 @@ This constructs a Python string containing exactly the desired command from abov
 
 The problem here is that there is a cleartext password in the Python string. But, this Python string is not treated as sensitive by the Virtualization Platform. For example, suppose the Virtualization Platform cannot make a connection to the target environment. In which case, it will raise an error containing the Python string, so that people will know what command failed. But, in our example, that would result in the password being part of the cleartext error message.
 
-## Using Environment Variables
+### Using Environment Variables
 
 The Delphix Engine provides a better way to pass sensitive data to remote bash (or powershell) calls: environment variables. Let us look at a different way to run the same command as above.
 
@@ -106,7 +140,7 @@ Once the command runs on the target environment, Bash will substitute in the pas
 
 Unlike with the command string, the Virtualization Platform **does** treat environment variables as sensitive information, and will not include them in error messages or internal logs, etc.
 
-# Don't Write Out Sensitive Data
+## Don't Write Out Sensitive Data
 
 Plugin writers are strongly advised to never write out unencrypted sensitive data. This is common-sense general advice that applies to all areas of programming, not just for plugins. However, there are a couple of special concerns for plugins.
 
