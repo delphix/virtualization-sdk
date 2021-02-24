@@ -33,8 +33,9 @@ jobs:
         run: |
           CURRENT_BRANCH_VAR=${GITHUB_REF#refs/heads/}
           echo "Current branch: $CURRENT_BRANCH_VAR"
-          # Set CURRENT_BRANCH environment variable to the current branch name.
-          echo "::set-env name=CURRENT_BRANCH::$(echo $CURRENT_BRANCH_VAR)"
+          # Set CURRENT_BRANCH environment variable to the current branch name. Refrain from using 'set-env' as
+          # GitHub has identified the command as a moderate security vulnerability.
+          echo "CURRENT_BRANCH=$(echo $CURRENT_BRANCH_VAR)" >> $GITHUB_ENV
       - name: Display all remote branches
         working-directory: ${{ matrix.package }}
         run: |
@@ -46,8 +47,9 @@ jobs:
           # Get only docs branches, extract the "docs/x.y.z" part, sort them in descending order, and get the first one.
           LATEST_DOCS_BRANCH_VAR=$(git branch -r | grep -e ".*\/*docs\/[0-9].[0-9].[0-9]" | sed -n "s/.*\/*\(docs\/[0-9].[0-9].[0-9]\).*/\1/p" | sort -r | head -n 1)
           echo "Latest docs branch: $LATEST_DOCS_BRANCH_VAR"
-          # Set the LATEST_DOCS_BRANCH environment variable.
-          echo "::set-env name=LATEST_DOCS_BRANCH::$(echo $LATEST_DOCS_BRANCH_VAR)"
+          # Set the LATEST_DOCS_BRANCH environment variable. Refrain from using 'set-env' as GitHub has identified the
+          # command as a moderate security vulnerability.
+          echo "LATEST_DOCS_BRANCH=$(echo $LATEST_DOCS_BRANCH_VAR)" >> $GITHUB_ENV
       - name: Check that the current branch is the latest docs branch, fail otherwise
         working-directory: ${{ matrix.package }}
         run: |

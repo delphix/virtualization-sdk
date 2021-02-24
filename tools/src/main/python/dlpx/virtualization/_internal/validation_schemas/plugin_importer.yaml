@@ -13,12 +13,12 @@ EXPECTED_STAGED_ARGS_BY_OP:
       - staged_source
       - repository
       - source_config
-      - snapshot_parameters
+      - optional_snapshot_parameters
     post_snapshot_impl:
       - staged_source
       - repository
       - source_config
-      - snapshot_parameters
+      - optional_snapshot_parameters
     start_staging_impl:
       - staged_source
       - repository
@@ -75,7 +75,6 @@ EXPECTED_STAGED_ARGS_BY_OP:
     initialize_impl:
       - virtual_source
       - repository
-      - source_config
     mount_specification_impl:
       - virtual_source
       - repository
@@ -93,10 +92,12 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - direct_source
       - repository
       - source_config
+      - optional_snapshot_parameters
     post_snapshot_impl:
       - direct_source
       - repository
       - source_config
+      - optional_snapshot_parameters
   VirtualOperations:
     configure_impl:
       - virtual_source
@@ -134,7 +135,6 @@ EXPECTED_DIRECT_ARGS_BY_OP:
     initialize_impl:
       - virtual_source
       - repository
-      - source_config
     mount_specification_impl:
       - virtual_source
       - repository

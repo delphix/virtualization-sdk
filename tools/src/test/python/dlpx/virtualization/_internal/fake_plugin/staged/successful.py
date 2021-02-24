@@ -31,13 +31,13 @@ def staged_mount_specification(staged_source, repository):
 
 @staged.linked.pre_snapshot()
 def staged_pre_snapshot(repository, source_config, staged_source,
-                        snapshot_parameters):
+                        optional_snapshot_parameters):
     pass
 
 
 @staged.linked.post_snapshot()
 def staged_post_snapshot(repository, source_config, staged_source,
-                         snapshot_parameters):
+                         optional_snapshot_parameters):
     return None
 
 
@@ -65,6 +65,9 @@ def staged_worker(repository, source_config, staged_source):
 def configure(virtual_source, repository, snapshot):
     return None
 
+@staged.virtual.initialize()
+def initialize(virtual_source, repository):
+    return None
 
 @staged.virtual.mount_specification()
 def mount_specification(virtual_source, repository):

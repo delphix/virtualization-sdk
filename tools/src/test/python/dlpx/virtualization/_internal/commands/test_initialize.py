@@ -115,6 +115,20 @@ class TestInitialize:
                 config['id'], ingestion_strategy, host_type)
 
     @staticmethod
+    def test_init_with_relative_path(tmpdir):
+        os.chdir(tmpdir.strpath)
+        init.init(".", const.DIRECT_TYPE, "", const.UNIX_HOST_TYPE)
+
+        result = plugin_util.validate_plugin_config_file(
+            os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
+            True)
+
+        config = result.plugin_config_content
+
+        # Validate that the plugin name is equal to plugin id
+        assert config['name'] == config['id']
+
+    @staticmethod
     def test_init_without_plugin_name(tmpdir):
         init.init(tmpdir.strpath, const.DIRECT_TYPE, "", const.UNIX_HOST_TYPE)
 
