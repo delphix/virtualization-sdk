@@ -27,6 +27,14 @@ SNAPSHOT_PARAMETERS_DEFINITION_TYPE = 'PluginSnapshotParametersDefinition'
 
 BUILD_DIR_NAME = 'build'
 
+UNPAIRED_SURROGATE_DEFINITION = '''_UNPAIRED_SURROGATE_PATTERN = re.compile(six.u(
+    r\'[\\ud800-\\udbff](?![\\udc00-\\udfff])|(?<![\\ud800-\\udbff])[\\udc00-\\udfff]\'
+))
+'''
+UNPAIRED_SURROGATE_SEARCH = '''      if _UNPAIRED_SURROGATE_PATTERN.search(value):
+        raise ParseError(\'Unpaired surrogate\')
+'''
+
 
 def build(plugin_config,
           upload_artifact,
@@ -133,6 +141,9 @@ def build(plugin_config,
     plugin_dependency_util.install_deps(build_src_dir,
                                         local_vsdk_root=local_vsdk_root)
 
+    # Patch dependencies.
+    patch_dependencies(build_src_dir)
+
     # Prepare the output artifact.
     try:
         plugin_output = prepare_upload_artifact(plugin_config_content,
@@ -150,6 +161,25 @@ def build(plugin_config,
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
     logger.warn('\nBUILD SUCCESSFUL.')
+
+
+def patch_dependencies(build_src_dir):
+    """Due to https://github.com/protocolbuffers/protobuf/issues/7776, Jython cannot
+    import protobuf's json_format. To work around this, we patch it by removing
+    unpaired-surrogate pattern matching, which we don't need.
+
+    Args:
+        build_src_dir: Base path where dependencies are located.
+    """
+    json_format_path = os.path.join(
+        build_src_dir, 'google', 'protobuf', 'json_format.py')
+    with open(json_format_path, 'r') as f:
+        json_format_text = f.read()
+    json_format_text = json_format_text\
+        .replace(UNPAIRED_SURROGATE_DEFINITION, '')\
+        .replace(UNPAIRED_SURROGATE_SEARCH, '')
+    with open(json_format_path, 'w') as f:
+        f.write(json_format_text)
 
 
 def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):

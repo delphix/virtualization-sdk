@@ -9,6 +9,7 @@ import os
 
 import yaml
 from dlpx.virtualization._internal import cli, click_util, const, package_util
+from dlpx.virtualization._internal.commands import build
 
 import pytest
 
@@ -520,7 +521,7 @@ def source_config_definition():
 def virtual_source_definition():
     return {
         'type': 'object',
-        'additionalProperties': False,
+        'additionalProperties': True,
         'properties': {
             'path': {
                 'type': 'string'
@@ -532,6 +533,66 @@ def virtual_source_definition():
 @pytest.fixture
 def linked_source_definition():
     return {'type': 'object', 'additionalProperties': False, 'properties': {}}
+
+
+@pytest.fixture
+def linked_source_definition_with_refs():
+    return {
+        'type': 'object',
+        'additionalProperties': True,
+        'properties': {
+            'path': {
+                'type': 'string'
+            },
+            'credentials': {
+                '$ref': 'https://delphix.com/platform/api#credentialsSupplier'
+            },
+            'credentialsContainer': {
+                'type': 'object',
+                'properties': {
+                    'nestedCredentials': {
+                        '$ref': 'https://delphix.com/platform/api#credentialsSupplier'
+                    },
+                }
+            },
+            'credentialsArray': {
+                'type': 'array',
+                'items': [
+                    {'$ref': 'https://delphix.com/platform/api#credentialsSupplier'}
+                ]
+            }
+        }
+    }
+
+
+@pytest.fixture
+def linked_source_definition_with_opaque_refs():
+    return {
+        'type': 'object',
+        'additionalProperties': True,
+        'properties': {
+            'path': {
+                'type': 'string'
+            },
+            'credentials': {
+                'type': 'object'
+            },
+            'credentialsContainer': {
+                'type': 'object',
+                'properties': {
+                    'nestedCredentials': {
+                        'type': 'object'
+                    },
+                }
+            },
+            'credentialsArray': {
+                'type': 'array',
+                'items': [
+                    {'type': 'object'}
+                ]
+            }
+        }
+    }
 
 
 @pytest.fixture
@@ -673,6 +734,36 @@ def linked_source_def_type(plugin_type):
         return 'PluginLinkedDirectSourceDefinition'
     else:
         return 'PluginLinkedStagedSourceDefinition'
+
+
+@pytest.fixture
+def protobuf_dir(tmpdir):
+    path = tmpdir.join('src', 'google', 'protobuf').strpath
+    os.makedirs(path)
+    return path
+
+
+@pytest.fixture
+def json_format_file(protobuf_dir):
+    json_format_path = os.path.join(protobuf_dir, 'json_format.py')
+    with open(json_format_path, 'w') as f:
+        f.write('a = 1\n')
+        f.write(build.UNPAIRED_SURROGATE_DEFINITION)
+        f.write('b = 2\n')
+        f.write(build.UNPAIRED_SURROGATE_SEARCH)
+        f.write('c = 3\n')
+    return json_format_path
+
+
+@pytest.fixture
+def json_format_file_patched(json_format_file, tmpdir):
+    dir = tmpdir.join('build', 'src', 'google', 'protobuf', 'json_format.py')
+    return dir.strpath
+
+
+@pytest.fixture
+def json_format_content():
+    return 'a = 1\nb = 2\nc = 3\n'
 
 
 @pytest.fixture
