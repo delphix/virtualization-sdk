@@ -36,6 +36,8 @@ logger.setLevel(logging.DEBUG)
 	
 	To avoid this complexity, add the `PlatformHandler` to the root logger. The root logger can be retrieved with `logging.getLogger()`.
 	
+!!! warning
+    There is a limit to how much data can be stored within a log message. See [Message Limits](/Best_Practices/Message_Limits.md) for details.
 	
 ## Usage
 Once the `PlatformHandler` has been added to the logger, logging is done with Python's [Logger](https://docs.python.org/2/library/logging.html#logger-objects) object. Below is a simple example including the basic setup code used above:
