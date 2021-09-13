@@ -818,6 +818,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Message_Limits/" title="Message Limits" class="md-nav__link">
+      Message Limits
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1241,6 +1253,10 @@
 <p class="admonition-title">Add the PlatformHandler to the root logger</p>
 <p>Loggers in Python have a hierarchy and all loggers are children of a special logger called the "root logger". Logging hierarchy is not always intuitive and depends on how modules are structured.</p>
 <p>To avoid this complexity, add the <code>PlatformHandler</code> to the root logger. The root logger can be retrieved with <code>logging.getLogger()</code>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is a limit to how much data can be stored within a log message. See <a href="../../Best_Practices/Message_Limits/">Message Limits</a> for details.</p>
 </div>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Once the <code>PlatformHandler</code> has been added to the logger, logging is done with Python's <a href="https://docs.python.org/2/library/logging.html#logger-objects">Logger</a> object. Below is a simple example including the basic setup code used above:</p>
