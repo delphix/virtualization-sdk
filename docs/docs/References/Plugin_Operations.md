@@ -8,7 +8,6 @@
     For each operation, the argument names must match exactly. For example, the Repository Discovery
     operation must have a single argument named `source_connection`.
 
-
 Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 ---------------- | -------- | --------- | -------------------------
 [Repository<br/>Discovery](#repository-discovery) | **Yes** |`discovery.repository()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br/>[Environment Refresh](Workflows.md#environment-discovery-refresh)

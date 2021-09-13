@@ -56,7 +56,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run on the host.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 use_login_shell | boolean | **Optional**. Whether to use a login shell.
 check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunBashResponse` is non-zero.
 
@@ -126,7 +126,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Expect(Tcl) command to run.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 
 ### Returns
 An object of `RunExpectResponse`
@@ -168,7 +168,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the remote host.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunPowershellResponse` is non-zero.
 
 ### Returns
