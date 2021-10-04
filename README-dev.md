@@ -99,6 +99,8 @@ If you want to bump the major/minor/patch version, run `bumpversion [major|minor
 
 If you want to get rid of the dev label (bump from `1.1.0.dev7` to `1.1.0`), run `bumpversion release`.
 
+Note: After bumpversion the tools unit test will need to be manually updated to test for the new version.
+
 ## Testing
 
 Currently, there are three types of SDK testing: unit, manual, and functional (blackbox).
@@ -122,7 +124,9 @@ all the standard workflows. The same workflows will be exercised by functional (
 ### Functional (blackbox) testing
 To run blackbox tests, follow these steps: 
 1. Push your code to a branch in the forked repository on Github. Let's say the branch is called `my-feature` in repository called `<username>/virtualization-sdk`.
-2. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
+2. If you bumped the version (one of major, minor, or micro, not the dev version part), then QA will have to createa a new branch (qa-appdata-toolkits branch sdk-3-2-0 for example with version 3.2.0) and update their map before you can run the blackbox tests:
+* automation/regression/BlackBox/blackbox/appdata/virtualization_sdk/dvp_settings.py
+3. Navigate to the app-gate directory and start tests using `git blackbox`. For the guide on which test suite to use,
 see the next sections.
 
 At a minimum, each pull request should pass `appdata_python_samples` and `appdata_basic` tests with a direct or staged plugin.

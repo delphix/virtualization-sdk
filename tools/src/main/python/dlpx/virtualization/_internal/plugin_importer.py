@@ -330,6 +330,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.virtual.unconfigure_impl),
         'hasVirtualReconfigure':
         bool(plugin_object.virtual.reconfigure_impl),
+        'hasVirtualCleanup':
+        bool(plugin_object.virtual.cleanup_impl),
         'hasVirtualStart':
         bool(plugin_object.virtual.start_impl),
         'hasVirtualStop':

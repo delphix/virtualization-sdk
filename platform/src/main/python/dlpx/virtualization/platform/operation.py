@@ -21,6 +21,7 @@ class Operation(Enum):
     VIRTUAL_CONFIGURE = 'virtual.configure()'
     VIRTUAL_UNCONFIGURE = 'virtual.unconfigure()'
     VIRTUAL_RECONFIGURE = 'virtual.reconfigure()'
+    VIRTUAL_CLEANUP = 'virtual.cleanup()'
     VIRTUAL_START = 'virtual.start()'
     VIRTUAL_STOP = 'virtual.stop()'
     VIRTUAL_PRE_SNAPSHOT = 'virtual.pre_snapshot()'

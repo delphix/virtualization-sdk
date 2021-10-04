@@ -560,6 +560,32 @@ class TestPlugin:
             "fake_generated_definitions.SourceConfigDefinition'.")
 
     @staticmethod
+    def test_virtual_cleanup(my_plugin, virtual_source, repository,
+                                 source_config):
+        @my_plugin.virtual.cleanup()
+        def virtual_cleanup_impl(virtual_source, repository,
+                                     source_config):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository,
+                                          source_config=source_config)
+            return
+
+        virtual_cleanup_request = platform_pb2.VirtualCleanupRequest()
+        TestPlugin.setup_request(request=virtual_cleanup_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
+
+        expected_result = platform_pb2.VirtualCleanupResult()
+
+        virtual_cleanup_response = my_plugin.virtual._internal_cleanup(
+            virtual_cleanup_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert virtual_cleanup_response.WhichOneof('result') == 'return_value'
+        assert virtual_cleanup_response.return_value == expected_result
+
+    @staticmethod
     def test_virtual_start(my_plugin, virtual_source, repository,
                            source_config):
         @my_plugin.virtual.start()
