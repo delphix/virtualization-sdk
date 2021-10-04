@@ -10,6 +10,8 @@ message | String | Description of the failure to show the end user.
 action | String | **Optional**. List of actions that the end user could take to fix the problem. If not provided, it defaults to `Contact the plugin author to correct the error.`
 output | String | **Optional**. Output or stack trace from the failure to give the end user more information so that they can self diagnose. If not provided, it defaults to the stack trace of the failure.
 
+!!! warning
+    There is a limit to how much data can be stored within the fields of a `UserError`. See [Message Limits](/Best_Practices/Message_Limits.md) for details.
 
 ## Example
 
