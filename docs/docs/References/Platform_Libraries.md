@@ -1,5 +1,5 @@
 # Platform Libraries
-Set of functions that plugins can use these for executing remote commands, etc.
+Delphix provides a set of functions that plugins can use for executing remote commands, etc.
 
 ## retrieve_credentials
 
@@ -101,7 +101,7 @@ response = libs.run_bash(connection, command)
 Running a bash script that is saved in a directory.
 
 ```python
- 
+
  import pkgutil
  from dlpx.virtualization import libs
 
