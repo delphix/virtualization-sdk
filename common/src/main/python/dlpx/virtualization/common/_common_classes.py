@@ -5,7 +5,6 @@
 from abc import ABCMeta
 from dlpx.virtualization.api import common_pb2, libs_pb2
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
-from enum import IntEnum
 
 """Classes used for Plugin Operations
 
