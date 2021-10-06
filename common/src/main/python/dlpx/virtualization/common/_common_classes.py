@@ -3,6 +3,7 @@
 #
 
 from abc import ABCMeta
+import six
 from dlpx.virtualization.api import common_pb2, libs_pb2
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
 
@@ -100,19 +101,19 @@ class RemoteEnvironment(object):
 
     """
     def __init__(self, name, reference, host):
-        if not isinstance(name, basestring):
+        if not isinstance(name, six.string_types):
             raise IncorrectTypeError(
                 RemoteEnvironment,
                 'name',
                 type(name),
-                basestring)
+                six.string_types[0])
         self.__name = name
-        if not isinstance(reference, basestring):
+        if not isinstance(reference, six.string_types):
             raise IncorrectTypeError(
                 RemoteEnvironment,
                 'reference',
                 type(reference),
-                basestring)
+                six.string_types[0])
         self.__reference = reference
 
         if isinstance(host, RemoteHost):
@@ -171,33 +172,33 @@ class RemoteHost(object):
 
     """
     def __init__(self, name, reference, binary_path, scratch_path):
-        if not isinstance(name, basestring):
+        if not isinstance(name, six.string_types):
             raise IncorrectTypeError(
                 RemoteHost,
                 'name',
                 type(name),
-                basestring)
+                six.string_types[0])
         self.__name = name
-        if not isinstance(reference, basestring):
+        if not isinstance(reference, six.string_types):
             raise IncorrectTypeError(
                 RemoteHost,
                 'reference',
                 type(reference),
-                basestring)
+                six.string_types[0])
         self.__reference = reference
-        if not isinstance(binary_path, basestring):
+        if not isinstance(binary_path, six.string_types):
             raise IncorrectTypeError(
                 RemoteHost,
                 'binary_path',
                 type(binary_path),
-                basestring)
+                six.string_types[0])
         self.__binary_path = binary_path
-        if not isinstance(scratch_path, basestring):
+        if not isinstance(scratch_path, six.string_types):
             raise IncorrectTypeError(
                 RemoteHost,
                 'scratch_path',
                 type(scratch_path),
-                basestring)
+                six.string_types[0])
         self.__scratch_path = scratch_path
 
     @property
@@ -254,19 +255,19 @@ class RemoteUser(object):
         reference: Reference of the RemoteUser.
     """
     def __init__(self, name, reference):
-        if not isinstance(name, basestring):
+        if not isinstance(name, six.string_types):
             raise IncorrectTypeError(
                 RemoteUser,
                 'name',
                 type(name),
-                basestring)
+                six.string_types[0])
         self.__name = name
-        if not isinstance(reference, basestring):
+        if not isinstance(reference, six.string_types):
             raise IncorrectTypeError(
                 RemoteUser,
                 'reference',
                 type(reference),
-                basestring)
+                six.string_types[0])
         self.__reference = reference
 
     @property
@@ -310,12 +311,12 @@ class Credentials(object):
         username: User name.
     """
     def __init__(self, username):
-        if not isinstance(username, basestring):
+        if not isinstance(username, six.string_types):
             raise IncorrectTypeError(
                 Credentials,
                 'username',
                 type(username),
-                basestring)
+                six.string_types[0])
         self.__username = username
 
     __metaclass__ = ABCMeta
@@ -338,12 +339,12 @@ class PasswordCredentials(Credentials):
     """
     def __init__(self, username, password):
         super(PasswordCredentials, self).__init__(username)
-        if not isinstance(password, basestring):
+        if not isinstance(password, six.string_types):
             raise IncorrectTypeError(
                 PasswordCredentials,
                 'password',
                 type(password),
-                basestring)
+                six.string_types[0])
         self.__password = password
 
     @property
@@ -378,19 +379,19 @@ class KeyPairCredentials(Credentials):
     """
     def __init__(self, username, private_key, public_key):
         super(KeyPairCredentials, self).__init__(username)
-        if not isinstance(private_key, basestring):
+        if not isinstance(private_key, six.string_types):
             raise IncorrectTypeError(
                 KeyPairCredentials,
                 'private_key',
                 type(private_key),
-                basestring)
+                six.string_types[0])
         self.__private_key = private_key
-        if not isinstance(public_key, basestring):
+        if not isinstance(public_key, six.string_types):
             raise IncorrectTypeError(
                 KeyPairCredentials,
                 'public_key',
                 type(public_key),
-                basestring)
+                six.string_types[0])
         self.__public_key = public_key
 
     @property

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
@@ -13,8 +14,8 @@ from dlpx.virtualization.platform.exceptions import (
     OperationAlreadyDefinedError, PluginRuntimeError)
 from mock import MagicMock, patch
 
-import fake_generated_definitions
-from fake_generated_definitions import (RepositoryDefinition,
+from . import fake_generated_definitions
+from .fake_generated_definitions import (RepositoryDefinition,
                                         SnapshotDefinition,
                                         SourceConfigDefinition)
 
