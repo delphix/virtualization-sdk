@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import shutil
+import six
 import subprocess
 
 from dlpx.virtualization._internal import const, exceptions, file_util
@@ -97,7 +98,7 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
 def _make_url_refs_opaque(json):
     if isinstance(json, dict):
         for key in json:
-            if key == '$ref' and isinstance(json[key], basestring)\
+            if key == '$ref' and isinstance(json[key], six.string_types)\
               and json[key].startswith('https://delphix.com/platform/api#'):
                 json.pop(key)
                 json['type'] = 'object'
