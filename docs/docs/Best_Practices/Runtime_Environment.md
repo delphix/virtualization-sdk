@@ -16,7 +16,7 @@ Our Python 2.7 runtime environment only contains the [Python Standard Library](h
 
 If you want to use some Python module that is not part of the standard library, you might be able to do so.
 You would need to include that library as part of your plugin. That would involve downloading the source
-code for that module, and copying it into your source directory.
+code for that module, and copying it into your source directory. For more information on how to lay out code in your source directory, see [Code Sharing](/Best_Practices/Code_Sharing.md).
 
 ### Warnings
 There are two major things to watch out for if you decide to incorporate a 3rd-party library.
@@ -32,19 +32,13 @@ the machine your plugin runs on (the Delphix Engine) is likely very different fr
 to develop and build your plugin.
 
 ## Network Access
-As of Delphix Engine version 6.0.11, plugin code is able to use the network directly. No network access is
+As of Delphix Engine version 6.0.11.0, plugin code is able to use the network directly. No network access is
 possible in earlier versions.
 
 For example, suppose your plugin wants to talk to some DBMS running on some remote host.
 If the DBMS supports it, your plugin code might be able to connect to the DBMS server and talk to the
 DBMS directly. This can avoid the need to do DBMS operations via running Bash/Powershell code on the remote host.
 
-What your plugin can access depends entirely on the customer. Some customers will set up their Delphix
-Engines such that plugins have full access to the entire internet. Some will completely restrict the network
-so that the plugin can only access a small handful of remote hosts.
-
-If your plugin has any specific network requirements, it's recommended to try, in your code, to confirm that these requirements are met. For example, the plugin could make such a check in the
-`discovery.repository()` operation, and throw an error if the check fails.
 
 ### Example
 ```python
@@ -60,3 +54,10 @@ def list_databases(remote_ip):
     response = cx.getresponse()
     return json.loads(response.read())
 ```
+
+What your plugin can access depends entirely on the customer. Some customers will set up their Delphix
+Engines such that plugins have full access to the entire internet. Some will completely restrict the network
+so that the plugin can only access a small handful of remote hosts.
+
+If your plugin has any specific network requirements, it's recommended to try, in your code, to confirm that these requirements are met. For example, the plugin could make such a check in the
+`discovery.repository()` operation, and throw an error if the check fails. Like any other requirement, this should of course be documented.

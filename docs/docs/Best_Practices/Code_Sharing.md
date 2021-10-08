@@ -2,7 +2,7 @@
 
 All Python modules inside of `srcDir` can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed `srcDir` is the current working directory so all imports need to be relative to `srcDir` regardless of the path of the module doing the import.
 
-Please refer to Python's [documentation on modules](https://docs.python.org/2/tutorial/modules.html#modules) to learn more about modules and imports.
+Please refer to Python's [documentation on modules](https://docs.python.org/2/tutorial/modules.html#modules) to learn more about modules and imports.  For more information about using others' code inside your plugin, see [Available Modules](/Best_Practices/Runtime_Environment.md#Available_Modules)
 
 ## Example
 
@@ -31,7 +31,7 @@ Any module in the plugin could import `execution_util.py` with `from utils impor
 
 !!! warning "Gotcha"
 	Since the platform uses Python 2.7, every directory needs to have an `__init__.py` file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on `__init__.py` files refer to Python's [documentation on packages](https://docs.python.org/2/tutorial/modules.html#packages).
-	
+
 	Note that the `srcDir` in the plugin config file (`src` in this example) does _not_ need an `__init__.py` file.
 
 Assume `schema.json` contains:
@@ -117,8 +117,8 @@ def find_schemas(source_connection, repository):
     return [SourceConfigDefinition(name=name) for name in schema_names]
 ```
 !!! note
-	Even though `discovery.py` is in the `operations` package, the import for `execution_util` is still relative to the `srcDir` specified in the plugin config file. `execution_util` is in the `utils` package so it is imported with `from utils import execution_util`. 
-	
+	Even though `discovery.py` is in the `operations` package, the import for `execution_util` is still relative to the `srcDir` specified in the plugin config file. `execution_util` is in the `utils` package so it is imported with `from utils import execution_util`.
+
 ### execution_util.py
 
 `execution_util.py ` has two methods `execute_sql` and `execute_shell`. `execute_sql` takes the name of a SQL script in `resources/` and executes it with `resources/execute_sql.sh`. `execute_shell` takes the name of a shell script in `resources/` and executes it.

@@ -7,7 +7,7 @@ Python 2.7 has two different types that are both called "strings". One represent
 a sequence of **bytes**, and the other represents a sequence of **characters**.
 
 ```python
-# The default string (aka 'str object') represents bytes,
+# The default string (aka 'str object') represents bytes
 my_bytes = "This string is a sequence of bytes"
 
 # A 'Unicode object' represents characters (note the u just before the quote)
@@ -63,7 +63,7 @@ Things to note:
 
 Python 2.7 source code files are assumed to use the "ASCII" encoding, unless told otherwise. Unfortunately, ASCII is an obsolete encoding that only knows how to deal with a small number of characters, and only really supports American English.
 
-In order to use non-ASCII characters in your source code, you need to use a different encoding than ASCII, and you need to tell the Python interpreter which encoding you're using.  In Python 2.7, this is done with a "magic" comment at the very top of each file.
+In order to include non-ASCII characters in your source code, you need to use a different encoding than ASCII, and you need to tell the Python interpreter which encoding you're using.  In Python 2.7, this is done with a "magic" comment at the very top of each file.
 
 Here is an example of the first line of a Python file that uses the UTF-8 encoding:
 ```python
