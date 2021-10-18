@@ -74,6 +74,11 @@ def unconfigure(repository, source_config, virtual_source):
     pass
 
 
+@direct.virtual.cleanup()
+def cleanup(repository, source_config, virtual_source):
+    pass
+
+
 @direct.upgrade.repository('2019.11.20')
 def repo_upgrade(old_repository):
     return old_repository

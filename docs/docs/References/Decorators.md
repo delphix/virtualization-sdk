@@ -38,6 +38,7 @@ Plugin Operation | Decorator
 [Virtual Source Initialize](Plugin_Operations.md#virtual-source-initialize) | `@plugin.virtual.initialize()`
 [Virtual Source Unconfigure](Plugin_Operations.md#virtual-source-unconfigure) | `@plugin.virtual.unconfigure()`
 [Virtual Source Reconfigure](Plugin_Operations.md#virtual-source-reconfigure) | `@plugin.virtual.reconfigure()`
+[Virtual Source Cleanup](Plugin_Operations.md#virtual-source-cleanup) | `@plugin.virtual.cleanup()`
 [Virtual Source Start](Plugin_Operations.md#virtual-source-start) | `@plugin.virtual.start()`
 [Virtual Source Stop](Plugin_Operations.md#virtual-source-stop) | `@plugin.virtual.stop()`
 [VirtualSource Pre-Snapshot](Plugin_Operations.md#virtualsource-pre-snapshot) | `@plugin.virtual.pre_snapshot()`

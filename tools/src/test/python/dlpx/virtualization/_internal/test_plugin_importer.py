@@ -137,8 +137,10 @@ class TestPluginImporter:
          ('multiple_warnings:vfiles', 'DIRECT', [
              'Error: Number of arguments do not match in method status',
              'Error: Named argument mismatch in method status',
+             'Error: Number of arguments do not match in method cleanup',
+             'Error: Named argument mismatch in method cleanup',
              'Warning: Implementation missing for required method'
-             ' virtual.reconfigure().', '1 Warning(s). 2 Error(s).'
+             ' virtual.reconfigure().', '1 Warning(s). 4 Error(s).'
          ])])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_multiple_warnings(mock_file_util, plugin_config_file,
