@@ -170,7 +170,7 @@ class GeneratedClassesTypeError(GeneratedClassesError):
             container then we assume there is one element in it and that type
             is the expected type of the container. (For dicts this is the key)
             ie: if expected_type = {str} then the returned expected string with
-            be something like "type 'dict with key basestring'"
+            be something like "type 'dict with key str'"
 
         Returns:
             tuple (str, str): the actual and expected strings used for the
@@ -284,11 +284,11 @@ class GeneratedClassesTypeError(GeneratedClassesError):
                                                  float,
                                                  required)
         elif expected_type == str:
-            if not isinstance(parameter, basestring):
+            if not isinstance(parameter, six.string_types):
                 return GeneratedClassesTypeError(object_type,
                                                  parameter_name,
                                                  type(parameter),
-                                                 basestring,
+                                                 six.string_types[0],
                                                  required)
         elif expected_type == list:
             if element_type:
@@ -324,7 +324,7 @@ class GeneratedClassesTypeError(GeneratedClassesError):
                 return GeneratedClassesTypeError(object_type,
                                                  parameter_name,
                                                  type(parameter),
-                                                 {basestring},
+                                                 {six.string_types[0]},
                                                  required)
 
             #
@@ -341,21 +341,21 @@ class GeneratedClassesTypeError(GeneratedClassesError):
                 else:
                     value_check = all(isinstance(v, element_type)
                                       for v in parameter.values())
-                if (not all(isinstance(k, basestring)
+                if (not all(isinstance(k, six.string_types)
                             for k in parameter.keys()) or not value_check):
                     return GeneratedClassesTypeError(
                         object_type,
                         parameter_name,
                         {(type(k), type(v)) for k, v in parameter.items()},
-                        {basestring: element_type},
+                        {six.string_types[0]: element_type},
                         required)
             else:
-                if not all(isinstance(k, basestring) for k in parameter.keys()):
+                if not all(isinstance(k, six.string_types[0]) for k in parameter.keys()):
                     return GeneratedClassesTypeError(
                         object_type,
                         parameter_name,
                         {type(k) for k in parameter.keys()},
-                        {basestring},
+                        {six.string_types[0]},
                         required)
 
         else:

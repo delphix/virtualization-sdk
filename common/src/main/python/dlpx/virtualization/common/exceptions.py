@@ -77,7 +77,12 @@ class PluginRuntimeError(Exception):
             return type_string.replace('<', '').replace('>', '')
 
         def _get_type_name(type_object):
-            if type_object.__module__ != '__builtin__':
+            #
+            # In py3 the builtins module will be named 'builtins', in py2 it will
+            # be '__builtin__'.
+            #
+            builtins = ['__builtin__', 'builtins']
+            if type_object.__module__ not in builtins:
                 type_name = '{}.{}'.format(
                     type_object.__module__, type_object.__name__)
             else:
@@ -102,6 +107,9 @@ class PluginRuntimeError(Exception):
                     expected_type[index] = _remove_angle_brackets(str(expected_type[index]))
 
                 expected = "any one of the following types: '{}'".format(expected_type)
+            elif len(expected_type) == 0:
+                raise PlatformError('The thrown TypeError should have had a list'
+                                    ' of size >= 1 as the expected_type')
             else:
                 single_type = expected_type[0]
                 type_name = _get_type_name(single_type)

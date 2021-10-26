@@ -404,6 +404,7 @@ def virtual_operation():
     virtual.mount_specification_impl = mount_specification
     virtual.status_impl = None
     virtual.initialize_impl = None
+    virtual.cleanup_impl = None
 
     return virtual
 
@@ -447,7 +448,8 @@ def plugin_manifest(upgrade_operation):
         'hasVirtualMountSpecification': True,
         'hasVirtualStatus': False,
         'hasInitialize': False,
-        'migrationIdList': upgrade_operation.migration_id_list
+        'migrationIdList': upgrade_operation.migration_id_list,
+        'hasVirtualCleanup': False,
     }
     return manifest
 
@@ -691,7 +693,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 6}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 11}
 
 
 @pytest.fixture

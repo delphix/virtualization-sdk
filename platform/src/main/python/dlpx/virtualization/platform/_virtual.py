@@ -25,6 +25,7 @@ class VirtualOperations(object):
     def __init__(self):
         self.configure_impl = None
         self.unconfigure_impl = None
+        self.cleanup_impl = None
         self.reconfigure_impl = None
         self.start_impl = None
         self.stop_impl = None
@@ -53,6 +54,16 @@ class VirtualOperations(object):
             return unconfigure_impl
 
         return unconfigure_decorator
+
+    def cleanup(self):
+        def cleanup_decorator(cleanup_impl):
+            if self.cleanup_impl:
+                raise OperationAlreadyDefinedError(Op.VIRTUAL_CLEANUP)
+            self.cleanup_impl = v.check_function(cleanup_impl,
+                                                     Op.VIRTUAL_CLEANUP)
+            return cleanup_impl
+
+        return cleanup_decorator
 
     def reconfigure(self):
         def reconfigure_decorator(reconfigure_impl):
@@ -254,6 +265,58 @@ class VirtualOperations(object):
         unconfigure_response.return_value.CopyFrom(
             platform_pb2.UnconfigureResult())
         return unconfigure_response
+
+    def _internal_cleanup(self, request):
+        """Cleanup operation wrapper.
+
+        Executed when deleting an existing virtual source.
+        This plugin operation is run after unconfigure.
+
+        Args:
+          request (VirtualCleanupRequest): Cleanup operation arguments.
+
+        Returns:
+          VirtualCleanupResponse: A response containing VirtualCleanupResult
+           if successful or PluginErrorResult in case of an error.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While virtual.cleanup() is not a required operation, this should
+        # not be called if it wasn't implemented.
+        #
+        if not self.cleanup_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_CLEANUP)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        self.cleanup_impl(repository=repository,
+                              source_config=source_config,
+                              virtual_source=virtual_source)
+
+        virtual_cleanup_response = platform_pb2.VirtualCleanupResponse()
+        virtual_cleanup_response.return_value.CopyFrom(
+            platform_pb2.VirtualCleanupResult())
+        return virtual_cleanup_response
 
     def _internal_reconfigure(self, request):
         """Reconfigure operation wrapper.

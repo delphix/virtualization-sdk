@@ -81,6 +81,11 @@ def unconfigure(repository, source_config, virtual_source):
     pass
 
 
+@direct.virtual.cleanup()
+def cleanup(repository, source_config, virtual_source):
+    pass
+
+
 @direct.upgrade.repository('1.3', MigrationType.LUA)
 def repo_upgrade(old_repository):
     return old_repository

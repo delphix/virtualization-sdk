@@ -4,8 +4,9 @@
 
 import pytest
 from dlpx.virtualization.api import common_pb2
-from dlpx.virtualization.common._common_classes import (RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
-from dlpx.virtualization.common.exceptions import IncorrectTypeError
+from dlpx.virtualization.common._common_classes import (
+    KeyPairCredentials, PasswordCredentials, RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
+from dlpx.virtualization.common.exceptions import IncorrectTypeError, PluginRuntimeError, PlatformError
 
 @pytest.fixture
 def remote_user():
@@ -222,3 +223,89 @@ class TestRemoteUser:
             "RemoteUser's parameter 'user' was"
             " type 'str' but should be of class 'dlpx.virtualization.api"
             ".common_pb2.RemoteUser'.")
+
+
+class TestCredentials:
+    @staticmethod
+    def test_init_credentials_incorrect_username_type():
+        with pytest.raises(IncorrectTypeError) as err_info:
+            KeyPairCredentials(RemoteUser("user1", "reference1"), "1234", "5678")
+        assert err_info.value.message == (
+            "Credentials's parameter 'username' was class "
+            "'dlpx.virtualization.common._common_classes.RemoteUser' but should be "
+            "of type 'basestring'.")
+
+
+class TestKeyPairCredentials:
+    @staticmethod
+    def test_init_key_pair_credentials_incorrect_public_key_type():
+        with pytest.raises(IncorrectTypeError) as err_info:
+            KeyPairCredentials("user1", "1234", 1)
+        assert err_info.value.message == (
+            "KeyPairCredentials's parameter 'public_key' was type 'int' "
+            "but should be of type 'basestring'.")
+
+    @staticmethod
+    def test_init_key_pair_credentials_incorrect_private_key_type():
+        with pytest.raises(IncorrectTypeError) as err_info:
+            KeyPairCredentials("user1", 1, "1234")
+        assert err_info.value.message == (
+            "KeyPairCredentials's parameter 'private_key' was type 'int' "
+            "but should be of type 'basestring'.")
+
+
+class TestPasswordCredentials:
+    @staticmethod
+    def test_init_password_credentials_incorrect_password_type():
+        with pytest.raises(IncorrectTypeError) as err_info:
+            PasswordCredentials("user1", 12345)
+        assert err_info.value.message == (
+            "PasswordCredentials's parameter 'password' was type 'int' but "
+            "should be of type 'basestring'.")
+
+
+class TestPluginRuntimeError:
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type():
+        actual, expected = PluginRuntimeError.get_actual_and_expected_type(
+            list([str]), dict({str: dict}))
+        assert actual == "a list of [type 'str']"
+        assert expected == "type 'dict of str:dict'"
+
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type_multi_expected_types():
+        actual, expected = PluginRuntimeError.get_actual_and_expected_type(
+            list([str]), list([str, int, dict, bool]))
+        assert actual == "a list of [type 'str']"
+        assert expected == "any one of the following types: '['str', 'int', 'dict', 'bool']'"
+
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type_single_item_list_expected_types():
+        actual, expected = PluginRuntimeError.get_actual_and_expected_type(
+            list([str]), list([str]))
+        assert actual == "a list of [type 'str']"
+        assert expected == "type 'list of str'"
+
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type_empty_dict_expected_type():
+        with pytest.raises(PlatformError) as err_info:
+            PluginRuntimeError.get_actual_and_expected_type(list(), dict())
+
+        assert err_info.value.message == (
+            "The thrown TypeError should have had a dict of size 1 as the expected_type")
+
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type_empty_list_expected_type():
+        with pytest.raises(PlatformError) as err_info:
+            PluginRuntimeError.get_actual_and_expected_type(list(), list())
+
+        assert err_info.value.message == (
+            "The thrown TypeError should have had a list of size >= 1 as the expected_type")
+
+    @staticmethod
+    def test_plugin_runtime_error_get_actual_and_expected_type_list_with_duplicate_expected_type():
+        with pytest.raises(PlatformError) as err_info:
+            PluginRuntimeError.get_actual_and_expected_type(list(), list([str, str]))
+
+        assert err_info.value.message == (
+            "The thrown TypeError should have had a list of size 1 as the expected_type")
