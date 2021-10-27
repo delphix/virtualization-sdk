@@ -2,6 +2,13 @@
 
 This is the Markdown-based documentation for the Virtualization SDK.
 
+## Important Note On Building Docs
+
+As of this writing, the rest of the Virtualization SDK codebase is based on Python 2.
+However, our docs infrastructure is based on Python 3! So, **all of the below commands
+must be run in a Python 3 environment**.  It's recommended to use a totally separate
+virtual environment for docs work than the one you use in the rest of the SDK codebase.
+
 ## Local Testing
 Install dependencies for building documentation and run `pipenv run mkdocs serve`
 
@@ -13,8 +20,8 @@ To activate this project's virtualenv, run pipenv shell.
 Alternatively, run a command inside the virtualenv with pipenv run.
 
 $ pipenv run mkdocs serve
-INFO    -  Building documentation... 
-INFO    -  Cleaning site directory 
+INFO    -  Building documentation...
+INFO    -  Cleaning site directory
 [I 200424 15:54:06 server:292] Serving on http://127.0.0.1:8000
 [I 200424 15:54:06 handlers:59] Start watching changes
 [I 200424 15:54:06 handlers:61] Start detecting changes
@@ -59,7 +66,7 @@ Install `setuptools==45` to get around a deprecated API in version 46.
 $ pip install setuptools==45
 Collecting setuptools==45
   Downloading setuptools-45.0.0-py2.py3-none-any.whl (583 kB)
-     |████████████████████████████████| 583 kB 2.7 MB/s 
+     |████████████████████████████████| 583 kB 2.7 MB/s
 Installing collected packages: setuptools
   Attempting uninstall: setuptools
     Found existing installation: setuptools 46.1.3
@@ -85,13 +92,13 @@ This will generate the `site` directory which will contain all the gererated doc
 5. Go to your individual virtualization-sdk repo's settings, scroll to the bottom and verify under the GitHub Pages section the `Source` is set to `gh-pages branch`.
 6. Right above this will be a link explaining where your docs are published.
 
-You can also utilize the GitHub workflow for publishing docs (`.github/workflows/publish-docs.yml`) associated with a pull request. 
+You can also utilize the GitHub workflow for publishing docs (`.github/workflows/publish-docs.yml`) associated with a pull request.
 The workflow is present on the `develop` branch. Create a branch called `docs/x.y.z` off `develop` on your fork of the repository
 to ensure that your docs branch triggers the workflow. If you have more than one `docs/x.y.z` branch in your fork,
 you have to push your doc changes to the docs branch with the latest `x.y.z` version. Otherwise, the workflow won't run.
 You also have to make sure to choose `gh-pages` branch on your fork as the [publishing source](https://help.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source).
 Once you push doc changes to the `docs/.x.y.z` branch, the docs site should be available under
-`<your-github-username>.github.io/virtualization-sdk` shortly after. You can see the status of publishing under 
+`<your-github-username>.github.io/virtualization-sdk` shortly after. You can see the status of publishing under
 `https://github.com/<your-github-username>/virtualization-sdk/actions`. This is a fast way to give a preview of your
 changes in a pull request.
 
