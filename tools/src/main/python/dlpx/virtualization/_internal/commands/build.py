@@ -1,19 +1,20 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import base64
 import compileall
 import copy
+import io
 import json
 import logging
 import os
-import StringIO
 import zipfile
 
 from dlpx.virtualization._internal import (codegen, exceptions, file_util,
                                            package_util,
                                            plugin_dependency_util, plugin_util)
+from dlpx.virtualization.common.util import to_str
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +57,16 @@ def build(plugin_config,
         'Build parameters include plugin_config: %s, upload_artifact: %s,'
         ' generate_only: %s', plugin_config, upload_artifact, generate_only)
 
+    # Click handles the conversions for us, so we need not run inputs through to_str in
+    # the cli build function. However, this function may be called from places other
+    # than its corresponding cli function, such as unit tests. As such, we should ensure
+    # all appropriate inputs at this point are properly converted to unicode strings as
+    # soon as they enter the program.
+    plugin_config = to_str(plugin_config)
+    upload_artifact = to_str(upload_artifact)
+
     if local_vsdk_root:
-        local_vsdk_root = os.path.expanduser(local_vsdk_root)
+        local_vsdk_root = to_str(os.path.expanduser(local_vsdk_root))
 
     # Read content of the plugin config  file provided and perform validations
     logger.info('Validating plugin config file %s', plugin_config)
@@ -100,7 +109,6 @@ def build(plugin_config,
                                 os.path.dirname(plugin_config), schemas)
     except exceptions.UserError as err:
         raise exceptions.BuildFailedError(err)
-
     if generate_only:
         #
         # If the generate_only flag is set then just return after generation
@@ -140,6 +148,10 @@ def build(plugin_config,
     # Install dependencies in the plugin's source root in the build directory.
     plugin_dependency_util.install_deps(build_src_dir,
                                         local_vsdk_root=local_vsdk_root)
+    virtualization_dir = os.path.join(build_src_dir, "dlpx", "virtualization")
+
+    for pkg in ['api', 'common', 'libs', 'platform']:
+        plugin_dependency_util.compile_py_files(os.path.join(virtualization_dir, pkg))
 
     # Patch dependencies.
     patch_dependencies(build_src_dir)
@@ -160,7 +172,7 @@ def build(plugin_config,
 
     logger.info('Successfully generated artifact file at %s.', upload_artifact)
 
-    logger.warn('\nBUILD SUCCESSFUL.')
+    logger.warning('\nBUILD SUCCESSFUL.')
 
 
 def patch_dependencies(build_src_dir):
@@ -174,7 +186,7 @@ def patch_dependencies(build_src_dir):
     json_format_path = os.path.join(
         build_src_dir, 'google', 'protobuf', 'json_format.py')
     with open(json_format_path, 'r') as f:
-        json_format_text = f.read()
+        json_format_text = to_str(f.read())
     json_format_text = json_format_text\
         .replace(UNPAIRED_SURROGATE_DEFINITION, '')\
         .replace(UNPAIRED_SURROGATE_SEARCH, '')
@@ -187,6 +199,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
     # This is the output dictionary that will be written
     # to the upload_artifact.
     #
+
     artifact = {
         # Hard code the type to a set default.
         'type':
@@ -198,7 +211,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
-        # set default value of language to PYTHON27
+        # set default value of language to PYTHON38
         'language':
         plugin_config_content['language'],
         'hostTypes':
@@ -252,7 +265,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         artifact['minimumLuaVersion'] = plugin_config_content[
             'minimumLuaVersion']
 
-    return artifact
+    return to_str(artifact)
 
 
 def get_linked_source_definition_type(plugin_config_content):
@@ -332,7 +345,7 @@ def zip_and_encode_source_files(source_code_dir):
     Jython creates a class loader to import .py files which the
     security manager prohibits.
     """
-
+    source_code_dir = to_str(source_code_dir)
     #
     # The contents of the zip should have relative and not absolute paths or
     # else the imports won't work as expected.
@@ -348,7 +361,8 @@ def zip_and_encode_source_files(source_code_dir):
             raise exceptions.UserError(
                 'Failed to compile source code in the directory {}.'.format(
                     source_code_dir))
-        out_file = StringIO.StringIO()
+
+        out_file = io.BytesIO()
         with zipfile.ZipFile(out_file, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for root, _, files in os.walk('.'):
                 for filename in files:

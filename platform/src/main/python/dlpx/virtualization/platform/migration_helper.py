@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import re
@@ -309,6 +309,7 @@ class LuaUpgradeMigrations(UpgradeMigrations):
         #
         if not migration_id:
             return []
+
         #
         # First filter out all ids less than the migration id. We need to do
         # this because even after sorting, we wouldn't know where in the list

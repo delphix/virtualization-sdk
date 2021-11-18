@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 # -*- coding: utf-8 -*-
@@ -59,8 +59,8 @@ class VirtualOperations(object):
         def cleanup_decorator(cleanup_impl):
             if self.cleanup_impl:
                 raise OperationAlreadyDefinedError(Op.VIRTUAL_CLEANUP)
-            self.cleanup_impl = v.check_function(cleanup_impl,
-                                                     Op.VIRTUAL_CLEANUP)
+            self.cleanup_impl = v.check_function(
+                cleanup_impl, Op.VIRTUAL_CLEANUP)
             return cleanup_impl
 
         return cleanup_decorator
@@ -309,9 +309,9 @@ class VirtualOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        self.cleanup_impl(repository=repository,
-                              source_config=source_config,
-                              virtual_source=virtual_source)
+        self.cleanup_impl(
+            repository=repository, source_config=source_config,
+            virtual_source=virtual_source)
 
         virtual_cleanup_response = platform_pb2.VirtualCleanupResponse()
         virtual_cleanup_response.return_value.CopyFrom(
@@ -690,8 +690,8 @@ class VirtualOperations(object):
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
 
-        config = self.initialize_impl(repository=repository,
-                             virtual_source=virtual_source)
+        config = self.initialize_impl(
+            repository=repository, virtual_source=virtual_source)
 
         # Validate that this is a SourceConfigDefinition object.
         if not isinstance(config, SourceConfigDefinition):

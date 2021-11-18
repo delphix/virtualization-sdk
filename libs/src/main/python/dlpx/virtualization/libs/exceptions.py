@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import sys
@@ -66,22 +66,16 @@ class IncorrectArgumentTypeError(PluginRuntimeError):
         message (str): A user-readable message describing the exception.
     """
 
-    def __init__(
-        self,
-        parameter_name,
-        actual_type,
-        expected_type,
-        required=True):
-        actual, expected = self.get_actual_and_expected_type(
-            actual_type, expected_type)
+    def __init__(self, parameter_name, actual_type, expected_type, required=True):
+        actual, expected = self.get_actual_and_expected_type(actual_type, expected_type)
 
-        # Get the name of the function that is throwning this error.
+        # Get the name of the function that is throwing this error.
         func_name = sys._getframe(1).f_code.co_name
         message = ("The function {}'s argument '{}' was {} but should"
                    " be of {}{}.".format(
-            func_name,
-            parameter_name,
-            actual,
-            expected,
-            (' if defined', '')[required]))
+                        func_name,
+                        parameter_name,
+                        actual,
+                        expected,
+                        (' if defined', '')[required]))
         super(IncorrectArgumentTypeError, self).__init__(message)

@@ -1,3 +1,6 @@
+import six
+
+
 class Model(object):
     # swaggerTypes: The key is attribute name and the
     # value is attribute type.
@@ -10,7 +13,7 @@ class Model(object):
 
 class RepositoryDefinition(Model):
     def __init__(self, name):
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': six.string_types[0]}
 
         self.attribute_map = {'name': 'name'}
         self._name = name
@@ -29,7 +32,7 @@ class RepositoryDefinition(Model):
 
 class SourceConfigDefinition(Model):
     def __init__(self, name):
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': six.string_types[0]}
 
         self.attribute_map = {'name': 'name'}
         self._name = name
@@ -48,7 +51,7 @@ class SourceConfigDefinition(Model):
 
 class LinkedSourceDefinition(Model):
     def __init__(self, name):
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': six.string_types[0]}
 
         self.attribute_map = {'name': 'name'}
         self._name = name
@@ -64,7 +67,7 @@ class LinkedSourceDefinition(Model):
 
 class VirtualSourceDefinition(Model):
     def __init__(self, name):
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': six.string_types[0]}
 
         self.attribute_map = {'name': 'name'}
         self._name = name
@@ -83,7 +86,7 @@ class VirtualSourceDefinition(Model):
 
 class SnapshotDefinition(Model):
     def __init__(self, name):
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': six.string_types[0]}
 
         self.attribute_map = {'name': 'name'}
         self._name = name
