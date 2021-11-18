@@ -29,7 +29,7 @@ class TestPluginDependencyUtil:
         ]
         mock_install_to_dir.assert_called_once_with(expected_dependencies,
                                                     tmp_path.as_posix())
-
+    print("TESTING")
     @staticmethod
     @mock.patch.object(pdu, '_pip_install_to_dir')
     @mock.patch.object(pdu, '_build_wheel')
