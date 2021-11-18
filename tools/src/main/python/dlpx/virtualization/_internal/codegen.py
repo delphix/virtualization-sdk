@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import copy
@@ -12,6 +12,7 @@ import six
 import subprocess
 
 from dlpx.virtualization._internal import const, exceptions, file_util
+from dlpx.virtualization.common.util import to_str
 
 logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
@@ -97,7 +98,8 @@ def generate_python(name, source_dir, plugin_config_dir, schema_content):
 #
 def _make_url_refs_opaque(json):
     if isinstance(json, dict):
-        for key in json:
+        keys = list(json.keys())
+        for key in keys:
             if key == '$ref' and isinstance(json[key], six.string_types)\
               and json[key].startswith('https://delphix.com/platform/api#'):
                 json.pop(key)
@@ -182,8 +184,7 @@ def _execute_swagger_codegen(swagger_file, output_dir):
             output_dir
         ]
 
-        logger.info('Running process with arguments: {!r}'.format(
-            ' '.join(process_inputs)))
+        logger.info(f"Running process with arguments: \'{' '.join(process_inputs)}\'")
         process = subprocess.Popen(process_inputs,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
@@ -192,12 +193,13 @@ def _execute_swagger_codegen(swagger_file, output_dir):
             raise exceptions.UserError('Swagger python code generation failed.'
                                        ' Make sure java is on the PATH.')
         raise exceptions.UserError(
-            'Unable to run {!r} to generate python code.'
-            '\nError code: {}. Error message: {}'.format(
-                jar, err.errno, os.strerror(err.errno)))
+            f"Unable to run '{jar}' to generate python code."
+            f"\nError code: {err.errno}. Error message: {os.strerror(err.errno)}")
 
     # Get the pipes pointed so we have access to them.
     stdout, stderr = process.communicate()
+    stdout = to_str(stdout)
+    stderr = to_str(stderr)
 
     #
     # Wait for the process to end and take the results. If res then we know

@@ -1,9 +1,10 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import pytest
-from dlpx.virtualization.common._common_classes import RemoteUser, RemoteHost, RemoteEnvironment, RemoteConnection
+from dlpx.virtualization.common._common_classes import (
+    RemoteUser, RemoteHost, RemoteEnvironment, RemoteConnection)
 
 
 @pytest.fixture

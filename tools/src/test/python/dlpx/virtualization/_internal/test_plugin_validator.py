@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -24,8 +24,8 @@ class TestPluginValidator:
 
         message = err_info.value.message
         assert ('Failed to load schemas because {} is not a valid json file.'
-                ' Error: Extra data: line 2 column 1 - line 2 column 9'
-                ' (char 19 - 27)'.format(schema_file)) in message
+                ' Error: Extra data: line 2 column 1 (char 19)'
+                .format(schema_file)) in message
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file', ['/dir/plugin_config.yml'])

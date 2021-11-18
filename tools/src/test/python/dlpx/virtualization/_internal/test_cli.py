@@ -1,8 +1,9 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import os
+import re
 
 import click.testing as click_testing
 import yaml
@@ -172,7 +173,7 @@ class TestInitCli:
             ['init', '-n', plugin_name, '-s', ''])
 
         assert result.exit_code != 0
-        assert "invalid choice" in result.output
+        assert "Invalid value" in result.output
 
     @staticmethod
     def test_non_existent_root_dir(plugin_name):
@@ -214,7 +215,7 @@ class TestInitCli:
         ])
 
         assert result.exit_code != 0
-        assert "invalid choice" in result.output
+        assert "Invalid value" in result.output
 
     @staticmethod
     @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
@@ -235,7 +236,7 @@ class TestInitCli:
         result = runner.invoke(cli.delphix_sdk, ['init', '-t', 'UNI'])
 
         assert result.exit_code != 0
-        assert "invalid choice" in result.output
+        assert "Invalid value" in result.output
 
 
 class TestBuildCli:
@@ -576,12 +577,10 @@ class TestUploadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 2
-        assert result.output == (u'Usage: delphix-sdk upload [OPTIONS]\n'
-                                 u'\n'
-                                 u'Error: Invalid value for \'-e\' / '
-                                 u'\'--engine\': Option is required '
-                                 u'and must be specified via the command line.'
-                                 u'\n')
+        output = result.output.replace("\n", "")
+        pattern = re.compile(
+            r"Usage: delphix-sdk upload \[OPTIONS\].*Error: Invalid value for '-e.*")
+        assert re.match(pattern, output) is not None
 
 
 class TestDownloadCli:
@@ -640,13 +639,11 @@ class TestDownloadCli:
         ])
 
         assert result.exit_code == 2
-        assert result.output == (
-            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
-            u"\n"
-            u"Error: Invalid value for '-e' / "
-            u"'--engine': Option is required "
-            u"and must be specified via the command line."
-            u"\n")
+        output = result.output.replace("\n", "")
+        pattern = re.compile(
+            r"Usage: delphix-sdk download-logs \[OPTIONS\].*"
+            r"Error: Invalid value for '-e.*")
+        assert re.match(pattern, output) is not None
 
     @staticmethod
     @mock.patch(
@@ -789,10 +786,9 @@ class TestDownloadCli:
             os.chdir(cwd)
 
         assert result.exit_code == 2
-        assert result.output == (
-            u"Usage: delphix-sdk download-logs [OPTIONS]\n"
-            u"\n"
-            u"Error: Invalid value for '-e' / "
-            u"'--engine': Option is required "
-            u"and must be specified via the command line."
-            u"\n")
+
+        output = result.output.replace("\n", "")
+        pattern = re.compile(
+            r"Usage: delphix-sdk download-logs \[OPTIONS\].*"
+            r"Error: Invalid value for '-e.*")
+        assert re.match(pattern, output) is not None

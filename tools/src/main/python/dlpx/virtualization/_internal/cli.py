@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import logging
@@ -45,8 +45,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
 # adding it to CONTEXT_SETTINGS to avoid any side-effects on other commands.
 #
 CONTEXT_SETTINGS_INIT = dict(help_option_names=['-h', '--help'],
-                             obj=click_util.ConfigFileProcessor.read_config(),
-                             token_normalize_func=lambda x: x.encode("ascii"))
+                             obj=click_util.ConfigFileProcessor.read_config())
 
 DVP_CONFIG_MAP = CONTEXT_SETTINGS['obj']
 
@@ -96,11 +95,11 @@ def delphix_sdk(verbose, quiet):
     # will be printed to the console until this is executed.
     #
     logging_util.add_console_handler(console_logging_level)
-
-    if sys.version_info[:2] != (2, 7):
+    if sys.version_info[:2] != (3, 8):
         raise exceptions.UserError(
             'Python version check failed.'
-            'Supported version is 2.7.x, found {}'.format(sys.version_info))
+            'Supported versions are 2.7.x and 3.8.x, found {}'
+            .format(sys.version_info))
 
 
 @delphix_sdk.command(context_settings=CONTEXT_SETTINGS_INIT)
