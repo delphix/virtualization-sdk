@@ -12,9 +12,10 @@ The platform and libs modules expose objects and methods needed to develop a plu
 ## Requirements
 
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
-- Python 2.7 (Python 3 is not supported)
+- Python 2.7 (vSDK 3.1.0 and earlier)
+- Python 3.8 (vSDK 4.0.0 and later)
 - Java 7+
-- Delphix Engine 6.0.7.0 or above
+- A Delphix Engine of an [appropriate version](/References/Version_Compatibility.md)
 
 ## Installation
 To install the latest version of the SDK run:
@@ -26,9 +27,13 @@ $ pip install dvp
 !!! tip "Use a Virtual Environment"
 	 We highly recommended that you develop plugins inside of a virtual environment. To learn more about virtual environments, refer to [Virtualenv's documentation](https://virtualenv.pypa.io/en/latest/).
 
-	 The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:
+     If using vSDK 3.1.0 or earlier, the virtual environment needs to use Python 2.7.
 
-	 ```$ virtualenv -p /path/to/python2.7/binary ENV```
+     If using vSDK 4.0.0 or earlier, the virtual environment needs to use Python 3.8.
+
+	 This is configured when creating the virtualenv:
+
+	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV```
 
 To install a specific version of the SDK run:
 
