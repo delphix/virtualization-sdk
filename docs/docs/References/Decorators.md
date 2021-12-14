@@ -13,7 +13,7 @@ plugin = Plugin()
 # Use the decorator to annotate the function that corresponds to the "Virtual Source Start" Plugin Operation
 @plugin.virtual_source.start()
 def my_start(virtual_source, repository, source_config):
-  print "running start"
+  print("running start")
 ```
 
 !!! info

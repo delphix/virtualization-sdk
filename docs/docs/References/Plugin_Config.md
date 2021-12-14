@@ -17,7 +17,7 @@ The name of the file can be specified during the build. By default, the build lo
 |entryPoint|Y|string|A fully qualified Python symbol that points to the `dlpx.virtualization.platform.Plugin` object that defines the plugin.<br><br>It must be in the form `importable.module:object_name` where `importable.module` is in `srcDir`.|
 |manualDiscovery|N|boolean|True if the plugin supports manual discovery of source config objects. The default value is `true`.|
 |pluginType|Y|enum|The ingestion strategy of the plugin. Can be either `STAGED` or `DIRECT`.|
-|language|Y|enum|Must be `PYTHON27`.|
+|language|Y|enum|Must be `PYTHON38`.|
 |defaultLocale|N|enum|The locale to be used by the plugin if the Delphix user does not specify one. Plugin messages will be displayed in this locale by default. The default value is `en-us`.|
 |rootSquashEnabled|N|boolean|This dictates whether "root squash" is enabled on NFS mounts for the plugin (i.e. whether the `root` user on remote hosts has access to the NFS mounts). Setting this to `false` allows processes usually run as `root`, like Docker daemons, access to the NFS mounts. The default value is `true`. This field only applies to Unix hosts.|
 |extendedStartStopHooks|N|boolean|This controls whether the user's pre-start and post-start hooks will run during enable operations (and, likewise, whether pre-stop and post-stop hooks will run during disable operations). The default value is `false`.|
@@ -46,14 +46,13 @@ This is a valid plugin config for the plugin:
 ```yaml
 id: 7cf830f2-82f3-4d5d-a63c-7bbe50c22b32
 name: MongoDB
-version: 2.0.0
 hostTypes:
   - UNIX
 entryPoint: mongo_runner:mongodb
 srcDir: src/
 schemaFile: schema.json
 pluginType: DIRECT
-language: PYTHON27
+language: PYTHON38
 buildNumber: 0.1.0
 ```
 This is a valid plugin config for the plugin with `manualDiscovery` set to `false` and an `externalVersion` set:
@@ -68,7 +67,7 @@ srcDir: src/
 schemaFile: schema.json
 manualDiscovery: false
 pluginType: DIRECT
-language: PYTHON27
+language: PYTHON38
 externalVersion: "MongoDB 1.0"
 buildNumber: "1"
 ```
