@@ -70,7 +70,7 @@ We have two goals: Provide the best documentation we can for our customers, and 
 
 1. Learn Markdown or use a really good IDE. It's easy to use, but there are complex topics like tables, admonishments, links, and images that you may need some practice with. Look at the other docs in the repo for inspiration and tutelage.
 2. Test everything in mkdocs locally. Best practice is to always have mkdocs running in one terminal tab. It auto-refreshes when you make changes, so you can make sure that nothing breaks, and that your content looks good.
-3. Do not create new directories (nav categories) in /docs without working with Jaspal Sumal (jaspal.sumal@delphix.com)
+3. Do not create new directories (nav categories) in /docs without working with Ryan Fowler (ryan.fowler@delphix.com)
 4. Place all screenshots in the local media/ directory of the category you're editing in. For example, if you're editing a page in docs/Getting_Started, put any screenshots you're going to use in docs/Getting_Started/media
 5. Use relative links to reference screenshots (./media/image.png) and other pages (../Getting_Started/pagename/)
 6. Beware the .pages file. .pages is a hidden file in every folder that provides page order. Any pages not listed in .pages will be alphabetically ordered _after_ the pages that have been listed. If you have a typo in this file or specify a renamed/deleted page, it will break mkdocs.
@@ -84,16 +84,16 @@ We have two goals: Provide the best documentation we can for our customers, and 
 
 1. The diff can usually provide what you need for reviewing changes. However, use mkdocs to review locally whenever possible to ensure good formatting and no breaks to mkdocs.
 2. For minor corrections, leave a general comment on the review and vote to ship it so the author can fix it and push.
-3. For major docs projects (e.g. whole new sections of docs or large batches of changes), coordinate with Jas. It is possible we'd be better off using another approach to review (e.g. track notes via Google Sheets)
-4. If you're a reviewer that is not hooked into reviewboard, and unable to get set up to use it, work with Jas on an alternative approach (e.g. track notes via Google Sheets)
+3. For major docs projects (e.g. whole new sections of docs or large batches of changes), coordinate with Ryan. It is possible we'd be better off using another approach to review (e.g. track notes via Google Sheets)
+4. If you're a reviewer that is not hooked into reviewboard, and unable to get set up to use it, work with Ryan on an alternative approach (e.g. track notes via Google Sheets)
 5. If there are issues in production docs, the current procedure is to post the issue in the #docs channel.
 
 ## Publishing
 
 Publishing is currently a manual process that will be automated into the release process at a future point in time. The publishing workflow follows these steps:
 
-1. After the git repo is frozen, Jas begins review and adjustments.
-2. If there are technical questions or issues, Jas will take back to engineering for review.
+1. After the git repo is frozen, Ryan begins review and adjustments.
+2. If there are technical questions or issues, Ryan will take back to engineering for review.
 3. The publish process will run. This process will:
   * Pull the appropriate branch to a build machine
   * Run "mkdocs build clean" to compile documentation to HTML

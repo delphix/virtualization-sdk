@@ -1,14 +1,17 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
+import compileall
 import logging
 import os
+import py_compile
 import subprocess
 import sys
 
 from dlpx.virtualization._internal import file_util, package_util
 from dlpx.virtualization._internal.exceptions import SubprocessFailedError
+from dlpx.virtualization.common.util import to_str
 
 logger = logging.getLogger(__name__)
 
@@ -110,12 +113,12 @@ def _execute_pip(pip_args):
     """
     args = [sys.executable, '-m', 'pip']
     args.extend(pip_args)
-
     logger.debug('Executing %s', ' '.join(args))
     proc = subprocess.Popen(args,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     all_output, _ = proc.communicate()
+    all_output = to_str(all_output)
     exit_code = proc.wait()
 
     #
@@ -168,9 +171,29 @@ def _build_wheel(package_root, target_dir=None):
                             cwd=package_root)
 
     all_output, _ = proc.communicate()
+    all_output = to_str(all_output)
     exit_code = proc.wait()
 
     if exit_code != 0:
         raise SubprocessFailedError(' '.join(args), exit_code, all_output)
     else:
         logger.debug(all_output)
+
+
+def compile_py_files(dpath):
+    """
+    Compiles the python files in the given directory, generating the pyc files in the
+    same directory.
+    """
+    compileall.compile_dir(dpath, force=True, quiet=1, legacy=True, ddir=".")
+
+
+def compile_py_file(fpath: str):
+    """
+    Compiles the python file at the given path, generating the pyc file in the
+    same directory.
+
+    :param fpath:
+    :return:
+    """
+    py_compile.compile(fpath, cfile=f"{fpath}c")

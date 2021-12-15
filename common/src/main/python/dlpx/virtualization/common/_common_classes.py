@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 from abc import ABCMeta
@@ -134,7 +134,9 @@ class RemoteEnvironment(object):
         return self.__reference
 
     def to_proto(self):
-        """Converts plugin class RemoteEnvironment to protobuf class common_pb2.RemoteEnvironment
+        """
+        Converts plugin class RemoteEnvironment to protobuf
+        class common_pb2.RemoteEnvironment
         """
         remote_environment = common_pb2.RemoteEnvironment()
         remote_environment.name = self.name
@@ -144,7 +146,9 @@ class RemoteEnvironment(object):
 
     @staticmethod
     def from_proto(environment):
-        """Converts protobuf class common_pb2.RemoteEnvironment to plugin class RemoteEnvironment
+        """
+        Converts protobuf class common_pb2.RemoteEnvironment to plugin
+        class RemoteEnvironment
         """
         if not isinstance(environment, common_pb2.RemoteEnvironment):
             raise IncorrectTypeError(
@@ -353,7 +357,9 @@ class PasswordCredentials(Credentials):
 
     @staticmethod
     def from_proto(credentials_result):
-        """Converts protobuf class libs_pb2.CredentialsResult to plugin class PasswordCredentials
+        """
+        Converts protobuf class libs_pb2.CredentialsResult to plugin
+        class PasswordCredentials
         """
         if not isinstance(credentials_result, libs_pb2.CredentialsResult):
             raise IncorrectTypeError(
@@ -375,7 +381,8 @@ class KeyPairCredentials(Credentials):
     Args:
         username (str): User name.
         private_key (str): Private key.
-        public_key (str): Public key corresponding to private key. Empty string if not present.
+        public_key (str): Public key corresponding to private key. Empty string if
+            not present.
     """
     def __init__(self, username, private_key, public_key):
         super(KeyPairCredentials, self).__init__(username)

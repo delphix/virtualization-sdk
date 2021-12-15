@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -7,6 +7,7 @@ import os
 
 import requests
 from dlpx.virtualization._internal import delphix_client, exceptions
+from dlpx.virtualization.common.util import to_str
 
 import httpretty
 import mock
@@ -403,11 +404,11 @@ class TestDelphixClient:
 
         assert err_info.value.status_code == 404
         assert err_info.value.response == (
-            '{\n  "status": "UNKNOWN", \n  "blob": "Unknown"\n}')
+            '{\n  "blob": "Unknown",\n  "status": "UNKNOWN"\n}')
+
         assert err_info.value.message == (
             'Received an unexpected error with HTTP Status 404,\nDumping full'
-            ' response:\n{\n  "status": "UNKNOWN", \n  "blob": "Unknown"\n}')
-
+            ' response:\n{\n  "blob": "Unknown",\n  "status": "UNKNOWN"\n}')
         history = httpretty.HTTPretty.latest_requests
         assert history[-1].path == u'/resources/json/delphix/session'
 
@@ -471,17 +472,18 @@ class TestDelphixClient:
 
         message = err_info.value.message
         assert err_info.value.status_code == 401
-        assert message == ('API request failed with HTTP Status 401'
-                           '\nUnable to parse details of error.'
-                           ' Dumping full response: {'
-                           '\n  "commandOutput": null, '
-                           '\n  "diagnoses": [], '
-                           '\n  "type": "APIError", '
-                           '\n  "id": "exception.webservices.login.failed", '
-                           '\n  "error": "Not a real error: Invalid username'
-                           ' or password. Try with a different set of'
-                           ' credentials."'
-                           '\n}')
+        expected_message = ('API request failed with HTTP Status 401'
+                            '\nUnable to parse details of error.'
+                            ' Dumping full response: {'
+                            '\n  "type": "APIError",'
+                            '\n  "error": "Not a real error: Invalid username'
+                            ' or password. Try with a different set of'
+                            ' credentials.",'
+                            '\n  "id": "exception.webservices.login.failed",'
+                            '\n  "commandOutput": null,'
+                            '\n  "diagnoses": []'
+                            '\n}')
+        assert message == expected_message
 
         history = httpretty.HTTPretty.latest_requests
         assert history[-1].path == u'/resources/json/delphix/login'
@@ -726,10 +728,12 @@ class TestDelphixClient:
         dc.download_plugin_logs(src_dir, plugin_config_file)
 
         history = httpretty.HTTPretty.latest_requests
-        assert (history[-1].path ==
+        to_str(history[-1].__dict__)
+
+        assert (to_str(history[-1].path) ==
                 u'/resources/json/delphix/data/downloadOutputStream'
                 u'?token=5d6d5bb8-0f71-4304-8922-49c4c95c2387')
-        assert history[-2].path == (
+        assert to_str(history[-2].path) == (
             u'/resources/json/delphix/service/support/bundle/generate')
         assert history[-3].path == u'/resources/json/delphix/toolkit'
         assert history[-4].path == u'/resources/json/delphix/login'
@@ -760,14 +764,15 @@ class TestEngineApi:
             delphix_client.DelphixClient.get_engine_api(artifact_content)
 
         message = err_info.value.message
-        assert message == (
+        expected_message = (
             'The engineApi field is either missing or malformed.'
             ' The field must be of the form:'
             '\n{'
             '\n  "type": "APIVersion",'
-            ' \n  "major": 1,'
-            ' \n  "minor": 7,'
-            ' \n  "micro": 0'
+            '\n  "major": 1,'
+            '\n  "minor": 7,'
+            '\n  "micro": 0'
             '\n}'
             '\nVerify that the artifact passed in was generated'
             ' by the build function.')
+        assert message == expected_message

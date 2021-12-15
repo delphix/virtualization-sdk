@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import copy
@@ -254,8 +254,8 @@ class TestUpgrade:
             output_dict['migrations'].append('lua repo 1.1')
             return output_dict
 
-        @upgrade_type_decorator('1.2', MigrationType.LUA)
-        def repo_upgrade_one(input_dict):
+        @upgrade_type_decorator('1.2', MigrationType.LUA)  # noqa F811
+        def repo_upgrade_one(input_dict):  # noqa F811
             output_dict = copy.deepcopy(input_dict)
             output_dict['migrations'].append('lua repo 1.2')
             return output_dict
@@ -266,14 +266,14 @@ class TestUpgrade:
             output_dict['migrations'].append('platform repo 2020.4.2')
             return output_dict
 
-        @upgrade_type_decorator('2020.4.3')
-        def repo_upgrade_two(input_dict):
+        @upgrade_type_decorator('2020.4.3')  # noqa F811
+        def repo_upgrade_two(input_dict):  # noqa F811
             output_dict = copy.deepcopy(input_dict)
             output_dict['migrations'].append('platform repo 2020.4.3')
             return output_dict
 
-        @upgrade_type_decorator('2020.4.4')
-        def repo_upgrade_two(input_dict):
+        @upgrade_type_decorator('2020.4.4')  # noqa F811
+        def repo_upgrade_two(input_dict):  # noqa F811
             output_dict = copy.deepcopy(input_dict)
             output_dict['migrations'].append('platform repo 2020.4.4')
             return output_dict

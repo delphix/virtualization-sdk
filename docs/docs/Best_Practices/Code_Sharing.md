@@ -2,7 +2,7 @@
 
 All Python modules inside of `srcDir` can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed `srcDir` is the current working directory so all imports need to be relative to `srcDir` regardless of the path of the module doing the import.
 
-Please refer to Python's [documentation on modules](https://docs.python.org/2/tutorial/modules.html#modules) to learn more about modules and imports.  For more information about using others' code inside your plugin, see [Available Modules](/Best_Practices/Runtime_Environment.md#Available_Modules)
+Please refer to Python's [documentation on modules](https://docs.python.org/3.8/tutorial/modules.html#modules) to learn more about modules and imports.
 
 ## Example
 
@@ -30,9 +30,11 @@ postgres
 Any module in the plugin could import `execution_util.py` with `from utils import execution_util`.
 
 !!! warning "Gotcha"
-	Since the platform uses Python 2.7, every directory needs to have an `__init__.py` file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on `__init__.py` files refer to Python's [documentation on packages](https://docs.python.org/2/tutorial/modules.html#packages).
+	When using a vSDK version that was built on Python 2.7, every directory needs to have an `__init__.py` file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on `__init__.py` files refer to Python's [documentation on packages](https://docs.python.org/2/tutorial/modules.html#packages).
 
 	Note that the `srcDir` in the plugin config file (`src` in this example) does _not_ need an `__init__.py` file.
+
+	For information on which vSDK versions run on Python 2.7, visit the [Version Compatibility Page](/References/Version_Compatibility/#virtualization-sdk-and-python-compatibility-map).
 
 Assume `schema.json` contains:
 
@@ -124,14 +126,14 @@ def find_schemas(source_connection, repository):
 `execution_util.py ` has two methods `execute_sql` and `execute_shell`. `execute_sql` takes the name of a SQL script in `resources/` and executes it with `resources/execute_sql.sh`. `execute_shell` takes the name of a shell script in `resources/` and executes it.
 
 ```python
-import pkgutil
+from importlib import resources
 
 from dlpx.virtualization import libs
 
 
 def execute_sql(source_connection, install_name, script_name):
-    psql_script = pkgutil.get_data("resources", "execute_sql.sh")
-    sql_script = pkgutil.get_data("resources", script_name)
+    psql_script = resources.read_text("resources", "execute_sql.sh")
+    sql_script = resources.read_text("resources", script_name)
 
     result = libs.run_bash(
         source_connection, psql_script, variables={"SCRIPT": sql_script}, check=True
@@ -140,11 +142,16 @@ def execute_sql(source_connection, install_name, script_name):
 
 
 def execute_shell(source_connection, script_name):
-    script = pkgutil.get_data("resources", script_name)
+    script = resources.read_text("resources", script_name)
 
     result = libs.run_bash(source_connection, script, check=True)
     return result.stdout
 ```
+
+!!! warning
+    If developing a plugin in Python 2.7, you will need to use `pkgutil.get_data` rather than `importlib.resources.read_text`.
+
+    See [Managing Scripts For Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for more info.
 
 !!! note
 	Both `execute_sql` and `execute_shell` use the `check` parameter which will cause an error to be raised if the exit code is non-zero. For more information refer to the `run_bash` [documentation](/References/Platform_Libraries.md#run_bash).

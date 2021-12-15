@@ -1,16 +1,16 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import mock
 import pytest
+import six
 
 from dlpx.virtualization.api import libs_pb2
 from dlpx.virtualization import libs
 from dlpx.virtualization.libs.exceptions import (
     IncorrectArgumentTypeError, LibraryError, PluginScriptError)
 from google.protobuf import json_format
-from dlpx.virtualization.common._common_classes import (PasswordCredentials)
 
 
 class TestLibsRunBash:
@@ -53,10 +53,10 @@ class TestLibsRunBash:
 
     @staticmethod
     def test_run_bash_check_true_success_exitcode(remote_connection):
-        expected_run_bash_response = libs_pb2.RunBashResponse()
-        expected_run_bash_response.return_value.exit_code = 0
-        expected_run_bash_response.return_value.stdout = "stdout"
-        expected_run_bash_response.return_value.stderr = "stderr"
+        expected_response = libs_pb2.RunBashResponse()
+        expected_response.return_value.exit_code = 0
+        expected_response.return_value.stdout = "stdout"
+        expected_response.return_value.stderr = "stderr"
 
         expected_command = "command"
         expected_variables = None
@@ -73,19 +73,17 @@ class TestLibsRunBash:
                     actual_run_bash_request.remote_connection.environment.reference
                     == remote_connection.environment.reference
             )
-            return expected_run_bash_response
+            return expected_response
 
         with mock.patch("dlpx.virtualization._engine.libs.run_bash",
                         side_effect=mock_run_bash, create=True):
-            actual_run_bash_result = libs.run_bash(remote_connection,
-                                                   expected_command,
-                                                   expected_variables,
-                                                   expected_use_login_shell,
-                                                   check=True)
+            actual_result = libs.run_bash(
+                remote_connection, expected_command, expected_variables,
+                expected_use_login_shell, check=True)
 
-            assert actual_run_bash_result.exit_code == expected_run_bash_response.return_value.exit_code
-            assert actual_run_bash_result.stdout == expected_run_bash_response.return_value.stdout
-            assert actual_run_bash_result.stderr == expected_run_bash_response.return_value.stderr
+            assert actual_result.exit_code == expected_response.return_value.exit_code
+            assert actual_result.stdout == expected_response.return_value.stdout
+            assert actual_result.stderr == expected_response.return_value.stderr
 
     @staticmethod
     def test_run_bash_with_check_true_failed_exitcode(remote_connection):
@@ -143,11 +141,16 @@ class TestLibsRunBash:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(connection, command, variables, use_login_shell)
-
-        assert err_info.value.message == (
-            "The function run_bash's argument 'remote_connection' was"
-            " type 'str' but should be of"
-            " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'remote_connection' was"
+                " type 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'remote_connection' was"
+                " class 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
 
     @staticmethod
     def test_run_bash_bad_command(remote_connection):
@@ -158,10 +161,14 @@ class TestLibsRunBash:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(remote_connection, command, variables, use_login_shell)
-
-        assert err_info.value.message == (
-            "The function run_bash's argument 'command' was"
-            " type 'int' but should be of type 'basestring'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'command' was"
+                " type 'int' but should be of type 'basestring'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'command' was"
+                " class 'int' but should be of class 'str'.")
 
     @staticmethod
     def test_run_bash_variables_not_dict(remote_connection):
@@ -172,11 +179,16 @@ class TestLibsRunBash:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(remote_connection, command, variables, use_login_shell)
-
-        assert err_info.value.message == (
-            "The function run_bash's argument 'variables' was"
-            " type 'str' but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'variables' was"
+                " type 'unicode' but should be of"
+                " type 'dict of basestring:basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'variables' was"
+                " class 'str' but should be of"
+                " type 'dict of str:str' if defined.")
 
     @staticmethod
     def test_run_bash_bad_variables(remote_connection):
@@ -190,13 +202,20 @@ class TestLibsRunBash:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(remote_connection, command, variables, use_login_shell)
-
-        message = ("The function run_bash's argument 'variables' was"
-                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
-                   " but should be of"
-                   " type 'dict of basestring:basestring' if defined.")
-        assert (err_info.value.message == message.format('int', 'str') or
-                err_info.value.message == message.format('str', 'int'))
+        if six.PY2:
+            message = ("The function run_bash's argument 'variables' was"
+                       " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                       " but should be of"
+                       " type 'dict of basestring:basestring' if defined.")
+            assert (err_info.value.message == message.format('int', 'unicode') or
+                    err_info.value.message == message.format('unicode', 'int'))
+        else:
+            message = ("The function run_bash's argument 'variables' was"
+                       " a dict of {{class 'str':class '{}', class 'str':class '{}'}}"
+                       " but should be of"
+                       " type 'dict of str:str' if defined.")
+            assert (err_info.value.message == message.format('int', 'str') or
+                    err_info.value.message == message.format('str', 'int'))
 
     @staticmethod
     def test_run_bash_bad_use_login_shell(remote_connection):
@@ -207,10 +226,14 @@ class TestLibsRunBash:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_bash(remote_connection, command, variables, use_login_shell)
-
-        assert err_info.value.message == (
-            "The function run_bash's argument 'use_login_shell' was"
-            " type 'str' but should be of type 'bool' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'use_login_shell' was"
+                " type 'str' but should be of type 'bool' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_bash's argument 'use_login_shell' was"
+                " class 'str' but should be of class 'bool' if defined.")
 
 
 class TestLibsRunSync:
@@ -296,11 +319,16 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'remote_connection' was"
-            " type 'str' but should be of"
-            " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'remote_connection' was"
+                " type 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'remote_connection' was"
+                " class 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
 
     @staticmethod
     def test_run_sync_bad_source_directory(remote_connection):
@@ -317,10 +345,14 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'source_directory' was"
-            " type 'int' but should be of type 'basestring'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'source_directory' was"
+                " type 'int' but should be of type 'basestring'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'source_directory' was"
+                " class 'int' but should be of class 'str'.")
 
     @staticmethod
     def test_run_sync_bad_rsync_user(remote_connection):
@@ -337,10 +369,14 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'rsync_user' was"
-            " type 'int' but should be of type 'basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'rsync_user' was"
+                " type 'int' but should be of type 'basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'rsync_user' was"
+                " class 'int' but should be of class 'str' if defined.")
 
     @staticmethod
     def test_run_sync_exclude_paths_not_list(remote_connection):
@@ -357,11 +393,16 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'exclude_paths' was"
-            " type 'str' but should be of"
-            " type 'list of basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'exclude_paths' was"
+                " type 'unicode' but should be of"
+                " type 'list of basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'exclude_paths' was"
+                " class 'str' but should be of"
+                " type 'list of str' if defined.")
 
     @staticmethod
     def test_run_sync_bad_exclude_paths(remote_connection):
@@ -378,11 +419,16 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'exclude_paths' was a list of"
-            " [type 'str', type 'int'] but should be of"
-            " type 'list of basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'exclude_paths' was a list of"
+                " [type 'unicode', type 'int'] but should be of"
+                " type 'list of basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'exclude_paths' was a list of"
+                " [class 'str', class 'int'] but should be of"
+                " type 'list of str' if defined.")
 
     @staticmethod
     def test_run_sync_sym_links_to_follow_not_list(remote_connection):
@@ -399,11 +445,16 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'sym_links_to_follow' was"
-            " type 'str' but should be of"
-            " type 'list of basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'sym_links_to_follow' was"
+                " type 'unicode' but should be of"
+                " type 'list of basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'sym_links_to_follow' was"
+                " class 'str' but should be of"
+                " type 'list of str' if defined.")
 
     @staticmethod
     def test_run_sync_bad_sym_links_to_follow(remote_connection):
@@ -420,11 +471,18 @@ class TestLibsRunSync:
                 rsync_user,
                 exclude_paths,
                 sym_links_to_follow)
-
-        assert err_info.value.message == (
-            "The function run_sync's argument 'sym_links_to_follow' was"
-            " a list of [type 'str', type 'int'] but should be of"
-            " type 'list of basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'sym_links_to_follow' was"
+                " a list of [type 'unicode', type 'int'] but should be of"
+                " type 'list of "
+                "basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_sync's argument 'sym_links_to_follow' was"
+                " a list of [class 'str', class 'int'] but should be of"
+                " type 'list of "
+                "str' if defined.")
 
 
 class TestLibsRunPowershell:
@@ -463,35 +521,35 @@ class TestLibsRunPowershell:
 
     @staticmethod
     def test_run_powershell_check_true_exitcode_success(remote_connection):
-        expected_run_powershell_response = libs_pb2.RunPowerShellResponse()
-        expected_run_powershell_response.return_value.exit_code = 0
-        expected_run_powershell_response.return_value.stdout = "stdout"
-        expected_run_powershell_response.return_value.stderr = "stderr"
+        expected_response = libs_pb2.RunPowerShellResponse()
+        expected_response.return_value.exit_code = 0
+        expected_response.return_value.stdout = "stdout"
+        expected_response.return_value.stderr = "stderr"
 
         expected_command = "command"
         expected_variables = None
 
-        def mock_run_powershell(actual_run_powershell_request):
-            assert actual_run_powershell_request.command == expected_command
+        def mock_run_powershell(actual_request):
+            assert actual_request.command == expected_command
             assert (
-                    actual_run_powershell_request.remote_connection.environment.name
+                    actual_request.remote_connection.environment.name
                     == remote_connection.environment.name
             )
             assert (
-                    actual_run_powershell_request.remote_connection.environment.reference
+                    actual_request.remote_connection.environment.reference
                     == remote_connection.environment.reference
             )
-            return expected_run_powershell_response
+            return expected_response
 
         with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
                         side_effect=mock_run_powershell, create=True):
-            actual_run_powershell_result = libs.run_powershell(
+            actual_result = libs.run_powershell(
                 remote_connection,
                 expected_command, expected_variables, check=True)
 
-            assert actual_run_powershell_result.exit_code == expected_run_powershell_response.return_value.exit_code
-            assert actual_run_powershell_result.stdout == expected_run_powershell_response.return_value.stdout
-            assert actual_run_powershell_result.stderr == expected_run_powershell_response.return_value.stderr
+            assert actual_result.exit_code == expected_response.return_value.exit_code
+            assert actual_result.stdout == expected_response.return_value.stdout
+            assert actual_result.stderr == expected_response.return_value.stderr
 
     @staticmethod
     def test_run_powershell_check_true_exitcode_failed(remote_connection):
@@ -508,8 +566,8 @@ class TestLibsRunPowershell:
         with mock.patch("dlpx.virtualization._engine.libs.run_powershell",
                         return_value=response, create=True):
             with pytest.raises(PluginScriptError) as info:
-                response = libs.run_powershell(remote_connection, "test_command",
-                                               check=True)
+                libs.run_powershell(remote_connection, "test_command",
+                                    check=True)
             assert info.value.message == expected_message
 
     @staticmethod
@@ -549,11 +607,16 @@ class TestLibsRunPowershell:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_powershell(connection, command, variables)
-
-        assert err_info.value.message == (
-            "The function run_powershell's argument 'remote_connection' was"
-            " type 'str' but should be of"
-            " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_powershell's argument 'remote_connection' was"
+                " type 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_powershell's argument 'remote_connection' was"
+                " class 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
 
     @staticmethod
     def test_run_powershell_bad_command(remote_connection):
@@ -563,10 +626,14 @@ class TestLibsRunPowershell:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_powershell(remote_connection, command, variables)
-
-        assert err_info.value.message == (
-            "The function run_powershell's argument 'command' was"
-            " type 'int' but should be of type 'basestring'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_powershell's argument 'command' was"
+                " type 'int' but should be of type 'basestring'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_powershell's argument 'command' was"
+                " class 'int' but should be of class 'str'.")
 
     @staticmethod
     def test_run_powershell_variables_not_dict(remote_connection):
@@ -576,11 +643,16 @@ class TestLibsRunPowershell:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_powershell(remote_connection, command, variables)
-
-        assert err_info.value.message == (
-            "The function run_powershell's argument 'variables' was"
-            " type 'str' but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                    "The function run_powershell's argument 'variables' was"
+                    " type 'unicode' but should be of"
+                    " type 'dict of basestring:basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_powershell's argument 'variables' was"
+                " class 'str' but should be of"
+                " type 'dict of str:str' if defined.")
 
     @staticmethod
     def test_run_powershell_bad_variables(remote_connection):
@@ -593,13 +665,20 @@ class TestLibsRunPowershell:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_powershell(remote_connection, command, variables)
-
-        message = ("The function run_powershell's argument 'variables' was"
-                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
-                   " but should be of"
-                   " type 'dict of basestring:basestring' if defined.")
-        assert (err_info.value.message == message.format('int', 'str') or
-                err_info.value.message == message.format('str', 'int'))
+        if six.PY2:
+            message = ("The function run_powershell's argument 'variables' was"
+                       " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                       " but should be of"
+                       " type 'dict of basestring:basestring' if defined.")
+            assert (err_info.value.message == message.format('int', 'unicode') or
+                    err_info.value.message == message.format('unicode', 'int'))
+        else:
+            message = ("The function run_powershell's argument 'variables' was"
+                       " a dict of {{class 'str':class '{}', class 'str':class '{}'}}"
+                       " but should be of"
+                       " type 'dict of str:str' if defined.")
+            assert (err_info.value.message == message.format('int', 'str') or
+                    err_info.value.message == message.format('str', 'int'))
 
 
 class TestLibsRunExpect:
@@ -638,10 +717,10 @@ class TestLibsRunExpect:
 
     @staticmethod
     def test_run_expect_check_true_exitcode_success(remote_connection):
-        expected_run_expect_response = libs_pb2.RunPowerShellResponse()
-        expected_run_expect_response.return_value.exit_code = 0
-        expected_run_expect_response.return_value.stdout = "stdout"
-        expected_run_expect_response.return_value.stderr = "stderr"
+        expected_response = libs_pb2.RunPowerShellResponse()
+        expected_response.return_value.exit_code = 0
+        expected_response.return_value.stdout = "stdout"
+        expected_response.return_value.stderr = "stderr"
 
         expected_command = "command"
         expected_variables = None
@@ -656,17 +735,17 @@ class TestLibsRunExpect:
                     actual_run_expect_request.remote_connection.environment.reference
                     == remote_connection.environment.reference
             )
-            return expected_run_expect_response
+            return expected_response
 
         with mock.patch("dlpx.virtualization._engine.libs.run_expect",
                         side_effect=mock_run_expect, create=True):
-            actual_run_expect_result = libs.run_expect(
+            actual_result = libs.run_expect(
                 remote_connection,
                 expected_command, expected_variables, check=True)
 
-            assert actual_run_expect_result.exit_code == expected_run_expect_response.return_value.exit_code
-            assert actual_run_expect_result.stdout == expected_run_expect_response.return_value.stdout
-            assert actual_run_expect_result.stderr == expected_run_expect_response.return_value.stderr
+            assert actual_result.exit_code == expected_response.return_value.exit_code
+            assert actual_result.stdout == expected_response.return_value.stdout
+            assert actual_result.stderr == expected_response.return_value.stderr
 
     @staticmethod
     def test_run_expect_check_true_exitcode_failed(remote_connection):
@@ -683,8 +762,7 @@ class TestLibsRunExpect:
         with mock.patch("dlpx.virtualization._engine.libs.run_expect",
                         return_value=response, create=True):
             with pytest.raises(PluginScriptError) as info:
-                response = libs.run_expect(remote_connection, "test_command",
-                                           check=True)
+                libs.run_expect(remote_connection, "test_command", check=True)
             assert info.value.message == expected_message
 
     @staticmethod
@@ -724,11 +802,16 @@ class TestLibsRunExpect:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_expect(connection, command, variables)
-
-        assert err_info.value.message == (
-            "The function run_expect's argument 'remote_connection' was"
-            " type 'str' but should be of"
-            " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'remote_connection' was"
+                " type 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'remote_connection' was"
+                " class 'str' but should be of"
+                " class 'dlpx.virtualization.common._common_classes.RemoteConnection'.")
 
     @staticmethod
     def test_run_expect_bad_command(remote_connection):
@@ -739,9 +822,14 @@ class TestLibsRunExpect:
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_expect(remote_connection, command, variables)
 
-        assert err_info.value.message == (
-            "The function run_expect's argument 'command' was"
-            " type 'int' but should be of type 'basestring'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'command' was"
+                " type 'int' but should be of type 'basestring'.")
+        else:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'command' was"
+                " class 'int' but should be of class 'str'.")
 
     @staticmethod
     def test_run_expect_variables_not_dict(remote_connection):
@@ -751,11 +839,16 @@ class TestLibsRunExpect:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_expect(remote_connection, command, variables)
-
-        assert err_info.value.message == (
-            "The function run_expect's argument 'variables' was"
-            " type 'str' but should be of"
-            " type 'dict of basestring:basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'variables' was"
+                " type 'unicode' but should be of"
+                " type 'dict of basestring:basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function run_expect's argument 'variables' was"
+                " class 'str' but should be of"
+                " type 'dict of str:str' if defined.")
 
     @staticmethod
     def test_run_expect_bad_variables(remote_connection):
@@ -769,60 +862,72 @@ class TestLibsRunExpect:
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.run_expect(remote_connection, command, variables)
 
-        message = ("The function run_expect's argument 'variables' was"
-                   " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
-                   " but should be of"
-                   " type 'dict of basestring:basestring' if defined.")
-        assert (err_info.value.message == message.format('int', 'str') or
-                err_info.value.message == message.format('str', 'int'))
+        if six.PY2:
+            message = ("The function run_expect's argument 'variables' was"
+                       " a dict of {{type 'str':type '{}', type 'str':type '{}'}}"
+                       " but should be of"
+                       " type 'dict of basestring:basestring' if defined.")
+            assert (err_info.value.message == message.format('int', 'unicode') or
+                    err_info.value.message == message.format('unicode', 'int'))
+        else:
+            message = ("The function run_expect's argument 'variables' was"
+                       " a dict of {{class 'str':class '{}', class 'str':class '{}'}}"
+                       " but should be of"
+                       " type 'dict of str:str' if defined.")
+            assert (err_info.value.message == message.format('int', 'str') or
+                    err_info.value.message == message.format('str', 'int'))
 
 
 class TestLibsRetrieveCredentials:
     @staticmethod
     def test_retrieve_password_credentials():
-        expected_retrieve_credentials_response = libs_pb2.CredentialsResponse()
-        expected_retrieve_credentials_response.return_value.username = 'some user'
-        expected_retrieve_credentials_response.return_value.password = 'some password'
+        expected_response = libs_pb2.CredentialsResponse()
+        expected_response.return_value.username = 'some user'
+        expected_response.return_value.password = 'some password'
 
-        expected_credentials_supplier = {'some supplier property': 'some supplier value'}
+        expected_credentials_supplier = {
+            'some supplier property': 'some supplier value'}
 
         def mock_retrieve_credentials(actual_retrieve_credentials_request):
-            assert json_format.MessageToDict(actual_retrieve_credentials_request.credentials_supplier) == \
-                   expected_credentials_supplier
+            assert json_format.MessageToDict(
+                actual_retrieve_credentials_request.credentials_supplier
+            ) == expected_credentials_supplier
 
-            return expected_retrieve_credentials_response
+            return expected_response
 
         with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
                         side_effect=mock_retrieve_credentials, create=True):
-            actual_retrieve_credentials_result = libs.retrieve_credentials(expected_credentials_supplier)
+            actual_result = libs.retrieve_credentials(expected_credentials_supplier)
 
-        expected = expected_retrieve_credentials_response.return_value
-        assert actual_retrieve_credentials_result.username == expected.username
-        assert actual_retrieve_credentials_result.password == expected.password
+        expected = expected_response.return_value
+        assert actual_result.username == expected.username
+        assert actual_result.password == expected.password
 
     @staticmethod
     def test_retrieve_keypair_credentials():
-        expected_retrieve_credentials_response = libs_pb2.CredentialsResponse()
-        expected_retrieve_credentials_response.return_value.username = 'some user'
-        expected_retrieve_credentials_response.return_value.key_pair.private_key = 'some private key'
-        expected_retrieve_credentials_response.return_value.key_pair.public_key = 'some public key'
+        expected_response = libs_pb2.CredentialsResponse()
+        expected_response.return_value.username = 'some user'
+        expected_response.return_value.key_pair.private_key = 'some private key'
+        expected_response.return_value.key_pair.public_key = 'some public key'
 
-        expected_credentials_supplier = {'some supplier property': 'some supplier value'}
+        expected_credentials_supplier = {
+            'some supplier property': 'some supplier value'}
 
         def mock_retrieve_credentials(actual_retrieve_credentials_request):
-            assert json_format.MessageToDict(actual_retrieve_credentials_request.credentials_supplier) == \
-                   expected_credentials_supplier
+            assert json_format.MessageToDict(
+                actual_retrieve_credentials_request.credentials_supplier
+            ) == expected_credentials_supplier
 
-            return expected_retrieve_credentials_response
+            return expected_response
 
         with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
                         side_effect=mock_retrieve_credentials, create=True):
-            actual_retrieve_credentials_result = libs.retrieve_credentials(expected_credentials_supplier)
+            actual_result = libs.retrieve_credentials(expected_credentials_supplier)
 
-        expected = expected_retrieve_credentials_response.return_value
-        assert actual_retrieve_credentials_result.username == expected.username
-        assert actual_retrieve_credentials_result.private_key == expected.key_pair.private_key
-        assert actual_retrieve_credentials_result.public_key == expected.key_pair.public_key
+        expected = expected_response.return_value
+        assert actual_result.username == expected.username
+        assert actual_result.private_key == expected.key_pair.private_key
+        assert actual_result.public_key == expected.key_pair.public_key
 
     @staticmethod
     def test_retrieve_credentials_with_actionable_error():
@@ -836,7 +941,8 @@ class TestLibsRetrieveCredentials:
         with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
                         return_value=response, create=True):
             with pytest.raises(LibraryError) as err_info:
-                libs.retrieve_credentials({'some supplier property': 'some supplier value'})
+                libs.retrieve_credentials(
+                    {'some supplier property': 'some supplier value'})
 
         assert err_info.value._id == expected_id
         assert err_info.value.message == expected_message
@@ -850,7 +956,8 @@ class TestLibsRetrieveCredentials:
         with mock.patch('dlpx.virtualization._engine.libs.retrieve_credentials',
                         return_value=response, create=True):
             with pytest.raises(SystemExit):
-                libs.retrieve_credentials({'some supplier property': 'some supplier value'})
+                libs.retrieve_credentials(
+                    {'some supplier property': 'some supplier value'})
 
     @staticmethod
     def test_retrieve_credentials_bad_supplier():
@@ -859,10 +966,14 @@ class TestLibsRetrieveCredentials:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.retrieve_credentials(credentials_supplier)
-
-        assert err_info.value.message == (
-            "The function retrieve_credentials's argument 'credentials_supplier' was"
-            " type 'int' but should be of type 'dict'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function retrieve_credentials's argument 'credentials_supplier' "
+                "was type 'int' but should be of type 'dict'.")
+        else:
+            assert err_info.value.message == (
+                "The function retrieve_credentials's argument 'credentials_supplier' "
+                "was class 'int' but should be of class 'dict'.")
 
 
 class TestLibsUpgradePassword:
@@ -870,9 +981,11 @@ class TestLibsUpgradePassword:
     def test_upgrade_password():
         expected_password = 'some password'
 
-        expected_credentials_supplier = {'type': 'NamedPasswordCredential', 'password': expected_password}
+        expected_credentials_supplier = {
+            'type': 'NamedPasswordCredential', 'password': expected_password}
         expected_upgrade_password_response = libs_pb2.UpgradePasswordResponse()
-        expected_upgrade_password_response.return_value.credentials_supplier.update(expected_credentials_supplier)
+        expected_upgrade_password_response.return_value.credentials_supplier.update(
+            expected_credentials_supplier)
 
         def mock_upgrade_password(actual_upgrade_password_request):
             assert actual_upgrade_password_request.password == expected_password
@@ -890,9 +1003,12 @@ class TestLibsUpgradePassword:
         expected_password = 'some password'
         expected_username = 'some user name'
 
-        expected_credentials_supplier = {'type': 'NamedPasswordCredential', 'password': expected_password, 'username': expected_username}
+        expected_credentials_supplier = {
+            'type': 'NamedPasswordCredential', 'password': expected_password,
+            'username': expected_username}
         expected_upgrade_password_response = libs_pb2.UpgradePasswordResponse()
-        expected_upgrade_password_response.return_value.credentials_supplier.update(expected_credentials_supplier)
+        expected_upgrade_password_response.return_value.credentials_supplier.update(
+            expected_credentials_supplier)
 
         def mock_upgrade_password(actual_upgrade_password_request):
             assert actual_upgrade_password_request.password == expected_password
@@ -902,7 +1018,8 @@ class TestLibsUpgradePassword:
 
         with mock.patch('dlpx.virtualization._engine.libs.upgrade_password',
                         side_effect=mock_upgrade_password, create=True):
-            actual_upgrade_password_result = libs.upgrade_password(expected_password, username=expected_username)
+            actual_upgrade_password_result = libs.upgrade_password(
+                expected_password, username=expected_username)
 
         assert actual_upgrade_password_result == expected_credentials_supplier
 
@@ -913,10 +1030,14 @@ class TestLibsUpgradePassword:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.upgrade_password(expected_password, username=expected_username)
-
-        assert err_info.value.message == (
-            "The function upgrade_password's argument 'password' was"
-            " type 'int' but should be of type 'basestring'.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function upgrade_password's argument 'password' was"
+                " type 'int' but should be of type 'basestring'.")
+        else:
+            assert err_info.value.message == (
+                "The function upgrade_password's argument 'password' was"
+                " class 'int' but should be of class 'str'.")
 
     @staticmethod
     def test_upgrade_password_invalid_username():
@@ -925,7 +1046,11 @@ class TestLibsUpgradePassword:
 
         with pytest.raises(IncorrectArgumentTypeError) as err_info:
             libs.upgrade_password(expected_password, username=expected_username)
-
-        assert err_info.value.message == (
-            "The function upgrade_password's argument 'username' was"
-            " type 'int' but should be of type 'basestring' if defined.")
+        if six.PY2:
+            assert err_info.value.message == (
+                "The function upgrade_password's argument 'username' was"
+                " type 'int' but should be of type 'basestring' if defined.")
+        else:
+            assert err_info.value.message == (
+                "The function upgrade_password's argument 'username' was"
+                " class 'int' but should be of class 'str' if defined.")

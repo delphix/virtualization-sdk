@@ -38,7 +38,7 @@
       },
       "language":  {
           "type": "string",
-          "enum": ["PYTHON27"]
+          "enum": ["PYTHON38"]
       },
       "rootSquashEnabled":  {
           "type": "boolean"

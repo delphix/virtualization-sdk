@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import errno
@@ -287,9 +287,9 @@ class TestCodegen:
             codegen._execute_swagger_codegen(swagger_file, tmpdir.strpath)
 
         message = err_info.value.message
-        assert message == ('Unable to run {!r} to generate python code.'
-                           '\nError code: 23. Error message: Too many open'
-                           ' files in system'.format(popen_helper.jar))
+        assert message == (
+            f"Unable to run '{popen_helper.jar}' to generate python code.\nError"
+            " code: 23. Error message: Too many open files in system")
 
         assert popen_helper.stdout_input == subprocess.PIPE
         assert popen_helper.stderr_input == subprocess.PIPE

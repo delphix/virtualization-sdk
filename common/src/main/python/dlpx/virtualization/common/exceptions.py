@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 
@@ -104,7 +104,8 @@ class PluginRuntimeError(Exception):
             if len(expected_type) > 1:
                 for index in range(0, len(expected_type)):
                     expected_type[index] = _get_type_name(expected_type[index])
-                    expected_type[index] = _remove_angle_brackets(str(expected_type[index]))
+                    expected_type[index] = _remove_angle_brackets(
+                        str(expected_type[index]))
 
                 expected = "any one of the following types: '{}'".format(expected_type)
             elif len(expected_type) == 0:
@@ -120,8 +121,8 @@ class PluginRuntimeError(Exception):
                 raise PlatformError('The thrown TypeError should have had a'
                                     ' dict of size 1 as the expected_type')
 
-            key_type = expected_type.keys()[0]
-            value_type = expected_type.values()[0]
+            key_type = list(expected_type.keys())[0]
+            value_type = list(expected_type.values())[0]
 
             key_type_name = _get_type_name(key_type)
             value_type_name = _get_type_name(value_type)
@@ -147,7 +148,7 @@ class PluginRuntimeError(Exception):
                 raise PlatformError('The thrown TypeError should have had a'
                                     ' set of tuples to represent a dict')
             actual = 'a dict of {{{}}}'.format(', '.join(['{0}:{1}'.format(
-                    _remove_angle_brackets(str(k)),
+                _remove_angle_brackets(str(k)),
                 _remove_angle_brackets(str(v))) for k, v in actual_type]))
         else:
             actual = _remove_angle_brackets(str(actual_type))
@@ -172,12 +173,8 @@ class IncorrectTypeError(PluginRuntimeError):
     """
 
     def __init__(
-        self,
-        object_type,
-        parameter_name,
-        actual_type,
-        expected_type,
-        required=True):
+            self, object_type, parameter_name, actual_type, expected_type,
+            required=True):
         actual, expected = self.get_actual_and_expected_type(
             actual_type, expected_type)
 

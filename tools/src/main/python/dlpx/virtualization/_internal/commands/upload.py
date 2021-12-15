@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import errno
@@ -8,6 +8,7 @@ import logging
 import os
 
 from dlpx.virtualization._internal import delphix_client, exceptions
+from dlpx.virtualization.common.util import to_str
 
 logger = logging.getLogger(__name__)
 UNKNOWN_ERR = 'UNKNOWN_ERR'
@@ -35,6 +36,18 @@ def upload(engine, user, upload_artifact, password, wait):
                  ' upload_artifact: {},'
                  ' wait: {}'.format(engine, user, upload_artifact, wait))
     logger.info('Uploading plugin artifact {} ...'.format(upload_artifact))
+
+    #
+    # Click handles the conversions for us, so we need not run inputs through to_str in
+    # the cli upload function. However, this function may be called from places other
+    # than its corresponding cli function, such as unit tests. As such, we should ensure
+    # all appropriate inputs at this point are properly converted to unicode strings as
+    # soon as they enter the program.
+    #
+    engine = to_str(engine)
+    user = to_str(user)
+    upload_artifact = to_str(upload_artifact)
+    password = to_str(password)
 
     # Read content of upload artifact
     try:

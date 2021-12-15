@@ -18,4 +18,5 @@ setuptools.setup(name='dvp',
                  install_requires=install_requires,
                  package_dir={'': PYTHON_SRC},
                  packages=setuptools.find_packages(PYTHON_SRC),
+                 python_requires='>=3.8, <3.9',
 )
