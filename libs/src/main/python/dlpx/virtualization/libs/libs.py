@@ -96,6 +96,7 @@ def _check_exit_code(response, check):
                                       response.return_value.stdout,
                                       response.return_value.stderr))
 
+
 def _quote_bash_word(unquoted_string):
     """
     This function takes the given input string, and returns a string that can
