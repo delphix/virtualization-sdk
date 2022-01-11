@@ -10,11 +10,11 @@ import pytest
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '4.0.0.dev0'
+        assert package_util.get_version() == '4.0.0'
 
     @staticmethod
     def test_get_virtualization_api_version():
-        assert package_util.get_virtualization_api_version() == '1.6.0'
+        assert package_util.get_virtualization_api_version() == '1.6.1'
 
     @staticmethod
     def test_get_engine_api_version():
@@ -26,7 +26,7 @@ class TestPackageUtil:
             'type': 'APIVersion',
             'major': 1,
             'minor': 6,
-            'micro': 0
+            'micro': 1
         }
         assert package_util.get_build_api_version() == build_api_version
 
