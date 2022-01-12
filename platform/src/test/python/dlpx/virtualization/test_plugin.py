@@ -1,22 +1,24 @@
+from __future__ import absolute_import
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
 
 import pytest
+import re
+import six
 from dlpx.virtualization.api import common_pb2, platform_pb2
-from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment,
-                                        RemoteHost, RemoteUser)
+from dlpx.virtualization.common import (
+    RemoteConnection, RemoteEnvironment, RemoteHost, RemoteUser)
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, IncorrectUpgradeObjectTypeError,
     OperationAlreadyDefinedError, PluginRuntimeError)
 from mock import MagicMock, patch
 
-import fake_generated_definitions
-from fake_generated_definitions import (RepositoryDefinition,
-                                        SnapshotDefinition,
-                                        SourceConfigDefinition)
+from . import fake_generated_definitions
+from .fake_generated_definitions import (
+    RepositoryDefinition, SnapshotDefinition, SourceConfigDefinition)
 
 TEST_BINARY_PATH = '/binary/path'
 TEST_SCRATCH_PATH = '/scratch/path'
@@ -63,9 +65,10 @@ TEST_POST_MIGRATION_METADATA_2 = (json.dumps({
 }))
 TEST_POST_UPGRADE_PARAMS = ({
     u'obj':
-    '"{\\"obj\\": {\\"prettyName\\": \\"prettyUpgrade\\", '
-    '\\"name\\": \\"upgrade\\", \\"metadata\\": \\"metadata\\"}}"'
+    '"{\\"obj\\": {\\"name\\": \\"upgrade\\", '
+    '\\"prettyName\\": \\"prettyUpgrade\\", \\"metadata\\": \\"metadata\\"}}"'
 })
+
 MIGRATION_IDS = ('2020.1.1', '2020.2.2')
 
 
@@ -92,8 +95,8 @@ class TestPlugin:
 
         with pytest.raises(OperationAlreadyDefinedError):
 
-            @my_plugin.virtual.configure()
-            def configure_impl():
+            @my_plugin.virtual.configure()  # noqa F811
+            def configure_impl():  # noqa F811
                 pass
 
     class NotModel1:
@@ -467,10 +470,16 @@ class TestPlugin:
             my_plugin.virtual._internal_configure(configure_request)
 
         message = err_info.value.message
-        assert message == (
-            "The returned object for the virtual.configure() operation was"
-            " type 'unicode' but should be of class 'dlpx.virtualization."
-            "fake_generated_definitions.SourceConfigDefinition'.")
+        if six.PY2:
+            assert message == (
+                "The returned object for the virtual.configure() operation was"
+                " type 'unicode' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
+        else:
+            assert message == (
+                "The returned object for the virtual.configure() operation was"
+                " class 'str' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
 
     @staticmethod
     def test_virtual_unconfigure(my_plugin, virtual_source, repository,
@@ -526,14 +535,11 @@ class TestPlugin:
         assert config.parameters.json == expected_source_config
 
     @staticmethod
-    def test_virtual_reconfigure_return_incorrect_type(my_plugin,
-                                                       virtual_source,
-                                                       repository,
-                                                       source_config,
-                                                       snapshot):
+    def test_virtual_reconfigure_return_incorrect_type(
+            my_plugin, virtual_source, repository, source_config, snapshot):
         @my_plugin.virtual.reconfigure()
-        def virtual_reconfigure_impl(virtual_source, repository, source_config,
-                                     snapshot):
+        def virtual_reconfigure_impl(
+                virtual_source, repository, source_config, snapshot):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
                                           source_config=source_config,
                                           repository=repository,
@@ -553,14 +559,43 @@ class TestPlugin:
             my_plugin.virtual._internal_reconfigure(reconfigure_request)
 
         message = err_info.value.message
-        assert message == (
-            "The returned object for the virtual.reconfigure() operation was"
-            " type 'unicode' but should be of class 'dlpx.virtualization."
-            "fake_generated_definitions.SourceConfigDefinition'.")
+        if six.PY2:
+            assert message == (
+                "The returned object for the virtual.reconfigure() operation was"
+                " type 'unicode' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
+        else:
+            assert message == (
+                "The returned object for the virtual.reconfigure() operation was"
+                " class 'str' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
 
     @staticmethod
-    def test_virtual_start(my_plugin, virtual_source, repository,
-                           source_config):
+    def test_virtual_cleanup(my_plugin, virtual_source, repository, source_config):
+        @my_plugin.virtual.cleanup()
+        def virtual_cleanup_impl(virtual_source, repository, source_config):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository,
+                                          source_config=source_config)
+            return
+
+        virtual_cleanup_request = platform_pb2.VirtualCleanupRequest()
+        TestPlugin.setup_request(request=virtual_cleanup_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
+
+        expected_result = platform_pb2.VirtualCleanupResult()
+
+        virtual_cleanup_response = my_plugin.virtual._internal_cleanup(
+            virtual_cleanup_request)
+
+        # Check that the response's oneof is set to return_value and not error
+        assert virtual_cleanup_response.WhichOneof('result') == 'return_value'
+        assert virtual_cleanup_response.return_value == expected_result
+
+    @staticmethod
+    def test_virtual_start(my_plugin, virtual_source, repository, source_config):
         @my_plugin.virtual.start()
         def virtual_start_impl(virtual_source, repository, source_config):
             TestPlugin.assert_plugin_args(virtual_source=virtual_source,
@@ -695,8 +730,6 @@ class TestPlugin:
         TestPlugin.setup_request(request=initialize_request,
                                  virtual_source=virtual_source,
                                  repository=repository)
-
-        expected_source_config = TEST_REPOSITORY_JSON
         initialize_response = my_plugin.virtual._internal_initialize(
             initialize_request)
 
@@ -722,10 +755,16 @@ class TestPlugin:
         with pytest.raises(IncorrectReturnTypeError) as err_info:
             my_plugin.virtual._internal_initialize(initialize_request)
         message = err_info.value.message
-        assert message == (
-            "The returned object for the virtual.initialize() operation was"
-            " type 'NoneType' but should be of class 'dlpx.virtualization."
-            "fake_generated_definitions.SourceConfigDefinition'.")
+        if six.PY2:
+            assert message == (
+                "The returned object for the virtual.initialize() operation was"
+                " type 'NoneType' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
+        else:
+            assert message == (
+                "The returned object for the virtual.initialize() operation was"
+                " class 'NoneType' but should be of class 'dlpx.virtualization."
+                "fake_generated_definitions.SourceConfigDefinition'.")
 
     @staticmethod
     def test_virtual_mount_spec(my_plugin, virtual_source, repository):
@@ -802,12 +841,20 @@ class TestPlugin:
                 repository_discovery_request)
 
         message = err_info.value.message
-        assert message == (
-            "The returned object for the discovery.repository() operation was"
-            " a list of [type 'str', class 'dlpx.virtualization"
-            ".fake_generated_definitions.RepositoryDefinition'] but should"
-            " be of type 'list of dlpx.virtualization"
-            ".fake_generated_definitions.RepositoryDefinition'.")
+        if six.PY2:
+            assert message == (
+                "The returned object for the discovery.repository() operation was"
+                " a list of [type 'str', class 'dlpx.virtualization"
+                ".fake_generated_definitions.RepositoryDefinition'] but should"
+                " be of type 'list of dlpx.virtualization"
+                ".fake_generated_definitions.RepositoryDefinition'.")
+        else:
+            assert message == (
+                "The returned object for the discovery.repository() operation was"
+                " a list of [class 'str', class 'dlpx.virtualization"
+                ".fake_generated_definitions.RepositoryDefinition'] but should"
+                " be of type 'list of dlpx.virtualization"
+                ".fake_generated_definitions.RepositoryDefinition'.")
 
     @staticmethod
     def test_source_config_discovery(my_plugin, connection, repository):
@@ -867,8 +914,9 @@ class TestPlugin:
     def test_direct_pre_snapshot_null_snapparams(my_plugin, direct_source,
                                                  repository, source_config):
         @my_plugin.linked.pre_snapshot()
-        def mock_direct_pre_snapshot(direct_source, repository, source_config,
-            optional_snapshot_parameters):
+        def mock_direct_pre_snapshot(
+                direct_source, repository, source_config,
+                optional_snapshot_parameters):
             TestPlugin.assert_direct_source(direct_source)
             TestPlugin.assert_repository(repository)
             TestPlugin.assert_source_config(source_config)
@@ -924,11 +972,11 @@ class TestPlugin:
         assert snapshot.parameters.json == expected_snapshot
 
     @staticmethod
-    def test_direct_post_snapshot_null_snapparams(my_plugin, direct_source,
-        repository, source_config):
+    def test_direct_post_snapshot_null_snapparams(
+            my_plugin, direct_source, repository, source_config):
         @my_plugin.linked.post_snapshot()
         def direct_post_snapshot_impl(direct_source, repository, source_config,
-            optional_snapshot_parameters):
+                                      optional_snapshot_parameters):
             TestPlugin.assert_direct_source(direct_source)
             TestPlugin.assert_repository(repository)
             TestPlugin.assert_source_config(source_config)
@@ -987,7 +1035,7 @@ class TestPlugin:
                                                  repository, source_config):
         @my_plugin.linked.pre_snapshot()
         def staged_pre_snapshot_impl(staged_source, repository, source_config,
-            optional_snapshot_parameters):
+                                     optional_snapshot_parameters):
             TestPlugin.assert_staged_source(staged_source)
             TestPlugin.assert_repository(repository)
             TestPlugin.assert_source_config(source_config)
@@ -1045,7 +1093,7 @@ class TestPlugin:
                                                   repository, source_config):
         @my_plugin.linked.post_snapshot()
         def staged_post_snapshot_impl(staged_source, repository, source_config,
-            optional_snapshot_parameters):
+                                      optional_snapshot_parameters):
             TestPlugin.assert_staged_source(staged_source)
             TestPlugin.assert_repository(repository)
             TestPlugin.assert_source_config(source_config)
@@ -1235,8 +1283,8 @@ class TestPlugin:
         def upgrade_repository(old_repository):
             return TEST_POST_MIGRATION_METADATA_1
 
-        @my_plugin.upgrade.repository('2020.2.2')
-        def upgrade_repository(old_repository):
+        @my_plugin.upgrade.repository('2020.2.2')  # noqa F811
+        def upgrade_repository(old_repository):  # noqa F811
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1251,7 +1299,17 @@ class TestPlugin:
         expected_response.return_value.post_upgrade_parameters\
             .update(TEST_POST_UPGRADE_PARAMS)
 
-        assert expected_response == upgrade_response
+        pat = re.compile(
+            'return_value{post_upgrade_parameters{key:"obj"value:""{"obj":{("'
+            'prettyName":"prettyUpgrade"|"name":"upgrade"),("prettyName":"'
+            'prettyUpgrade"|"name":"upgrade"),"metadata":"metadata"}}""}}'
+        )
+        assert re.match(
+            pat, str(expected_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
+        assert re.match(
+            pat, str(upgrade_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
 
     @staticmethod
     def test_upgrade_source_config_success(my_plugin):
@@ -1259,8 +1317,8 @@ class TestPlugin:
         def upgrade_source_config(old_source_config):
             return TEST_POST_MIGRATION_METADATA_1
 
-        @my_plugin.upgrade.source_config('2020.2.2')
-        def upgrade_source_config(old_source_config):
+        @my_plugin.upgrade.source_config('2020.2.2')  # noqa F811
+        def upgrade_source_config(old_source_config):  # noqa F811
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1275,7 +1333,17 @@ class TestPlugin:
         expected_response.return_value.post_upgrade_parameters \
             .update(TEST_POST_UPGRADE_PARAMS)
 
-        assert expected_response == upgrade_response
+        pat = re.compile(
+            'return_value{post_upgrade_parameters{key:"obj"value:""{"obj":'
+            '{("prettyName":"prettyUpgrade"|"name":"upgrade"),("prettyName":"'
+            'prettyUpgrade"|"name":"upgrade"),"metadata":"metadata"}}""}}'
+        )
+        assert re.match(
+            pat, str(expected_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
+        assert re.match(
+            pat, str(upgrade_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
 
     @staticmethod
     def test_upgrade_linked_source_success(my_plugin):
@@ -1283,8 +1351,8 @@ class TestPlugin:
         def upgrade_linked_source(old_linked_source):
             return TEST_POST_MIGRATION_METADATA_1
 
-        @my_plugin.upgrade.linked_source('2020.2.2')
-        def upgrade_linked_source(old_linked_source):
+        @my_plugin.upgrade.linked_source('2020.2.2')  # noqa F811
+        def upgrade_linked_source(old_linked_source):  # noqa F811
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1299,7 +1367,17 @@ class TestPlugin:
         expected_response.return_value.post_upgrade_parameters \
             .update(TEST_POST_UPGRADE_PARAMS)
 
-        assert expected_response == upgrade_response
+        pat = re.compile(
+            'return_value{post_upgrade_parameters{key:"obj"value:""{"obj":{("'
+            'prettyName":"prettyUpgrade"|"name":"upgrade"),("prettyName":"'
+            'prettyUpgrade"|"name":"upgrade"),"metadata":"metadata"}}""}}'
+        )
+        assert re.match(
+            pat, str(expected_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
+        assert re.match(
+            pat, str(upgrade_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
 
     @staticmethod
     def test_upgrade_virtual_source_success(my_plugin):
@@ -1307,8 +1385,8 @@ class TestPlugin:
         def upgrade_virtual_source(old_virtual_source):
             return TEST_POST_MIGRATION_METADATA_1
 
-        @my_plugin.upgrade.virtual_source('2020.2.2')
-        def upgrade_virtual_source(old_virtual_source):
+        @my_plugin.upgrade.virtual_source('2020.2.2')  # noqa F811
+        def upgrade_virtual_source(old_virtual_source):  # noqa F811
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1323,7 +1401,17 @@ class TestPlugin:
         expected_response.return_value.post_upgrade_parameters \
             .update(TEST_POST_UPGRADE_PARAMS)
 
-        assert expected_response == upgrade_response
+        pat = re.compile(
+            'return_value{post_upgrade_parameters{key:"obj"value:""{"obj":{("name":'
+            '"upgrade"|"prettyName":"prettyUpgrade"),("name":"upgrade"|"prettyName":'
+            '"prettyUpgrade"),"metadata":"metadata"}}""}}'
+        )
+        assert re.match(
+            pat, str(expected_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
+        assert re.match(
+            pat, str(upgrade_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
 
     @staticmethod
     def test_upgrade_snapshot_success(my_plugin):
@@ -1331,8 +1419,8 @@ class TestPlugin:
         def upgrade_snapshot(old_snapshot):
             return TEST_POST_MIGRATION_METADATA_1
 
-        @my_plugin.upgrade.snapshot('2020.2.2')
-        def upgrade_snapshot(old_snapshot):
+        @my_plugin.upgrade.snapshot('2020.2.2')  # noqa F811
+        def upgrade_snapshot(old_snapshot):  # noqa F811
             return TEST_POST_MIGRATION_METADATA_2
 
         upgrade_request = platform_pb2.UpgradeRequest()
@@ -1347,7 +1435,17 @@ class TestPlugin:
         expected_response.return_value.post_upgrade_parameters \
             .update(TEST_POST_UPGRADE_PARAMS)
 
-        assert expected_response == upgrade_response
+        pat = re.compile(
+            'return_value{post_upgrade_parameters{key:"obj"value:""{"obj":{("'
+            'prettyName":"prettyUpgrade"|"name":"upgrade"),("name":"'
+            'upgrade"|"prettyName":"prettyUpgrade"),"metadata":"metadata"}}""}}'
+        )
+        assert re.match(
+            pat, str(expected_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
+        assert re.match(
+            pat, str(upgrade_response).replace(
+                "\n", "").replace("\\", "").replace(" ", ""))
 
     @staticmethod
     def test_upgrade_repository_incorrect_upgrade_object_type(my_plugin):
@@ -1415,8 +1513,8 @@ class TestPlugin:
         def upgrade_snapshot(old_snapshot):
             raise RuntimeError('RuntimeError in snapshot migration')
 
-        @my_plugin.upgrade.snapshot('2020.2.2')
-        def upgrade_snapshot(old_snapshot):
+        @my_plugin.upgrade.snapshot('2020.2.2')  # noqa F811
+        def upgrade_snapshot(old_snapshot):  # noqa F811
             raise RuntimeError('RuntimeError in snapshot migration')
 
         upgrade_request = platform_pb2.UpgradeRequest()

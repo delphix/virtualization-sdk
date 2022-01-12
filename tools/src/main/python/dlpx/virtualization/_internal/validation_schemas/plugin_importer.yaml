@@ -52,6 +52,10 @@ EXPECTED_STAGED_ARGS_BY_OP:
       - repository
       - source_config
       - snapshot
+    cleanup_impl:
+      - virtual_source
+      - repository
+      - source_config
     start_impl:
       - virtual_source
       - repository
@@ -112,6 +116,10 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - repository
       - source_config
       - snapshot
+    cleanup_impl:
+      - virtual_source
+      - repository
+      - source_config
     start_impl:
       - virtual_source
       - repository

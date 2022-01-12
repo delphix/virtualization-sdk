@@ -75,6 +75,11 @@ def unconfigure(repository, source_config, virtual_source):
     pass
 
 
+@vfiles.virtual.cleanup()
+def cleanup(repository, source_config, virtual_source, bad_arg):
+    pass
+
+
 @vfiles.upgrade.repository('2019.10.30')
 def repo_upgrade(old_repository):
     return old_repository

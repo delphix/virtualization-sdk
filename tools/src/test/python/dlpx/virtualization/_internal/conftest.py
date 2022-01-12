@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import configparser
@@ -7,9 +7,11 @@ import copy
 import json
 import os
 
+from importlib import reload
 import yaml
 from dlpx.virtualization._internal import cli, click_util, const, package_util
 from dlpx.virtualization._internal.commands import build
+from dlpx.virtualization.common.util import to_bytes, to_str
 
 import pytest
 
@@ -39,7 +41,7 @@ def plugin_config_file(tmpdir, plugin_config_filename, plugin_config_content):
 
     f = tmpdir.join(plugin_config_filename)
     if plugin_config_content:
-        f.write(plugin_config_content)
+        f.write(to_str(plugin_config_content))
     return f.strpath
 
 
@@ -113,8 +115,8 @@ def _write_dvp_config_file(tmpdir,
     if dev_config_properties:
         parser['dev'] = dev_config_properties
 
-    with open(dvp_config_filepath, 'wb') as config_file:
-        parser.write(config_file)
+    with open(dvp_config_filepath, 'w') as config_file:
+        parser.write(to_bytes(config_file))
 
     #
     # Add temp_dir to list of config files the ConfigFileProcessor will
@@ -156,7 +158,7 @@ def artifact_file(tmpdir, artifact_content, artifact_filename,
         # Only write the artifact if we want to actually create it.
         if isinstance(artifact_content, dict):
             artifact_content = json.dumps(artifact_content, indent=4)
-        f.write(artifact_content)
+        f.write(to_bytes(artifact_content))
     return f.strpath
 
 
@@ -249,7 +251,7 @@ def external_version():
 
 @pytest.fixture
 def language():
-    return 'PYTHON27'
+    return 'PYTHON38'
 
 
 @pytest.fixture
@@ -404,6 +406,7 @@ def virtual_operation():
     virtual.mount_specification_impl = mount_specification
     virtual.status_impl = None
     virtual.initialize_impl = None
+    virtual.cleanup_impl = None
 
     return virtual
 
@@ -447,7 +450,8 @@ def plugin_manifest(upgrade_operation):
         'hasVirtualMountSpecification': True,
         'hasVirtualStatus': False,
         'hasInitialize': False,
-        'migrationIdList': upgrade_operation.migration_id_list
+        'migrationIdList': upgrade_operation.migration_id_list,
+        'hasVirtualCleanup': False,
     }
     return manifest
 
@@ -642,7 +646,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
-        'language': 'PYTHON27',
+        'language': 'PYTHON38',
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),
@@ -691,7 +695,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 6}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 11}
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
 # Platform Libraries
-Set of functions that plugins can use these for executing remote commands, etc.
+Delphix provides a set of functions that plugins can use for executing remote commands, etc.
 
 ## retrieve_credentials
 
@@ -56,7 +56,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run on the host.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 use_login_shell | boolean | **Optional**. Whether to use a login shell.
 check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunBashResponse` is non-zero.
 
@@ -71,7 +71,7 @@ stderr | String | Stderr from the command.
 
 ### Examples
 
-Calling bash with an inline command.
+##### Calling bash with an inline command.
 
 ```python
 from dlpx.virtualization import libs
@@ -86,7 +86,7 @@ print response.stdout
 print response.stderr
 ```
 
-Using parameters to construct a bash command.
+##### Using parameters to construct a bash command.
 
 ```python
 from dlpx.virtualization import libs
@@ -98,14 +98,26 @@ command = "mysqldump -u {} -p {}".format(name,port)
 response = libs.run_bash(connection, command)
 ```
 
-Running a bash script that is saved in a directory.
+##### Running a bash script that is saved in a directory.
 
+###### Python 2.7 recommended approach
 ```python
- 
+
  import pkgutil
  from dlpx.virtualization import libs
 
  script_content = pkgutil.get_data('resources', 'get_date.sh')
+
+ # Execute script on remote host
+ response = libs.run_bash(direct_source.connection, script_content)
+```
+###### Python 3.8 recommended approach
+```python
+
+ from importlib import resources
+ from dlpx.virtualization import libs
+
+ script_content = resources.read_text('resources', 'get_date.sh')
 
  # Execute script on remote host
  response = libs.run_bash(direct_source.connection, script_content)
@@ -126,7 +138,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Expect(Tcl) command to run.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 
 ### Returns
 An object of `RunExpectResponse`
@@ -168,7 +180,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 remote_connection | [RemoteConnection](Classes.md#remoteconnection) | Connection associated with the remote host to run the command on.
 command | String | Command to run to the remote host.
-variables | dict[String, String] | **Optional**. Environement variables to set when running the command.
+variables | dict[String, String] | **Optional**. Environment variables to set when running the command.
 check | boolean | **Optional**. Whether or not to raise an exception if the `exit_code` in the `RunPowershellResponse` is non-zero.
 
 ### Returns

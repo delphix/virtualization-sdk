@@ -1,10 +1,10 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 import re
+import six
 from enum import Enum
 
-import six
 from dlpx.virtualization.common import (RemoteConnection, RemoteEnvironment,
                                         RemoteHost)
 from dlpx.virtualization.common.exceptions import IncorrectTypeError
@@ -160,8 +160,8 @@ class Mount(object):
         plugin writer from attempting to provide parameter values that they
         won't have access to."""
         def __is_correct_reference_format(reference):
-            unix_format = re.compile("^UNIX_HOST_ENVIRONMENT-\d+$")
-            win_format = re.compile("^WINDOWS_HOST_ENVIRONMENT-\d+$")
+            unix_format = re.compile(r"^UNIX_HOST_ENVIRONMENT-\d+$")
+            win_format = re.compile(r"^WINDOWS_HOST_ENVIRONMENT-\d+$")
             return (bool(unix_format.match(reference))
                     or bool(win_format.match(reference)))
 
@@ -199,7 +199,7 @@ class Mount(object):
                                      six.string_types[0])
         self._mount_path = mount_path
 
-        if shared_path and not isinstance(shared_path, six.string_types[0]):
+        if shared_path and not isinstance(shared_path, six.string_types):
             raise IncorrectTypeError(Mount, 'shared_path', type(shared_path),
                                      six.string_types[0], False)
         self._shared_path = shared_path

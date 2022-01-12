@@ -1,7 +1,6 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
-import importlib
 import logging
 import os
 import sys
@@ -11,6 +10,7 @@ from multiprocessing import Process, Queue
 import yaml
 from dlpx.virtualization._internal import const, exceptions
 from dlpx.virtualization.platform import import_util
+from dlpx.virtualization._internal import plugin_dependency_util
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,6 @@ class PluginImporter:
                                  self.__plugin_entry_point, self.__src_dir,
                                  err))
             warnings['exception'].append(exception_msg)
-
         return plugin_manifest, warnings
 
     @staticmethod
@@ -161,7 +160,7 @@ class PluginImporter:
                 #
                 warning_msg = exceptions.ValidationFailedError(
                     warnings).message
-                logger.warn(warning_msg)
+                logger.warning(warning_msg)
 
     def __check_for_required_methods(self):
         """
@@ -189,8 +188,6 @@ def _import_module_and_get_manifest(queue, src_dir, module, entry_point,
     """
     Imports the plugin module, runs validations and returns the manifest.
     """
-    module_content = None
-
     try:
         module_content = _import_helper(queue, src_dir, module)
     except exceptions.UserError:
@@ -248,10 +245,29 @@ def _import_helper(queue, src_dir, module):
     exceptions.
     """
     module_content = None
-    sys.path.append(src_dir)
+    try:
+        #
+        # Compile the plugin_runner module to be copied over to the docker container's
+        # plugin dir.
+        # The module comes in the format <pkg.[subpkg.]*runner.py>
+        #
+        appended_paths = _add_dirs_to_sys_path(src_dir)
+        plugin_dependency_util.compile_py_files(src_dir)
+    except FileNotFoundError:
+        #
+        # If the module couldn't be found, the user's entry point has the incorrect
+        # module name specified.
+        #
+        error = exceptions.UserError("No module named {}".format(module))
+        queue.put({'exception': error})
 
     try:
-        module_content = importlib.import_module(module)
+        #
+        # Module comes in the format pkg.[subpkg1.]*module. Since we've added the
+        # necessary paths to sys.path, we can import the module directly to retrieve
+        # its contents
+        #
+        module_content = __import__(module.split(".")[-1])
     except (ImportError, TypeError) as err:
         queue.put({'exception': err})
     except Exception as err:
@@ -274,12 +290,30 @@ def _import_helper(queue, src_dir, module):
             error = exceptions.SDKToolingError(str(err))
             queue.put({'sdk exception': error})
     finally:
-        sys.path.remove(src_dir)
+        for p in appended_paths:
+            sys.path.remove(p)
 
     if not module_content:
         raise exceptions.UserError("Plugin module content is None")
-
     return module_content
+
+
+def _add_dirs_to_sys_path(src_dir, appended_paths=None):
+    if appended_paths is None:
+        appended_paths = []
+    if src_dir not in sys.path:
+        sys.path.append(src_dir)
+        appended_paths.append(src_dir)
+    for root, dirs, _ in os.walk(src_dir):
+        for dir_name in dirs:
+            if dir_name in ["__pycache__"]:
+                continue
+            src_dir = os.path.sep.join([root, dir_name])
+            if src_dir not in sys.path:
+                sys.path.append(src_dir)
+                appended_paths.append(src_dir)
+            _add_dirs_to_sys_path(src_dir, appended_paths=appended_paths)
+    return appended_paths
 
 
 def _process_warnings(queue, warnings):
@@ -330,6 +364,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.virtual.unconfigure_impl),
         'hasVirtualReconfigure':
         bool(plugin_object.virtual.reconfigure_impl),
+        'hasVirtualCleanup':
+        bool(plugin_object.virtual.cleanup_impl),
         'hasVirtualStart':
         bool(plugin_object.virtual.start_impl),
         'hasVirtualStop':

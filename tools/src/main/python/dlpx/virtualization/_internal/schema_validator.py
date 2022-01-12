@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -8,6 +8,7 @@ import os
 from collections import namedtuple
 
 from dlpx.virtualization._internal import exceptions
+from dlpx.virtualization.common.util import to_str
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
@@ -25,9 +26,9 @@ class SchemaValidator:
         back.
     """
     def __init__(self, schema_file, plugin_meta_schema, schemas=None):
-        self.__schema_file = schema_file
-        self.__plugin_meta_schema = plugin_meta_schema
-        self.__plugin_schemas = schemas
+        self.__schema_file = to_str(schema_file)
+        self.__plugin_meta_schema = to_str(plugin_meta_schema)
+        self.__plugin_schemas = to_str(schemas)
 
     @property
     def result(self):
@@ -55,7 +56,7 @@ class SchemaValidator:
         try:
             with open(self.__schema_file, 'r') as f:
                 try:
-                    return json.load(f)
+                    return to_str(json.load(f))
                 except ValueError as err:
                     raise exceptions.UserError(
                         'Failed to load schemas because \'{}\' is not a '
@@ -77,7 +78,7 @@ class SchemaValidator:
         try:
             with open(self.__plugin_meta_schema, 'r') as f:
                 try:
-                    plugin_meta_schema = json.load(f)
+                    plugin_meta_schema = to_str(json.load(f))
                 except ValueError as err:
                     raise exceptions.UserError(
                         'Failed to load schemas because \'{}\' is not a '
@@ -98,8 +99,12 @@ class SchemaValidator:
         # This will do lazy validation so that we can consolidate all the
         # validation errors and report everything wrong with the schema.
         #
-        validation_errors = sorted(v.iter_errors(self.__plugin_schemas),
-                                   key=lambda e: e.path)
+        # In Python 3.8, we are using jsonschema 4.X.X. This version of jsonschema
+        # breaks when we pass a dictionary to Draft7Validator.iter_errors().
+        # Instead it expects a list.
+        #
+        errors = v.iter_errors(self.__plugin_schemas)
+        validation_errors = sorted(errors, key=lambda e: e.path)
 
         if validation_errors:
             raise exceptions.SchemaValidationError(self.__schema_file,

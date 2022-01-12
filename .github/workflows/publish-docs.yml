@@ -75,7 +75,7 @@ jobs:
         if: ${{ github.repository == matrix.repository }}
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          deploy_key: ${{ secrets.SDK_DEPLOY_KEY }}
           publish_dir: docs/site
           commit_message: Deploy to gh-pages 🚀
           user_name: "github-actions[bot]"

@@ -1,8 +1,10 @@
 # Managing Scripts for Remote Execution
 
-To execute a PowerShell or Bash script or Expect script on a remote host, you must provide the script as a string to `run_powershell` or `run_bash` or `run_expect`. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with `pkgutil`.
+To execute a PowerShell or Bash script or Expect script on a remote host, you must provide the script as a string to `run_powershell` or `run_bash` or `run_expect`. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with `pkgutil` or `importlib`, depending on your plugin language.
 
 [pkgutil](https://docs.python.org/2/library/pkgutil.html) is part of the standard Python library. The method that is applicable to resources is [pkgutil.get_data](https://docs.python.org/2/library/pkgutil.html#pkgutil.get_data).
+
+When developing a plugin in Python3, it is instead suggested to use the newer `importlib.resources`. This package is part of the standard Python 3 library. The method that is applicable to resources is [resources.read_text](https://docs.python.org/3.8/library/importlib.html#importlib.resources.read_text), which accepts the same arguments as `pkgutil.get_data`.
 
 ### Basic Usage
 
@@ -66,7 +68,7 @@ def post_snapshot(direct_source, repository, source_config):
 		raise UserError(
 		'Failed to get date',
 		'Make sure the user has the required permissions',
-		'{}\n{}'.format(response.stdout, rsponse.stderr))
+		'{}\n{}'.format(response.stdout, response.stderr))
 
 	return SnapshotDefinition(name='Snapshot', date=response.stdout)
 ```
@@ -75,7 +77,9 @@ def post_snapshot(direct_source, repository, source_config):
 	This assumes that `src/` is Python's current working directory. This is the behavior of the Virtualization Platform.
 
 !!! warning "Resources need to be in a Python module"
-	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python package. This means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an `__init__.py` file.
+	`pkgutil.get_data` cannot retrieve the contents of a resource that is not in a Python package. When developing with Python 2.7, this means that a resource that is in the first level of your source directory will not be retrievable with `pkgutil`. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an `__init__.py` file.
+
+	Python 3 does not have this requirement.
 
 ### Multi-level Packages
 
@@ -100,4 +104,10 @@ The contents of `src/resources/platform/get_date.sh` can be retrieved with:
 
 ```python
 script_content = pkgutil.get_data('resources.platform', 'get_date.sh')
+```
+
+In a Python 3.8 plugin, the suggested approach is:
+
+```python
+script_content = resources.read_text('resources.platform', 'get_date.sh')
 ```

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -9,6 +9,7 @@ import time
 
 import requests
 from dlpx.virtualization._internal import exceptions, plugin_util
+from dlpx.virtualization.common.util import to_bytes, to_str
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +37,11 @@ class DelphixClient(object):
         Takes in the engine_api, user, and password and attempts to login to
         the engine. Can raise HttpPostError and UnexpectedError.
         """
-        logger.info('Logging onto the Delphix Engine {!r}.'.format(
-            self.__engine))
+        logger.info(f"Logging onto the Delphix Engine '{self.__engine}'.")
         self.__post('delphix/session',
                     data={
-                        'type': 'APISession',
-                        'version': engine_api
+                        'version': engine_api,
+                        'type': 'APISession'
                     })
         logger.debug('Session started successfully.')
         self.__post('delphix/login',
@@ -50,7 +50,7 @@ class DelphixClient(object):
                         'username': user,
                         'password': password
                     })
-        logger.info('Successfully logged in as {!r}.'.format(user))
+        logger.info(f"Successfully logged in as '{user}'.")
 
     @staticmethod
     def get_engine_api(artifact_content):
@@ -70,7 +70,7 @@ class DelphixClient(object):
                     json.dumps(engine_api)))
                 return engine_api
             logger.debug(
-                'engineApi found but malformed: {!r}'.format(engine_api))
+                f"engineApi found but malformed: '{engine_api}'")
         raise exceptions.InvalidArtifactError()
 
     def __post(self, resource, content_type='application/json', data=None):
@@ -93,7 +93,8 @@ class DelphixClient(object):
         # Issue post request that was passed in, if data is a dict then convert
         # it to a json string.
         #
-        if data is not None and not isinstance(data, (str, bytes, unicode)):
+        if data is not None and not isinstance(data, (str, bytes)):
+            data = to_str(data)
             data = json.dumps(data)
         try:
             response = requests.post(url=url, data=data, headers=headers)
@@ -211,7 +212,7 @@ class DelphixClient(object):
             "dlpx-plugin-logs-{}-{}.tar.gz".format(plugin_name, token))
         with open(download_zip_name, "wb") as f:
             for chunk in download_zip_data:
-                f.write(chunk)
+                f.write(to_bytes(chunk))
 
     def upload_plugin(self, name, content, wait):
         """
@@ -223,9 +224,9 @@ class DelphixClient(object):
         logger.debug('Getting token to do upload.')
         response = self.__post('delphix/toolkit/requestUploadToken')
         token = response['result']['token']
-        logger.debug('Got token {!r} successfully.'.format(token))
+        logger.debug(f"Got token '{token}' successfully.")
 
-        logger.info('Uploading plugin {!r}.'.format(name))
+        logger.info(f"Uploading plugin '{name}'.")
         # Encode plugin content.
         upload_response = self.__post('delphix/data/upload',
                                       content_type=self.__UPLOAD_CONTENT,
@@ -306,8 +307,8 @@ class DelphixClient(object):
         }
         response = self.__post('delphix/service/support/bundle/generate',
                                data=data)
-        token = response['result'].encode('utf-8').strip()
-        logger.debug('Got token {!r} successfully.'.format(token))
+        token = to_str(response['result'].encode('utf-8').strip())
+        logger.debug(f"Got token '{token}' successfully.")
 
         self.__download_logs(plugin_name, token, directory)
 

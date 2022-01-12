@@ -1,10 +1,11 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import logging
 import os
 import shutil
+import six
 import uuid
 from collections import OrderedDict
 
@@ -12,6 +13,7 @@ import jinja2
 import yaml
 from dlpx.virtualization._internal import (codegen, const, exceptions,
                                            file_util, plugin_util)
+from dlpx.virtualization.common.util import to_bytes, to_str
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +61,16 @@ def init(root, ingestion_strategy, name, host_type):
             'Name': name,
             'Host Types': host_type
         })
+
+    # Click handles the conversions for us, so we need not run inputs through to_str in
+    # the cli init function. However, this function may be called from places other
+    # than its corresponding cli function, such as unit tests. As such, we should ensure
+    # all appropriate inputs at this point are properly converted to unicode strings as
+    # soon as they enter the program.
+    root = to_str(root)
+    ingestion_strategy = to_str(ingestion_strategy)
+    name = to_str(name)
+    host_type = to_str(host_type)
 
     # Files paths based on 'root' to be used throughout
     src_dir_path = os.path.join(root, DEFAULT_SRC_DIRECTORY)
@@ -207,17 +219,30 @@ def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
         OrderedDict: A valid plugin configuration roughly ordered from most
             interesting to a new plugin author to least interesting.
     """
-    # Ensure values are type 'str'. If they are type unicode yaml prints
-    # them with '!!python/unicode' prepended to the value.
-    config = OrderedDict([('id', plugin_id.encode('utf-8')),
-                          ('name', name.encode('utf-8')),
-                          ('language', 'PYTHON27'), ('hostTypes', ['UNIX']),
-                          ('pluginType', ingestion_strategy.encode('utf-8')),
-                          ('entryPoint', entry_point.encode('utf-8')),
-                          ('srcDir', src_dir_path.encode('utf-8')),
-                          ('schemaFile', schema_file_path.encode('utf-8')),
-                          ('hostTypes', [host_type.encode('utf-8')]),
-                          ('buildNumber', default_build_number.encode('utf-8'))
+    if six.PY2:
+        #
+        # Ensure values are type 'str'. If they are type unicode yaml prints
+        # them with '!!python/unicode' prepended to the value.
+        #
+        # In Py3 yaml will print bytes with `!!binary |` prepended to them, so we
+        # should leave the as strings.
+        #
+        plugin_id = to_bytes(plugin_id)
+        name = to_bytes(name)
+        ingestion_strategy = to_bytes(ingestion_strategy)
+        entry_point = to_bytes(entry_point)
+        src_dir_path = to_bytes(src_dir_path)
+        schema_file_path = to_bytes(schema_file_path)
+        host_type = to_bytes(host_type)
+        default_build_number = to_bytes(default_build_number)
+    config = OrderedDict([('id', plugin_id),
+                          ('name', name),
+                          ('language', 'PYTHON38'), ('hostTypes', ['UNIX']),
+                          ('pluginType', ingestion_strategy),
+                          ('entryPoint', entry_point),
+                          ('srcDir', src_dir_path),
+                          ('schemaFile', schema_file_path),
+                          ('hostTypes', [host_type]),
+                          ('buildNumber', default_build_number)
                           ])
-
     return config
