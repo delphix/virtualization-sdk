@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2022 by Delphix. All rights reserved.
 #
 import os
 from dlpx.virtualization._internal import package_util
@@ -10,11 +10,11 @@ import pytest
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '4.0.0'
+        assert package_util.get_version() == '4.0.2'
 
     @staticmethod
     def test_get_virtualization_api_version():
-        assert package_util.get_virtualization_api_version() == '1.6.1'
+        assert package_util.get_virtualization_api_version() == '1.6.3'
 
     @staticmethod
     def test_get_engine_api_version():
@@ -26,7 +26,7 @@ class TestPackageUtil:
             'type': 'APIVersion',
             'major': 1,
             'minor': 6,
-            'micro': 1
+            'micro': 3
         }
         assert package_util.get_build_api_version() == build_api_version
 
