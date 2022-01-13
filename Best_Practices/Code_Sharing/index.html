@@ -36,7 +36,7 @@
     
     
       
-        <title>Code Sharing - Delphix Virtualization SDK 3.1.0</title>
+        <title>Code Sharing - Delphix Virtualization SDK 4.0.0</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="Delphix Virtualization SDK 3.1.0" class="md-header-nav__button md-logo">
+        <a href="../.." title="Delphix Virtualization SDK 4.0.0" class="md-header-nav__button md-logo">
           
             <img src="../../images/delphix-logo-white.png" width="153" height="15">
           
@@ -96,7 +96,7 @@
           
             
               <span class="md-header-nav__topic">
-                Delphix Virtualization SDK 3.1.0
+                Delphix Virtualization SDK 4.0.0
               </span>
               <span class="md-header-nav__topic">
                 Code Sharing
@@ -159,7 +159,7 @@
         <img src="../../images/delphix-logo-white.png" width="48" height="48">
       
     </span>
-    Delphix Virtualization SDK 3.1.0
+    Delphix Virtualization SDK 4.0.0
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -603,6 +603,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Version_Compatibility/" title="Virtualization SDK Version Compatibility" class="md-nav__link">
+      Virtualization SDK Version Compatibility
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -760,8 +772,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
-      Working with Unicode Data
+    <a href="../Strings/" title="Working With Strings" class="md-nav__link">
+      Working With Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Runtime_Environment/" title="Plugin Runtime Environment" class="md-nav__link">
+      Plugin Runtime Environment
     </a>
   </li>
 
@@ -1090,6 +1114,54 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-7" type="checkbox" id="nav-7-7">
+    
+    <label class="md-nav__link" for="nav-7-7">
+      4.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-7">
+        4.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0/" title="Release - v4.0.0" class="md-nav__link">
+      Release - v4.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0_Breaking_Changes/" title="Breaking Changes - v.4.0.0" class="md-nav__link">
+      Breaking Changes - v.4.0.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1168,7 +1240,7 @@
                 
                 <h1 id="code-sharing">Code Sharing<a class="headerlink" href="#code-sharing" title="Permanent link">&para;</a></h1>
 <p>All Python modules inside of <code>srcDir</code> can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed <code>srcDir</code> is the current working directory so all imports need to be relative to <code>srcDir</code> regardless of the path of the module doing the import.</p>
-<p>Please refer to Python's <a href="https://docs.python.org/2/tutorial/modules.html#modules">documentation on modules</a> to learn more about modules and imports.</p>
+<p>Please refer to Python's <a href="https://docs.python.org/3.8/tutorial/modules.html#modules">documentation on modules</a> to learn more about modules and imports.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Assume we have the following file structure:</p>
 <div class="codehilite"><pre><span></span><code>postgres
@@ -1193,8 +1265,9 @@
 <p>Any module in the plugin could import <code>execution_util.py</code> with <code>from utils import execution_util</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Gotcha</p>
-<p>Since the platform uses Python 2.7, every directory needs to have an <code>__init__.py</code> file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on <code>__init__.py</code> files refer to Python's <a href="https://docs.python.org/2/tutorial/modules.html#packages">documentation on packages</a>.</p>
+<p>When using a vSDK version that was built on Python 2.7, every directory needs to have an <code>__init__.py</code> file in it otherwise the modules and resources in the folder will not be found at runtime. For more information on <code>__init__.py</code> files refer to Python's <a href="https://docs.python.org/2/tutorial/modules.html#packages">documentation on packages</a>.</p>
 <p>Note that the <code>srcDir</code> in the plugin config file (<code>src</code> in this example) does <em>not</em> need an <code>__init__.py</code> file.</p>
+<p>For information on which vSDK versions run on Python 2.7, visit the <a href="../../References/Version_Compatibility/#virtualization-sdk-and-python-compatibility-map">Version Compatibility Page</a>.</p>
 </div>
 <p>Assume <code>schema.json</code> contains:</p>
 <div class="codehilite"><pre><span></span><code>{
@@ -1277,18 +1350,18 @@
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Even though <code>discovery.py</code> is in the <code>operations</code> package, the import for <code>execution_util</code> is still relative to the <code>srcDir</code> specified in the plugin config file. <code>execution_util</code> is in the <code>utils</code> package so it is imported with <code>from utils import execution_util</code>. </p>
+<p>Even though <code>discovery.py</code> is in the <code>operations</code> package, the import for <code>execution_util</code> is still relative to the <code>srcDir</code> specified in the plugin config file. <code>execution_util</code> is in the <code>utils</code> package so it is imported with <code>from utils import execution_util</code>.</p>
 </div>
 <h3 id="execution_utilpy">execution_util.py<a class="headerlink" href="#execution_utilpy" title="Permanent link">&para;</a></h3>
 <p><code>execution_util.py</code> has two methods <code>execute_sql</code> and <code>execute_shell</code>. <code>execute_sql</code> takes the name of a SQL script in <code>resources/</code> and executes it with <code>resources/execute_sql.sh</code>. <code>execute_shell</code> takes the name of a shell script in <code>resources/</code> and executes it.</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">pkgutil</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">resources</span>
 
 <span class="kn">from</span> <span class="nn">dlpx.virtualization</span> <span class="kn">import</span> <span class="n">libs</span>
 
 
 <span class="k">def</span> <span class="nf">execute_sql</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">install_name</span><span class="p">,</span> <span class="n">script_name</span><span class="p">):</span>
-    <span class="n">psql_script</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;execute_sql.sh&quot;</span><span class="p">)</span>
-    <span class="n">sql_script</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
+    <span class="n">psql_script</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;execute_sql.sh&quot;</span><span class="p">)</span>
+    <span class="n">sql_script</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span>
         <span class="n">source_connection</span><span class="p">,</span> <span class="n">psql_script</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SCRIPT&quot;</span><span class="p">:</span> <span class="n">sql_script</span><span class="p">},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span>
@@ -1297,13 +1370,18 @@
 
 
 <span class="k">def</span> <span class="nf">execute_shell</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">script_name</span><span class="p">):</span>
-    <span class="n">script</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">libs</span><span class="o">.</span><span class="n">run_bash</span><span class="p">(</span><span class="n">source_connection</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
 </code></pre></div>
 
 
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If developing a plugin in Python 2.7, you will need to use <code>pkgutil.get_data</code> rather than <code>importlib.resources.read_text</code>.</p>
+<p>See <a href="../Managing_Scripts_For_Remote_Execution/">Managing Scripts For Remote Execution</a> for more info.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Both <code>execute_sql</code> and <code>execute_shell</code> use the <code>check</code> parameter which will cause an error to be raised if the exit code is non-zero. For more information refer to the <code>run_bash</code> <a href="../../References/Platform_Libraries/#run_bash">documentation</a>.</p>

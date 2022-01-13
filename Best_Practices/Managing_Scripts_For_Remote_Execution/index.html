@@ -36,7 +36,7 @@
     
     
       
-        <title>Managing Scripts for Remote Execution - Delphix Virtualization SDK 3.1.0</title>
+        <title>Managing Scripts for Remote Execution - Delphix Virtualization SDK 4.0.0</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="Delphix Virtualization SDK 3.1.0" class="md-header-nav__button md-logo">
+        <a href="../.." title="Delphix Virtualization SDK 4.0.0" class="md-header-nav__button md-logo">
           
             <img src="../../images/delphix-logo-white.png" width="153" height="15">
           
@@ -96,7 +96,7 @@
           
             
               <span class="md-header-nav__topic">
-                Delphix Virtualization SDK 3.1.0
+                Delphix Virtualization SDK 4.0.0
               </span>
               <span class="md-header-nav__topic">
                 Managing Scripts for Remote Execution
@@ -159,7 +159,7 @@
         <img src="../../images/delphix-logo-white.png" width="48" height="48">
       
     </span>
-    Delphix Virtualization SDK 3.1.0
+    Delphix Virtualization SDK 4.0.0
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -603,6 +603,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Version_Compatibility/" title="Virtualization SDK Version Compatibility" class="md-nav__link">
+      Virtualization SDK Version Compatibility
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -740,8 +752,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
-      Working with Unicode Data
+    <a href="../Strings/" title="Working With Strings" class="md-nav__link">
+      Working With Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Runtime_Environment/" title="Plugin Runtime Environment" class="md-nav__link">
+      Plugin Runtime Environment
     </a>
   </li>
 
@@ -1070,6 +1094,54 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-7" type="checkbox" id="nav-7-7">
+    
+    <label class="md-nav__link" for="nav-7-7">
+      4.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-7">
+        4.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0/" title="Release - v4.0.0" class="md-nav__link">
+      Release - v4.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0_Breaking_Changes/" title="Breaking Changes - v.4.0.0" class="md-nav__link">
+      Breaking Changes - v.4.0.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1127,8 +1199,9 @@
                 
                 
                 <h1 id="managing-scripts-for-remote-execution">Managing Scripts for Remote Execution<a class="headerlink" href="#managing-scripts-for-remote-execution" title="Permanent link">&para;</a></h1>
-<p>To execute a PowerShell or Bash script or Expect script on a remote host, you must provide the script as a string to <code>run_powershell</code> or <code>run_bash</code> or <code>run_expect</code>. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with <code>pkgutil</code>.</p>
+<p>To execute a PowerShell or Bash script or Expect script on a remote host, you must provide the script as a string to <code>run_powershell</code> or <code>run_bash</code> or <code>run_expect</code>. While you can keep these strings as literals in your Python code, best practice is to keep them as resource files in your source directory and access them with <code>pkgutil</code> or <code>importlib</code>, depending on your plugin language.</p>
 <p><a href="https://docs.python.org/2/library/pkgutil.html">pkgutil</a> is part of the standard Python library. The method that is applicable to resources is <a href="https://docs.python.org/2/library/pkgutil.html#pkgutil.get_data">pkgutil.get_data</a>.</p>
+<p>When developing a plugin in Python3, it is instead suggested to use the newer <code>importlib.resources</code>. This package is part of the standard Python 3 library. The method that is applicable to resources is <a href="https://docs.python.org/3.8/library/importlib.html#importlib.resources.read_text">resources.read_text</a>, which accepts the same arguments as <code>pkgutil.get_data</code>.</p>
 <h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
 <p>Given the following plugin structure:</p>
 <div class="codehilite"><pre><span></span><code>├── plugin_config.yml
@@ -1185,7 +1258,7 @@ date
         <span class="k">raise</span> <span class="n">UserError</span><span class="p">(</span>
         <span class="s1">&#39;Failed to get date&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Make sure the user has the required permissions&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">rsponse</span><span class="o">.</span><span class="n">stderr</span><span class="p">))</span>
+        <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">stderr</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">SnapshotDefinition</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Snapshot&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 </code></pre></div>
@@ -1197,7 +1270,8 @@ date
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Resources need to be in a Python module</p>
-<p><code>pkgutil.get_data</code> cannot retrieve the contents of a resource that is not in a Python package. This means that a resource that is in the first level of your source directory will not be retrievable with <code>pkgutil</code>. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an <code>__init__.py</code> file.</p>
+<p><code>pkgutil.get_data</code> cannot retrieve the contents of a resource that is not in a Python package. When developing with Python 2.7, this means that a resource that is in the first level of your source directory will not be retrievable with <code>pkgutil</code>. Resources must be in a subdirectory of your source directory, and that subdirectory must contain an <code>__init__.py</code> file.</p>
+<p>Python 3 does not have this requirement.</p>
 </div>
 <h3 id="multi-level-packages">Multi-level Packages<a class="headerlink" href="#multi-level-packages" title="Permanent link">&para;</a></h3>
 <p>Given the following plugin structure:</p>
@@ -1218,6 +1292,11 @@ date
 
 <p>The contents of <code>src/resources/platform/get_date.sh</code> can be retrieved with:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">script_content</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;resources.platform&#39;</span><span class="p">,</span> <span class="s1">&#39;get_date.sh&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>In a Python 3.8 plugin, the suggested approach is:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">script_content</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s1">&#39;resources.platform&#39;</span><span class="p">,</span> <span class="s1">&#39;get_date.sh&#39;</span><span class="p">)</span>
 </code></pre></div>
                 
                   

@@ -36,7 +36,7 @@
     
     
       
-        <title>Getting Started - Delphix Virtualization SDK 3.1.0</title>
+        <title>Getting Started - Delphix Virtualization SDK 4.0.0</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href=".." title="Delphix Virtualization SDK 3.1.0" class="md-header-nav__button md-logo">
+        <a href=".." title="Delphix Virtualization SDK 4.0.0" class="md-header-nav__button md-logo">
           
             <img src="../images/delphix-logo-white.png" width="153" height="15">
           
@@ -96,7 +96,7 @@
           
             
               <span class="md-header-nav__topic">
-                Delphix Virtualization SDK 3.1.0
+                Delphix Virtualization SDK 4.0.0
               </span>
               <span class="md-header-nav__topic">
                 Getting Started
@@ -159,7 +159,7 @@
         <img src="../images/delphix-logo-white.png" width="48" height="48">
       
     </span>
-    Delphix Virtualization SDK 3.1.0
+    Delphix Virtualization SDK 4.0.0
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -662,6 +662,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../References/Version_Compatibility/" title="Virtualization SDK Version Compatibility" class="md-nav__link">
+      Virtualization SDK Version Compatibility
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -752,8 +764,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
-      Working with Unicode Data
+    <a href="../Best_Practices/Strings/" title="Working With Strings" class="md-nav__link">
+      Working With Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Best_Practices/Runtime_Environment/" title="Plugin Runtime Environment" class="md-nav__link">
+      Plugin Runtime Environment
     </a>
   </li>
 
@@ -1082,6 +1106,54 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-7" type="checkbox" id="nav-7-7">
+    
+    <label class="md-nav__link" for="nav-7-7">
+      4.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-7">
+        4.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Release_Notes/4.0.0/4.0.0/" title="Release - v4.0.0" class="md-nav__link">
+      Release - v4.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Release_Notes/4.0.0/4.0.0_Breaking_Changes/" title="Breaking Changes - v.4.0.0" class="md-nav__link">
+      Breaking Changes - v.4.0.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1164,9 +1236,10 @@
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
 <li>macOS 10.14+, Ubuntu 16.04+, or Windows 10</li>
-<li>Python 2.7 (Python 3 is not supported)</li>
+<li>Python 2.7 (vSDK 3.1.0 and earlier)</li>
+<li>Python 3.8 (vSDK 4.0.0 and later)</li>
 <li>Java 7+</li>
-<li>Delphix Engine 6.0.7.0 or above</li>
+<li>A Delphix Engine of an <a href="../References/Version_Compatibility/">appropriate version</a></li>
 </ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>To install the latest version of the SDK run:</p>
@@ -1177,8 +1250,10 @@
 <div class="admonition tip">
 <p class="admonition-title">Use a Virtual Environment</p>
 <p>We highly recommended that you develop plugins inside of a virtual environment. To learn more about virtual environments, refer to <a href="https://virtualenv.pypa.io/en/latest/">Virtualenv's documentation</a>.</p>
-<p>The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:</p>
-<p><code>$ virtualenv -p /path/to/python2.7/binary ENV</code></p>
+<p>If using vSDK 3.1.0 or earlier, the virtual environment needs to use Python 2.7.</p>
+<p>If using vSDK 4.0.0 or earlier, the virtual environment needs to use Python 3.8.</p>
+<p>This is configured when creating the virtualenv:</p>
+<p><code>$ virtualenv -p /path/to/python2.7/binary ENV</code> or <code>$ virtualenv -p /path/to/python3.8/binary ENV</code></p>
 </div>
 <p>To install a specific version of the SDK run:</p>
 <div class="codehilite"><pre><span></span><code>$ pip install dvp==&lt;version&gt;

@@ -36,7 +36,7 @@
     
     
       
-        <title>Message Limits - Delphix Virtualization SDK 3.1.0</title>
+        <title>Message Limits - Delphix Virtualization SDK 4.0.0</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="Delphix Virtualization SDK 3.1.0" class="md-header-nav__button md-logo">
+        <a href="../.." title="Delphix Virtualization SDK 4.0.0" class="md-header-nav__button md-logo">
           
             <img src="../../images/delphix-logo-white.png" width="153" height="15">
           
@@ -96,7 +96,7 @@
           
             
               <span class="md-header-nav__topic">
-                Delphix Virtualization SDK 3.1.0
+                Delphix Virtualization SDK 4.0.0
               </span>
               <span class="md-header-nav__topic">
                 Message Limits
@@ -159,7 +159,7 @@
         <img src="../../images/delphix-logo-white.png" width="48" height="48">
       
     </span>
-    Delphix Virtualization SDK 3.1.0
+    Delphix Virtualization SDK 4.0.0
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -603,6 +603,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../References/Version_Compatibility/" title="Virtualization SDK Version Compatibility" class="md-nav__link">
+      Virtualization SDK Version Compatibility
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -695,8 +707,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
-      Working with Unicode Data
+    <a href="../Strings/" title="Working With Strings" class="md-nav__link">
+      Working With Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Runtime_Environment/" title="Plugin Runtime Environment" class="md-nav__link">
+      Plugin Runtime Environment
     </a>
   </li>
 
@@ -1070,6 +1094,54 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-7" type="checkbox" id="nav-7-7">
+    
+    <label class="md-nav__link" for="nav-7-7">
+      4.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-7">
+        4.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0/" title="Release - v4.0.0" class="md-nav__link">
+      Release - v4.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0_Breaking_Changes/" title="Breaking Changes - v.4.0.0" class="md-nav__link">
+      Breaking Changes - v.4.0.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1127,21 +1199,43 @@
                 
                 
                 <h1 id="message-limits">Message Limits<a class="headerlink" href="#message-limits" title="Permanent link">&para;</a></h1>
-<p>There are limits on how much data can be sent back and forth between the plugin and engine at a time. There are five scenarios where this comes into play:
-1. Inputs sent from the engine to the plugin, as arguments to a <a href="../../References/Plugin_Operations/">Plugin Operation</a>. For example, the schema-defined <code>Repository</code> object that is provided as input to plugin operations.
-2. Outputs sent back from the plugin to the engine, as the return values from plugin operations.
-3. Exception messages and call stacks thrown by plugin code. For example, the <code>message</code> field within <a href="../User_Visible_Errors/">User Visible Errors</a>.
-4. Inputs sent from the plugin to the engine, as arguments to a <a href="../../References/Platform_Libraries/">Platform library</a> function. For example, the <code>message</code> field that is passed to <code>logger.debug</code>.
-5. Outputs sent back from the engine to the plugin, as the return values from Platform Library functions. For example, the <code>stdout</code> resulting from a call to <code>libs.run_bash</code>.</p>
+<p>There are limits on how much data can be sent back and forth between the plugin and engine at a time. There are five scenarios where this comes into play:</p>
+<ol>
+<li>
+<p>Inputs sent from the engine to the plugin, as arguments to a <a href="../../References/Plugin_Operations/">Plugin Operation</a>. For example, the schema-defined <code>Repository</code> object that is provided as input to plugin operations.</p>
+</li>
+<li>
+<p>Outputs sent back from the plugin to the engine, as the return values from plugin operations.</p>
+</li>
+<li>
+<p>Exception messages and call stacks thrown by plugin code. For example, the <code>message</code> field within <a href="../User_Visible_Errors/">User Visible Errors</a>.</p>
+</li>
+<li>
+<p>Inputs sent from the plugin to the engine, as arguments to a <a href="../../References/Platform_Libraries/">Platform library</a> function. For example, the <code>message</code> field that is passed to <code>logger.debug</code>.</p>
+</li>
+<li>
+<p>Outputs sent back from the engine to the plugin, as the return values from Platform Library functions. For example, the <code>stdout</code> resulting from a call to <code>libs.run_bash</code>.</p>
+</li>
+</ol>
 <p>For case 1 and 2, the total size of data must be less than 4 mebibytes (4 MiB).</p>
 <p>For case 3, the total size of data must be less than 128 kibibytes (128 KiB).</p>
-<p>For case 4 and 5, the total size of data must be less than 32 mebibytes (32 MiB).</p>
+<p>For case 4 and 5, the total size of data must be less than 192 mebibytes (192 MiB).</p>
 <p>The actual size of this information at runtime is dependent on how the Python interpreter chooses to represent the information, so it's not always possible to know ahead of time what the exact size will be.</p>
-<p>Here are some examples of where problems may occur:
-1. Using <code>libs.run_bash</code> to print the entire contents of a large file to stdout.
-2. Using a single <code>logger</code> command with many pages of output.
-3. Throwing an exception with a large message or stack trace.
-4. Large amount of metadata in a plugin defined schema like <code>Repository</code> or <code>Virtual Source</code>.</p>
+<p>Here are some examples of where problems may occur:</p>
+<ol>
+<li>
+<p>Using <code>libs.run_bash</code> to print the entire contents of a large file to stdout.</p>
+</li>
+<li>
+<p>Using a single <code>logger</code> command with many pages of output.</p>
+</li>
+<li>
+<p>Throwing an exception with a large message or stack trace.</p>
+</li>
+<li>
+<p>Large amount of metadata in a plugin defined schema like <code>Repository</code> or <code>Virtual Source</code>.</p>
+</li>
+</ol>
 <h2 id="how-to-tell-if-the-message-size-was-exceeded">How to tell if the message size was exceeded<a class="headerlink" href="#how-to-tell-if-the-message-size-was-exceeded" title="Permanent link">&para;</a></h2>
 <p>The plugin operation or platform library callback will fail with a RPC error. The exception will look like:</p>
 <div class="codehilite"><pre><span></span><code>Error

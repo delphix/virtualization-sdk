@@ -36,7 +36,7 @@
     
     
       
-        <title>Plugin Config - Delphix Virtualization SDK 3.1.0</title>
+        <title>Plugin Config - Delphix Virtualization SDK 4.0.0</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="Delphix Virtualization SDK 3.1.0" class="md-header-nav__button md-logo">
+        <a href="../.." title="Delphix Virtualization SDK 4.0.0" class="md-header-nav__button md-logo">
           
             <img src="../../images/delphix-logo-white.png" width="153" height="15">
           
@@ -96,7 +96,7 @@
           
             
               <span class="md-header-nav__topic">
-                Delphix Virtualization SDK 3.1.0
+                Delphix Virtualization SDK 4.0.0
               </span>
               <span class="md-header-nav__topic">
                 Plugin Config
@@ -159,7 +159,7 @@
         <img src="../../images/delphix-logo-white.png" width="48" height="48">
       
     </span>
-    Delphix Virtualization SDK 3.1.0
+    Delphix Virtualization SDK 4.0.0
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -650,6 +650,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Version_Compatibility/" title="Virtualization SDK Version Compatibility" class="md-nav__link">
+      Virtualization SDK Version Compatibility
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -740,8 +752,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../../Best_Practices/Unicode_Data/" title="Working with Unicode Data" class="md-nav__link">
-      Working with Unicode Data
+    <a href="../../Best_Practices/Strings/" title="Working With Strings" class="md-nav__link">
+      Working With Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Best_Practices/Runtime_Environment/" title="Plugin Runtime Environment" class="md-nav__link">
+      Plugin Runtime Environment
     </a>
   </li>
 
@@ -1070,6 +1094,54 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7-7" type="checkbox" id="nav-7-7">
+    
+    <label class="md-nav__link" for="nav-7-7">
+      4.0.0
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-7-7">
+        4.0.0
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0/" title="Release - v4.0.0" class="md-nav__link">
+      Release - v4.0.0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Release_Notes/4.0.0/4.0.0_Breaking_Changes/" title="Breaking Changes - v.4.0.0" class="md-nav__link">
+      Breaking Changes - v.4.0.0
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1204,7 +1276,7 @@
 <td>language</td>
 <td align="center">Y</td>
 <td align="center">enum</td>
-<td>Must be <code>PYTHON27</code>.</td>
+<td>Must be <code>PYTHON38</code>.</td>
 </tr>
 <tr>
 <td>defaultLocale</td>
@@ -1246,14 +1318,13 @@
 <p>This is a valid plugin config for the plugin:</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7cf830f2-82f3-4d5d-a63c-7bbe50c22b32</span>
 <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MongoDB</span>
-<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0.0</span>
 <span class="nt">hostTypes</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">UNIX</span>
 <span class="nt">entryPoint</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongo_runner:mongodb</span>
 <span class="nt">srcDir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src/</span>
 <span class="nt">schemaFile</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">schema.json</span>
 <span class="nt">pluginType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIRECT</span>
-<span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON27</span>
+<span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON38</span>
 <span class="nt">buildNumber</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1.0</span>
 </code></pre></div>
 
@@ -1268,7 +1339,7 @@
 <span class="nt">schemaFile</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">schema.json</span>
 <span class="nt">manualDiscovery</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">pluginType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIRECT</span>
-<span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON27</span>
+<span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON38</span>
 <span class="nt">externalVersion</span><span class="p">:</span> <span class="s">&quot;MongoDB</span><span class="nv"> </span><span class="s">1.0&quot;</span>
 <span class="nt">buildNumber</span><span class="p">:</span> <span class="s">&quot;1&quot;</span>
 </code></pre></div>
