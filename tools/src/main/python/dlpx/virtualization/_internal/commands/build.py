@@ -145,8 +145,8 @@ def build(plugin_config,
     # Copy everything from the source directory into the build directory.
     file_util.clean_copy(src_dir, build_src_dir)
 
-    # compile the copied src directory. We compile here, as symlinks are also copied as folder and can be compiled
-    # without compiling the symlink source folder.
+    # compile the copied src directory. We compile here, as symlinks are also copied
+    # as folder and can be compiled without compiling the symlink source folder.
     plugin_dependency_util.compile_py_files(build_src_dir)
 
     # Install dependencies in the plugin's source root in the build directory.

@@ -68,6 +68,52 @@ class TestBuild:
 
     @staticmethod
     @mock.patch(
+        'dlpx.virtualization._internal.commands.build.patch_dependencies')
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
+    @mock.patch('os.path.isabs', return_value=False)
+    def test_build_success_with_symlink(
+            mock_relative_path, mock_install_deps, mock_generate_python,
+            mock_plugin_manifest, mock_patch_dependencies, plugin_config_file,
+            artifact_file, artifact_content, codegen_gen_py_inputs,
+            add_symlink_folder_to_src_dir):
+        gen_py = codegen_gen_py_inputs
+        # check if the symlink folder created
+        assert os.path.islink(add_symlink_folder_to_src_dir)
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        build.build(plugin_config_file, artifact_file, False, False)
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+        mock_plugin_manifest.assert_called()
+        mock_install_deps.assert_called()
+        mock_relative_path.assert_called()
+        mock_patch_dependencies.assert_called()
+
+        # After running build this file should now exist.
+        assert os.path.exists(artifact_file)
+
+        with open(artifact_file, 'rb') as f:
+            content = json.load(f)
+
+        # assert that source code changed because of symlink folder.
+        assert len(content.keys() - artifact_content) == 0
+        assert len(artifact_content.keys() - content) == 0
+        difference = [key for key in content.keys()
+                      & artifact_content if content[key] != artifact_content[key]]
+        assert len(difference) == 1
+        assert difference.__getitem__(0) == "sourceCode"
+
+    @staticmethod
+    @mock.patch(
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
