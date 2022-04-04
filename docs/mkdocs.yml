@@ -5,8 +5,8 @@ theme:
   palette:
     primary:
     accent:
-  logo: 'images/delphix-mark-rgb-white.png'
-  favicon: 'images/delphix-vertical-rgb-black.png'
+  logo: 'images/delphix-logo-white.png'
+  favicon: 'images/logo.png'
   font:
     text: Helvetica Neue
     code: Ubuntu Mono
