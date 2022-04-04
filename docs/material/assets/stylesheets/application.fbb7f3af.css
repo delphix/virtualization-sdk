@@ -577,7 +577,7 @@ hr {
 .md-header-nav {
   padding: 0 0.4rem; }
   .md-header-nav a.md-header-nav__button.md-logo {
-    padding: 1.4rem; }
+    padding: 0; }
   .md-header-nav__button {
     position: relative;
     transition: opacity 0.25s;
