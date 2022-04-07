@@ -82,7 +82,7 @@ class TestBuild:
             artifact_file, artifact_content, codegen_gen_py_inputs,
             add_symlink_folder_to_src_dir):
         gen_py = codegen_gen_py_inputs
-        # check if the symlink folder created
+        # Check if the symlink folder is created.
         assert os.path.islink(add_symlink_folder_to_src_dir)
         # Before running build assert that the artifact file does not exist.
         assert not os.path.exists(artifact_file)
@@ -104,7 +104,7 @@ class TestBuild:
         with open(artifact_file, 'rb') as f:
             content = json.load(f)
 
-        # assert that source code changed because of symlink folder.
+        # Assert that source code changed because of symlink folder.
         assert len(content.keys() - artifact_content) == 0
         assert len(artifact_content.keys() - content) == 0
         difference = [key for key in content.keys()
