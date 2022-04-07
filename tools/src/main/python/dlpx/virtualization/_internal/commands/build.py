@@ -145,6 +145,16 @@ def build(plugin_config,
     # Copy everything from the source directory into the build directory.
     file_util.clean_copy(src_dir, build_src_dir)
 
+    #
+    # At this point, build folder only consists of files and folders from src directory.
+    # Also, the symlinks folder in src directory are copied as normal folder to build
+    # directory. When we create the zip files, we copy all the .pyc files (skip the .py
+    # files) from the build directory. We are compiling the build folder with
+    # legacy=true to make sure pyc files are created within the same directory
+    # as py files.
+    #
+    plugin_dependency_util.compile_py_files(build_src_dir)
+
     # Install dependencies in the plugin's source root in the build directory.
     plugin_dependency_util.install_deps(build_src_dir,
                                         local_vsdk_root=local_vsdk_root)
