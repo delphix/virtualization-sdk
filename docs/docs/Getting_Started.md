@@ -19,7 +19,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - An active internet connection to download packages from [PyPI](https://pypi.org/)
 
 !!! tip "Use proxy server"
-    Pip recommend setting up proxy server in case of restricted internet access. Please follow [guidelines](https://pip.pypa.io/en/stable/user_guide/#using-a-proxy-server) from Pip regarding setting up proxy server.
+    Pip recommends setting up a proxy server in case of restricted internet access. Please follow the [guidelines](https://pip.pypa.io/en/stable/user_guide/#using-a-proxy-server) from Pip on how to set up a proxy server.
 
 ## Installation
 To install the latest version of the SDK run:
