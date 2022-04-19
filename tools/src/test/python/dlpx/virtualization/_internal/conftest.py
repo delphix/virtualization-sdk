@@ -6,6 +6,7 @@ import configparser
 import copy
 import json
 import os
+import shutil
 
 from importlib import reload
 import yaml
@@ -628,6 +629,16 @@ def snapshot_parameters_definition():
 @pytest.fixture
 def additional_definition():
     return None
+
+
+@pytest.fixture
+def add_symlink_folder_to_src_dir(tmpdir, src_dir):
+    dummy_folder = os.path.join(tmpdir, "dummy_folder")
+    os.mkdir(dummy_folder)
+    shutil.copy2(os.path.join(os.path.dirname(__file__), "__init__.py"), dummy_folder)
+    destination = os.path.join(src_dir, "dummy_folder")
+    os.symlink(dummy_folder, destination)
+    return destination
 
 
 @pytest.fixture
