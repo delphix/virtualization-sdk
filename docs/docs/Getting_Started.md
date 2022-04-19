@@ -16,6 +16,10 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - Python 3.8 (vSDK 4.0.0 and later)
 - Java 7+
 - A Delphix Engine of an [appropriate version](/References/Version_Compatibility.md)
+- An active internet connection to download packages from [PyPI](https://pypi.org/)
+
+!!! tip "Use proxy server"
+    Pip recommends setting up a proxy server in case of restricted internet access. Please follow the [guidelines](https://pip.pypa.io/en/stable/user_guide/#using-a-proxy-server) from Pip on how to set up a proxy server.
 
 ## Installation
 To install the latest version of the SDK run:
