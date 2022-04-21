@@ -5,14 +5,14 @@ theme:
   palette:
     primary:
     accent:
-  logo: 'images/delphix-logo-white.png'
-  favicon: 'images/logo.png'
+  logo: 'images/header_logo.png'
+  favicon: 'images/favicon_logo.png'
   font:
     text: Helvetica Neue
     code: Ubuntu Mono
   feature:
 
-copyright: Copyright &copy; 2021 Delphix Corp.
+copyright: Copyright &copy; 2022 Delphix Corp.
 
 google_analytics:
   - 'UA-35429885-3'
