@@ -4,7 +4,7 @@ import setuptools
 PYTHON_SRC = 'src/main/python'
 
 install_requires = [
-  "dvp-api == 1.6.3",
+  "dvp_api @ file://localhost//Users/vimleshmishra/Delphix/dlpx-app-gate/appliance/server/virtualizationApi/build/libs/python/dist/dvp_api-1.7.0-py3-none-any.whl",
 ]
 
 with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/common/VERSION')) as version_file:
