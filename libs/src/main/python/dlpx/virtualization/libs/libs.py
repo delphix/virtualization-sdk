@@ -468,7 +468,17 @@ def retrieve_credentials(credentials_supplier):
     response = internal_libs.retrieve_credentials(credentials_request)
     response_to_str(response)
     credentials_result = _handle_response(response)
-    if credentials_result.password != "":
+    #
+    # As protobuf definition of credentials_result object has all the
+    # attributes private_key, public_key and password irrespective of
+    # whether it is a keypair or a password credential type, we consider the
+    # object to be password credential type if private_key and public_key is
+    # not set.
+    #
+    if (
+        not credentials_result.key_pair.private_key and
+        not credentials_result.key_pair.public_key
+    ):
         return PasswordCredentials(
             credentials_result.username, credentials_result.password)
     return KeyPairCredentials(
