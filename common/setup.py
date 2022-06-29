@@ -4,7 +4,7 @@ import setuptools
 PYTHON_SRC = 'src/main/python'
 
 install_requires = [
-  "dvp-api @ ",
+  "dvp-api @ https://github.com/SumoSourabh/virtualization-sdk/raw/develop/bin/dvp_api-2.0.0-py3-none-any.whl",
 ]
 
 with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/common/VERSION')) as version_file:
