@@ -18,7 +18,7 @@ class TestPackageUtil:
 
     @staticmethod
     def test_get_engine_api_version():
-        assert package_util.get_engine_api_version_from_settings() == '1.11.11'
+        assert package_util.get_engine_api_version_from_settings() == '1.12.0'
 
     @staticmethod
     def test_get_build_api_version_json():
