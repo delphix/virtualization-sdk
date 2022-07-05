@@ -7,7 +7,7 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/platform/VERSION')) as v
     version = version_file.read().strip()
 
 install_requires = [
-  "dvp_api @ file://localhost//Users/vimleshmishra/Delphix/dlpx-app-gate/appliance/server/virtualizationApi/build/libs/python/dist/dvp_api-1.7.0-py3-none-any.whl",
+  "dvp-api == 1.6.3",
   "dvp-common == {}".format(version),
   "enum34;python_version < '3.4'",
 ]
