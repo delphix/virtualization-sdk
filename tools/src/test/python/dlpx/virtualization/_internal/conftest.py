@@ -369,6 +369,7 @@ def linked_operation():
     linked.worker_impl = None
     linked.mount_specification_impl = None
     linked.source_size_impl = None
+
     return linked
 
 
