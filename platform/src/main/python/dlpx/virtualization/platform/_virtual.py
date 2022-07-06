@@ -842,7 +842,7 @@ class VirtualOperations(object):
         size = self.source_size_impl(
             virtual_source=virtual_source,
             repository=repository,
-            :source_config=source_config)
+            source_config=source_config)
 
         virtual_source_size_response = platform_pb2.VirtualSourceSizeResponse()
         virtual_source_size_response.return_value.database_size = size
