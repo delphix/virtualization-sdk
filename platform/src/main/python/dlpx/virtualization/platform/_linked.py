@@ -32,6 +32,7 @@ class LinkedOperations(object):
         self.status_impl = None
         self.worker_impl = None
         self.mount_specification_impl = None
+        self.source_size_impl = None
 
     def pre_snapshot(self):
         def pre_snapshot_decorator(pre_snapshot_impl):
@@ -100,6 +101,16 @@ class LinkedOperations(object):
             return mount_specification_impl
 
         return mount_specification_decorator
+
+    def source_size(self):
+        def source_size_decorator(source_size_impl):
+            if self.source_size_impl:
+                raise OperationAlreadyDefinedError(Op.LINKED_SOURCE_SIZE)
+            self.source_size_impl = v.check_function(source_size_impl,
+                                                     Op.LINKED_SOURCE_SIZE)
+            return source_size_impl
+
+        return source_size_decorator
 
     def _internal_direct_pre_snapshot(self, request):
         """Pre Snapshot Wrapper for direct plugins.
@@ -237,6 +248,57 @@ class LinkedOperations(object):
 
         return direct_post_snapshot_response
 
+    def _internal_direct_source_size(self, request):
+        """Direct Source Size Wrapper for direct plugins.
+
+        Executed as part of several operations to get the source size
+        of a direct source
+
+        Run source_size operation for a direct source.
+
+        Args:
+           request (DirectSourceSizeRequest): Source Size Request arguments.
+
+        Returns:
+           DirectSourceSizeResponse: A response containing the return value -
+           DirectSourceSizeResult which has source size. In
+           case of errors, response object will contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While linked.source_size() is not a required operation, this should
+        # not be called if it wasn't implemented.
+        #
+        if not self.source_size_impl:
+            raise OperationNotDefinedError(Op.LINKED_SOURCE_SIZE)
+
+        direct_source_definition = LinkedSourceDefinition.from_dict(
+            json.loads(request.direct_source.linked_source.parameters.json))
+        direct_source = DirectSource(
+            guid=request.direct_source.linked_source.guid,
+            connection=RemoteConnection.from_proto(
+                request.direct_source.connection),
+            parameters=direct_source_definition)
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        size = self.source_size_impl(
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config)
+
+        direct_source_size_response = platform_pb2.DirectSourceSizeResponse()
+        direct_source_size_response.return_value.database_size = size
+
+        return direct_source_size_response
+
     def _internal_staged_pre_snapshot(self, request):
         """Pre Snapshot Wrapper for staged plugins.
 
@@ -272,8 +334,8 @@ class LinkedOperations(object):
         staged_mount = request.staged_source.staged_mount
         mount = Mount(remote_environment=RemoteEnvironment.from_proto(
             staged_mount.remote_environment),
-                      mount_path=staged_mount.mount_path,
-                      shared_path=staged_mount.shared_path)
+            mount_path=staged_mount.mount_path,
+            shared_path=staged_mount.shared_path)
         staged_source = StagedSource(
             guid=linked_source.guid,
             source_connection=RemoteConnection.from_proto(
@@ -719,3 +781,62 @@ class LinkedOperations(object):
                 ownership_spec)
 
         return staged_mount_spec_response
+
+    def _internal_staged_source_size(self, request):
+        """Staged Source Size Wrapper for staged plugins.
+
+        Executed as part of several operations to get the source size
+        of a staged source
+
+        Run source_size operation for a staged source.
+
+        Args:
+           request (StagedSourceSizeRequest): Source Size Request arguments.
+
+        Returns:
+           StagedSourceSizeResponse: A response containing the return value -
+           StagedSourceSizeResult which has source size. In
+           case of errors, response object will contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While linked.source_size() is not a required operation, this should
+        # not be called if it wasn't implemented.
+        #
+        if not self.source_size_impl:
+            raise OperationNotDefinedError(Op.LINKED_SOURCE_SIZE)
+
+        staged_source_definition = LinkedSourceDefinition.from_dict(
+            json.loads(request.staged_source.linked_source.parameters.json))
+        mount = Mount(
+            remote_environment=(RemoteEnvironment.from_proto(
+                request.staged_source.staged_mount.remote_environment)),
+            mount_path=request.staged_source.staged_mount.mount_path,
+            shared_path=request.staged_source.staged_mount.shared_path)
+        staged_source = StagedSource(
+            guid=request.staged_source.linked_source.guid,
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
+            parameters=staged_source_definition,
+            mount=mount,
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection))
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        size = self.source_size_impl(
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config)
+
+        staged_source_size_response = platform_pb2.StagedSourceSizeResponse()
+        staged_source_size_response.return_value.database_size = size
+
+        return staged_source_size_response
