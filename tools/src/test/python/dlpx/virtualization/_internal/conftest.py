@@ -368,6 +368,7 @@ def linked_operation():
     linked.status_impl = None
     linked.worker_impl = None
     linked.mount_specification_impl = None
+    linked.source_size_impl = None
 
     return linked
 
@@ -408,6 +409,7 @@ def virtual_operation():
     virtual.status_impl = None
     virtual.initialize_impl = None
     virtual.cleanup_impl = None
+    virtual.source_size_impl = None
 
     return virtual
 
@@ -441,6 +443,7 @@ def plugin_manifest(upgrade_operation):
         'hasLinkedStatus': False,
         'hasLinkedWorker': False,
         'hasLinkedMountSpecification': False,
+        'hasLinkedSourceSize': False,
         'hasVirtualConfigure': True,
         'hasVirtualUnconfigure': False,
         'hasVirtualReconfigure': True,
@@ -450,6 +453,7 @@ def plugin_manifest(upgrade_operation):
         'hasVirtualPostSnapshot': True,
         'hasVirtualMountSpecification': True,
         'hasVirtualStatus': False,
+        'hasVirtualSourceSize': False,
         'hasInitialize': False,
         'migrationIdList': upgrade_operation.migration_id_list,
         'hasVirtualCleanup': False,
@@ -706,7 +710,7 @@ def artifact_content(engine_api, virtual_source_definition,
 
 @pytest.fixture
 def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 11}
+    return {'type': 'APIVersion', 'major': 1, 'minor': 12, 'micro': 0}
 
 
 @pytest.fixture

@@ -358,6 +358,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.linked.worker_impl),
         'hasLinkedMountSpecification':
         bool(plugin_object.linked.mount_specification_impl),
+        'hasLinkedSourceSize':
+        bool(plugin_object.linked.source_size_impl),
         'hasVirtualConfigure':
         bool(plugin_object.virtual.configure_impl),
         'hasVirtualUnconfigure':
@@ -380,6 +382,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.virtual.status_impl),
         'hasInitialize':
         bool(plugin_object.virtual.initialize_impl),
+        'hasVirtualSourceSize':
+        bool(plugin_object.virtual.source_size_impl),
         'migrationIdList':
         plugin_object.upgrade.migration_id_list
     }
