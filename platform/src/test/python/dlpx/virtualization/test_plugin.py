@@ -1317,7 +1317,7 @@ class TestPlugin:
             (my_plugin.upgrade._internal_repository(upgrade_request))
 
         expected_response = platform_pb2.UpgradeResponse()
-        expected_response.return_value.post_upgrade_parameters \
+        expected_response.return_value.post_upgrade_parameters\
             .update(TEST_POST_UPGRADE_PARAMS)
 
         pat = re.compile(
