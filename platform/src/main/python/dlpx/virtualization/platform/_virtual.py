@@ -839,12 +839,12 @@ class VirtualOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        size = self.source_size_impl(
+        source_size = self.source_size_impl(
             virtual_source=virtual_source,
             repository=repository,
             source_config=source_config)
 
         virtual_source_size_response = platform_pb2.VirtualSourceSizeResponse()
-        virtual_source_size_response.return_value.database_size = size
+        virtual_source_size_response.return_value.database_size = source_size
 
         return virtual_source_size_response
