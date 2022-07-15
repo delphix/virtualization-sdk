@@ -120,10 +120,12 @@ while getopts ":hbtm:" option; do
 	esac
 done
 
-if [ ${#multi[@]} -eq 0 ]; then
-	multi=("${modules[@]}")
-fi
+if [ "$should_build" = true ] || [ "$should_test" = true ]; then
+	if [ ${#multi[@]} -eq 0 ]; then
+		multi=("${modules[@]}")
+	fi
 
-for module in "${multi[@]}"; do
-	run_operations "$module"
-done
+	for module in "${multi[@]}"; do
+		run_operations "$module"
+	done
+fi
