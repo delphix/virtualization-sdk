@@ -14,18 +14,23 @@ Help() {
 	echo "Build and Run test cases for python modules common, libs, platform, tools and dvp."
 	echo
 	echo "Syntax: sh build_project.sh -[h|b|t|m]"
-	echo "options:"
-	echo "h     Print this Help."
-	echo "b     Build the modules."
-	echo "t     Run tests for the modules."
-	echo "m     provide a list of modules. Valid python modules: common, libs, platform, tools, dvp."
-	echo ""
-	echo "Examples:"
-	echo "1. Build all -> 'sh build_project.sh -b'"
-	echo "2. Test all -> 'sh build_project.sh -t'"
-	echo "3. Build and test all -> 'sh build_project.sh -bt'"
-	echo "4. Build and test common -> 'sh build_project.sh -bt -m common'"
-	echo "5. Build and test common and libs -> 'sh build_project.sh -bt -m common -m libs'"
+	echo "  Options   |   Description                 |   Examples"
+	echo "     h      |   Print this Help.            |   sh build_project.sh -h"
+	echo "----------------------------------------------------------------------------------------------------"
+	echo "     b      |   Build the modules.          |   sh build_project.sh -b"
+	echo "            |                               |   sh build_project.sh -b -m common"
+	echo "----------------------------------------------------------------------------------------------------"
+	echo "     t      |   Run tests for the modules.  |   sh build_project.sh -t"
+	echo "            |                               |   sh build_project.sh -bt -m tools"
+	echo "----------------------------------------------------------------------------------------------------"
+	echo "     m      |   provide a list of modules.  |   sh build_project.sh -bt -m common -m libs"
+	echo "            |   Valid python modules:       |"
+	echo "            |     - common                  |"
+	echo "            |     - libs                    |"
+	echo "            |     - platform                |"
+	echo "            |     - tools                   |"
+	echo "            |     - dvp                     |"
+	echo "----------------------------------------------------------------------------------------------------"
 	echo
 }
 
@@ -40,29 +45,30 @@ Help() {
 
 # Global variables
 modules=("common" "libs" "platform" "tools" "dvp")
-build=false
-test=false
+should_build=false
+should_test=false
 
 # Run operation for module
 run_operations()  {
 	module_name=$1
-	should_build=$2
-	should_test=$3
 	printf "Operations that will be performed for %s: \n build = %s \n test = %s.\n" "$module_name" "$should_build" "$should_test"
 	current_path="$PWD"
-	module_path="$( get_project_path )/$module_name"
-	cd "$module_path" || xit
+	module_path="$(get_project_path)/$module_name"
+	cd "$module_path" || exit
 	if [ "$should_build" = true ]; then
+		echo "########################################## $module_name build started  ##########################################"
 		build_module
+		echo "########################################## $module_name build complete ##########################################"
 	fi
 	if [ "$should_test" = true ]; then
+		echo "########################################## $module_name tests started  ##########################################"
 		test_module
+		echo "########################################## $module_name tests complete ##########################################"
 	fi
 	cd "$current_path" || exit
-	pwd
 }
 
-# get the module full path
+# get the project full path like Users/test-user/repository/virtualization-sdk
 get_project_path() {
 	SCRIPT_RELATIVE_DIR=$(dirname "${BASH_SOURCE[0]}")
 	cd "$SCRIPT_RELATIVE_DIR" || exit
@@ -85,16 +91,18 @@ test_module()  {
 while getopts ":hbtm:" option; do
 	case $option in
 	h) # display Help
-		Help ;;
+		Help
+		exit
+		;;
 	b) # Build modules
-		build=true ;;
+		should_build=true ;;
 	t) # Test modules
-		test=true ;;
+		should_test=true ;;
 	m) # Check Modules
 		if [[ ${modules[*]} =~ (^|[[:space:]])"$OPTARG"($|[[:space:]]) ]]; then
 			multi+=("$OPTARG")
 		else
-			echo "Modules can be one of [${modules[*]}]." && exit 1
+			echo "Modules must be one of [${modules[*]}]." && exit 1
 		fi ;;
 	\?) # Invalid options.
 		echo "Error: Invalid option"
@@ -116,6 +124,6 @@ if [ ${#multi[@]} -eq 0 ]; then
 	multi=("${modules[@]}")
 fi
 
-for val in "${multi[@]}"; do
-	run_operations "$val" ${build} $test
+for module in "${multi[@]}"; do
+	run_operations "$module"
 done

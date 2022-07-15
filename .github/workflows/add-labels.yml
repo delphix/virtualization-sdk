@@ -1,0 +1,53 @@
+name: "Add labels to pull requests"
+
+on:
+  pull_request:
+    types: [ opened, reopened ]
+
+jobs:
+  addlabels:
+    name: add_labels_to_pull_requests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      ###
+      # Add development-release by default if the pull request is raised with target branch as develop.
+      # A pull request creator can always change it to production-release or no-release based on the files or requirements.
+      # A test case in verify-pr.yml checks for,
+      # - development-release label must have target branch as develop.
+      # - development-release label must not have VERSION files changes.
+      ###
+      - name: Add label to develop branch
+        uses: actions-ecosystem/action-add-labels@v1
+        if: github.base_ref == 'develop'
+        with:
+          labels: |
+            development-release
+
+      ###
+      # Add production-release by default if the pull request is raised with target branch as master.
+      # A pull request creator can always change it to no-release based on the files or requirements.
+      # A test case in verify-pr.yml checks for,
+      # - production-release label must have target branch as develop or master.
+      # - production-release label must have VERSION files changes only if the head branch is not release.
+      ###
+      - name: Add label to master branch
+        uses: actions-ecosystem/action-add-labels@v1
+        if: github.base_ref == 'master'
+        with:
+          labels: |
+            production-release
+
+      ###
+      # Add no-release by default if the pull request is raised with target branch as any other branch.
+      # A pull request creator must not add development-release or production-release for target branch other than
+      # develop or master.
+      ###
+      - name: Add label to other branches
+        uses: actions-ecosystem/action-add-labels@v1
+        if: github.base_ref != 'master' && github.base_ref != 'develop'
+        with:
+          labels: |
+            no-release

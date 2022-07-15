@@ -1,38 +1,122 @@
-name: Publish Python packages to Test PyPi
+name: Publish Python packages to PyPi or TestPyPi
 
 on:
-  # Run on push when the version file has changed on selected branches.
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - master
       - develop
-      - release
-    paths:
-      - 'dvp/src/main/python/dlpx/virtualization/VERSION'
-      - '.github/workflows/publish-python-packages.yml'
+
+env:
+  LABELS: ${{ join( github.event.pull_request.labels.*.name, ' ' ) }}
+  COMMON_PATH: src/main/python/dlpx/virtualization
+  VERSION_FILES: './common/path/common/VERSION ./dvp/path/VERSION ./libs/path/libs/VERSION ./platform/path/platform/VERSION ./tools/path/_internal/VERSION'
+  PACKAGE_PREFIX: dvp
 
 jobs:
-  publish:
+  ###
+  # Job is used to publish the python package to PyPi or TestPyPi.
+  # Job will be invoked if the pull request is merged and pull request merged had labels as development-release or production-release.
+  ###
+  publishPythonPackages:
+    if: github.event.pull_request.merged == true && (contains(github.event.pull_request.labels.*.name, 'development-release') || contains(github.event.pull_request.labels.*.name, 'production-release'))
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [2.7]
-        package: [common, dvp, libs, platform, tools]
-
+        python-version: [3.8]
+        package: [common, libs, platform, tools, dvp]
+    # Output is created with the dvp version which was released to PyPi or TestPyPi.
+    outputs:
+      dvpversion: ${{ steps.setversion.outputs.dvpversion }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+           fetch-depth: 0
+
+      ###
+      # Step checks for all VERSIONs files should have the same version.
+      # If the check passes, set the PACKAGE_VERSION variable to env.
+      ###
+      - name: Get the python package version to publish
+        run: |
+          currentPackageVersion=''
+          for versionFile in ${{ env.VERSION_FILES }}; do
+           versionFile="${versionFile/path/${{ env.COMMON_PATH }}}"
+           if [ -z $currentPackageVersion ]
+           then
+               read -r currentPackageVersion < $versionFile
+           else
+             read -r packageVersion < $versionFile
+             if [[ $packageVersion != $currentPackageVersion ]]
+             then
+               echo "Python Packages do not have the same version. Please make sure common, tools, dvp, platform and libs have the same versions."
+               exit 1
+             fi
+           fi
+          done
+          echo "PACKAGE_VERSION=$(echo $currentPackageVersion)" >> $GITHUB_ENV
+
+      ###
+      # Step perform following tasks
+      # | BRANCH  |       LABEL         |         PYTHON_INDEX            |               PACKAGE_VERSION                     |
+      # | develop | development-release | https://test.pypi.org/legacy/   | should match <MAJOR>.<MINOR>.<PATCH>.dev<RELEASE> |
+      # | develop | production-release  | https://test.pypi.org/legacy/   | should match <MAJOR>.<MINOR>.<PATCH>              |
+      # | master  | production-release  | https://upload.pypi.org/legacy/ | should match <MAJOR>.<MINOR>.<PATCH>              |
+      ###
+      - name: Identify the python index
+        run: |
+          PYTHON_INDEX=""
+          for label in ${{ env.LABELS }}; do
+            if [ $label == "development-release" ] && [ ${{ github.base_ref }} == 'develop' ]
+            then
+              PYTHON_INDEX="https://test.pypi.org/legacy/"
+              if [[ ! $PACKAGE_VERSION =~ ^[0-9].[0-9].[0-9].[a-z]+[0-9]+$ ]]
+              then
+                echo "Python Packages version $PACKAGE_VERSION does not match the development version format of <MAJOR>.<MINOR>.<PATCH>.dev<RELEASE>"
+                exit 1
+              fi
+            elif [ $label == "production-release" ] && [ ${{ github.base_ref }} == 'develop' ]
+            then
+              PYTHON_INDEX="https://test.pypi.org/legacy/"
+              if [[ ! $PACKAGE_VERSION =~ ^[0-9].[0-9].[0-9]$ ]]
+              then
+                echo "Python Packages version $PACKAGE_VERSION does not match the production version format of <MAJOR>.<MINOR>.<PATCH>."
+                exit 1
+              fi
+            elif [ $label == "production-release" ] && [ ${{ github.base_ref }} == 'master' ]
+            then
+              PYTHON_INDEX="https://upload.pypi.org/legacy/"
+              if [[ ! $PACKAGE_VERSION =~ ^[0-9].[0-9].[0-9]$ ]]
+              then
+                echo "Python Packages version $PACKAGE_VERSION does not match the production version format of <MAJOR>.<MINOR>.<PATCH>."
+                exit 1
+              fi
+            fi
+          done
+          if [ -z $PYTHON_INDEX ]
+          then
+            echo "Python package will be deployed from master or develop branches with development-release or production-release labels."
+            exit 1
+          fi
+          echo "PYTHON_INDEX=$(echo $PYTHON_INDEX)" >> $GITHUB_ENV
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       # Install dependencies necessary for building and publishing the package.
       - name: Install dependencies
         run: |
           pip install setuptools wheel twine
-      # Build each Python package and publish it to Test PyPi.
-      - name: Build and publish ${{ matrix.package }} package
+
+      # Build each Python package and publish it to TestPyPi.
+      - name: Build and publish ${{ matrix.package }} package to TestPyPi
         working-directory: ${{ matrix.package }}
+        if: env.PYTHON_INDEX == 'https://test.pypi.org/legacy/'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.VSDK_PYPI_TOKEN }}
@@ -40,3 +124,101 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
           twine upload dist/*
+
+      ###
+      # Download the whl and tar file form TestPyPi for the version to be released to PyPI.
+      # Upload the downloaded content to PyPi.
+      ###
+      - name: Build and publish ${{ matrix.package }} package to PyPi
+        working-directory: ${{ matrix.package }}
+        if: env.PYTHON_INDEX == 'https://upload.pypi.org/legacy/'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.VSDK_PYPI_TOKEN }}
+          TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+        run: |
+          packageName=${{ env.PACKAGE_PREFIX }}
+          if [ ${{ matrix.package }} != ${{ env.PACKAGE_PREFIX }} ]
+          then
+            packageName=${{ env.PACKAGE_PREFIX }}-${{ matrix.package }}
+          fi
+          pip download $packageName==$PACKAGE_VERSION -d dist --no-deps --no-binary :all: --index-url https://test.pypi.org/simple/
+          pip download $packageName==$PACKAGE_VERSION -d dist --no-deps --only-binary :all: --index-url https://test.pypi.org/simple/
+          twine upload dist/*
+
+      # Set the PACKAGE_VERSION to output dvpversion
+      - name: Set package version to outputs
+        id: setversion
+        run: echo "::set-output name=dvpversion::$PACKAGE_VERSION"
+
+  ###
+  # - Run the job is target branch is develop and label is development-release.
+  # - Bump up the version in VERSION files.
+  ###
+  postDevelopmentReleaseTasks:
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'develop' && contains (github.event.pull_request.labels.*.name, 'development-release')
+    needs:
+      - publishPythonPackages
+    steps:
+      # TODO: update this when bump up action is available
+      - name: Bump up VERSION files
+        run: |
+          echo "update version ${{ needs.publishPythonPackages.outputs.dvpversion }} when bump up action is available."
+
+  ###
+  # - Run the job is target branch is develop and label is production-release.
+  # - Create a PR by creating a release branch from develop and raise it to target branch as master.
+  # - Bump up the version in develop.
+  ###
+  postTestPypiReleaseTasks:
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'develop' && contains (github.event.pull_request.labels.*.name, 'production-release')
+    needs:
+      - publishPythonPackages
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Create release branch
+        run: |
+          git checkout -b release develop
+          git push origin release
+
+      - name: Create pull request into master
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: release
+          destination_branch: master
+          pr_title: |
+            Release version ${{ needs.publishPythonPackages.outputs.dvpversion }} to PyPi.
+          pr_body: |
+            This is an automated pull request created after pushing dvp version ${{ needs.publishPythonPackages.outputs.dvpversion }} to TestPyPi.
+            Please follow below steps :
+              - Make sure all the checks are successful.
+              - Get required approvals from code owners.
+            Once done, merge the pull request with merge commit (do not use a squash commit!).
+              - Merge should invoke a release to pypi.
+          pr_label: production-release
+          pr_draft: false
+
+      # TODO: update this when bump up action is available
+      - name: Bump up VERSION files
+        run: |
+          echo "update version ${{ needs.publishPythonPackages.outputs.dvpversion }} when bump up action is available."
+
+  ###
+  # - Run the job is target branch is master and label is production-release.
+  ###
+  postPypiReleaseTasks:
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'master' && contains (github.event.pull_request.labels.*.name, 'production-release')
+    needs:
+      - publishPythonPackages
+    steps:
+      - name: Delete release branch
+        run: |
+          git push origin --delete release
