@@ -289,13 +289,13 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        source_size = self.source_size_impl(
+        size = self.source_size_impl(
             direct_source=direct_source,
             repository=repository,
             source_config=source_config)
 
         direct_source_size_response = platform_pb2.DirectSourceSizeResponse()
-        direct_source_size_response.return_value.database_size = source_size
+        direct_source_size_response.return_value.database_size = size
 
         return direct_source_size_response
 
@@ -831,12 +831,12 @@ class LinkedOperations(object):
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
 
-        source_size = self.source_size_impl(
+        size = self.source_size_impl(
             staged_source=staged_source,
             repository=repository,
             source_config=source_config)
 
         staged_source_size_response = platform_pb2.StagedSourceSizeResponse()
-        staged_source_size_response.return_value.database_size = source_size
+        staged_source_size_response.return_value.database_size = size
 
         return staged_source_size_response
