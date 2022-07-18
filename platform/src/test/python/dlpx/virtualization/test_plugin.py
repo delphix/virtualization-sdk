@@ -1198,13 +1198,11 @@ class TestPlugin:
                                           repository=repository,
                                           source_config=source_config)
             return 0
-
         staged_source_size_request = platform_pb2.StagedSourceSizeRequest()
         TestPlugin.setup_request(request=staged_source_size_request,
                                  staged_source=staged_source,
                                  repository=repository,
                                  source_config=source_config)
-
         staged_source_size_response = my_plugin.linked._internal_staged_source_size(
             staged_source_size_request)
 
