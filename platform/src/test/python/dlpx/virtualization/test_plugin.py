@@ -65,8 +65,8 @@ TEST_POST_MIGRATION_METADATA_2 = (json.dumps({
 }))
 TEST_POST_UPGRADE_PARAMS = ({
     u'obj':
-        '"{\\"obj\\": {\\"name\\": \\"upgrade\\", '
-        '\\"prettyName\\": \\"prettyUpgrade\\", \\"metadata\\": \\"metadata\\"}}"'
+    '"{\\"obj\\": {\\"name\\": \\"upgrade\\", '
+    '\\"prettyName\\": \\"prettyUpgrade\\", \\"metadata\\": \\"metadata\\"}}"'
 })
 
 MIGRATION_IDS = ('2020.1.1', '2020.2.2')
@@ -94,6 +94,7 @@ class TestPlugin:
             pass
 
         with pytest.raises(OperationAlreadyDefinedError):
+
             @my_plugin.virtual.configure()  # noqa F811
             def configure_impl():  # noqa F811
                 pass
@@ -1187,26 +1188,6 @@ class TestPlugin:
         expected_status = platform_pb2.StagedStatusResult().ACTIVE
 
         assert staged_status_response.return_value.status == expected_status
-
-    @staticmethod
-    def test_source_size(my_plugin, staged_source, repository,
-                         source_config):
-
-        @my_plugin.linked.source_size()
-        def staged_source_size_impl(staged_source, repository, source_config):
-            TestPlugin.assert_plugin_args(staged_source=staged_source,
-                                          repository=repository,
-                                          source_config=source_config)
-            return 0
-        staged_source_size_request = platform_pb2.StagedSourceSizeRequest()
-        TestPlugin.setup_request(request=staged_source_size_request,
-                                 staged_source=staged_source,
-                                 repository=repository,
-                                 source_config=source_config)
-        staged_source_size_response = my_plugin.linked._internal_staged_source_size(
-            staged_source_size_request)
-
-        assert staged_source_size_response.return_value.database_size == 0
 
     @staticmethod
     def test_staged_worker(my_plugin, staged_source, repository,
