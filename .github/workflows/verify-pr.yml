@@ -61,7 +61,7 @@ jobs:
             exit 1
           fi
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-              if [[ $file == *"VERSION"* ]] || [[ $file == *".bumpversion.cfg" ]]
+              if [[ $file == *"VERSION"* ]] || [[ $file == *".bumpversion.cfg"* ]] || [[ $file == *"settings.cfg"* ]]
               then
                   echo "Pull request with development-release label must not have VERSION updates to python Packages."
                   exit 1
