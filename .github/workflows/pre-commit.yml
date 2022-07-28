@@ -2,7 +2,7 @@ name: "Pre-commit actions for Delphix Virtualization SDK"
 
 on:
   # It is important to check the commits done to master, develop and release branches only.
-  pull_request_target:
+  pull_request:
     branches:
       - master
       - develop
