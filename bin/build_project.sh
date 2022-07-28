@@ -7,14 +7,32 @@
 # to build and run test cases for specific python packages also.
 
 ############################################################
+# Global Variables                                         #
+############################################################
+modules=("common" "libs" "platform" "tools" "dvp")
+should_build=false
+should_test=false
+verbose=false
+screenSize=$(tput cols)
+equalFiller="="
+greenColor=$(tput setaf 10)
+orangeColor=$(tput setaf 208)
+noColor=$(tput sgr0)
+
+############################################################
 # Help                                                     #
 ############################################################
 Help() {
 	# Display Help
 	echo "Build and Run test cases for python modules common, libs, platform, tools and dvp."
 	echo
-	echo "Syntax: sh build_project.sh -[h|b|t|m]"
+	tput setaf 1
+	echo "Syntax: sh build_project.sh -[h|b|t|v|m]"
+	tput sgr0
+	tput bold
 	echo "  Options   |   Description                 |   Examples"
+	tput sgr0
+	echo "----------------------------------------------------------------------------------------------------"
 	echo "     h      |   Print this Help.            |   sh build_project.sh -h"
 	echo "----------------------------------------------------------------------------------------------------"
 	echo "     b      |   Build the modules.          |   sh build_project.sh -b"
@@ -22,6 +40,9 @@ Help() {
 	echo "----------------------------------------------------------------------------------------------------"
 	echo "     t      |   Run tests for the modules.  |   sh build_project.sh -t"
 	echo "            |                               |   sh build_project.sh -bt -m tools"
+	echo "----------------------------------------------------------------------------------------------------"
+	echo "     v      |   Verbose mode on             |   sh build_project.sh -t -v"
+	echo "            |                               |   sh build_project.sh -bvt -m tools"
 	echo "----------------------------------------------------------------------------------------------------"
 	echo "     m      |   provide a list of modules.  |   sh build_project.sh -bt -m common -m libs"
 	echo "            |   Valid python modules:       |"
@@ -43,27 +64,21 @@ Help() {
 # Process the input options. Add options as needed.        #
 ############################################################
 
-# Global variables
-modules=("common" "libs" "platform" "tools" "dvp")
-should_build=false
-should_test=false
-
 # Run operation for module
 run_operations()  {
 	module_name=$1
-	printf "Operations that will be performed for %s: \n build = %s \n test = %s.\n" "$module_name" "$should_build" "$should_test"
 	current_path="$PWD"
 	module_path="$(get_project_path)/$module_name"
 	cd "$module_path" || exit
 	if [ "$should_build" = true ]; then
-		echo "########################################## $module_name build started  ##########################################"
+		print_as_per_screen_size " $module_name build starts " "${orangeColor}" ${equalFiller} "${screenSize}"
 		build_module
-		echo "########################################## $module_name build complete ##########################################"
+		print_as_per_screen_size " $module_name build complete " "${greenColor}" ${equalFiller} "${screenSize}"
 	fi
 	if [ "$should_test" = true ]; then
-		echo "########################################## $module_name tests started  ##########################################"
+		print_as_per_screen_size " $module_name tests starts " "${orangeColor}" ${equalFiller} "${screenSize}"
 		test_module
-		echo "########################################## $module_name tests complete ##########################################"
+		print_as_per_screen_size " $module_name tests complete " "${greenColor}" ${equalFiller} "${screenSize}"
 	fi
 	cd "$current_path" || exit
 }
@@ -78,17 +93,42 @@ get_project_path() {
 
 # Build the module
 build_module()  {
-	pip install -r requirements.txt
-	pip install -e .
+	if [ "$verbose" = true ]; then
+		pip install -v -r requirements.txt
+		pip install -v -e .
+	else
+		pip install -q -r requirements.txt --ignore-installed
+		pip install -q -e .
+	fi
 }
 
 # Test the module
 test_module()  {
-	python -m pytest src/test/python
+	if [ "$verbose" = true ]; then
+		python -m pytest -v src/test/python
+	else
+		python -m pytest src/test/python
+	fi
+}
+
+# Print the provided input in the center of screen by appending and prepending fillers.
+print_as_per_screen_size() {
+	input="$1"
+	color=$2
+	filler=$3
+	columns=$4
+	width="${#input}"
+	adjust=$(((columns - width) / 2))
+	printf "${filler}%.0s" $(seq $adjust)
+	printf "${color}%s${noColor}" "${input}"
+	if [[ $((width % 2)) -eq 0 ]]; then
+		adjust=$((adjust + 1))
+	fi
+	printf "${filler}%.0s" $(seq $adjust)
 }
 
 # Get the options
-while getopts ":hbtm:" option; do
+while getopts ":hbtvm:" option; do
 	case $option in
 	h) # display Help
 		Help
@@ -104,6 +144,8 @@ while getopts ":hbtm:" option; do
 		else
 			echo "Modules must be one of [${modules[*]}]." && exit 1
 		fi ;;
+	v) # Verbose mode
+		verbose=true ;;
 	\?) # Invalid options.
 		echo "Error: Invalid option"
 		help
