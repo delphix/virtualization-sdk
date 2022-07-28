@@ -1,158 +1,68 @@
-name: Pre-commit actions for Delphix Virtualization SDK
+name: "Pre-commit actions for Delphix Virtualization SDK"
 
-on: [pull_request]
+on:
+  # It is important to check the commits done to master, develop and release branches only.
+  pull_request:
+    branches:
+      - master
+      - develop
+      - release
+  # Below is done to call this workflow when PR are created on master branch by another workflow.
+  # Workflow initiated by a github_bot can not invoke another workflow.
+  pull_request_review:
+    types: [ submitted ]
+    branches:
+      - master
 
 jobs:
-  pytest27:
-    name: Test ${{ matrix.package }} on ${{ matrix.os }} using pytest (Python 2.7)
-    runs-on: ${{ matrix.os }}
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [2.7]
-        os: [ubuntu-latest, macos-10.15, windows-latest]
-        package: [common, libs, platform]
-
-    steps:
-    - name: Checkout ${{ matrix.package }} project
-      uses: actions/checkout@v3
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install ${{ matrix.package }} dependencies
-      working-directory: ${{ matrix.package }}
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt --find-links https://test.pypi.org/simple/dvp-api/
-
-    - name: Install ${{ matrix.package }} project
-      working-directory: ${{ matrix.package }}
-      run: |
-        pip install . --find-links https://test.pypi.org/simple/dvp-api/
-
-    - name: Test ${{ matrix.package }} project with pytest
-      working-directory: ${{ matrix.package }}
-      run: |
-        python -m pytest src/test/python
-
   pytest38:
     name: Test ${{ matrix.package }} on ${{ matrix.os }} using pytest (Python 3.8)
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        package: [common, libs, platform, tools]
+        python-version: [ 3.8 ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        package: [ common, libs, platform, tools ]
 
     steps:
-    - name: Checkout ${{ matrix.package }} project
-      uses: actions/checkout@v1
+      - name: Checkout ${{ matrix.package }} project
+        uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install ${{ matrix.package }} dependencies
-      working-directory: ${{ matrix.package }}
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt --find-links https://test.pypi.org/simple/dvp-api/
-
-    - name: Install ${{ matrix.package }} project
-      working-directory: ${{ matrix.package }}
-      run: |
-        pip install . --find-links https://test.pypi.org/simple/dvp-api/
-
-    - name: Test ${{ matrix.package }} project with pytest
-      working-directory: ${{ matrix.package }}
-      run: |
-        python -m pytest src/test/python
-
-  lintpython27:
-    name: Lint ${{ matrix.package }} - Python27
-
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        package: [common, libs, platform]
-
-    steps:
-      - name: Checkout ${{ matrix.package }}
-        uses: actions/checkout@v1
-
-      - name: Set up Python 2.7
-        uses: actions/setup-python@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          python-version: 2.7
+          python-version: ${{ matrix.python-version }}
 
-      - name: Install flake8
+      - name: Install ${{ matrix.package }} dependencies
+        working-directory: ${{ matrix.package }}
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt --find-links https://test.pypi.org/simple/dvp-api/
+
+      - name: Install ${{ matrix.package }} project
+        working-directory: ${{ matrix.package }}
+        run: |
+          pip install . --find-links https://test.pypi.org/simple/dvp-api/
+
+      # Run all the test cases part of the package.
+      - name: Test ${{ matrix.package }} project with pytest
+        working-directory: ${{ matrix.package }}
+        run: |
+          python -m pytest src/test/python
+
+      # Install flake8 and run linting on src and test for linting if OS is ubuntu.
+      - name: Install flake8
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
           pip install flake8
 
-      - name: Run flake8 on src directory
+      - name: Run flake8 for linting src directory
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         working-directory: ${{ matrix.package }}
         run: python -m flake8 src/main/python --max-line-length 88
 
-      - name: Run flake8 on test directory
+      - name: Run flake8 for linting test directory
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         working-directory: ${{ matrix.package }}
         run: python -m flake8 src/test/python --max-line-length 88
-
-  lintpython38:
-    name: Lint ${{ matrix.package }} - Python38
-
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        package: [common, libs, platform, tools]
-
-    steps:
-      - name: Checkout ${{ matrix.package }}
-        uses: actions/checkout@v1
-
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-
-      - name: Install flake8
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-
-      - name: Run flake8 on src directory
-        working-directory: ${{ matrix.package }}
-        run: python -m flake8 src/main/python --max-line-length 88
-
-      - name: Run flake8 on test directory
-        working-directory: ${{ matrix.package }}
-        run: python -m flake8 src/test/python --max-line-length 88
-
-  #format:
-    #name: Check format ${{ matrix.package}}
-
-    #runs-on: ubuntu-latest
-    #strategy:
-      #max-parallel: 4
-      #matrix:
-        #package: [common, libs, platform, tools]
-      
-    #steps:
-      #- uses: actions/checkout@v1
-      
-      #- name: Check src format
-        #uses: lgeiger/black-action@v1.0.1
-        #with:
-          #args: "${{ matrix.package }}/src/main/python -t py27 --check"
-     
-      #- name: Check test format
-        #uses: lgeiger/black-action@v1.0.1
-        #with:
-          #args: "${{ matrix.package }}/src/test/python -t py27 --check"

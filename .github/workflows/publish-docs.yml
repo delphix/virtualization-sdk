@@ -16,42 +16,52 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
-        package: [docs]
-        repository: ['delphix/virtualization-sdk']
+        python-version: [ 3.7 ]
+        package: [ docs ]
+        repository: [ 'delphix/virtualization-sdk' ]
 
     steps:
+      ###
+      # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow.
+      # Set fetch-depth: 0 to fetch all history for all branches and tags.
+      ###
       - uses: actions/checkout@v2
         with:
-          # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow.
-          # Set fetch-depth: 0 to fetch all history for all branches and tags.
           fetch-depth: 0
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
+      ###
+      # Set CURRENT_BRANCH environment variable to the current branch name. Refrain from using 'set-env' as
+      # GitHub has identified the command as a moderate security vulnerability.
+      ###
       - name: Set the current branch environment variable
         working-directory: ${{ matrix.package }}
         run: |
           CURRENT_BRANCH_VAR=${GITHUB_REF#refs/heads/}
           echo "Current branch: $CURRENT_BRANCH_VAR"
-          # Set CURRENT_BRANCH environment variable to the current branch name. Refrain from using 'set-env' as
-          # GitHub has identified the command as a moderate security vulnerability.
           echo "CURRENT_BRANCH=$(echo $CURRENT_BRANCH_VAR)" >> $GITHUB_ENV
+
+      # Display all remote branches
       - name: Display all remote branches
         working-directory: ${{ matrix.package }}
-        run: |
-          # Display all remote branches
-          git branch -r
+        run: git branch -r
+
+      ###
+      # Get only docs branches, extract the "docs/x.y.z" part, sort them in descending order, and get the first one.
+      # Set the LATEST_DOCS_BRANCH environment variable. Refrain from using 'set-env' as GitHub has identified the
+      # command as a moderate security vulnerability.
+      ###
       - name: Set the latest docs branch environment variable
         working-directory: ${{ matrix.package }}
         run: |
-          # Get only docs branches, extract the "docs/x.y.z" part, sort them in descending order, and get the first one.
           LATEST_DOCS_BRANCH_VAR=$(git branch -r | grep -e ".*\/*docs\/[0-9].[0-9].[0-9]" | sed -n "s/.*\/*\(docs\/[0-9].[0-9].[0-9]\).*/\1/p" | sort -r | head -n 1)
           echo "Latest docs branch: $LATEST_DOCS_BRANCH_VAR"
-          # Set the LATEST_DOCS_BRANCH environment variable. Refrain from using 'set-env' as GitHub has identified the
-          # command as a moderate security vulnerability.
           echo "LATEST_DOCS_BRANCH=$(echo $LATEST_DOCS_BRANCH_VAR)" >> $GITHUB_ENV
+
       - name: Check that the current branch is the latest docs branch, fail otherwise
         working-directory: ${{ matrix.package }}
         run: |
@@ -61,16 +71,19 @@ jobs:
           else
             echo "The action is running on the latest docs branch."
           fi
+
       - name: Install Pipenv
         uses: dschep/install-pipenv-action@v1
+
       - name: Install dependencies for building documenation
         working-directory: ${{ matrix.package }}
-        run: |
-          pipenv install
+        run: pipenv install
+
       - name: Build documentation
         working-directory: ${{ matrix.package }}
-        run: |
-          pipenv run mkdocs build --clean
+        run: pipenv run mkdocs build --clean
+
+      # Docs will be pushed to developer.delphix.com if the repository is delphix/virtualization-sdk.
       - name: Deploy the contents of docs/site to gh-pages (developer.delphix.com) 🚀
         if: ${{ github.repository == matrix.repository }}
         uses: peaceiris/actions-gh-pages@v3
@@ -81,6 +94,7 @@ jobs:
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           cname: developer.delphix.com
+
       - name: Deploy the contents of docs/site to personal gh-pages 🚀
         if: ${{ github.repository != matrix.repository }}
         uses: peaceiris/actions-gh-pages@v3
