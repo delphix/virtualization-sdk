@@ -71,11 +71,13 @@ run_operations()  {
 	module_path="$(get_project_path)/$module_name"
 	cd "$module_path" || exit
 	if [ "$should_build" = true ]; then
+		echo
 		print_as_per_screen_size " $module_name build starts " "${orangeColor}" ${equalFiller} "${screenSize}"
 		build_module
 		print_as_per_screen_size " $module_name build complete " "${greenColor}" ${equalFiller} "${screenSize}"
 	fi
 	if [ "$should_test" = true ]; then
+		echo
 		print_as_per_screen_size " $module_name tests starts " "${orangeColor}" ${equalFiller} "${screenSize}"
 		test_module
 		print_as_per_screen_size " $module_name tests complete " "${greenColor}" ${equalFiller} "${screenSize}"
@@ -94,11 +96,11 @@ get_project_path() {
 # Build the module
 build_module()  {
 	if [ "$verbose" = true ]; then
-		pip install -v -r requirements.txt
-		pip install -v -e .
+		pip install -r requirements.txt -v
+		pip install -e . -v
 	else
-		pip install -q -r requirements.txt --ignore-installed
-		pip install -q -e .
+		pip install -r requirements.txt -q
+		pip install -e . -q
 	fi
 }
 
@@ -125,6 +127,7 @@ print_as_per_screen_size() {
 		adjust=$((adjust + 1))
 	fi
 	printf "${filler}%.0s" $(seq $adjust)
+	printf "\n"
 }
 
 # Get the options
@@ -148,7 +151,7 @@ while getopts ":hbtvm:" option; do
 		verbose=true ;;
 	\?) # Invalid options.
 		echo "Error: Invalid option"
-		help
+		Help
 		exit 1
 		;;
 	:) # Missing arguments
