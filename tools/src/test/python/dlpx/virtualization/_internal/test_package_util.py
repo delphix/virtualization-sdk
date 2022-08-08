@@ -52,4 +52,4 @@ class TestPackageUtil:
     ])
     def test_get_external_version_string(version_string):
         assert package_util.get_external_version_string(
-            version_string) == '1.11.16'
+            version_string) == '1.1.0'
