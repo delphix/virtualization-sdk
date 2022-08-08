@@ -35,8 +35,8 @@ class TestPackageUtil:
         engine_api_version = {
             'type': 'APIVersion',
             'major': 1,
-            'minor': 12,
-            'micro': 0
+            'minor': 11,
+            'micro': 16
         }
         assert package_util.get_engine_api_version() == engine_api_version
 
