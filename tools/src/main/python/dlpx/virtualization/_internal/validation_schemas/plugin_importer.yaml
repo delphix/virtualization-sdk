@@ -38,6 +38,10 @@ EXPECTED_STAGED_ARGS_BY_OP:
     mount_specification_impl:
       - staged_source
       - repository
+    source_size_impl:
+      - staged_source
+      - repository
+      - source_config
   VirtualOperations:
     configure_impl:
       - virtual_source
@@ -82,6 +86,11 @@ EXPECTED_STAGED_ARGS_BY_OP:
     mount_specification_impl:
       - virtual_source
       - repository
+    source_size_impl:
+      - virtual_source
+      - repository
+      - source_config
+
 
 
 EXPECTED_DIRECT_ARGS_BY_OP:
@@ -102,6 +111,10 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - repository
       - source_config
       - optional_snapshot_parameters
+    source_size_impl:
+      - direct_source
+      - repository
+      - source_config
   VirtualOperations:
     configure_impl:
       - virtual_source
@@ -146,6 +159,10 @@ EXPECTED_DIRECT_ARGS_BY_OP:
     mount_specification_impl:
       - virtual_source
       - repository
+    source_size_impl:
+      - virtual_source
+      - repository
+      - source_config
 
 EXPECTED_UPGRADE_ARGS:
   _repository_id_to_impl:
