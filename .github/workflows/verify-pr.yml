@@ -2,9 +2,9 @@ name: "Verify pull requests"
 
 on:
   pull_request:
-    types: [labeled, unlabeled]
+    types: [ labeled, unlabeled ]
   pull_request_review:
-    types: [submitted]
+    types: [ submitted ]
 
 env:
   LABELS: ${{ join( github.event.pull_request.labels.*.name, ' ' ) }}
@@ -83,7 +83,7 @@ jobs:
           if [ ${{ github.head_ref }} != 'release' ]
           then
             for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-              if [[ $file != *"VERSION"* ]] && [[ $file != *".bumpversion.cfg"* ]]
+              if [[ $file != *"VERSION"* ]] && [[ $file != *".bumpversion.cfg"* ]] && [[ $file != *"test_package_util.py"* ]]
               then
                   echo "Pull request with production-release label must only have VERSION updates to python Packages."
                   exit 1

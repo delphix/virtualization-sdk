@@ -1,0 +1,46 @@
+name: "Bump-up the version on develop branch"
+
+on:
+  workflow_call:
+    inputs:
+      flag:
+        required: true
+        type: string
+      currentVersion:
+        required: true
+        type: string
+
+jobs:
+  bumpversion:
+    name: Bump-up the current version ${{ inputs.currentVersion }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      # Install bumpversion dependencies, necessary for bumping-up the version.
+      - name: Install bumpversion dependencies
+        run: |
+          pip install bumpversion
+
+      # Bumping-up the patch version
+      - name: Bump-up the patch version
+        if: inputs.flag == 'patch'
+        run: |
+          bumpversion patch
+
+      # Bumping-up the dev version
+      - name: Bump-up the dev version
+        if: inputs.flag == 'dev'
+        run: |
+          bumpversion dev
+
+        # Committing and pushing the changes
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Action: Bump-up Version"
+          git config --global user.email "username@users.noreply.github.com"
+          git commit -a -m "Bumping-up the ${{ inputs.flag }} version from ${{ inputs.currentVersion }}"
+          git push
