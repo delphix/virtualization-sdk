@@ -61,7 +61,7 @@ jobs:
       - name: Test tools project with pytest
         working-directory: tools
         run: |
-          python -m pytest src/test/python
+          python -m pytest -s src/test/python
 
       # Install flake8 and run linting on src and test for linting if OS is ubuntu.
       - name: Install flake8
