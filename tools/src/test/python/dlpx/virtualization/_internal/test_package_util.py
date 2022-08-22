@@ -2,43 +2,43 @@
 # Copyright (c) 2019, 2022 by Delphix. All rights reserved.
 #
 import os
-from dlpx.virtualization._internal import package_util
 
 import pytest
+
+from dlpx.virtualization._internal import package_util
+
+DVP_VERSION = '4.0.5.dev1'
+DVP_API_VERSION = '1.7.0'
 
 
 class TestPackageUtil:
     @staticmethod
     def test_get_version():
-        assert package_util.get_version() == '4.0.5.dev1'
+        assert package_util.get_version() == DVP_VERSION
 
     @staticmethod
     def test_get_virtualization_api_version():
-        assert package_util.get_virtualization_api_version() == '1.7.0'
+        assert package_util.get_virtualization_api_version() == DVP_API_VERSION
 
     @staticmethod
-    def test_get_engine_api_version():
-        assert package_util.get_engine_api_version_from_settings() == '1.12.0'
+    def test_get_engine_api_version(engine_api_version_string):
+        assert package_util.get_engine_api_version_from_settings() == engine_api_version_string
 
     @staticmethod
     def test_get_build_api_version_json():
+        major, minor, micro = (
+            int(n) for n in DVP_API_VERSION.split('.'))
         build_api_version = {
             'type': 'APIVersion',
-            'major': 1,
-            'minor': 7,
-            'micro': 0
+            'major': major,
+            'minor': minor,
+            'micro': micro
         }
         assert package_util.get_build_api_version() == build_api_version
 
     @staticmethod
-    def test_get_engine_api_version_json():
-        engine_api_version = {
-            'type': 'APIVersion',
-            'major': 1,
-            'minor': 12,
-            'micro': 0
-        }
-        assert package_util.get_engine_api_version() == engine_api_version
+    def test_get_engine_api_version_json(engine_api):
+        assert package_util.get_engine_api_version() == engine_api
 
     @staticmethod
     def test_get_internal_package_root():

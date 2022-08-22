@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2022 by Delphix. All rights reserved.
 #
 
 import configparser
@@ -7,14 +7,16 @@ import copy
 import json
 import os
 import shutil
-
 from importlib import reload
-import yaml
-from dlpx.virtualization._internal import cli, click_util, const, package_util
-from dlpx.virtualization._internal.commands import build
-from dlpx.virtualization.common.util import to_bytes, to_str
 
 import pytest
+import yaml
+from dlpx.virtualization.common.util import to_bytes, to_str
+
+from dlpx.virtualization import _internal as virtualization_internal
+from dlpx.virtualization._internal import cli, click_util, const, package_util
+from dlpx.virtualization._internal.commands import build
+
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
@@ -709,8 +711,25 @@ def artifact_content(engine_api, virtual_source_definition,
 
 
 @pytest.fixture
-def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 12, 'micro': 0}
+def engine_api_version_string():
+    """
+    Returns the engine api version from engine_version.cfg file.
+    """
+    return _get_engine_version().get('General', 'engine_api_version')
+
+
+@pytest.fixture
+def engine_api(engine_api_version_string):
+    """Returns the engine api version in JSON format."""
+    major, minor, micro = (
+        int(n) for n in engine_api_version_string.split('.'))
+    engine_api_version = {
+        'type': 'APIVersion',
+        'major': major,
+        'minor': minor,
+        'micro': micro
+    }
+    return engine_api_version
 
 
 @pytest.fixture
@@ -796,3 +815,27 @@ def codegen_gen_py_inputs(plugin_config_file, plugin_name, src_dir, tmpdir,
             self.schema_dict = schema_dict
 
     return CodegenInput(plugin_name, src_dir, tmpdir.strpath, schema_content)
+
+
+def _get_engine_version():
+    """
+    Reads the engine_version.cfg file and constructs a Python object from it.
+
+    This assumes that the engine_version.cfg file is in the root
+    of dlpx.virtualization._internal.
+    """
+    parser = configparser.ConfigParser()
+    parser.read(os.path.join(get_test_internal_package_root(), 'engine_version.cfg'))
+    return parser
+
+
+def get_test_internal_package_root():
+    """
+    Returns the root directory of the dlpx.virtualization._internal package.
+    """
+    for path in virtualization_internal.__path__:
+        engine_path = os.path.join(path, 'engine_version.cfg')
+        if os.path.isfile(engine_path):
+            return path
+    else:
+        raise RuntimeError('Could not find settings file')

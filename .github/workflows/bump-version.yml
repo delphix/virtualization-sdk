@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2022 by Delphix. All rights reserved.
+#
+
 name: "Bump-up the version on develop branch"
 
 on:
@@ -37,7 +41,42 @@ jobs:
         run: |
           bumpversion dev
 
-        # Committing and pushing the changes
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install tools dependencies
+        working-directory: tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --find-links https://test.pypi.org/simple/dvp-api/
+
+      - name: Install tools project
+        working-directory: tools
+        run: |
+          pip install . --find-links https://test.pypi.org/simple/dvp-api/
+
+      # Run all the test cases part of the package.
+      - name: Test tools project with pytest
+        working-directory: tools
+        run: |
+          python -m pytest src/test/python
+
+      # Install flake8 and run linting on src and test for linting if OS is ubuntu.
+      - name: Install flake8
+        run: |
+          pip install flake8
+
+      - name: Run flake8 for linting src directory
+        working-directory: tools
+        run: python -m flake8 src/main/python --max-line-length 88
+
+      - name: Run flake8 for linting test directory
+        working-directory: tools
+        run: python -m flake8 src/test/python --max-line-length 88
+
+      # Committing and pushing the changes
       - name: Commit and Push
         run: |
           git config --global user.name "GitHub Action: Bump-up Version"

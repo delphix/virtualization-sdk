@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2020, 2022 by Delphix. All rights reserved.
+#
+
 name: Publish docs to GitHub pages
 
 on:
