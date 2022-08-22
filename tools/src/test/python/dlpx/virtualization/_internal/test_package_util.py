@@ -22,7 +22,8 @@ class TestPackageUtil:
 
     @staticmethod
     def test_get_engine_api_version(engine_api_version_string):
-        assert package_util.get_engine_api_version_from_settings() == engine_api_version_string
+        assert package_util.get_engine_api_version_from_settings() \
+               == engine_api_version_string
 
     @staticmethod
     def test_get_build_api_version_json():

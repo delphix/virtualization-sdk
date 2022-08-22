@@ -22,7 +22,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
         with:
-          ref: develop
+          ref: testing
 
       # Install bumpversion dependencies, necessary for bumping-up the version.
       - name: Install bumpversion dependencies
