@@ -65,7 +65,8 @@ class RemoteConnection(object):
         return self.__user
 
     def to_proto(self):
-        """Converts plugin class RemoteConnection to protobuf class common_pb2.RemoteConnection
+        """Converts plugin class RemoteConnection to protobuf class
+        common_pb2.RemoteConnection
         """
         remote_connection = common_pb2.RemoteConnection()
         remote_connection.environment.CopyFrom(self.environment.to_proto())
@@ -74,7 +75,8 @@ class RemoteConnection(object):
 
     @staticmethod
     def from_proto(connection):
-        """Converts protobuf class common_pb2.RemoteConnection to plugin class RemoteConnection
+        """Converts protobuf class common_pb2.RemoteConnection to plugin class
+        RemoteConnection
         """
         if not isinstance(connection, common_pb2.RemoteConnection):
             raise IncorrectTypeError(
@@ -411,7 +413,8 @@ class KeyPairCredentials(Credentials):
 
     @staticmethod
     def from_proto(credentials_result):
-        """Converts protobuf class libs_pb2.CredentialsResult to plugin class KeyPairCredentials
+        """Converts protobuf class libs_pb2.CredentialsResult to plugin class
+        KeyPairCredentials
         """
         if not isinstance(credentials_result, libs_pb2.CredentialsResult):
             raise IncorrectTypeError(
