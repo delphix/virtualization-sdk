@@ -27,6 +27,7 @@ Plugin Operation | Decorator
 [Source Config Discovey](Plugin_Operations.md#source-config-discovery) | `@plugin.discovery.source_config()`
 [Direct Linked Source Pre-Snapshot](Plugin_Operations.md#direct-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
 [Direct Linked Source Post-Snapshot](Plugin_Operations.md#direct-linked-source-post-snapshot) | `@plugin.linked.post_snapshot()`
+[Direct Linked Source Size](Plugin_Operations.md#direct-linked-source-size) | `@plugin.linked.source_size()`
 [Staged Linked Source Pre-Snapshot](Plugin_Operations.md#staged-linked-source-pre-snapshot) | `@plugin.linked.pre_snapshot()`
 [Staged Linked Source Post-Snapshot](Plugin_Operations.md#linkedsource-post-snapshot) | `@plugin.linked.post_snapshot()`
 [Staged Linked Source Start-Staging](Plugin_Operations.md#staged-linked-source-start-staging) | `@plugin.linked.start_staging()`
@@ -34,6 +35,7 @@ Plugin Operation | Decorator
 [Staged Linked Source Status](Plugin_Operations.md#staged-linked-source-status) | `@plugin.linked.status()`
 [Staged Linked Source Worker](Plugin_Operations.md#staged-linked-source-worker) | `@plugin.linked.worker()`
 [Staged Linked Source Mount Specification](Plugin_Operations.md#staged-linked-source-mount-specification) | `@plugin.linked.mount_specification()`
+[Staged Linked Source Size](Plugin_Operations.md#staged-linked-source-size) | `@plugin.linked.source_size()`
 [Virtual Source Configure](Plugin_Operations.md#virtual-source-configure) | `@plugin.virtual.configure()`
 [Virtual Source Initialize](Plugin_Operations.md#virtual-source-initialize) | `@plugin.virtual.initialize()`
 [Virtual Source Unconfigure](Plugin_Operations.md#virtual-source-unconfigure) | `@plugin.virtual.unconfigure()`
@@ -45,6 +47,7 @@ Plugin Operation | Decorator
 [Virtual Source Post-Snapshot](Plugin_Operations.md#virtual-source-post-snapshot) | `@plugin.virtual.post_snapshot()`
 [Virtual Source Mount Specification](Plugin_Operations.md#virtual-source-mount-specification) | `@plugin.virtual.mount_specification()`
 [Virtual Source Status](Plugin_Operations.md#virtual-source-status) | `@plugin.virtual.status()`
+[Virtual Source Size](Plugin_Operations.md#virtual-source-size) | `@plugin.virtual.source_size()`
 [Repository Data Migration](Plugin_Operations.md#repository-data-migration) | `@plugin.upgrade.repository(migration_id)`
 [Source Config Data Migration](Plugin_Operations.md#source-config-data-migration) | `@plugin.upgrade.source_config(migration_id)`
 [Linked Source Data Migration](Plugin_Operations.md#linked-source-data-migration) | `@plugin.upgrade.linked_source(migration_id)`
