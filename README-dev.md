@@ -1,4 +1,4 @@
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2022 by Delphix. All rights reserved.
 
 # Delphix Virtualization SDK
 
@@ -63,9 +63,8 @@ To install the SDK, follow these steps:
    One of the SDK dependencies - dvp-api - is currently hosted on [TestPyPi](https://test.pypi.org/project/dvp-api/). 
    By default `pip` looks at pypi.org for packages to install. In order to successfully install the SDK, you have to 
    configure pip to search an additional package repository - test.pypi.org.
-2. Go into one of the package directories (common, dvp, libs, platform, tools) and run the commands below.
-3. Install the package's development dependencies: `pip install -r requirements.txt`.
-4. Install the package itself (use `-e` flag if you want to install the package in editable mode): `pip install .`.
+2. To build the project, run `sh bin/build_project.sh -b`.
+3. For more information on the script options, use `sh bin/build_project.sh -h`.
 
 
 ### CLI changes
@@ -111,9 +110,8 @@ Go into one of the package directories (common, dvp, libs, platform, tools) and 
 
 1. Install the package's development dependencies and package itself by following the directions in [the SDK installation section](#installing-the-sdk-from-source).
 2. Run unit tests: `python -m pytest src/test/python`.
-
-There's no way to locally run unit tests in all packages with one command. However, they will be run automatically
-through GitHub Actions when you open a pull request. You can always open a draft pull request 
+3. To run unit tests in all packages with one command, run `sh bin/build_project.sh -t`.
+4. For more information on the script options, use `sh bin/build_project.sh -h`.
 
 ### Manual testing
 
