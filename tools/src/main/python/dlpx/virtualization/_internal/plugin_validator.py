@@ -210,15 +210,15 @@ class PluginValidator:
                                              exclude=[exclude_dir],
                                              quiet=1)
         style_guide.check_files(paths=[src_dir])
-        file_checkers = style_guide._application.file_checker_manager.checkers
+        style_results = style_guide._application.file_checker_manager.results
 
-        for checker in file_checkers:
-            for result in checker.results:
+        for filename, results, _ in style_results:
+            for (error_code, line_number, _, text, _) in results:
                 # From the api code, result is a tuple defined as: error =
                 # (error_code, line_number, column, text, physical_line)
-                if result[0] == 'F821':
-                    msg = "{} on line {} in {}".format(result[3], result[1],
-                                                       checker.filename)
+                if error_code == 'F821':
+                    msg = "{} on line {} in {}".format(text, line_number,
+                                                       filename)
                     warnings['exception'].append(exceptions.UserError(msg))
 
         if warnings and len(warnings) > 0:

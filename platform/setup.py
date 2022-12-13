@@ -9,7 +9,6 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/platform/VERSION')) as v
 install_requires = [
   "dvp-api == 1.7.0",
   "dvp-common == {}".format(version),
-  "enum34;python_version < '3.4'",
 ]
 
 setuptools.setup(name='dvp-platform',

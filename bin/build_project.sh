@@ -13,6 +13,8 @@ modules=("common" "libs" "platform" "tools" "dvp")
 should_build=false
 should_test=false
 verbose=false
+coverage=false
+flake8=false
 screenSize=$(tput cols)
 equalFiller="="
 greenColor=$(tput setaf 10)
@@ -81,6 +83,16 @@ run_operations() {
     build_module
     print_as_per_screen_size " $module_name build complete " "${greenColor}" ${equalFiller} "${screenSize}"
   fi
+  if [ "$flake8" = true ]; then
+    echo
+    print_as_per_screen_size " $module_name Flake8 Main starts " "${orangeColor}" ${equalFiller} "${screenSize}"
+    python -m flake8 "$module_path/src/test/python" --max-line-length 88
+    print_as_per_screen_size " $module_name Flake8 Main complete " "${greenColor}" ${equalFiller} "${screenSize}"
+    echo
+    print_as_per_screen_size " $module_name Flake8 Test starts " "${orangeColor}" ${equalFiller} "${screenSize}"
+    python -m flake8 "$module_path/src/main/python" --max-line-length 88
+    print_as_per_screen_size " $module_name Flake8 Test complete " "${greenColor}" ${equalFiller} "${screenSize}"
+  fi
   if [ "$should_test" = true ]; then
     echo
     print_as_per_screen_size " $module_name tests starts " "${orangeColor}" ${equalFiller} "${screenSize}"
@@ -112,11 +124,18 @@ build_module() {
 
 # Test the module
 test_module() {
-  if [ "$verbose" = true ]; then
-    python -m pytest -v src/test/python
+  cmd=[]
+  if [ "$coverage" = true ]; then
+    cmd=( coverage run -m pytest )
   else
-    python -m pytest src/test/python
+    cmd=( python -m pytest )
   fi
+  if [ "$verbose" = true ]; then
+    cmd=( ${cmd[@]} -v)
+  fi
+  cmd=( ${cmd[@]} src/test/python)
+  echo "Test command is ${cmd[*]}"
+  ${cmd[@]}
 }
 
 # Print the provided input in the center of screen by appending and prepending fillers.
@@ -132,7 +151,7 @@ print_as_per_screen_size() {
 }
 
 # Get the options
-while getopts ":hbtvm:" option; do
+while getopts ":hbftvcm:" option; do
   case $option in
   h) # display Help
     Help
@@ -150,6 +169,10 @@ while getopts ":hbtvm:" option; do
     fi ;;
   v) # Verbose mode
     verbose=true ;;
+  c) # Coverage mode
+    coverage=true ;;
+  f) # Run flake8 mode
+    flake8=true ;;
   \?) # Invalid options.
     echo "Error: Invalid option"
     Help
@@ -166,12 +189,21 @@ while getopts ":hbtvm:" option; do
   esac
 done
 
-if [ "$should_build" = true ] || [ "$should_test" = true ]; then
+if [ "$should_build" = true ] || [ "$should_test" = true ] || [ "$flake8" = true ]; then
   if [ ${#multi[@]} -eq 0 ]; then
     multi=("${modules[@]}")
   fi
 
+  paths=()
+  current_path="$PWD"
   for module in "${multi[@]}"; do
     run_operations "$module"
+    paths=( ${paths[@]} "${current_path}/${module}/.coverage")
   done
+
+  if [ "$coverage" = true ]; then
+    echo "Paths to combine for coverage are [${paths[*]}]."
+    coverage combine ${paths[@]}
+    coverage report -m -i
+  fi
 fi
