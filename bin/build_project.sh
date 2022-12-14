@@ -47,6 +47,12 @@ Help() {
   echo "     v${blackColor}      |   ${orangeColor}Verbose mode on           ${blackColor}  |   ${greenColor}sh build_project.sh -t -v${noColor}"
   echo "      ${blackColor}      |   ${orangeColor}                          ${blackColor}  |   ${greenColor}sh build_project.sh -bvt -m tools${noColor}"
   print_separator
+  echo "     c${blackColor}      |   ${orangeColor}Test Coverage mode on     ${blackColor}  |   ${greenColor}sh build_project.sh -t -c${noColor}"
+  echo "      ${blackColor}      |   ${orangeColor}                          ${blackColor}  |   ${greenColor}sh build_project.sh -bct -m tools${noColor}"
+  print_separator
+  echo "     f${blackColor}      |   ${orangeColor}Flake8 validation mode on ${blackColor}  |   ${greenColor}sh build_project.sh -f${noColor}"
+  echo "      ${blackColor}      |   ${orangeColor}                          ${blackColor}  |   ${greenColor}sh build_project.sh -bft -m tools${noColor}"
+  print_separator
   echo "     m${blackColor}      |   ${orangeColor}provide a list of modules.${blackColor}  |   ${greenColor}sh build_project.sh -bt -m common -m libs${noColor}"
   echo "      ${blackColor}      |   ${orangeColor}Valid python modules:     ${blackColor}  |   ${noColor}"
   echo "      ${blackColor}      |   ${orangeColor}  - common                ${blackColor}  |   ${noColor}"
