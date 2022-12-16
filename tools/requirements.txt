@@ -1,3 +1,5 @@
+./../libs
+./../platform
 bump2version==1.0.1
 coverage==6.5.0
 entrypoints==0.4
