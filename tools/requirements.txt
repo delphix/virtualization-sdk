@@ -1,3 +1,4 @@
+./../common
 ./../libs
 ./../platform
 bump2version==1.0.1
