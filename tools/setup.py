@@ -16,7 +16,7 @@ install_requires = [
     "jsonschema == 4.17.3",
     "pyyaml == 6",
     "requests == 2.28.1",
-    "httpretty == 0.9.7",
+    "httpretty == 1.0.5",
 ]
 
 setuptools.setup(name='dvp-tools',

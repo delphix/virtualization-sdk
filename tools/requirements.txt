@@ -5,7 +5,7 @@ bump2version==1.0.1
 coverage==6.5.0
 entrypoints==0.4
 flake8==6.0.0
-httpretty==0.9.7
+httpretty==1.0.5
 isort==5.11.1
 mccabe==0.7.0
 mock==4.0.3
