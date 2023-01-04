@@ -7,16 +7,24 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/_internal/VERSION')) as 
     version = version_file.read().strip()
 
 install_requires = [
+    "attrs >= 22.2, < 22.3",
+    "certifi >= 2022, < 2023",
     "click == 7.1.2",
     "click-configfile == 0.2.3",
-    "dvp-platform == {}".format(version),
+    "configparser >= 5.3, < 5.4",
     "dvp-libs == {}".format(version),
-    "flake8 == 6.0.0",
-    "jinja2 == 3.1.2",
-    "jsonschema == 4.17.3",
-    "pyyaml == 6",
-    "requests == 2.28.1",
-    "httpretty == 1.0.5",
+    "dvp-platform == {}".format(version),
+    "flake8 >= 6.0, < 6.1",
+    "httpretty >= 1.0, < 1.1",
+    "importlib-resources >= 5.10, < 5.11",
+    "jinja2 >= 3.1, < 3.2",
+    "jsonschema >= 4.17, < 4.18",
+    "MarkupSafe >= 2.1, < 2.2",
+    "pkgutil_resolve_name == 1.3.10",
+    "pyyaml >= 6, < 7",
+    "requests >= 2.28, < 2.29",
+    "six >= 1.16, < 1.17",
+    "zipp >= 3.11, < 3.12",
 ]
 
 setuptools.setup(name='dvp-tools',
@@ -25,4 +33,4 @@ setuptools.setup(name='dvp-tools',
                  package_dir={'': PYTHON_SRC},
                  packages=setuptools.find_packages(PYTHON_SRC),
                  python_requires='>=3.8, <3.9',
-)
+                 )
