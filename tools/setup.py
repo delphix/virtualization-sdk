@@ -6,6 +6,13 @@ PYTHON_SRC = 'src/main/python'
 with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/_internal/VERSION')) as version_file:
     version = version_file.read().strip()
 
+#
+# Update the dependency using below use cases
+# 1. Dependency version change does not break test cases or have code issues
+#   - Only update the maximum version (<).
+# 2. Dependency version changes break test cases or have code issues
+#   - Update the minimum as well as maximum version along with code changes.
+#
 install_requires = [
     "attrs >= 22.2, < 22.3",
     "certifi >= 2022, < 2023",
