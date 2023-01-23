@@ -1,0 +1,74 @@
+/* use Delphix blue in the header */
+:root {
+  /* Primary color shades */
+  --md-primary-fg-color:               #1381D7;
+  --md-primary-fg-color--light:        #1381D7;
+  --md-primary-fg-color--dark:         #1381D7;
+  --md-primary-bg-color:               #FFFFFF;
+  --md-primary-bg-color--light:        #B9D0E3;
+}
+
+
+/* enlarge the Delphix logo on the desktop site */
+.md-header-nav__button.md-logo img {
+  width: 50px;
+  height: 37px;
+  padding-top: 2px;
+  padding-bottom: 12px;
+  padding-left: 10px;
+  object-fit: contain;
+
+}
+
+/* Enlarge the Delphix logo */
+.md-header__button.md-logo {
+    margin: 0;
+    padding: 0;
+}
+.md-header__button.md-logo img, .md-header__button.md-logo svg {
+    height: 2.0rem;
+    width: 3.5rem;
+}
+
+/* enlarge the Delphix logo on the mobile site */
+.md-nav__title .md-nav__button.md-logo img {
+    width: 30px;
+    height: 20px;
+}
+
+/* Set the admonition to its original format */
+.md-typeset .admonition,
+.md-typeset details {
+  border-width: 0;
+  border-left-width: 4px;
+}
+
+/* Set the tables to its original state */
+.md-typeset table:not([class]) {
+	 background-color: var(--md-default-bg-color);
+         border: 0.05rem solid var(--md-default-bg-color);
+	 border-radius: 0.1rem;
+	 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0, 0, 0, 0.1);
+	 touch-action: auto;
+}
+
+.md-typeset table:not([class]) th {
+	 min-width: 100px;
+	 padding: px2em(12px, 12.8px) px2em(16px, 12.8px);
+	 color: var(--md-default-bg-color);
+	 vertical-align: top;
+	 background-color: var(--md-default-fg-color--light);
+         font-weight: normal;
+}
+.md-typeset table:not([class]) th a {
+	 color: inherit;
+}
+.md-typeset table:not([class]) td {
+	 padding: px2em(12px, 12.8px) px2em(16px, 12.8px);
+	 vertical-align: top;
+	 border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset table:not([class]) tr:first-child td {
+	 border-top: 0;
+}

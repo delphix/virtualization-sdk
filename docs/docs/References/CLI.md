@@ -1,6 +1,6 @@
 # CLI
 
-The CLI is installed with the SDK. To install the SDK, refer to the [Getting Started](/Getting_Started.md) section. You can also use a [CLI Configuration File](/Best_Practices/CLI_Configuration_File.md) to set default values for CLI command options.
+The CLI is installed with the SDK. To install the SDK, refer to the [Getting Started](../Getting_Started.md) section. You can also use a [CLI Configuration File](../Best_Practices/CLI_Configuration_File.md) to set default values for CLI command options.
 
 ## Help
 Every command has a `-h` flag including the CLI itself. This will print the help menu.

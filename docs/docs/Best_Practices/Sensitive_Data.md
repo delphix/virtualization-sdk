@@ -12,7 +12,7 @@ Each of these tips are explained below.
 
 ## Marking Your Data As Sensitive
 
-Because the Delphix Engine manages the storing and retrieving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](/References/Glossary.md#schema), by using the special [`password`](/References/Schemas.md#password) keyword.
+Because the Delphix Engine manages the storing and retrieving of plugin-defined data, it needs to know which pieces of data are sensitive. The plugin does this in its [schemas](../References/Glossary.md#schema), by using the special [`password`](../References/Schemas.md#password) keyword.
 
 The following example of a schema defines an object with three properties, one of which is sensitive and tagged with the `password` keyword:
 
@@ -35,11 +35,11 @@ This tells the Delphix Engine to take special precautions with this password pro
 4. Clients of the Delphix Engine's public API will not be able to access the password.
 
 !!! note
-    Removing a previously added password property from a field and running a [Data Migration](/References/Glossary.md#data-migration) will expose the password in plaintext. If this is intentional, write a migration to ensure that the new property conforms to the new schema.
+    Removing a previously added password property from a field and running a [Data Migration](../References/Glossary.md#data-migration) will expose the password in plaintext. If this is intentional, write a migration to ensure that the new property conforms to the new schema.
 
 ## Protecting Sensitive Data with Password Vaults
 
-Plugins can also leverage the password vaults configured in the Delphix engine to avoid storing sensitive data in the engine itself. In addition, vaults can rotate secrets seamlessly behind the scenes without requiring Delphix users to update those secrets in the engine. To give users the option to choose between directly entering a secret, such as a password or private key, or retrieving it from a vault, Delphix provides [pre-defined credential types](/References/Schemas.md#delphix-specific-pre-defined-types).
+Plugins can also leverage the password vaults configured in the Delphix engine to avoid storing sensitive data in the engine itself. In addition, vaults can rotate secrets seamlessly behind the scenes without requiring Delphix users to update those secrets in the engine. To give users the option to choose between directly entering a secret, such as a password or private key, or retrieving it from a vault, Delphix provides [pre-defined credential types](../References/Schemas.md#delphix-specific-pre-defined-types).
 
 When using these special types, the example above becomes:
 
@@ -55,9 +55,9 @@ When using these special types, the example above becomes:
 }
 ```
 
-For details on how the user can provide the information required for a property such as `db_credentials_supplier`, see the [section on pre-defined types](/References/Schemas.md#delphix-specific-pre-defined-types).
+For details on how the user can provide the information required for a property such as `db_credentials_supplier`, see the [section on pre-defined types](../References/Schemas.md#delphix-specific-pre-defined-types).
 
-At runtime, the plugin code must convert the credentials information provided by the user into an actual set of credentials that the plugin can use. To do this, the plugin must call the library function [`retrieve_credentials`](/References/Platform_Libraries.md#retrieve_credentials). For example:
+At runtime, the plugin code must convert the credentials information provided by the user into an actual set of credentials that the plugin can use. To do this, the plugin must call the library function [`retrieve_credentials`](../References/Platform_Libraries.md#retrieve_credentials). For example:
 
 ```python
 from dlpx.virtualization import libs
@@ -73,7 +73,7 @@ def my_virtual_stop(virtual_source, repository, source_config):
 
 ## Using Environment Variables For Remote Data Passing
 
-Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](/References/Glossary.md#staging-environment), and that database command will need to use a password.
+Sometimes, a plugin will need to pass sensitive data to a remote environment. For example, perhaps a database command needs to be run on a [staging environment](../References/Glossary.md#staging-environment), and that database command will need to use a password.
 
 ### Example
 Let us take a look at a very simple example where we need to shutdown a database called "inventory" on a target environment by using the `db_cmd shutdown inventory` command. This command will ask for a password on `stdin`, and for our example our password is "hunter2".

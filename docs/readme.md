@@ -9,6 +9,17 @@ However, our docs infrastructure is based on Python 3! So, **all of the below co
 must be run in a Python 3 environment**.  It's recommended to use a totally separate
 virtual environment for docs work than the one you use in the rest of the SDK codebase.
 
+## Making Changes
+
+Like most other repositories, each change to the documentation is tracked by a JIRA issue. Start by creating a JIRA issue in the DOC project. Next use your favorite editor to make changes, view the changes for correctness, and commit the changes using the JIRA issues summary.
+
+Please follow these best practices when adding links to the documentation:
+
+* Use markdown syntax to link to internal documents, for example `this is a link to the [Glossary](../References/Glossary.md) section`
+* To reference a page anchor, use this syntax `[platform library](../References/Glossary.md#platform-libraries)`. Do *not* add a trailing frontslash (`/`) at the end of the link like this `[Broken Link](./My_Page/#anchor/)`.
+* **Never** explicitly link to the `https://developer.delphix.com` site.
+* **Never** use absolute paths (i.e., paths that start with `/`). The [MkDocs documentation](https://www.mkdocs.org/user-guide/writing-your-docs/#linking-to-pages) states: "Using absolute paths with links is not officially supported"
+
 ## Local Testing
 Install dependencies for building documentation and run `pipenv run mkdocs serve`
 
@@ -77,6 +88,38 @@ Successfully installed setuptools-45.0.0
 Installing dependencies from Pipfile.lock (65135d)…
   🐍   ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ 14/14 — 00:00:03
 ```
+
+## LinkCheck
+After preparing your changes and reviewing the rendered HTML in a web browser, you should check to make sure that the documentation does not have any broken links. To do this:
+
+1. Download the latest linkcheck utility from [https://github.com/filiph/linkcheck](https://github.com/filiph/linkcheck).
+2. Under Releases, click the latest released software and download the executable file for your system (for example, linkcheck-2.0.19-macos-x64.tar.gz for a machine running Mac OS).
+3. Unzip the downloaded file, rename the folder to 'linkcheck' and add it to your path:
+```
+    $ vi ~/.zshrc
+    $ export PATH=$PATH:</path/to/linkcheck> (for example, /Users/firstname.lastname/Downloads/linkcheck)
+    $ source ~/.zshrc
+```
+4. Assuming you have started a web server on localhost as described above, `cd` to the linkcheck folder and run the following command `./linkcheck -e --skip-file /path/to/docs/linkcheck-skip.txt :8000`
+5. The above step is a one-time step to link linkcheck utility with docs. From next time onwards, you can `cd` to docs folder and run the command: `linkcheck -e --skip-file linkcheck-skip.txt :8000`
+6. Review the output for 404 errors
+
+You should see output that looks like this:
+
+```
+$ linkcheck -e --skip-file linkcheck-skip.txt :8000
+Done crawling.                   
+
+Access to these URLs denied by robots.txt, so we couldn't check them:
+- https://docs.delphix.com/docs/
+- https://github.com/delphix
+- https://www.facebook.com/DelphixCorp/
+- https://www.linkedin.com/company/delphix
+
+Info. Checked 9245 links, 271 destination URLs (10 ignored), 0 have warnings or errors, 432 have info.
+```
+
+The skip file contains patterns that determine if a URL should be skipped by the `linkcheck` utility. If you post your code on a web server, be careful not to use those patterns in the URL. For example if all of your URLs begin with `http://host.example.com/my-5.3.6-docs/<documentation root>` then the `linkcheck` utility will not fully traverse your site because `5.3.6` is one of the skip patterns.
 
 ## Live Testing via Github Pages
 To publish doc change to your individual fork for review, we use github pages. To set this up follow these following steps.

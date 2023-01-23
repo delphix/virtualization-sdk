@@ -1,0 +1,7 @@
+# URLs to skip when running linkcheck (https://github.com/filiph/linkcheck)
+# Skip certain external links
+fonts.gstatic.com
+https://www.facebook.com/DelphixCorp/
+https://www.linkedin.com/company/delphix
+https://www.delphix.com/
+main.558e4712.min.css

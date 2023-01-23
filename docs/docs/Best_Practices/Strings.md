@@ -71,7 +71,7 @@ Here is an example of the first line of a Python file that uses the UTF-8 encodi
 ```
 
 If you do not specify an encoding, and the source code contains any non-ASCII characters, you will get errors
- when building the plugin using [dvp build](/References/CLI.md#build) or during the execution of a plugin operation.
+ when building the plugin using [dvp build](../References/CLI.md#build) or during the execution of a plugin operation.
 
 ### Example
 
