@@ -10,6 +10,6 @@ markdown-include = "==0.8.0"
 mkdocs-awesome-pages-plugin = "==2.8.0"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [dev-packages]
