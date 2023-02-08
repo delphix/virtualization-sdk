@@ -4,4 +4,4 @@ fonts.gstatic.com
 https://www.facebook.com/DelphixCorp/
 https://www.linkedin.com/company/delphix
 https://www.delphix.com/
-main.558e4712.min.css
+main..*.min.css

@@ -64,3 +64,13 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         working-directory: ${{ matrix.package }}
         run: python -m flake8 src/test/python --max-line-length 88
+
+  linkcheck:
+    name: Test links in docs package
+    runs-on: ubuntu-latest
+    steps:
+      # Run LinkCheck for docs folder.
+      - name: Check links with linkcheck
+        uses: filiph/linkcheck@2.0.23
+        with:
+          arguments: "-e --skip-file linkcheck-skip.txt"
