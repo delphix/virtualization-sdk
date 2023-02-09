@@ -17,7 +17,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [2.7]
+        python-version: [3.8]
         package: [common, dvp, libs, platform, tools]
 
     steps:
