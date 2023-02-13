@@ -43,6 +43,7 @@ import six
 
 __all__ = [
     "run_bash",
+    "construct_bash_command_string",
     "run_sync",
     "run_powershell",
     "run_expect",
@@ -94,6 +95,82 @@ def _check_exit_code(response, check):
                                       response.return_value.exit_code,
                                       response.return_value.stdout,
                                       response.return_value.stderr))
+
+
+def _quote_bash_word(unquoted_string):
+    """
+    This function takes the given input string, and returns a string that can
+    be passed to Bash, such that Bash will interpret it as a unitary word.
+
+    So, the incoming string can have quotes, dollar signs, spaces, etc.  These
+    characters will be quoted/escaped such that Bash does not interpret them
+    specially.
+
+    The returned string can be used as part of a command string passed to
+    run_bash.
+
+    The technique is to enclose everything in single quotes, except for single-
+    quote characters, which are enclosed by double quotes.
+
+    For example, consider this python string that we want to pass to a program:
+    a'b"c$f$o$o
+
+    We cannot simply pass this string to Bash as-is, because Bash would treat
+    the dollar signs and quote characters specially.
+
+    For this case, this function would then return the following string:
+    'a'"'"'c$f$o$o'
+
+    Breaking this down, the returned string contains three separate items:
+    1) 'a'       (a single-quoted string containing no special characters)
+    2) "'"       (a double-quoted string containing a special character)
+    3) 'c$f$o$o' (a single-quoted string containing some special characters)
+    Because of the quoting, none of the special characters above will be
+    interpreted by Bash, and will be left as-is.  Bash will remove the outer
+    quotes on each of these three parts, and then mash the three parts together
+    into one string.
+
+    Thus, once Bash does its interpretation of the string, the result will have
+    the same content as the original Python string:
+    a'b"c$f$o$o
+    """
+
+    # We want to enclose the whole string in single quotes.
+    # But, any time we see a single-quote in the given string, we need to:
+    # 1) Close the existing single-quoted section
+    # 2) Start a new double-quoted section
+    # 3) Insert the original single-quote character
+    # 4) Close the double-quoted section that we just opened
+    # 5) Open a new single-quoted section for the remainder of the string
+    return "'{}'".format(unquoted_string.replace("'", "'\"'\"'"))
+
+
+def construct_bash_command_string(executable, *args):
+    """
+    Helper function to assemble a full command string to pass to run_bash.
+
+    run_bash expects a single string representing the entire command/script that
+    is to be run.  This is sometimes inconvenient and bug-prone for the simple
+    case when you want to run a single command with some arguments.
+
+    For example, suppose you want to change a filename. You might be tempted to
+    write this:
+        run_bash(cx, "mv {} {}".format(oldname, newname))
+
+    That code will fail to work if either of the two names has a space or other
+    special character in it. This function is meant to help with such cases.
+    So, the above example can change to this:
+        run_bash(cx, construct_bash_command_string("mv", oldname, newname))
+
+    This method will worry about all of the quoting and escaping necessary.
+    """
+    assert executable
+    exec_string = _quote_bash_word(executable)
+    if args:
+        arg_string = " ".join([_quote_bash_word(a) for a in args])
+        return "{} {}".format(exec_string, arg_string)
+    else:
+        return exec_string
 
 
 def run_bash(remote_connection, command, variables=None, use_login_shell=False,
