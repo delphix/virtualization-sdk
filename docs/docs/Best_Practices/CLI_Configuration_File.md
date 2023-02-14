@@ -23,21 +23,21 @@ Your user's home directory will depend on the operating system, but can be refer
 The CLI configuration file supports the following options:
 
 ### engine
-Specifies the Delphix Engine which can be used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
+Specifies the Delphix Engine which can be used as part of the [dvp upload](../References/CLI.md#upload) or [dvp download-logs](../References/CLI.md#download-logs) command.
 
 ```
 engine = engine.example.com
 ```
 
 ### user
-Specifies the user to a Delphix Engine which is used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
+Specifies the user to a Delphix Engine which is used as part of the [dvp upload](../References/CLI.md#upload) or [dvp download-logs](../References/CLI.md#download-logs) command.
 
 ```
 user = admin
 ```
 
 ### password
-Specifies the password for the user to a Delphix Engine which is used as part of the [dvp upload](/References/CLI.md#upload) or [dvp download-logs](/References/CLI.md#download-logs) command.
+Specifies the password for the user to a Delphix Engine which is used as part of the [dvp upload](../References/CLI.md#upload) or [dvp download-logs](../References/CLI.md#download-logs) command.
 
 ```
 password = userpassword

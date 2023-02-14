@@ -9,7 +9,7 @@ The Virtualization Platform keeps plugin-specific log files. A plugin can, at an
 The Virtualization Platform integrates with Python's built-in [logging framework](https://docs.python.org/3.8/library/logging.html). A special [Handler](https://docs.python.org/3.8/library/logging.html#handler-objects) is exposed by the platform at `dlpx.virtualization.libs.PlatformHandler`. This handler needs to be added to the Python logger your plugin creates. Logging statements made through Python's logging framework will then be routed to the platform.
 
 ## Basic Setup
- Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's [logging documentation](https://docs.python.org/3.8/library/logging.html) and the [example below](#customized-example) to better understand how it can be customized.
+ Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's [logging documentation](https://docs.python.org/3.8/library/logging.html) and the [example below](#example) to better understand how it can be customized.
 
 ```python
 import logging
@@ -37,7 +37,7 @@ logger.setLevel(logging.DEBUG)
 	To avoid this complexity, add the `PlatformHandler` to the root logger. The root logger can be retrieved with `logging.getLogger()`.
 	
 !!! warning
-    There is a limit to how much data can be stored within a log message. See [Message Limits](/Best_Practices/Message_Limits.md) for details.
+    There is a limit to how much data can be stored within a log message. See [Message Limits](../Best_Practices/Message_Limits.md) for details.
 	
 ## Usage
 Once the `PlatformHandler` has been added to the logger, logging is done with Python's [Logger](https://docs.python.org/3.8/library/logging.html#logger-objects) object. Below is a simple example including the basic setup code used above:
@@ -64,7 +64,7 @@ logger.error('error')
 Imagine you notice that your plugin is taking a very long time to do discovery. Everything works, it just takes much longer than expected. You'd like to figure out why.
 
 !!! info
-    Refer to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for how remote scripts can be stored and retrieved.
+    Refer to [Managing Scripts for Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) for how remote scripts can be stored and retrieved.
 
 Suppose your plugin has a source config discovery operation that looks like this (code is abbreviated to be easier to follow):
 ```python
@@ -97,7 +97,7 @@ def source_config_discovery(source_connection, repository):
 !!! warning
     If developing a plugin in Python 2.7, you will need to use `pkgutil.get_data` rather than `importlib.resources.read_text`.
 
-    See [Managing Scripts For Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for more info.
+    See [Managing Scripts For Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) for more info.
 
 Now, imagine that you notice that it's taking a long time to do discovery, and you'd like to try to figure out why. One thing that might help is to add logging, like this:
 ```python
@@ -198,4 +198,4 @@ As is the case with the `logging` framework, logging statements are hierarchical
 
 ## Sensitive data
 
-Remember that logging data means writing that data out in cleartext. Make sure you never log any data that could be secret or sensitive (passwords, etc.). For more details please see our section on [sensitive data](/Best_Practices/Sensitive_Data.md)
+Remember that logging data means writing that data out in cleartext. Make sure you never log any data that could be secret or sensitive (passwords, etc.). For more details please see our section on [sensitive data](../Best_Practices/Sensitive_Data.md)

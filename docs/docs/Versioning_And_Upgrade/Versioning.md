@@ -14,7 +14,7 @@ This field is intended only for use by the end user. The Delphix Engine does not
 
 Examples might be "5.3.0", "2012B", "MyPlugin Millennium Edition, Service Pack 3", "Playful Platypus" or "Salton City".
 
-The external version is specified using the `externalVersion` property in your [plugin config](/References/Plugin_Config.md) file.
+The external version is specified using the `externalVersion` property in your [plugin config](../References/Plugin_Config.md) file.
 
 !!! tip
     Use an external version that makes it easier for end users to determine newer vs older plugins.
@@ -25,7 +25,7 @@ Unlike "external version", this field is intended to convey information to the D
 
 The Delphix Engine uses the build number to guard against end users trying to "downgrade" their plugin to an older, incompatible version. So, if a user has build number "3.4.1" installed, then they may not install a version with a build number like "2.x.y", "3.3.y" or "3.4.0".
 
-The build number is specified using the `buildNumber` property in your [plugin config](/References/Plugin_Config.md) file.
+The build number is specified using the `buildNumber` property in your [plugin config](../References/Plugin_Config.md) file.
 
 This field is required to be a string. You might need to enclose your build number in quotes in order to prevent YAML from interpreting the field as a number. Examples:
 
@@ -49,7 +49,7 @@ Your build number must be a string, conforming to these rules:
 !!! tip
     You can upload a plugin with the same `buildNumber` as the installed plugin. However this should only be done while a plugin is being developed. Plugin releases for end users should never have the same `buildNumber`
 
-Please also see the [App-Style vs. Enterprise-Style section](#app-style-vs-enterprise-style) below. We generally recommend using a single integer build number for app-style development. Build numbers need to have multiple parts if you are doing enterprise-style development.
+Please also see the [App-Style vs. Enterprise-Style section](#release-strategies) below. We generally recommend using a single integer build number for app-style development. Build numbers need to have multiple parts if you are doing enterprise-style development.
 
 ## Release Strategies
 
@@ -69,7 +69,7 @@ Here, you might distinguish "major" releases of your software from "minor" relea
 * It is possible to supply bugfix-only minor releases (often called "patch releases") which build atop older major releases. Customers do not need to move to the new major version in order to get these bugfixes.
 * The plugin's build number needs to be composed of multiple integers.
 
-If you are using this strategy read more [here](#Backports_And_Hotfixes.md) about how to deal with backports and hotfixes.
+If you are using this strategy read more [here](Backports_And_Hotfixes.md) about how to deal with backports and hotfixes.
 
 You may use whichever of these strategies works best for you. The SDK and the Delphix Engine support either strategy. You can even change your mind later and switch to the other strategy.
 

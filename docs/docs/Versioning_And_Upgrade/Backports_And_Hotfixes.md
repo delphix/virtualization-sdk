@@ -1,6 +1,6 @@
 # Backports and Hotfixes
 
-If your plugin uses an ["enterprise-style"](/Versioning_And_Upgrade/Versioning.md#enterprise-style-release-strategy) release strategy, then you'll probably want to occasionally provide new "minor" or "patch" versions that build atop older versions.
+If your plugin uses an ["enterprise-style"](Versioning.md#enterprise-style-release-strategy) release strategy, then you'll probably want to occasionally provide new "minor" or "patch" versions that build atop older versions.
 
 Code changes that are applied atop old releases are usually called "backports". Sometimes, they are also called "hotfixes", if the change is specifically created for a single user.
 
@@ -27,7 +27,7 @@ Here are the behaviors we need:
 
 ### Strategy
 
-You can include a [data migration](/Versioning_And_Upgrade/Upgrade.md#data-migrations) along with your bugfix. If your bugfix involves a schema change, you will have to do this anyways. If not, you can still include a data migration that simply does nothing. If a user with the bugfix attempts to "upgrade" to 2.0, the Delphix Engine will prevent it, because the 2.0 releases does not include this migration.
+You can include a [data migration](Upgrade.md#data-migrations) along with your bugfix. If your bugfix involves a schema change, you will have to do this anyways. If not, you can still include a data migration that simply does nothing. If a user with the bugfix attempts to "upgrade" to 2.0, the Delphix Engine will prevent it, because the 2.0 releases does not include this migration.
 
 You would typically follow these steps:
 

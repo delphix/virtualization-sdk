@@ -1,6 +1,6 @@
 # Initial Setup
 
-Before we begin to start writing plugin code, we will need to do some setup work. We will be using the `dvp` tool, which is described in the [Getting Started](/Getting_Started.md) section.
+Before we begin to start writing plugin code, we will need to do some setup work. We will be using the `dvp` tool, which is described in the [Getting Started](../Getting_Started.md) section.
 
 The quoted examples in this section assume you're working on a Unix-like system.
 
@@ -36,7 +36,7 @@ Commands:
 
 If this looks good, you are ready to begin!
 
-If, instead, you see something like the following, go back to [Getting Started](/Getting_Started.md) and make sure you setup everything correctly before continuing.
+If, instead, you see something like the following, go back to [Getting Started](../Getting_Started.md) and make sure you setup everything correctly before continuing.
 ```
 (venv)$ dvp
 -bash: dvp: command not found
@@ -75,9 +75,9 @@ These files are described below:
 
 File | Description
 --------------------|----------------------
-`plugin_config.yml` | The [plugin config](/References/Glossary.md#plugin-config) file, which provides a list of plugin properties
-`schema.json`       | Contains [schemas](/References/Glossary.md#schema) which provide custom datatype definitions
-`src/plugin_runner.py` | A Python file which will eventually contain code that handles plugin [operations](/References/Glossary.md#operation)
+`plugin_config.yml` | The [plugin config](../References/Glossary.md#plugin-config) file, which provides a list of plugin properties
+`schema.json`       | Contains [schemas](../References/Glossary.md#schema) which provide custom datatype definitions
+`src/plugin_runner.py` | A Python file which will eventually contain code that handles plugin [operations](../References/Glossary.md#plugin-operation)
 
 
 Open these files in your editor/IDE and take a look at them. At this point they will not have a lot of content, but we will add to them as we go through the next few pages.
@@ -85,7 +85,7 @@ Open these files in your editor/IDE and take a look at them. At this point they 
 
 ## Building The New Plugin
 
-The new files we created above have to get [built](/References/Glossary.md#building) to produce a single [artifact](/References/Glossary.md#artifact). This is done with the `dvp` tool.
+The new files we created above have to get [built](../References/Glossary.md#building) to produce a single [artifact](../References/Glossary.md#artifact). This is done with the `dvp` tool.
 
 ```
 (venv) first_plugin$ dvp build
