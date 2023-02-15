@@ -59,7 +59,7 @@ class VirtualSource(object):
 
 class StagedSource(object):
     def __init__(self, guid, source_connection, parameters, mount,
-                 staged_connection):
+                 staged_connection, mounts):
 
         self._guid = guid
         if not isinstance(source_connection, RemoteConnection):
@@ -72,6 +72,7 @@ class StagedSource(object):
             raise IncorrectTypeError(RemoteConnection, 'staged_connection',
                                      type(staged_connection), RemoteConnection)
         self._staged_connection = staged_connection
+        self._mounts = mounts
 
     @property
     def guid(self):
@@ -93,7 +94,7 @@ class StagedSource(object):
 
     @property
     def mount(self):
-        """MountSpecification: The MountSpecification for this StagedSource."""
+        """MountSpecification: The SingleEntireMount for this StagedSource."""
         return self._mount
 
     @property
@@ -101,6 +102,11 @@ class StagedSource(object):
         """RemoteConnection: The RemoteConnection representing the
         staging environment for this StagedSource."""
         return self._staged_connection
+
+    @property
+    def mounts(self):
+        """list(Mount): The List of SingleSubsetMounts of this StagedSource."""
+        return self._mounts
 
 
 class DirectSource(object):
