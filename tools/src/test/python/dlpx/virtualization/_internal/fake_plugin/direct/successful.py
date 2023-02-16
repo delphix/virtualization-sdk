@@ -29,17 +29,24 @@ def direct_post_snapshot(direct_source, repository, source_config,
     return None
 
 
+@direct.linked.source_size()
+def source_size(repository, source_config, direct_source):
+    return 0
+
+
 @direct.virtual.configure()
 def configure(virtual_source, repository, snapshot):
     path = virtual_source.parameters.path
     name = "VDB mounted to " + path
     return None
 
+
 @direct.virtual.initialize()
 def initialize(virtual_source, repository):
     path = virtual_source.parameters.path
     name = "VDB mounted to " + path
     return None
+
 
 @direct.virtual.mount_specification()
 def mount_specification(repository, virtual_source):
@@ -79,6 +86,16 @@ def stop(repository, source_config, virtual_source):
 @direct.virtual.unconfigure()
 def unconfigure(repository, source_config, virtual_source):
     pass
+
+
+@direct.virtual.cleanup()
+def cleanup(repository, source_config, virtual_source):
+    pass
+
+
+@direct.virtual.source_size()
+def source_size(repository, source_config, virtual_source):
+    return 0
 
 
 @direct.upgrade.repository('1.3', MigrationType.LUA)

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import logging
@@ -30,7 +30,6 @@ class TestPythonHandler:
         (logging.ERROR, LogRequest.ERROR),
         (logging.CRITICAL, LogRequest.ERROR)
     ])
-
     @mock.patch("dlpx.virtualization._engine.libs", create=True)
     def test_levels(mock_internal_libs, py_level, expected_level, successful_response):
         mock_internal_libs.log.return_value = successful_response
@@ -66,7 +65,6 @@ class TestPythonHandler:
         log_request.level = LogRequest.ERROR
 
         mock_internal_libs.log.assert_called_with(log_request)
-
 
     @staticmethod
     @mock.patch("dlpx.virtualization._engine.libs", create=True)

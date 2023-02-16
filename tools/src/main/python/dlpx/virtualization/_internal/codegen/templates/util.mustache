@@ -1,7 +1,9 @@
+#
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
+#
 import datetime
 import pydoc
 import re
-
 import six
 
 
@@ -33,9 +35,9 @@ def get_contained_type(type_string):
     for pattern in patterns:
         match = re.search(pattern, type_string)
         if match and match.group(1) != 'ERRORUNKNOWN':
-            # Convert the type to basestring here.
+            # Convert the type to string here.
             if match.group(1) == 'str':
-                return basestring
+                return six.string_types[0]
             return pydoc.locate(match.group(1))
     return None
 
@@ -53,7 +55,7 @@ def deserialize_model(data, klass):
     if not instance.swagger_types:
         return data
 
-    for attr, attr_type in six.iteritems(instance.swagger_types):
+    for attr, attr_type in instance.swagger_types.items():
         if (data is not None and instance.attribute_map[attr] in data
                 and isinstance(data, dict)):
             value = data[instance.attribute_map[attr]]
@@ -73,7 +75,8 @@ def _deserialize(data, klass):
     if data is None:
         return None
 
-    if issubclass(klass, (int, float, long, complex, basestring, bool)):
+    primitive_types = {float, complex, bool, int, six.text_type, six.binary_type}
+    if issubclass(klass, tuple(primitive_types)):
         return _deserialize_primitive(data, klass)
     elif klass == datetime.date:
         return deserialize_date(data)
@@ -93,21 +96,20 @@ def _deserialize_primitive(data, klass):
     :param data: data to deserialize.
     :param klass: class literal.
 
-    :return: int, float, long, complex, basestring, bool.
-    :rtype: int | float | long | complex | basestring | bool
+    :return: int, float, long, complex, str, bool.
+    :rtype: int | float | long | complex | str | bool
     """
     try:
         value = klass(data)
     except UnicodeEncodeError:
-        if isinstance(data, str):
+        if isinstance(data, six.binary_type):
             #
             # Ignore errors even if the string is not proper UTF-8 or has
-            # broken marker bytes. The builtin  unicode function can do this.
+            # broken marker bytes.
             #
-            value = unicode(data, 'utf-8', errors='ignore')
+            value = str(data, "utf-8", errors='ignore')
         else:
-            # Assume the value object has proper __unicode__() method.
-            value = unicode(data)
+            value = six.text_type(data)
     except TypeError:
         value = data
     return value
@@ -166,4 +168,4 @@ def _deserialize_dict(data):
     :return: deserialized dict.
     :rtype: dict
     """
-    return {k: _deserialize(v, type(v)) for k, v in six.iteritems(data)}
+    return {k: _deserialize(v, type(v)) for k, v in data.items()}

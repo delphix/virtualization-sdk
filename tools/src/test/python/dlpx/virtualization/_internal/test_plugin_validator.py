@@ -1,8 +1,9 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
+import os
 
 import mock
 import pytest
@@ -24,8 +25,8 @@ class TestPluginValidator:
 
         message = err_info.value.message
         assert ('Failed to load schemas because {} is not a valid json file.'
-                ' Error: Extra data: line 2 column 1 - line 2 column 9'
-                ' (char 19 - 27)'.format(schema_file)) in message
+                ' Error: Extra data: line 2 column 1 (char 19)'
+                .format(schema_file)) in message
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file', ['/dir/plugin_config.yml'])
@@ -69,6 +70,7 @@ class TestPluginValidator:
                               ('1.0.0_HF', None)])
     def test_plugin_version_format(plugin_config_file,
                                    plugin_config_content, expected):
+        message = None
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -76,7 +78,7 @@ class TestPluginValidator:
             validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
-            assert expected in message
+        TestPluginValidator.assert_string(expected, message)
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
@@ -90,6 +92,7 @@ class TestPluginValidator:
          ('staged_plugin:staged', None)])
     def test_plugin_entry_point(plugin_config_file,
                                 plugin_config_content, expected):
+        message = None
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -97,7 +100,7 @@ class TestPluginValidator:
             validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
-            assert expected in message
+        TestPluginValidator.assert_string(expected, message)
 
     @staticmethod
     def test_plugin_additional_properties(plugin_config_file,
@@ -105,15 +108,13 @@ class TestPluginValidator:
         # Adding an unknown key
         plugin_config_content['unknown_key'] = 'unknown_value'
 
-        try:
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
-        except exceptions.SchemaValidationError as err_info:
-            message = err_info.message
-            assert ("Additional properties are not allowed"
-                    " ('unknown_key' was unexpected)" in message)
+        assert ("Additional properties are not allowed"
+                " ('unknown_key' was unexpected)" in err_info.value.message)
 
     @staticmethod
     @pytest.mark.parametrize('host_types', [['xxx']])
@@ -142,6 +143,7 @@ class TestPluginValidator:
          ('e3b69c61-4c30-44f7-92c0-504c8388b91e', None)])
     def test_plugin_id(plugin_config_file,
                        plugin_config_content, expected):
+        message = None
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -149,7 +151,7 @@ class TestPluginValidator:
             validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
-            assert expected in message
+        TestPluginValidator.assert_string(expected, message)
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
@@ -165,6 +167,7 @@ class TestPluginValidator:
                               ('0.1', None)])
     def test_plugin_build_number_format(plugin_config_file,
                                         plugin_config_content, expected):
+        message = None
         try:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
@@ -172,7 +175,7 @@ class TestPluginValidator:
             validator.validate_plugin_config()
         except exceptions.SchemaValidationError as err_info:
             message = err_info.message
-            assert expected in message
+        TestPluginValidator.assert_string(expected, message)
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
@@ -182,14 +185,12 @@ class TestPluginValidator:
          ('!lua#toolkit', "'!lua#toolkit' does not match")])
     def test_plugin_lua_name_format(plugin_config_file,
                                     plugin_config_content, expected):
-        try:
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
-        except exceptions.SchemaValidationError as err_info:
-            message = err_info.message
-            assert expected in message
+        assert expected in err_info.value.message
 
     @staticmethod
     @mock.patch('os.path.isabs', return_value=False)
@@ -200,39 +201,56 @@ class TestPluginValidator:
     def test_plugin_minimum_lua_version_format(plugin_config_file,
                                                plugin_config_content,
                                                expected):
-        try:
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
-        except exceptions.SchemaValidationError as err_info:
-            message = err_info.message
-            assert expected in message
+        assert expected in err_info.value.message
 
     @staticmethod
     @pytest.mark.parametrize('minimum_lua_version', [None])
     def test_plugin_lua_name_without_minimum_lua_version(
             plugin_config_file, plugin_config_content):
-        try:
+        with pytest.raises(exceptions.ValidationFailedError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
-        except exceptions.ValidationFailedError as err_info:
-            message = err_info.message
-            assert ('Failed to process property "luaName" without '
-                    '"minimumLuaVersion" set in the plugin config.' in message)
+        assert ('Failed to process property "luaName" without "minimumLuaVersion"'
+                ' set in the plugin config.' in err_info.value.message)
 
     @staticmethod
     @pytest.mark.parametrize('lua_name', [None])
     def test_plugin_minimum_lua_version_without_lua_name(
             plugin_config_file, plugin_config_content):
-        try:
+        with pytest.raises(exceptions.ValidationFailedError) as err_info:
             validator = PluginValidator.from_config_content(
                 plugin_config_file, plugin_config_content,
                 const.PLUGIN_CONFIG_SCHEMA)
             validator.validate_plugin_config()
-        except exceptions.ValidationFailedError as err_info:
-            message = err_info.message
-            assert ('Failed to process property "minimumLuaVersion" without '
-                    '"luaName" set in the plugin config.' in message)
+        assert ('Failed to process property "minimumLuaVersion" without '
+                '"luaName" set in the plugin config.' in err_info.value.message)
+
+    @staticmethod
+    def test_undefined_name_validation(plugin_config_file, plugin_config_content):
+        src_dir = plugin_config_content['srcDir']
+        undefined_name_file = os.path.join(src_dir, 'undefined_name.py')
+        with open(undefined_name_file, 'w') as f:
+            f.write('@directplugin.discovery.repository()'
+                    '\ndef repository_discovery(source_connection):'
+                    '\n\treturn None\n\n')
+        with pytest.raises(exceptions.ValidationFailedError) as err_info:
+            validator = PluginValidator.from_config_content(
+                plugin_config_file, plugin_config_content,
+                const.PLUGIN_CONFIG_SCHEMA)
+            validator.validate_plugin_config()
+        assert ('undefined name \'directplugin\' on line 1 '
+                'in {}'.format(undefined_name_file) in err_info.value.message)
+
+    @staticmethod
+    def assert_string(expected_string, actual_string):
+        if expected_string:
+            assert expected_string in actual_string
+        else:
+            assert actual_string is None

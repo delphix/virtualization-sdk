@@ -6,9 +6,10 @@ on:
     branches:
       - master
       - develop
-      - 'release/**'
+      - release
     paths:
       - 'dvp/src/main/python/dlpx/virtualization/VERSION'
+      - '.github/workflows/publish-python-packages.yml'
 
 jobs:
   publish:
@@ -16,7 +17,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [2.7]
+        python-version: [3.8]
         package: [common, dvp, libs, platform, tools]
 
     steps:
@@ -39,4 +40,3 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
           twine upload dist/*
-

@@ -1,7 +1,8 @@
 #
-# Copyright (c) 2020 by Delphix. All rights reserved.
+# Copyright (c) 2020, 2021 by Delphix. All rights reserved.
 #
 import inspect
+import six
 
 from dlpx.virtualization.platform import exceptions
 from dlpx.virtualization.platform.import_util import (import_check,
@@ -25,7 +26,6 @@ def validate_entry_point(plugin_module):
     if plugin_module.entry_point is None:
         raise exceptions.IncorrectPluginCodeError(
             'Plugin entry point object is None.')
-
     if not hasattr(plugin_module.module_content, plugin_module.entry_point):
         raise exceptions.UserError(
             'Entry point \'{}:{}\' does not exist. \'{}\' is not a symbol'
@@ -83,7 +83,10 @@ def validate_named_args(plugin_module):
             for op_name_key, op_name in plugin_attrib.__dict__.items():
                 if op_name is None:
                     continue
-                actual_args = inspect.getargspec(op_name)
+                if six.PY2:
+                    actual_args = inspect.getargspec(op_name)
+                else:
+                    actual_args = inspect.getfullargspec(op_name)
                 warnings.extend(
                     _check_args(method_name=op_name.__name__,
                                 expected_args=_lookup_expected_args(

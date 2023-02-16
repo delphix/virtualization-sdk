@@ -2,6 +2,24 @@
 
 This is the Markdown-based documentation for the Virtualization SDK.
 
+## Important Note On Building Docs
+
+As of this writing, the rest of the Virtualization SDK codebase is based on Python 2.
+However, our docs infrastructure is based on Python 3! So, **all of the below commands
+must be run in a Python 3 environment**.  It's recommended to use a totally separate
+virtual environment for docs work than the one you use in the rest of the SDK codebase.
+
+## Making Changes
+
+Like most other repositories, each change to the documentation is tracked by a JIRA issue. Start by creating a JIRA issue in the DOC project. Next use your favorite editor to make changes, view the changes for correctness, and commit the changes using the JIRA issues summary.
+
+Please follow these best practices when adding links to the documentation:
+
+* Use markdown syntax to link to internal documents, for example `this is a link to the [Glossary](../References/Glossary.md) section`
+* To reference a page anchor, use this syntax `[platform library](../References/Glossary.md#platform-libraries)`. Do *not* add a trailing frontslash (`/`) at the end of the link like this `[Broken Link](./My_Page/#anchor/)`.
+* **Never** explicitly link to the `https://developer.delphix.com` site.
+* **Never** use absolute paths (i.e., paths that start with `/`). The [MkDocs documentation](https://www.mkdocs.org/user-guide/writing-your-docs/#linking-to-pages) states: "Using absolute paths with links is not officially supported"
+
 ## Local Testing
 Install dependencies for building documentation and run `pipenv run mkdocs serve`
 
@@ -13,8 +31,8 @@ To activate this project's virtualenv, run pipenv shell.
 Alternatively, run a command inside the virtualenv with pipenv run.
 
 $ pipenv run mkdocs serve
-INFO    -  Building documentation... 
-INFO    -  Cleaning site directory 
+INFO    -  Building documentation...
+INFO    -  Cleaning site directory
 [I 200424 15:54:06 server:292] Serving on http://127.0.0.1:8000
 [I 200424 15:54:06 handlers:59] Start watching changes
 [I 200424 15:54:06 handlers:61] Start detecting changes
@@ -59,7 +77,7 @@ Install `setuptools==45` to get around a deprecated API in version 46.
 $ pip install setuptools==45
 Collecting setuptools==45
   Downloading setuptools-45.0.0-py2.py3-none-any.whl (583 kB)
-     |████████████████████████████████| 583 kB 2.7 MB/s 
+     |████████████████████████████████| 583 kB 2.7 MB/s
 Installing collected packages: setuptools
   Attempting uninstall: setuptools
     Found existing installation: setuptools 46.1.3
@@ -70,6 +88,38 @@ Successfully installed setuptools-45.0.0
 Installing dependencies from Pipfile.lock (65135d)…
   🐍   ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ 14/14 — 00:00:03
 ```
+
+## LinkCheck
+After preparing your changes and reviewing the rendered HTML in a web browser, you should check to make sure that the documentation does not have any broken links. To do this:
+
+1. Download the latest linkcheck utility from [https://github.com/filiph/linkcheck](https://github.com/filiph/linkcheck).
+2. Under Releases, click the latest released software and download the executable file for your system (for example, linkcheck-2.0.19-macos-x64.tar.gz for a machine running Mac OS).
+3. Unzip the downloaded file, rename the folder to 'linkcheck' and add it to your path:
+```
+    $ vi ~/.zshrc
+    $ export PATH=$PATH:</path/to/linkcheck> (for example, /Users/firstname.lastname/Downloads/linkcheck)
+    $ source ~/.zshrc
+```
+4. Assuming you have started a web server on localhost as described above, `cd` to the linkcheck folder and run the following command `./linkcheck -e --skip-file /path/to/docs/linkcheck-skip.txt :8000`
+5. The above step is a one-time step to link linkcheck utility with docs. From next time onwards, you can `cd` to docs folder and run the command: `linkcheck -e --skip-file linkcheck-skip.txt :8000`
+6. Review the output for 404 errors
+
+You should see output that looks like this:
+
+```
+$ linkcheck -e --skip-file linkcheck-skip.txt :8000
+Done crawling.                   
+
+Access to these URLs denied by robots.txt, so we couldn't check them:
+- https://docs.delphix.com/docs/
+- https://github.com/delphix
+- https://www.facebook.com/DelphixCorp/
+- https://www.linkedin.com/company/delphix
+
+Info. Checked 9245 links, 271 destination URLs (10 ignored), 0 have warnings or errors, 432 have info.
+```
+
+The skip file contains patterns that determine if a URL should be skipped by the `linkcheck` utility. If you post your code on a web server, be careful not to use those patterns in the URL. For example if all of your URLs begin with `http://host.example.com/my-5.3.6-docs/<documentation root>` then the `linkcheck` utility will not fully traverse your site because `5.3.6` is one of the skip patterns.
 
 ## Live Testing via Github Pages
 To publish doc change to your individual fork for review, we use github pages. To set this up follow these following steps.
@@ -85,13 +135,13 @@ This will generate the `site` directory which will contain all the gererated doc
 5. Go to your individual virtualization-sdk repo's settings, scroll to the bottom and verify under the GitHub Pages section the `Source` is set to `gh-pages branch`.
 6. Right above this will be a link explaining where your docs are published.
 
-You can also utilize the GitHub workflow for publishing docs (`.github/workflows/publish-docs.yml`) associated with a pull request. 
+You can also utilize the GitHub workflow for publishing docs (`.github/workflows/publish-docs.yml`) associated with a pull request.
 The workflow is present on the `develop` branch. Create a branch called `docs/x.y.z` off `develop` on your fork of the repository
 to ensure that your docs branch triggers the workflow. If you have more than one `docs/x.y.z` branch in your fork,
 you have to push your doc changes to the docs branch with the latest `x.y.z` version. Otherwise, the workflow won't run.
 You also have to make sure to choose `gh-pages` branch on your fork as the [publishing source](https://help.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source).
 Once you push doc changes to the `docs/.x.y.z` branch, the docs site should be available under
-`<your-github-username>.github.io/virtualization-sdk` shortly after. You can see the status of publishing under 
+`<your-github-username>.github.io/virtualization-sdk` shortly after. You can see the status of publishing under
 `https://github.com/<your-github-username>/virtualization-sdk/actions`. This is a fast way to give a preview of your
 changes in a pull request.
 

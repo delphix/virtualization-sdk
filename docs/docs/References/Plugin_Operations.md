@@ -8,13 +8,13 @@
     For each operation, the argument names must match exactly. For example, the Repository Discovery
     operation must have a single argument named `source_connection`.
 
-
 Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 ---------------- | -------- | --------- | -------------------------
 [Repository<br/>Discovery](#repository-discovery) | **Yes** |`discovery.repository()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br/>[Environment Refresh](Workflows.md#environment-discovery-refresh)
 [Source Config<br/>Discovery](#source-config-discovery) | **Yes** |`discovery.source_config()` | [Environment Discovery](Workflows.md#environment-discovery-refresh)<br/>[Environment Refresh](Workflows.md#environment-discovery-refresh)
 [Direct Linked Source<br/>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Post-Snapshot](#direct-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
+[Direct Linked Source<br/>Source Size](#direct-linked-source-size) | **No** | `linked.source_size()` | N/A
 [Staged Linked Source<br/>Pre-Snapshot](#staged-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Post-Snapshot](#staged-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Start-Staging](#staged-linked-source-start-staging) | **No** | `linked.start_staging()` | [Linked Source Enable](Workflows.md#linked-source-enable)
@@ -22,16 +22,19 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Staged Linked Source<br/>Status](#staged-linked-source-status) | **No** |`linked.status()` | N/A
 [Staged Linked Source<br/>Worker](#staged-linked-source-worker) | **No** |`linked.worker()` | N/A
 [Staged Linked Source<br/>Mount Specification](#staged-linked-source-mount-specification) | **Yes** | `linked.mount_specification()` | [Linked Source Sync](Workflows.md#linked-source-sync)<br/>[Linked Source Enable](Workflows.md#linked-source-enable)
+[Staged Linked Source<br/>Source Size](#staged-linked-source-size) | **No** | `linked.source_size()` | N/A
 [Virtual Source<br/>Initialize](#virtual-source-initialize) | **No** | `virtual.initialize()` | [Virtual Source Create Empty VDB](Workflows.md#virtual-source-create-empty-vdb)
 [Virtual Source<br/>Configure](#virtual-source-configure) | **Yes** | `virtual.configure()` | [Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)
 [Virtual Source<br/>Unconfigure](#virtual-source-unconfigure) | **No** | `virtual.unconfigure()` | [Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Delete](Workflows.md#virtual-source-delete)
 [Virtual Source<br/>Reconfigure](#virtual-source-reconfigure) | **Yes** | `virtual.reconfigure()` | [Virtual Source Rollback](Workflows.md#virtual-source-rollback)<br/>[Virtual Source Enable](Workflows.md#virtual-source-enable)
+[Virtual Source<br/>Cleanup](#virtual-source-cleanup) | **No** | `virtual.cleanup()` | [Virtual Source Delete](Workflows.md#virtual-source-delete)
 [Virtual Source<br/>Start](#virtual-source-start) | **No** | `virtual.start()` | [Virtual Source Start](Workflows.md#virtual-source-start)
 [Virtual Source<br/>Stop](#virtual-source-stop) | **No** | `virtual.stop()` | [Virtual Source Stop](Workflows.md#virtual-source-stop)
 [Virtual Source<br/>Pre-Snapshot](#virtual-source-pre-snapshot) | **No** | `virtual.pre_snapshot()` | [Virtual Source Snapshot](Workflows.md#virtual-source-snapshot)
 [Virtual Source<br/>Post-Snapshot](#virtual-source-post-snapshot) | **Yes** | `virtual.post_snapshot()` | [Virtual Source Snapshot](Workflows.md#virtual-source-snapshot)
 [Virtual Source<br>Mount Specification](#virtual-source-mount-specification) | **Yes** | `virtual.mount_specification()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)<br/>[Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Rollback](Workflows.md#virtual-source-rollback)<br/>[Virtual Source Start](Workflows.md#virtual-source-start)
 [Virtual Source<br/>Status](#virtual-source-status) | **No** | `virtual.status()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)
+[Virtual Source<br/>Source Size](#virtual-source-size) | **No** | `virtual.source_size()` | N/A
 [Repository Data Migration](#repository-data-migration) | **No** | `upgrade.repository(migration_id)` | [Upgrade](Workflows.md#upgrade)
 [Source Config Data Migration](#source-config-data-migration) | **No** | `upgrade.source_config(migration_id)` | [Upgrade](Workflows.md#upgrade)
 [Linked Source Data Migration](#linked-source-data-migration) | **No** | `upgrade.linked_source(migration_id)` | [Upgrade](Workflows.md#upgrade)
@@ -190,7 +193,7 @@ Argument | Type | Description
 direct_source | [DirectSource](Classes.md#directsource) | The source associated with this operation.
 repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
 source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
-optional_snapshot_parameters | [SnapshotParametersDefinition](Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
+optional_snapshot_parameters | [SnapshotParametersDefinition](Schemas_and_Autogenerated_Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
 
 ### Returns
 None
@@ -234,7 +237,7 @@ Argument | Type | Description
 direct_source | [DirectSource](Classes.md#directsource) | The source associated with this operation.
 repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
 source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
-optional_snapshot_parameters | [SnapshotParametersDefinition](Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
+optional_snapshot_parameters | [SnapshotParametersDefinition](Schemas_and_Autogenerated_Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
 
 ### Returns
 [SnapshotDefinition](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-class)
@@ -254,7 +257,7 @@ def linked_post_snapshot(direct_source, repository, source_config, optional_snap
   return snapshot
 ```
 
-> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshot-schema) defined as:
+> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshotdefinition) defined as:
 
 ```json
 {
@@ -264,6 +267,50 @@ def linked_post_snapshot(direct_source, repository, source_config, optional_snap
     "transactionId": { "type": "integer" }
   }
 }
+```
+
+## Direct Linked Source Size
+
+Determines the database size of a [dSource](Glossary.md#dsource) once data has been ingested. Only applies when using a [Direct Linking](Glossary.md#direct-linking) strategy.
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* N/A
+
+### Signature
+
+`def linked_source_size(direct_source, repository, source_config)`
+
+### Decorator
+
+`linked.source_size()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+direct_source | [DirectSource](Classes.md#directsource) | The source associated with this operation.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+
+### Returns
+Positive Numeric
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.linked.source_size()
+def linked_source_size(direct_source, repository, source_config):
+  database_size = 0
+  # Implementation to fetch the database size.
+  return database_size
 ```
 
 ## Staged Linked Source Pre-Snapshot
@@ -292,7 +339,7 @@ Argument | Type | Description
 staged_source | [StagedSource](Classes.md#stagedsource) | The source associated with this operation.
 repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
 source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
-optional_snapshot_parameters | [SnapshotParametersDefinition](Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
+optional_snapshot_parameters | [SnapshotParametersDefinition](Schemas_and_Autogenerated_Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
 
 ### Returns
 None
@@ -335,7 +382,7 @@ Argument | Type | Description
 staged_source | [StagedSource](Classes.md#stagedsource) | The source associated with this operation.
 repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
 source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
-optional_snapshot_parameters | [SnapshotParametersDefinition](Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
+optional_snapshot_parameters | [SnapshotParametersDefinition](Schemas_and_Autogenerated_Classes.md#snapshotparametersdefinition) | The snapshot parameters. The value is `None` when executed during a snapshot policy.
 
 ### Returns
 [SnapshotDefinition](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-class)
@@ -358,7 +405,7 @@ def linked_post_snapshot(staged_source, repository, source_config, optional_snap
   return snapshot
 ```
 
-> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshot-schema) defined as:
+> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshotdefinition) defined as:
 
 ```json
 {
@@ -372,7 +419,7 @@ def linked_post_snapshot(staged_source, repository, source_config, optional_snap
 
 ## Staged Linked Source Start-Staging
 
-Sets up a [Staging Source](Glossary.md#staging-source) to ingest data. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
+Sets up a [Staging Source](Classes.md#stagedsource) to ingest data. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
 Required to implement for Delphix Engine operations:
 
 ### Required / Optional
@@ -416,7 +463,7 @@ def start_staging(staged_source, repository, source_config):
 
 ## Staged Linked Source Stop-Staging
 
-Quiesces a [Staging Source](Glossary.md#staging-source) to pause ingestion. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
+Quiesces a [Staging Source](Classes.md#stagedsource) to pause ingestion. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
 
 ### Required / Optional
 **Optional.**
@@ -459,7 +506,7 @@ def stop_staging(staged_source, repository, source_config):
 
 ## Staged Linked Source Status
 
-Determines the status of a [Staging Source](Glossary.md#staging-source) to show end users whether it is healthy or not. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
+Determines the status of a [Staging Source](Classes.md#stagedsource) to show end users whether it is healthy or not. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
 
 ### Required / Optional
 **Optional.**<br/>
@@ -504,7 +551,7 @@ def linked_status(staged_source, repository, source_config):
 
 ## Staged Linked Source Worker
 
-Monitors the status of a [Staging Source](Glossary.md#staging-source) on a reqular interval. It can be used to fix up any errors on staging if it is not functioning as expected. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
+Monitors the status of a [Staging Source](Classes.md#stagedsource) on a reqular interval. It can be used to fix up any errors on staging if it is not functioning as expected. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
 
 ### Required / Optional
 **Optional.**
@@ -596,6 +643,50 @@ def linked_mount_specification(staged_source, repository):
   return MountSpecification([mount], ownership_spec)
 ```
 
+## Staged Linked Source Size
+
+Determines the database size of a [Staging Source](Classes.md#stagedsource) once data has been ingested. Only applies when using a [Staged Linking](Glossary.md#staged-linking) strategy.
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* N/A
+
+### Signature
+
+`def linked_source_size(staged_source, repository, source_config)`
+
+### Decorator
+
+`linked.source_size()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+staged_source | [StagedSource](Classes.md#stagedsource) | The source associated with this operation.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+
+### Returns
+Positive Numeric
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.linked.source_size()
+def linked_source_size(staged_source, repository, source_config):
+  database_size = 0
+  # Implementation to fetch the database size.
+  return database_size
+```
+
 ## Virtual Source Initialize
 
 Initializes a brand-new [empty VDB](Glossary.md#empty-vdb). As with all VDBs, this new dataset will have access to mounted Delphix Engine storage, but of course there will be no data there at first.
@@ -643,7 +734,7 @@ def initialize(virtual_source, repository):
   return source_config
 ```
 
-> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfig-schema) defined as:
+> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-schema) defined as:
 
 ```json
 {
@@ -703,7 +794,7 @@ def configure(virtual_source, repository, snapshot):
   return source_config
 ```
 
-> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfig-schema) defined as:
+> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-schema) defined as:
 
 ```json
 {
@@ -722,7 +813,7 @@ def configure(virtual_source, repository, snapshot):
 
 Prepares for the removal of virtual source data from a target host. Depending on your dataset, this might involve unregistering this dataset from the DBMS, modifying/deleting config files on the remote host, etc.
 
-It's important to clean up anything VDB-specific from the target host during this operation. For example, if you've stored such data in the [scratch path](/Best_Practices/Scratch_Paths), then you should delete it during unconfigure.
+It's important to clean up anything VDB-specific from the target host during this operation. For example, if you've stored such data in the [scratch path](../Best_Practices/Scratch_Paths.md), then you should delete it during unconfigure.
 
 ### Required / Optional
 **Optional.**
@@ -809,7 +900,7 @@ def reconfigure(virtual_source, repository, source_config, snapshot):
   return SourceConfigDefinition(name="updated_config_name")
 ```
 
-> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfig-schema) defined as:
+> The above command assumes a [SourceConfig Schema](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-schema) defined as:
 
 ```json
 {
@@ -822,6 +913,50 @@ def reconfigure(virtual_source, repository, source_config, snapshot):
   "identityFields": ["name"],
   "nameField": ["name"]
 }
+```
+
+## Virtual Source Cleanup
+
+Intended to allow a final cleanup during a delete operation, unlike unconfigure which can be used to signal a temporary dissassociation with a database.
+
+Cleanup is called during the delete flow after unconfigure.
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* [Virtual Source Delete](Workflows.md#virtual-source-delete)
+
+### Signature
+
+`def cleanup(virtual_source, repository, source_config)`
+
+### Decorator
+
+`virtual.cleanup()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+virtual_source | [VirtualSource](Classes.md#virtualsource) | The source associated with this operation.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+
+### Returns
+None
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.cleanup()
+def cleanup(virtual_source, repository, source_config):
+  pass
 ```
 
 ## Virtual Source Start
@@ -996,7 +1131,7 @@ def virtual_post_snapshot(virtual_source, repository, source_config):
   return snapshot
 ```
 
-> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshot-schema) defined as:
+> The above command assumes a [Snapshot Schema](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-schema) defined as:
 
 ```json
 {
@@ -1109,6 +1244,50 @@ def virtual_status(virtual_source, repository, source_config):
   return Status.ACTIVE
 ```
 
+## Virtual Source Size
+
+Determines the database size of a [Virtual Source](Glossary.md#virtual-source) once data has been ingested.
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* N/A
+
+### Signature
+
+`def virtual_source_size(virtual_source, repository, source_config)`
+
+### Decorator
+
+`virtual.source_size()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+virtual_source | [VirtualSource](Classes.md#virtualsource) | The source associated with this operation.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+
+### Returns
+Positive Numeric
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.source_size()
+def virtual_source_size(virtual_source, repository, source_config):
+  database_size = 0
+  # Implementation to fetch the database size.
+  return database_size
+```
+
 
 ## Repository Data Migration
 
@@ -1136,7 +1315,7 @@ A Repository [Data Migration](Glossary.md#data-migration) migrates repository da
 
 Argument | Type | Description
 -------- | ---- | -----------
-migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](/Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
+migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](../Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
 
 ### Function Arguments
 Argument | Type | Description
@@ -1190,7 +1369,7 @@ A Source Config [Data Migration](Glossary.md#data-migration) migrates source con
 
 Argument | Type | Description
 -------- | ---- | -----------
-migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](/Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
+migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](../Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
 
 ### Function Arguments
 Argument | Type | Description
@@ -1243,7 +1422,7 @@ A Linked Source [Data Migration](Glossary.md#data-migration) migrates linked sou
 
 Argument | Type | Description
 -------- | ---- | -----------
-migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](/Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
+migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](../Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
 
 ### Function Arguments
 Argument | Type | Description
@@ -1296,7 +1475,7 @@ A Virtual Source [Data Migration](Glossary.md#data-migration) migrates virtual s
 
 Argument | Type | Description
 -------- | ---- | -----------
-migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](/Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
+migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](../Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
 
 ### Function Arguments
 Argument | Type | Description
@@ -1349,7 +1528,7 @@ A Snapshot [Data Migration](Glossary.md#data-migration) migrates snapshot data f
 
 Argument | Type | Description
 -------- | ---- | -----------
-migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](/Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
+migration_id | String | The ID of this migration. An ID is a string containing one or more positive integers separated by periods. Each ID must be unique. More details [here](../Versioning_And_Upgrade/Upgrade.md#rules-for-data-migrations).
 
 ### Function Arguments
 Argument | Type | Description

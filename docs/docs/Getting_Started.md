@@ -12,9 +12,14 @@ The platform and libs modules expose objects and methods needed to develop a plu
 ## Requirements
 
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
-- Python 2.7 (Python 3 is not supported)
+- Python 2.7 (vSDK 3.1.0 and earlier)
+- Python 3.8 (vSDK 4.0.0 and later)
 - Java 7+
-- Delphix Engine 6.0.3.0 or above
+- A Delphix Engine of an [appropriate version](References/Version_Compatibility.md)
+- An active internet connection to download packages from [PyPI](https://pypi.org/)
+
+!!! tip "Use proxy server"
+    Pip recommends setting up a proxy server in case of restricted internet access. Please follow the [guidelines](https://pip.pypa.io/en/stable/user_guide/#using-a-proxy-server) from Pip on how to set up a proxy server.
 
 ## Installation
 To install the latest version of the SDK run:
@@ -26,9 +31,13 @@ $ pip install dvp
 !!! tip "Use a Virtual Environment"
 	 We highly recommended that you develop plugins inside of a virtual environment. To learn more about virtual environments, refer to [Virtualenv's documentation](https://virtualenv.pypa.io/en/latest/).
 
-	 The virtual environment needs to use Python 2.7. This is configured when creating the virtualenv:
+     If using vSDK 3.1.0 or earlier, the virtual environment needs to use Python 2.7.
 
-	 ```$ virtualenv -p /path/to/python2.7/binary ENV```
+     If using vSDK 4.0.0 or earlier, the virtual environment needs to use Python 3.8.
+
+	 This is configured when creating the virtualenv:
+
+	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV```
 
 To install a specific version of the SDK run:
 
@@ -47,7 +56,7 @@ $ pip install dvp --upgrade
 
 ## Basic Usage
 
-Our [CLI reference](/References/CLI.md) describes commands, provides examples, and a help section.
+Our [CLI reference](References/CLI.md) describes commands, provides examples, and a help section.
 
 To build your plugin:
 
@@ -63,7 +72,7 @@ $ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_fi
 
 You will be prompted for the Delphix Engine user's password.
 
-You can also use a [CLI Configuration File](/Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](/References/CLI.md) command options.
+You can also use a [CLI Configuration File](Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](References/CLI.md) command options.
 
 ## Questions?
 

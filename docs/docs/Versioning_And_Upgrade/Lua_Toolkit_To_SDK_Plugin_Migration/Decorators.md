@@ -1,6 +1,6 @@
 # Decorators
 
-The Virtualization SDK exposes [decorators](/References/Decorators.md) as mentioned in the regular documentation. Below we list the additional operations added to suport Lua to Python migrations. This assumes `Plugin()` is instantiated as `plugin`:
+The Virtualization SDK exposes [decorators](../../References/Decorators.md) as mentioned in the regular documentation. Below we list the additional operations added to suport Lua to Python migrations. This assumes `Plugin()` is instantiated as `plugin`:
 
 Plugin Operation | Decorator
 ---------------- |  --------

@@ -1,8 +1,9 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import re
+import six
 
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.exceptions import (
@@ -142,7 +143,7 @@ class PlatformUpgradeMigrations(UpgradeMigrations):
     @staticmethod
     def __validate_migration_id(migration_id, impl_name):
         # First validate that the id is a string
-        if not isinstance(migration_id, basestring):
+        if not isinstance(migration_id, six.string_types):
             raise MigrationIdIncorrectTypeError(migration_id, impl_name)
 
         # Next check if the id is the right format
@@ -260,7 +261,7 @@ class LuaUpgradeMigrations(UpgradeMigrations):
     def __validate_lua_major_minor_version(migration_id, impl_name,
                                            decorator_name, impl_getter):
         # First validate that the major minor version is a string
-        if not isinstance(migration_id, basestring):
+        if not isinstance(migration_id, six.string_types):
             raise MigrationIdIncorrectTypeError(migration_id, impl_name)
 
         # Next check if the id already exists in this particular dictionary
@@ -308,6 +309,7 @@ class LuaUpgradeMigrations(UpgradeMigrations):
         #
         if not migration_id:
             return []
+
         #
         # First filter out all ids less than the migration id. We need to do
         # this because even after sorting, we wouldn't know where in the list

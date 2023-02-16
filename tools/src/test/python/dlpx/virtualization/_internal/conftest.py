@@ -1,17 +1,22 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2022 by Delphix. All rights reserved.
 #
 
 import configparser
 import copy
 import json
 import os
+import shutil
+from importlib import reload
 
+import pytest
 import yaml
+from dlpx.virtualization.common.util import to_bytes, to_str
+
+from dlpx.virtualization import _internal as virtualization_internal
 from dlpx.virtualization._internal import cli, click_util, const, package_util
 from dlpx.virtualization._internal.commands import build
 
-import pytest
 
 #
 # conftest.py is used to share fixtures among multiple tests files. pytest will
@@ -39,7 +44,7 @@ def plugin_config_file(tmpdir, plugin_config_filename, plugin_config_content):
 
     f = tmpdir.join(plugin_config_filename)
     if plugin_config_content:
-        f.write(plugin_config_content)
+        f.write(to_str(plugin_config_content))
     return f.strpath
 
 
@@ -113,8 +118,8 @@ def _write_dvp_config_file(tmpdir,
     if dev_config_properties:
         parser['dev'] = dev_config_properties
 
-    with open(dvp_config_filepath, 'wb') as config_file:
-        parser.write(config_file)
+    with open(dvp_config_filepath, 'w') as config_file:
+        parser.write(to_bytes(config_file))
 
     #
     # Add temp_dir to list of config files the ConfigFileProcessor will
@@ -156,7 +161,7 @@ def artifact_file(tmpdir, artifact_content, artifact_filename,
         # Only write the artifact if we want to actually create it.
         if isinstance(artifact_content, dict):
             artifact_content = json.dumps(artifact_content, indent=4)
-        f.write(artifact_content)
+        f.write(to_bytes(artifact_content))
     return f.strpath
 
 
@@ -249,7 +254,7 @@ def external_version():
 
 @pytest.fixture
 def language():
-    return 'PYTHON27'
+    return 'PYTHON38'
 
 
 @pytest.fixture
@@ -365,6 +370,7 @@ def linked_operation():
     linked.status_impl = None
     linked.worker_impl = None
     linked.mount_specification_impl = None
+    linked.source_size_impl = None
 
     return linked
 
@@ -404,6 +410,8 @@ def virtual_operation():
     virtual.mount_specification_impl = mount_specification
     virtual.status_impl = None
     virtual.initialize_impl = None
+    virtual.cleanup_impl = None
+    virtual.source_size_impl = None
 
     return virtual
 
@@ -437,6 +445,7 @@ def plugin_manifest(upgrade_operation):
         'hasLinkedStatus': False,
         'hasLinkedWorker': False,
         'hasLinkedMountSpecification': False,
+        'hasLinkedSourceSize': False,
         'hasVirtualConfigure': True,
         'hasVirtualUnconfigure': False,
         'hasVirtualReconfigure': True,
@@ -446,8 +455,10 @@ def plugin_manifest(upgrade_operation):
         'hasVirtualPostSnapshot': True,
         'hasVirtualMountSpecification': True,
         'hasVirtualStatus': False,
+        'hasVirtualSourceSize': False,
         'hasInitialize': False,
-        'migrationIdList': upgrade_operation.migration_id_list
+        'migrationIdList': upgrade_operation.migration_id_list,
+        'hasVirtualCleanup': False,
     }
     return manifest
 
@@ -627,6 +638,16 @@ def additional_definition():
 
 
 @pytest.fixture
+def add_symlink_folder_to_src_dir(tmpdir, src_dir):
+    dummy_folder = os.path.join(tmpdir, "dummy_folder")
+    os.mkdir(dummy_folder)
+    shutil.copy2(os.path.join(os.path.dirname(__file__), "__init__.py"), dummy_folder)
+    destination = os.path.join(src_dir, "dummy_folder")
+    os.symlink(dummy_folder, destination)
+    return destination
+
+
+@pytest.fixture
 def artifact_content(engine_api, virtual_source_definition,
                      linked_source_definition, discovery_definition,
                      snapshot_definition, snapshot_parameters_definition):
@@ -642,7 +663,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
-        'language': 'PYTHON27',
+        'language': 'PYTHON38',
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),
@@ -690,8 +711,25 @@ def artifact_content(engine_api, virtual_source_definition,
 
 
 @pytest.fixture
-def engine_api():
-    return {'type': 'APIVersion', 'major': 1, 'minor': 11, 'micro': 6}
+def engine_api_version_string():
+    """
+    Returns the engine api version from engine_version.cfg file.
+    """
+    return _get_engine_version().get('General', 'engine_api_version')
+
+
+@pytest.fixture
+def engine_api(engine_api_version_string):
+    """Returns the engine api version in JSON format."""
+    major, minor, micro = (
+        int(n) for n in engine_api_version_string.split('.'))
+    engine_api_version = {
+        'type': 'APIVersion',
+        'major': major,
+        'minor': minor,
+        'micro': micro
+    }
+    return engine_api_version
 
 
 @pytest.fixture
@@ -777,3 +815,27 @@ def codegen_gen_py_inputs(plugin_config_file, plugin_name, src_dir, tmpdir,
             self.schema_dict = schema_dict
 
     return CodegenInput(plugin_name, src_dir, tmpdir.strpath, schema_content)
+
+
+def _get_engine_version():
+    """
+    Reads the engine_version.cfg file and constructs a Python object from it.
+
+    This assumes that the engine_version.cfg file is in the root
+    of dlpx.virtualization._internal.
+    """
+    parser = configparser.ConfigParser()
+    parser.read(get_engine_version_file_path())
+    return parser
+
+
+def get_engine_version_file_path():
+    """
+    Returns the engine_version.cfg file path.
+    """
+    for path in virtualization_internal.__path__:
+        engine_path = os.path.join(path, 'engine_version.cfg')
+        if os.path.isfile(engine_path):
+            return engine_path
+    else:
+        raise RuntimeError('Could not find engine version file')

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import functools
@@ -38,7 +38,7 @@ def _get_settings():
     This assumes that the settings file is in the root
     of dlpx.virtualization._internal.
     """
-    parser = configparser.SafeConfigParser()
+    parser = configparser.ConfigParser()
     parser.read(os.path.join(get_internal_package_root(), SETTINGS_FILE_NAME))
     return parser
 

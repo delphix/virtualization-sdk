@@ -103,12 +103,11 @@ mount = Mount(environment, path)
 
 ### Fields
 
-Field | Type | Description
------ | ---- | -----------
-remote_environment | [RemoteEnvironment](#remoteenvironment) or [Reference](Schemas/#reference) | Environment for the connection.
-mount_path | String | The path on the remote host that has the mounted data set.
-shared_path | String | **Optional.** The path of the subdirectory of the data set to mount to the remote host.
-
+| Field              | Type                                                                         | Description                                                                             |
+|--------------------|------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| remote_environment | [RemoteEnvironment](#remoteenvironment) or [Reference](Schemas.md#reference) | Environment for the connection.                                                         |
+| mount_path         | String                                                                       | The path on the remote host that has the mounted data set.                              |
+| shared_path        | String                                                                       | **Optional.** The path of the subdirectory of the data set to mount to the remote host. |
 
 ## OwnershipSpecification
 
@@ -180,7 +179,7 @@ Field | Type | Description
 name | String | Host address.
 reference | String | Unique identifier for the host.
 binary_path | String | Path to Delphix provided binaries on the host, which are present in the toolkit pushed to the remote host like `dlpx_db_exec`, `dlpx_pfexec`, etc. This property is only available for Unix hosts.
-scratch_path | String | Path to scratch area on the host. See details [here](/Best_Practices/Scratch_Paths.md).
+scratch_path | String | Path to scratch area on the host. See details [here](../Best_Practices/Scratch_Paths.md).
 
 
 ## RemoteUser

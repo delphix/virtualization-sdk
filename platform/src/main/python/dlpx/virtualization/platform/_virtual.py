@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 # -*- coding: utf-8 -*-
@@ -25,6 +25,7 @@ class VirtualOperations(object):
     def __init__(self):
         self.configure_impl = None
         self.unconfigure_impl = None
+        self.cleanup_impl = None
         self.reconfigure_impl = None
         self.start_impl = None
         self.stop_impl = None
@@ -33,6 +34,7 @@ class VirtualOperations(object):
         self.status_impl = None
         self.initialize_impl = None
         self.mount_specification_impl = None
+        self.source_size_impl = None
 
     def configure(self):
         def configure_decorator(configure_impl):
@@ -53,6 +55,16 @@ class VirtualOperations(object):
             return unconfigure_impl
 
         return unconfigure_decorator
+
+    def cleanup(self):
+        def cleanup_decorator(cleanup_impl):
+            if self.cleanup_impl:
+                raise OperationAlreadyDefinedError(Op.VIRTUAL_CLEANUP)
+            self.cleanup_impl = v.check_function(
+                cleanup_impl, Op.VIRTUAL_CLEANUP)
+            return cleanup_impl
+
+        return cleanup_decorator
 
     def reconfigure(self):
         def reconfigure_decorator(reconfigure_impl):
@@ -130,6 +142,16 @@ class VirtualOperations(object):
             return mount_specification_impl
 
         return mount_specification_decorator
+
+    def source_size(self):
+        def source_size_decorator(source_size_impl):
+            if self.source_size_impl:
+                raise OperationAlreadyDefinedError(Op.VIRTUAL_SOURCE_SIZE)
+            self.source_size_impl = v.check_function(source_size_impl,
+                                                     Op.VIRTUAL_SOURCE_SIZE)
+            return source_size_impl
+
+        return source_size_decorator
 
     @staticmethod
     def _from_protobuf_single_subset_mount(single_subset_mount):
@@ -254,6 +276,58 @@ class VirtualOperations(object):
         unconfigure_response.return_value.CopyFrom(
             platform_pb2.UnconfigureResult())
         return unconfigure_response
+
+    def _internal_cleanup(self, request):
+        """Cleanup operation wrapper.
+
+        Executed when deleting an existing virtual source.
+        This plugin operation is run after unconfigure.
+
+        Args:
+          request (VirtualCleanupRequest): Cleanup operation arguments.
+
+        Returns:
+          VirtualCleanupResponse: A response containing VirtualCleanupResult
+           if successful or PluginErrorResult in case of an error.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While virtual.cleanup() is not a required operation, this should
+        # not be called if it wasn't implemented.
+        #
+        if not self.cleanup_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_CLEANUP)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        self.cleanup_impl(
+            repository=repository, source_config=source_config,
+            virtual_source=virtual_source)
+
+        virtual_cleanup_response = platform_pb2.VirtualCleanupResponse()
+        virtual_cleanup_response.return_value.CopyFrom(
+            platform_pb2.VirtualCleanupResult())
+        return virtual_cleanup_response
 
     def _internal_reconfigure(self, request):
         """Reconfigure operation wrapper.
@@ -627,8 +701,8 @@ class VirtualOperations(object):
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
 
-        config = self.initialize_impl(repository=repository,
-                             virtual_source=virtual_source)
+        config = self.initialize_impl(
+            repository=repository, virtual_source=virtual_source)
 
         # Validate that this is a SourceConfigDefinition object.
         if not isinstance(config, SourceConfigDefinition):
@@ -720,3 +794,57 @@ class VirtualOperations(object):
         ]
         virtual_mount_spec_response.return_value.mounts.extend(mounts_list)
         return virtual_mount_spec_response
+
+    def _internal_virtual_source_size(self, request):
+        """Virtual Source Size Wrapper.
+
+        Executed as part of several operations to get the virtual source size
+        of a virtual source
+
+        Run source_size operation for a virtual source.
+
+        Args:
+           request (VirtualSourceSizeRequest): Source Size Request arguments.
+
+        Returns:
+           VirtualSourceSizeResponse: A response containing the return value -
+           VirtualSourceSizeResult which has source size. In
+           case of errors, response object will contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While virtual.source_size() is not a required operation, this should
+        # not be called if it wasn't implemented.
+        #
+        if not self.source_size_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_SOURCE_SIZE)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        source_size = self.source_size_impl(
+            virtual_source=virtual_source,
+            repository=repository,
+            source_config=source_config)
+
+        virtual_source_size_response = platform_pb2.VirtualSourceSizeResponse()
+        virtual_source_size_response.return_value.database_size = source_size
+
+        return virtual_source_size_response

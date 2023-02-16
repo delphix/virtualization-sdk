@@ -1,10 +1,12 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import collections
 import json
 import re
+
+from dlpx.virtualization.common.util import to_str
 
 
 class SDKToolingError(Exception):
@@ -255,14 +257,15 @@ class SchemaValidationError(UserError):
                  'type': 'object'}
         """
         #
-        # Validation error message could be unicode encoded string. Strip out
-        # any leading unicode characters for proper display and logging.
+        # Validation error message could be byte string. Strip out
+        # any leading byte characters for proper display and logging.
         #
-        err_msg = re.compile(r'\bu\b', re.IGNORECASE)
+        err_msg = re.compile(r'\bb\b', re.IGNORECASE)
         err_msg = err_msg.sub("", err.message)
 
+        map_func = to_str
         error_string = 'Error: {} on {}'.format(
-            err_msg, map(str, list(err.schema_path)))
+            err_msg, list(map(map_func, list(err.schema_path))))
 
         return error_string
 

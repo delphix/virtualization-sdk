@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -12,6 +12,7 @@ from dlpx.virtualization._internal import exceptions
 from dlpx.virtualization._internal.codegen import CODEGEN_PACKAGE
 from flake8.api import legacy as flake8
 from jsonschema import Draft7Validator
+from dlpx.virtualization.common.util import to_bytes, to_str
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,10 @@ class PluginValidator:
                  plugin_config,
                  plugin_config_schema,
                  plugin_config_content=None):
+        plugin_config = to_str(plugin_config)
+        plugin_config_schema = to_str(plugin_config_schema)
+        if plugin_config_content is not None:
+            plugin_config_content = to_str(plugin_config_content)
         self.__plugin_config = plugin_config
         self.__plugin_config_schema = plugin_config_schema
         self.__plugin_config_content = plugin_config_content
@@ -83,7 +88,7 @@ class PluginValidator:
         try:
             with open(self.__plugin_config, 'rb') as f:
                 try:
-                    return yaml.safe_load(f)
+                    return to_str(yaml.safe_load(f))
                 except yaml.YAMLError as err:
                     if hasattr(err, 'problem_mark'):
                         mark = err.problem_mark
@@ -126,7 +131,7 @@ class PluginValidator:
         schemaFile:     the file containing defined schemas in the plugin
         manualDiscovery whether or not manual discovery is supported
         pluginType      whether the plugin is DIRECT or STAGED
-        language        language of the source code(ex: PYTHON27 for python2.7)
+        language        language of the source code(ex: PYTHON38 for python3.8)
 
         Args:
             plugin_config_content (dict): A dictionary representing a plugin
@@ -140,7 +145,7 @@ class PluginValidator:
         try:
             with open(self.__plugin_config_schema, 'r') as f:
                 try:
-                    plugin_schema = json.load(f)
+                    plugin_schema = to_str(json.load(f))
                 except ValueError as err:
                     raise exceptions.UserError(
                         'Failed to load schemas because {} is not a '
@@ -155,8 +160,8 @@ class PluginValidator:
                     os.strerror(err.errno)))
 
         # Convert plugin config content to json
-        plugin_config_json = json.loads(
-            json.dumps(self.__plugin_config_content))
+        plugin_config_json = to_str(json.loads(
+            to_bytes(json.dumps(self.__plugin_config_content))))
 
         # Validate the plugin config against the schema
         v = Draft7Validator(plugin_schema)
@@ -205,15 +210,15 @@ class PluginValidator:
                                              exclude=[exclude_dir],
                                              quiet=1)
         style_guide.check_files(paths=[src_dir])
-        file_checkers = style_guide._application.file_checker_manager.checkers
+        style_results = style_guide._application.file_checker_manager.results
 
-        for checker in file_checkers:
-            for result in checker.results:
+        for filename, results, _ in style_results:
+            for (error_code, line_number, _, text, _) in results:
                 # From the api code, result is a tuple defined as: error =
                 # (error_code, line_number, column, text, physical_line)
-                if result[0] == 'F821':
-                    msg = "{} on line {} in {}".format(result[3], result[1],
-                                                       checker.filename)
+                if error_code == 'F821':
+                    msg = "{} on line {} in {}".format(text, line_number,
+                                                       filename)
                     warnings['exception'].append(exceptions.UserError(msg))
 
         if warnings and len(warnings) > 0:

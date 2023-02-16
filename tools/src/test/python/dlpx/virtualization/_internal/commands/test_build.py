@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
 #
 
 import json
@@ -35,7 +35,9 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
-    def test_build_success(mock_relative_path, mock_install_deps,
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
+    def test_build_success(mock_compile_py_files, mock_relative_path, mock_install_deps,
                            mock_generate_python, mock_plugin_manifest,
                            mock_patch_dependencies,
                            plugin_config_file, artifact_file, artifact_content,
@@ -66,18 +68,65 @@ class TestBuild:
 
     @staticmethod
     @mock.patch(
+        'dlpx.virtualization._internal.commands.build.patch_dependencies')
+    @mock.patch(
         'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
         return_value={})
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
+    def test_build_success_with_symlink(
+            mock_relative_path, mock_install_deps, mock_generate_python,
+            mock_plugin_manifest, mock_patch_dependencies, plugin_config_file,
+            artifact_file, artifact_content, codegen_gen_py_inputs,
+            add_symlink_folder_to_src_dir):
+        gen_py = codegen_gen_py_inputs
+        # Check if the symlink folder is created.
+        assert os.path.islink(add_symlink_folder_to_src_dir)
+        # Before running build assert that the artifact file does not exist.
+        assert not os.path.exists(artifact_file)
+
+        build.build(plugin_config_file, artifact_file, False, False)
+
+        mock_generate_python.assert_called_once_with(gen_py.name,
+                                                     gen_py.source_dir,
+                                                     gen_py.plugin_content_dir,
+                                                     gen_py.schema_dict)
+        mock_plugin_manifest.assert_called()
+        mock_install_deps.assert_called()
+        mock_relative_path.assert_called()
+        mock_patch_dependencies.assert_called()
+
+        # After running build this file should now exist.
+        assert os.path.exists(artifact_file)
+
+        with open(artifact_file, 'rb') as f:
+            content = json.load(f)
+
+        # Assert that source code changed because of symlink folder.
+        assert len(content.keys() - artifact_content) == 0
+        assert len(artifact_content.keys() - content) == 0
+        difference = [key for key in content.keys()
+                      & artifact_content if content[key] != artifact_content[key]]
+        assert len(difference) == 1
+        assert difference.__getitem__(0) == "sourceCode"
+
+    @staticmethod
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_util.get_plugin_manifest',
+        return_value={})
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
+    @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
     def test_build_success_with_patched_dependencies(
-            mock_relative_path, mock_install_deps,
+            mock_compile_py_files, mock_relative_path, mock_install_deps,
             mock_generate_python, mock_plugin_manifest,
             plugin_config_file, artifact_file, codegen_gen_py_inputs,
             json_format_file_patched, json_format_content):
-
         build.build(plugin_config_file, artifact_file, False, False)
 
         with open(json_format_file_patched, 'r') as f:
@@ -95,10 +144,12 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
-    def test_build_success_from_init(mock_relative_path, mock_install_deps,
-                                     mock_patch_dependencies,
-                                     tmpdir, ingestion_strategy, host_type,
-                                     plugin_name, artifact_file):
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
+    def test_build_success_from_init(
+            mock_relative_path, mock_compile_py_files, mock_install_deps,
+            mock_patch_dependencies, tmpdir, ingestion_strategy, host_type,
+            plugin_name, artifact_file):
         # Initialize an empty directory.
         init.init(tmpdir.strpath, ingestion_strategy, plugin_name, host_type)
         plugin_config_file = os.path.join(
@@ -124,11 +175,13 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
     def test_build_success_non_default_output_file(
-            mock_relative_path, mock_install_deps, mock_generate_python,
-            mock_import_plugin, mock_patch_dependencies,
-            plugin_config_file, artifact_file,
-            artifact_content, codegen_gen_py_inputs):
+            mock_relative_path, mock_compile_py_files, mock_install_deps,
+            mock_generate_python, mock_import_plugin, mock_patch_dependencies,
+            plugin_config_file, artifact_file, artifact_content,
+            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -236,13 +289,13 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
-    def test_build_prepare_artifact_fail(mock_relative_path, mock_install_deps,
-                                         mock_generate_python,
-                                         mock_plugin_manifest,
-                                         mock_patch_dependencies,
-                                         mock_prep_artifact,
-                                         plugin_config_file, artifact_file,
-                                         codegen_gen_py_inputs):
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
+    def test_build_prepare_artifact_fail(
+            mock_compile_py_files, mock_relative_path, mock_install_deps,
+            mock_generate_python, mock_plugin_manifest, mock_patch_dependencies,
+            mock_prep_artifact, plugin_config_file, artifact_file,
+            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -281,11 +334,13 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
     def test_build_generate_artifact_fail(
-            mock_relative_path, mock_install_deps, mock_generate_python,
-            mock_plugin_manifest, mock_patch_dependencies,
-            mock_gen_artifact, plugin_config_file,
-            artifact_file, codegen_gen_py_inputs):
+            mock_compile_py_files, mock_relative_path, mock_install_deps,
+            mock_generate_python, mock_plugin_manifest, mock_patch_dependencies,
+            mock_gen_artifact, plugin_config_file, artifact_file,
+            codegen_gen_py_inputs):
         gen_py = codegen_gen_py_inputs
 
         # Before running build assert that the artifact file does not exist.
@@ -419,10 +474,12 @@ class TestBuild:
     @mock.patch(
         'dlpx.virtualization._internal.plugin_dependency_util.install_deps')
     @mock.patch('os.path.isabs', return_value=False)
+    @mock.patch(
+        'dlpx.virtualization._internal.plugin_dependency_util.compile_py_files')
     @pytest.mark.parametrize('plugin_id',
                              ['77f18ce4-4425-4cd6-b9a7-23653254d660'])
-    def test_id_validation_positive(mock_relative_path, mock_install_deps,
-                                    mock_patch_dependencies,
+    def test_id_validation_positive(mock_compile_py_files, mock_relative_path,
+                                    mock_install_deps, mock_patch_dependencies,
                                     mock_import_plugin, plugin_config_file,
                                     artifact_file):
         build.build(plugin_config_file, artifact_file, False)
@@ -497,7 +554,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert "'BAD_LANGUAGE' is not one of ['PYTHON27']" in message
+        assert "'BAD_LANGUAGE' is not one of ['PYTHON38']" in message
 
         assert not mock_generate_python.called
 
@@ -603,9 +660,9 @@ class TestPluginUtil:
 
         message = err_info.value.message
         assert (
-            'Failed to load schemas because \'{}\' is not a valid json file.'
-            ' Error: Extra data: line 2 column 1 - line 2 column 9'
-            ' (char 19 - 27)'.format(schema_file)) in message
+           "Failed to load schemas because '{}' is not a valid json file."
+           " Error: Extra data: line 2 column 1 (char 19) \n\nBUILD"
+           " FAILED.").format(schema_file) in message
 
         assert not mock_generate_python.called
 
@@ -829,5 +886,5 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        exp_message = "No module named {module}".format(module=entry_module)
+        exp_message = "No module named \'{module}\'".format(module=entry_module)
         assert exp_message in message

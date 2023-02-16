@@ -11,10 +11,10 @@ A single file that is the result of a [build](#building). It is this artifact wh
 The process of creating an [artifact](#artifact) from the collection of files that make up the plugin's source code.
 
 ## Data Migration
-A python function which is called as part of the upgrade process. It handles transforming data from an older format to a newer format. More details [here](/Versioning_And_Upgrade/Upgrade.md#data-migrations).
+A python function which is called as part of the upgrade process. It handles transforming data from an older format to a newer format. More details [here](../Versioning_And_Upgrade/Upgrade.md#data-migrations).
 
 ## Data Migration ID
-Each data migration is tagged with a unique ID. This allows the Delphix Engine to know which data migrations need to be run, in which order, when upgrading to a new plugin version. More details [here](/Versioning_And_Upgrade/Upgrade.md#data-migrations).
+Each data migration is tagged with a unique ID. This allows the Delphix Engine to know which data migrations need to be run, in which order, when upgrading to a new plugin version. More details [here](../Versioning_And_Upgrade/Upgrade.md#data-migrations).
 
 ## Decorator
 A Python construct which is used by plugins to "tag" certain functions, so that the Delphix Engine knows which function corresponds to which plugin operation.
