@@ -129,11 +129,11 @@ class LinkedOperations(object):
                 'Either staged_mount or mounts can be present for staging source. '
                 'Found both staged_mount and mounts.')
 
-        if LinkedOperations._check_staged_mount(staged_mount):
-            return LinkedOperations._from_protobuf_remote_mount(staged_mount), None
-        else:
+        if mounts and len(mounts) > 0:
             return None, [
                 LinkedOperations._from_protobuf_remote_mount(m) for m in mounts]
+        else:
+            return LinkedOperations._from_protobuf_remote_mount(staged_mount), None
 
     @staticmethod
     def _check_staged_mount(staged_mount):
