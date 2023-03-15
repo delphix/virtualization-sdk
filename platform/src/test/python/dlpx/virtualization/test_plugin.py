@@ -1362,7 +1362,7 @@ class TestPlugin:
     @pytest.mark.parametrize("staged_source", ["mount"], indirect=["staged_source"])
     def test_staged_mount_spec_fail_empty_mount(my_plugin, staged_source, repository):
 
-        from dlpx.virtualization.platform import (Mount, MountSpecification,
+        from dlpx.virtualization.platform import (MountSpecification,
                                                   OwnershipSpecification)
 
         @my_plugin.linked.mount_specification()
