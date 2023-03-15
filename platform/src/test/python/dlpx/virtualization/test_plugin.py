@@ -1359,6 +1359,32 @@ class TestPlugin:
         assert message == 'Shared path is not supported for linked sources.'
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount"], indirect=["staged_source"])
+    def test_staged_mount_spec_fail_empty_mount(my_plugin, staged_source, repository):
+
+        from dlpx.virtualization.platform import (Mount, MountSpecification,
+                                                  OwnershipSpecification)
+
+        @my_plugin.linked.mount_specification()
+        def staged_mount_spec_impl(staged_source, repository):
+            TestPlugin.assert_plugin_args(staged_source=staged_source,
+                                          repository=repository)
+            ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
+
+            return MountSpecification([], ownership_spec)
+
+        staged_mount_spec_request = platform_pb2.StagedMountSpecRequest()
+        TestPlugin.setup_request(request=staged_mount_spec_request,
+                                 staged_source=staged_source,
+                                 repository=repository)
+        with pytest.raises(PluginRuntimeError) as err_info:
+            my_plugin.linked._internal_mount_specification(
+                staged_mount_spec_request)
+
+        message = err_info.value.message
+        assert message == 'Mount must be provided for staging sources. Found 0 mounts.'
+
+    @staticmethod
     def _call_stage_methods(staged_method, request, error_assertion):
         if error_assertion:
             with pytest.raises(PluginRuntimeError) as err_info:

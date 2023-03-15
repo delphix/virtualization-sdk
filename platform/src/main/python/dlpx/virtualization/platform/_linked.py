@@ -781,7 +781,11 @@ class LinkedOperations(object):
         staged_mount_spec_response = platform_pb2.StagedMountSpecResponse()
 
         mount_len = len(mount_spec.mounts)
-        if mount_len != 1:
+        if mount_len < 1:
+            raise PluginRuntimeError(
+                'Mount must be provided for staging sources.'
+                ' Found {} mounts.'.format(mount_len))
+        elif mount_len > 1:
             mounts = [to_protobuf_subset_mount(m) for m in mount_spec.mounts]
             staged_mount_spec_response.return_value.mounts.extend(mounts)
         else:
