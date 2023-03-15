@@ -7,7 +7,7 @@ import pytest
 
 from dlpx.virtualization._internal import package_util
 
-DVP_VERSION = '4.0.6.dev0'
+DVP_VERSION = '4.1.0'
 DVP_API_VERSION = '1.7.1'
 
 
