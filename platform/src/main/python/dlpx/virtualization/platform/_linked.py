@@ -123,8 +123,9 @@ class LinkedOperations(object):
     def _get_mounts_from_request(request):
         staged_mount = request.staged_source.staged_mount
         mounts = request.staged_source.mounts
-        if LinkedOperations._check_staged_mount(staged_mount) \
-                and mounts and len(mounts) > 0:
+        if mounts and len(mounts) > 0 and staged_mount and \
+                staged_mount.mount_path and len(staged_mount.mount_path) > 0 \
+                and staged_mount.remote_environment:
             raise PluginRuntimeError(
                 'Either staged_mount or mounts can be present for staging source. '
                 'Found both staged_mount and mounts.')
@@ -134,12 +135,6 @@ class LinkedOperations(object):
                 LinkedOperations._from_protobuf_remote_mount(m) for m in mounts]
         else:
             return LinkedOperations._from_protobuf_remote_mount(staged_mount), None
-
-    @staticmethod
-    def _check_staged_mount(staged_mount):
-        return staged_mount and \
-            staged_mount.mount_path and len(staged_mount.mount_path) > 0 and \
-            staged_mount.remote_environment
 
     def _internal_direct_pre_snapshot(self, request):
         """Pre Snapshot Wrapper for direct plugins.
