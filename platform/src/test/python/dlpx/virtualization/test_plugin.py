@@ -98,46 +98,6 @@ class TestPlugin:
             def configure_impl():  # noqa F811
                 pass
 
-    class NotModel1:
-        pass
-
-    class NotModel2(object):
-        pass
-
-    class NotModel3(NotModel1):
-        pass
-
-    class Model:
-        pass
-
-    class NotModel4(Model):
-        def __init__(self):
-            self._swagger_types = {}
-
-        @property
-        def swagger_types(self):
-            return self._swagger_types
-
-    class NotModel5(Model):
-        def __init__(self):
-            self._attribute_map = {}
-
-        @property
-        def attribute_map(self):
-            return self._attribute_map
-
-    @staticmethod
-    @pytest.fixture(autouse=True,
-                    params=[
-                        NotModel1(),
-                        NotModel2(),
-                        NotModel3(),
-                        NotModel4(),
-                        NotModel5(), 'string', 1
-                    ])
-    def not_model(request):
-        return request.param
-
     @staticmethod
     def assert_user(user):
         assert isinstance(user, RemoteUser)
@@ -221,7 +181,11 @@ class TestPlugin:
         assert staged_source.guid == TEST_GUID
         TestPlugin.assert_connection(staged_source.source_connection)
         assert staged_source.parameters.name == TEST_STAGED_SOURCE
-        TestPlugin.assert_staged_mount(staged_source.mount)
+        if staged_source.mount:
+            TestPlugin.assert_staged_mount(staged_source.mount)
+        if staged_source.mounts and len(staged_source.mounts) > 0:
+            for m in staged_source.mounts:
+                TestPlugin.assert_staged_mount(m)
         TestPlugin.assert_connection(staged_source.staged_connection)
 
     @staticmethod
@@ -358,12 +322,15 @@ class TestPlugin:
     @staticmethod
     @pytest.fixture
     def staged_source(connection, linked_source, staged_mount,
-                      staged_connection):
+                      staged_connection, mount, request):
         staged_source = common_pb2.StagedSource()
         staged_source.source_connection.CopyFrom(connection)
         staged_source.linked_source.CopyFrom(linked_source)
         staged_source.linked_source.parameters.json = TEST_STAGED_SOURCE_JSON
-        staged_source.staged_mount.CopyFrom(staged_mount)
+        if request.param != "mount":
+            staged_source.mounts.extend([mount])
+        if request.param != "mounts":
+            staged_source.staged_mount.CopyFrom(staged_mount)
         staged_source.staged_connection.CopyFrom(staged_connection)
         return staged_source
 
@@ -804,6 +771,28 @@ class TestPlugin:
         assert return_value.ownership_spec.gid == TEST_GID
 
     @staticmethod
+    def test_virtual_source_size(my_plugin, virtual_source, repository,
+                                 source_config):
+
+        @my_plugin.virtual.source_size()
+        def virtual_source_size_impl(virtual_source, repository, source_config):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository,
+                                          source_config=source_config)
+            return 100
+
+        virtual_source_size_request = platform_pb2.VirtualSourceSizeRequest()
+        TestPlugin.setup_request(request=virtual_source_size_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config)
+
+        virtual_source_size_response = my_plugin.virtual.\
+            _internal_virtual_source_size(virtual_source_size_request)
+
+        assert virtual_source_size_response.return_value.database_size == 100
+
+    @staticmethod
     def test_repository_discovery(my_plugin, connection):
         @my_plugin.discovery.repository()
         def repository_discovery_impl(source_connection):
@@ -1001,6 +990,28 @@ class TestPlugin:
         assert snapshot.parameters.json == expected_snapshot
 
     @staticmethod
+    def test_direct_source_size(my_plugin, direct_source, repository,
+                                source_config):
+
+        @my_plugin.linked.source_size()
+        def direct_source_size_impl(direct_source, repository, source_config):
+            TestPlugin.assert_plugin_args(direct_source=direct_source,
+                                          repository=repository,
+                                          source_config=source_config)
+            return 100
+        direct_source_size_request = platform_pb2.DirectSourceSizeRequest()
+        TestPlugin.setup_request(request=direct_source_size_request,
+                                 direct_source=direct_source,
+                                 repository=repository,
+                                 source_config=source_config)
+        direct_source_size_response = my_plugin.linked._internal_direct_source_size(
+            direct_source_size_request)
+
+        assert direct_source_size_response.return_value.database_size == 100
+
+    @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_pre_snapshot(my_plugin, staged_source, repository,
                                  source_config, snapshot_parameters):
         @my_plugin.linked.pre_snapshot()
@@ -1021,15 +1032,19 @@ class TestPlugin:
             source_config=source_config,
             snapshot_parameters=snapshot_parameters)
 
-        expected_result = platform_pb2.StagedPreSnapshotResult()
-        response = my_plugin.linked._internal_staged_pre_snapshot(
-            staged_pre_snapshot_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert response.WhichOneof('result') == 'return_value'
-        assert (response.return_value == expected_result)
+        response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_pre_snapshot,
+            staged_pre_snapshot_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if response:
+            expected_result = platform_pb2.StagedPreSnapshotResult()
+            # Check that the response's oneof is set to return_value and not error
+            assert response.WhichOneof('result') == 'return_value'
+            assert (response.return_value == expected_result)
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_pre_snapshot_null_snapparams(my_plugin, staged_source,
                                                  repository, source_config):
         @my_plugin.linked.pre_snapshot()
@@ -1052,15 +1067,19 @@ class TestPlugin:
             source_config=source_config,
             snapshot_parameters=snapshot_parameters)
 
-        expected_result = platform_pb2.StagedPreSnapshotResult()
-        response = my_plugin.linked._internal_staged_pre_snapshot(
-            staged_pre_snapshot_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert response.WhichOneof('result') == 'return_value'
-        assert (response.return_value == expected_result)
+        response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_pre_snapshot,
+            staged_pre_snapshot_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if response:
+            expected_result = platform_pb2.StagedPreSnapshotResult()
+            # Check that the response's oneof is set to return_value and not error
+            assert response.WhichOneof('result') == 'return_value'
+            assert (response.return_value == expected_result)
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_post_snapshot(my_plugin, staged_source, repository,
                                   source_config, snapshot_parameters):
         @my_plugin.linked.post_snapshot()
@@ -1081,13 +1100,17 @@ class TestPlugin:
             source_config=source_config,
             snapshot_parameters=snapshot_parameters)
 
-        response = my_plugin.linked._internal_staged_post_snapshot(
-            staged_post_snapshot_request)
-        expected = TEST_SNAPSHOT_JSON
-
-        assert response.return_value.snapshot.parameters.json == expected
+        response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_post_snapshot,
+            staged_post_snapshot_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if response:
+            expected = TEST_SNAPSHOT_JSON
+            assert response.return_value.snapshot.parameters.json == expected
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_post_snapshot_null_snapparams(my_plugin, staged_source,
                                                   repository, source_config):
         @my_plugin.linked.post_snapshot()
@@ -1110,13 +1133,17 @@ class TestPlugin:
             source_config=source_config,
             snapshot_parameters=snapshot_parameters)
 
-        response = my_plugin.linked._internal_staged_post_snapshot(
-            staged_post_snapshot_request)
-        expected = TEST_SNAPSHOT_JSON
-
-        assert response.return_value.snapshot.parameters.json == expected
+        response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_post_snapshot,
+            staged_post_snapshot_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if response:
+            expected = TEST_SNAPSHOT_JSON
+            assert response.return_value.snapshot.parameters.json == expected
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_start_staging(my_plugin, staged_source, repository,
                            source_config):
         @my_plugin.linked.start_staging()
@@ -1132,15 +1159,19 @@ class TestPlugin:
                                  repository=repository,
                                  source_config=source_config)
 
-        expected_result = platform_pb2.StartStagingResult()
-        start_staging_response = (
-            my_plugin.linked._internal_start_staging(start_staging_request))
-
-        # Check that the response's oneof is set to return_value and not error
-        assert start_staging_response.WhichOneof('result') == 'return_value'
-        assert start_staging_response.return_value == expected_result
+        start_staging_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_start_staging,
+            start_staging_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if start_staging_response:
+            expected_result = platform_pb2.StartStagingResult()
+            # Check that the response's oneof is set to return_value and not error
+            assert start_staging_response.WhichOneof('result') == 'return_value'
+            assert start_staging_response.return_value == expected_result
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_stop_staging(my_plugin, staged_source, repository, source_config):
         @my_plugin.linked.stop_staging()
         def stop_staging_impl(staged_source, repository, source_config):
@@ -1155,15 +1186,19 @@ class TestPlugin:
                                  repository=repository,
                                  source_config=source_config)
 
-        expected_result = platform_pb2.StopStagingResult()
-        stop_staging_response = (
-            my_plugin.linked._internal_stop_staging(stop_staging_request))
-
-        # Check that the response's oneof is set to return_value and not error
-        assert stop_staging_response.WhichOneof('result') == 'return_value'
-        assert stop_staging_response.return_value == expected_result
+        stop_staging_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_stop_staging,
+            stop_staging_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if stop_staging_response:
+            expected_result = platform_pb2.StopStagingResult()
+            # Check that the response's oneof is set to return_value and not error
+            assert stop_staging_response.WhichOneof('result') == 'return_value'
+            assert stop_staging_response.return_value == expected_result
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_status(my_plugin, staged_source, repository,
                            source_config):
 
@@ -1182,13 +1217,17 @@ class TestPlugin:
                                  repository=repository,
                                  source_config=source_config)
 
-        staged_status_response = my_plugin.linked._internal_status(
-            staged_status_request)
-        expected_status = platform_pb2.StagedStatusResult().ACTIVE
-
-        assert staged_status_response.return_value.status == expected_status
+        staged_status_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_status,
+            staged_status_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if staged_status_response:
+            expected_status = platform_pb2.StagedStatusResult().ACTIVE
+            assert staged_status_response.return_value.status == expected_status
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_source_size(my_plugin, staged_source, repository,
                          source_config):
 
@@ -1203,12 +1242,16 @@ class TestPlugin:
                                  staged_source=staged_source,
                                  repository=repository,
                                  source_config=source_config)
-        staged_source_size_response = my_plugin.linked._internal_staged_source_size(
-            staged_source_size_request)
-
-        assert staged_source_size_response.return_value.database_size == 0
+        staged_source_size_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_source_size,
+            staged_source_size_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if staged_source_size_response:
+            assert staged_source_size_response.return_value.database_size == 0
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_worker(my_plugin, staged_source, repository,
                            source_config):
         @my_plugin.linked.worker()
@@ -1224,15 +1267,19 @@ class TestPlugin:
                                  repository=repository,
                                  source_config=source_config)
 
-        expected_result = platform_pb2.StagedWorkerResult()
-        staged_worker_response = my_plugin.linked._internal_worker(
-            staged_worker_request)
-
-        # Check that the response's oneof is set to return_value and not error
-        assert staged_worker_response.WhichOneof('result') == 'return_value'
-        assert staged_worker_response.return_value == expected_result
+        staged_worker_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_worker,
+            staged_worker_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if staged_worker_response:
+            expected_result = platform_pb2.StagedWorkerResult()
+            # Check that the response's oneof is set to return_value and not error
+            assert staged_worker_response.WhichOneof('result') == 'return_value'
+            assert staged_worker_response.return_value == expected_result
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
     def test_staged_mount_spec(my_plugin, staged_source, repository):
 
         from dlpx.virtualization.platform import (Mount, MountSpecification,
@@ -1242,33 +1289,48 @@ class TestPlugin:
         def staged_mount_spec_impl(staged_source, repository):
             TestPlugin.assert_plugin_args(staged_source=staged_source,
                                           repository=repository)
-
-            mount = Mount(staged_source.source_connection.environment,
-                          TEST_MOUNT_PATH)
+            mount_array = []
+            if staged_source.mounts and len(staged_source.mounts) > 0:
+                primary_mount = Mount(staged_source.source_connection.environment,
+                                      TEST_MOUNT_PATH, TEST_SHARED_PATH)
+                another_mount = Mount(staged_source.source_connection.environment,
+                                      TEST_MOUNT_PATH, TEST_SHARED_PATH)
+                mount_array = [primary_mount, another_mount]
+            if staged_source.mount:
+                mount = Mount(staged_source.source_connection.environment,
+                              TEST_MOUNT_PATH)
+                mount_array = [mount]
             ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
 
-            return MountSpecification([mount], ownership_spec)
+            return MountSpecification(mount_array, ownership_spec)
 
         staged_mount_spec_request = platform_pb2.StagedMountSpecRequest()
         TestPlugin.setup_request(request=staged_mount_spec_request,
                                  staged_source=staged_source,
                                  repository=repository)
 
-        staged_mount_spec_response = (
-            my_plugin.linked._internal_mount_specification(
-                staged_mount_spec_request))
+        staged_mount_spec_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_mount_specification,
+            staged_mount_spec_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        if staged_mount_spec_response:
+            staged_mount = staged_mount_spec_response.return_value.staged_mount
+            mounts = staged_mount_spec_response.return_value.mounts
+            ownership_spec = staged_mount_spec_response.return_value.ownership_spec
 
-        staged_mount = staged_mount_spec_response.return_value.staged_mount
-        ownership_spec = staged_mount_spec_response.return_value.ownership_spec
-
-        TestPlugin.assert_environment_protobuf(staged_mount.remote_environment)
-        assert staged_mount.mount_path == TEST_MOUNT_PATH
-        # shared_path is not supported and must be empty
-        assert staged_mount.shared_path == ''
-        assert ownership_spec.uid == TEST_UID
-        assert ownership_spec.gid == TEST_GID
+            if staged_mount and staged_mount.mount_path:
+                TestPlugin.assert_environment_protobuf(staged_mount.remote_environment)
+                assert staged_mount.mount_path == TEST_MOUNT_PATH
+                # shared_path is not supported and must be empty
+                assert staged_mount.shared_path == ''
+                assert ownership_spec.uid == TEST_UID
+                assert ownership_spec.gid == TEST_GID
+            if mounts:
+                for mount in mounts:
+                    TestPlugin.assert_mount_protobuf(mount)
 
     @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount"], indirect=["staged_source"])
     def test_staged_mount_spec_fail(my_plugin, staged_source, repository):
 
         from dlpx.virtualization.platform import (Mount, MountSpecification,
@@ -1295,6 +1357,51 @@ class TestPlugin:
 
         message = err_info.value.message
         assert message == 'Shared path is not supported for linked sources.'
+
+    @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount"], indirect=["staged_source"])
+    def test_staged_mount_spec_fail_empty_mount(my_plugin, staged_source, repository):
+
+        from dlpx.virtualization.platform import (MountSpecification,
+                                                  OwnershipSpecification)
+
+        @my_plugin.linked.mount_specification()
+        def staged_mount_spec_impl(staged_source, repository):
+            TestPlugin.assert_plugin_args(staged_source=staged_source,
+                                          repository=repository)
+            ownership_spec = OwnershipSpecification(TEST_UID, TEST_GID)
+
+            return MountSpecification([], ownership_spec)
+
+        staged_mount_spec_request = platform_pb2.StagedMountSpecRequest()
+        TestPlugin.setup_request(request=staged_mount_spec_request,
+                                 staged_source=staged_source,
+                                 repository=repository)
+        with pytest.raises(PluginRuntimeError) as err_info:
+            my_plugin.linked._internal_mount_specification(
+                staged_mount_spec_request)
+
+        message = err_info.value.message
+        assert message == 'Mount must be provided for staging sources. Found 0 mounts.'
+
+    @staticmethod
+    def _call_stage_methods(staged_method, request, error_assertion):
+        if error_assertion:
+            with pytest.raises(PluginRuntimeError) as err_info:
+                staged_method(request)
+            error_assertion(err_info.value.message)
+        else:
+            return staged_method(request)
+
+    @staticmethod
+    def _raise_staged_source_both_mounts_exception(staged_source):
+        def assert_error(actual):
+            assert actual == 'Either staged_mount or mounts can be present for ' \
+                             'staging source. Found both staged_mount and mounts.'
+
+        if staged_source.mounts and staged_source.staged_mount.mount_path:
+            return assert_error
+        return None
 
     @staticmethod
     def test_upgrade_repository_success(my_plugin):
