@@ -39,7 +39,7 @@ mount | [Mount](#mount) | Mount point associated with the source.
 staged_connection | [RemoteConnection](#remoteconnection) | Connection for the staging environment.
 mounts | list[[Mount](#mount)] | Mount points associated with the source.
 
-!!! warning "mount vs mounts"
+!!! note "mount vs mounts"
     Both `mount` and `mounts` will not be present in the [StagedSource](#stagedsource) object. Fields are populated based on number of [mountSpecification](#mountspecification) object provided from [linked_mount_specification](Plugin_Operations.md#staged-linked-source-mount-specification) decorator.
     > - When only one [mountSpecification](#mountspecification) object is provided, `mount` will be present.
       - When more than one [mountSpecification](#mountspecification) object is provided, `mounts` will be present.
