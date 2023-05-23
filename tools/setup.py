@@ -29,7 +29,7 @@ install_requires = [
     "MarkupSafe >= 2.1, < 2.2",
     "pkgutil_resolve_name == 1.3.10",
     "pyyaml >= 6, < 7",
-    "requests >= 2.28, < 2.29",
+    "requests >= 2.31, < 2.32",
     "six >= 1.16, < 1.17",
     "zipp >= 3.11, < 3.12",
 ]
