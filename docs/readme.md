@@ -111,7 +111,7 @@ $ linkcheck -e --skip-file linkcheck-skip.txt :8000
 Done crawling.                   
 
 Access to these URLs denied by robots.txt, so we couldn't check them:
-- https://docs.delphix.com/docs/
+- https://documentation.delphix.com/continuous-data/docs
 - https://github.com/delphix
 - https://www.facebook.com/DelphixCorp/
 - https://www.linkedin.com/company/delphix
