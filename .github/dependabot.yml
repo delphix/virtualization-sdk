@@ -5,7 +5,7 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 10
-  target-branch: develop
+  target-branch: dependabot/add-v2-config-file
   ignore:
   - dependency-name: packaging
     versions:
@@ -15,7 +15,7 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 10
-  target-branch: develop
+  target-branch: dependabot/add-v2-config-file
   ignore:
   - dependency-name: packaging
     versions:
@@ -25,7 +25,7 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 10
-  target-branch: develop
+  target-branch: dependabot/add-v2-config-file
   ignore:
   - dependency-name: packaging
     versions:
@@ -35,7 +35,7 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 10
-  target-branch: develop
+  target-branch: dependabot/add-v2-config-file
   ignore:
   - dependency-name: packaging
     versions:
@@ -45,7 +45,7 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 10
-  target-branch: develop
+  target-branch: dependabot/add-v2-config-file
   ignore:
   - dependency-name: coverage
     versions:
