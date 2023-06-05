@@ -6,8 +6,8 @@ repo_url: https://github.com/delphix/virtualization-sdk/
 theme:
   name: material
   palette:
-    primary:
-    accent: light blue
+    primary: custom
+    accent: custom
   logo: 'images/header_logo.png'
   favicon: 'images/favicon_logo.png'
   font:
