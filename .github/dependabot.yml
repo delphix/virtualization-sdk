@@ -1,0 +1,32 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/dvp"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  target-branch: develop
+- package-ecosystem: pip
+  directory: "/common"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  target-branch: develop
+- package-ecosystem: pip
+  directory: "/platform"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  target-branch: develop
+- package-ecosystem: pip
+  directory: "/libs"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  target-branch: develop
+- package-ecosystem: pip
+  directory: "/tools"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  target-branch: develop
