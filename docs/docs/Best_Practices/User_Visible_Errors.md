@@ -11,7 +11,7 @@ action | String | **Optional**. List of actions that the end user could take to 
 output | String | **Optional**. Output or stack trace from the failure to give the end user more information so that they can self diagnose. If not provided, it defaults to the stack trace of the failure.
 
 !!! warning
-    There is a limit to how much data can be stored within the fields of a `UserError`. See [Message Limits](/Best_Practices/Message_Limits.md) for details.
+    There is a limit to how much data can be stored within the fields of a `UserError`. See [Message Limits](Message_Limits.md) for details.
 
 ## Example
 
@@ -40,7 +40,7 @@ def start(virtual_source, repository, source_config):
 !!! warning
     If developing a plugin in Python 2.7, you will need to use `pkgutil.get_data` rather than `importlib.resources.read_text`.
 
-    See [Managing Scripts For Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for more info.
+    See [Managing Scripts For Remote Execution](Managing_Scripts_For_Remote_Execution.md) for more info.
 
 The UI would show the end user if the plugin operation above fails:
 

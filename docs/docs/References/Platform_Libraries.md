@@ -122,7 +122,7 @@ response = libs.run_bash(connection, command)
  # Execute script on remote host
  response = libs.run_bash(direct_source.connection, script_content)
 ```
-For more information please go to [Managing Scripts for Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) section.
+For more information please go to [Managing Scripts for Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) section.
 
 ## run_expect
 
@@ -248,7 +248,7 @@ libs.run_sync(connection, source_directory, rsync_user, exclude_paths, sym_links
 
 Takes a plain password and, optionally, a user name and converts them to an object that conforms to [`credentialsSupplier`](Schemas.md#credentialssupplier). This function generalizes an existing password property to allow users to later select an alternative source, such as a password vault.
 
-This function can be called only from [data migrations](/Versioning_And_Upgrade/Upgrade/#data-migrations). The resulting object can be assigned to a property of type [`credentialsSupplier`](Schemas.md#credentialssupplier) or  [`passwordCredentialsSupplier`](Schemas.md#passwordcredentialssupplier).
+This function can be called only from [data migrations](../Versioning_And_Upgrade/Upgrade.md#data-migrations). The resulting object can be assigned to a property of type [`credentialsSupplier`](Schemas.md#credentialssupplier) or  [`passwordCredentialsSupplier`](Schemas.md#passwordcredentialssupplier).
 
 ### Signature
 

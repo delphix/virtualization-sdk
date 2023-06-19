@@ -34,7 +34,7 @@ Any module in the plugin could import `execution_util.py` with `from utils impor
 
 	Note that the `srcDir` in the plugin config file (`src` in this example) does _not_ need an `__init__.py` file.
 
-	For information on which vSDK versions run on Python 2.7, visit the [Version Compatibility Page](/References/Version_Compatibility/#virtualization-sdk-and-python-compatibility-map).
+	For information on which vSDK versions run on Python 2.7, visit the [Version Compatibility Page](../References/Version_Compatibility.md#virtualization-sdk-and-python-compatibility-map).
 
 Assume `schema.json` contains:
 
@@ -151,7 +151,7 @@ def execute_shell(source_connection, script_name):
 !!! warning
     If developing a plugin in Python 2.7, you will need to use `pkgutil.get_data` rather than `importlib.resources.read_text`.
 
-    See [Managing Scripts For Remote Execution](/Best_Practices/Managing_Scripts_For_Remote_Execution.md) for more info.
+    See [Managing Scripts For Remote Execution](Managing_Scripts_For_Remote_Execution.md) for more info.
 
 !!! note
-	Both `execute_sql` and `execute_shell` use the `check` parameter which will cause an error to be raised if the exit code is non-zero. For more information refer to the `run_bash` [documentation](/References/Platform_Libraries.md#run_bash).
+	Both `execute_sql` and `execute_shell` use the `check` parameter which will cause an error to be raised if the exit code is non-zero. For more information refer to the `run_bash` [documentation](../References/Platform_Libraries.md#run_bash).

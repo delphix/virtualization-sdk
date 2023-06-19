@@ -15,7 +15,7 @@ The platform and libs modules expose objects and methods needed to develop a plu
 - Python 2.7 (vSDK 3.1.0 and earlier)
 - Python 3.8 (vSDK 4.0.0 and later)
 - Java 7+
-- A Delphix Engine of an [appropriate version](/References/Version_Compatibility.md)
+- A Delphix Engine of an [appropriate version](References/Version_Compatibility.md)
 - An active internet connection to download packages from [PyPI](https://pypi.org/)
 
 !!! tip "Use proxy server"
@@ -56,7 +56,7 @@ $ pip install dvp --upgrade
 
 ## Basic Usage
 
-Our [CLI reference](/References/CLI.md) describes commands, provides examples, and a help section.
+Our [CLI reference](References/CLI.md) describes commands, provides examples, and a help section.
 
 To build your plugin:
 
@@ -72,7 +72,7 @@ $ dvp upload -e <delphix_engine_address> -u <delphix_admin_user> -a <artifact_fi
 
 You will be prompted for the Delphix Engine user's password.
 
-You can also use a [CLI Configuration File](/Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](/References/CLI.md) command options.
+You can also use a [CLI Configuration File](Best_Practices/CLI_Configuration_File.md) to set default values for [CLI](References/CLI.md) command options.
 
 ## Questions?
 

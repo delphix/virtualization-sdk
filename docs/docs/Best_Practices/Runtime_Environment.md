@@ -16,7 +16,7 @@ Our Python 2.7 runtime environment only contains the [Python Standard Library](h
 
 If you want to use some Python module that is not part of the standard library, you might be able to do so.
 You would need to include that library as part of your plugin. That would involve downloading the source
-code for that module, and copying it into your source directory. For more information on how to lay out code in your source directory, see [Code Sharing](/Best_Practices/Code_Sharing.md).
+code for that module, and copying it into your source directory. For more information on how to lay out code in your source directory, see [Code Sharing](Code_Sharing.md).
 
 ### Warnings
 There are two major things to watch out for if you decide to incorporate a 3rd-party library.

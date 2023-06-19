@@ -1,46 +1,60 @@
-site_name: Delphix Virtualization SDK 4.0.5
+site_name: Delphix Virtualization SDK 4.1.0
+
+repo_name: Delphix Virtualization SDK
+repo_url: https://github.com/delphix/virtualization-sdk/
+
 theme:
   name: material
-  custom_dir: 'material/'
   palette:
-    primary:
-    accent:
+    primary: custom
+    accent: custom
   logo: 'images/header_logo.png'
   favicon: 'images/favicon_logo.png'
   font:
     text: Helvetica Neue
-    code: Ubuntu Mono
-  feature:
+    code: Consolas
+  features:
+    - navigation.footer
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - content.code.copy
+    - content.code.annotate
 
-copyright: Copyright &copy; 2022 Delphix Corp.
-
-google_analytics:
-  - 'UA-35429885-3'
-  - 'auto'
+copyright: Copyright &copy; 2023 Delphix Corp.
 
 extra:
+  analytics:
+    provider: google
+    property: UA-35429885-3
   social:
-    - type: sitemap
+    - icon: fontawesome/solid/sitemap
       link: https://www.delphix.com/
-    - type: facebook
+    - icon: fontawesome/brands/facebook-f
       link: https://www.facebook.com/DelphixCorp/
-    - type: twitter
+    - icon: fontawesome/brands/twitter
       link: https://twitter.com/delphix
-    - type: linkedin
+    - icon: fontawesome/brands/linkedin-in
       link: https://www.linkedin.com/company/delphix
-    - type: github
+    - icon: fontawesome/brands/github
       link: https://github.com/delphix
+  generator: false
 
 extra_css:
-  - 'stylesheets/extra.css'
+  - stylesheets/extra.css
+  - stylesheets/delphix-brand.css
 
 markdown_extensions:
   - toc:
       permalink: true
   - admonition
-  - codehilite:
-      guess_lang: false
   - meta
+  - attr_list
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 
 plugins:
   - search

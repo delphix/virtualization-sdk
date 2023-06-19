@@ -60,7 +60,7 @@ Defines properties used to identify a [Source Config](Glossary.md#source-config)
 
 ### SourceConfigDefinition Schema
 
-The plugin must also decide on a [**name**](Schemas.md#namefield) field and a set of [**identityFields**](Schemas.md#identityfields) to display and uniquely identify the [source config](Glossary.md#source-configs).
+The plugin must also decide on a [**name**](Schemas.md#namefield) field and a set of [**identityFields**](Schemas.md#identityfields) to display and uniquely identify the [source config](Glossary.md#source-config).
 
 ```json
 {

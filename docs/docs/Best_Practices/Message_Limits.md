@@ -2,13 +2,13 @@
 
 There are limits on how much data can be sent back and forth between the plugin and engine at a time. There are five scenarios where this comes into play:
 
-1. Inputs sent from the engine to the plugin, as arguments to a [Plugin Operation](/References/Plugin_Operations.md). For example, the schema-defined `Repository` object that is provided as input to plugin operations.
+1. Inputs sent from the engine to the plugin, as arguments to a [Plugin Operation](../References/Plugin_Operations.md). For example, the schema-defined `Repository` object that is provided as input to plugin operations.
 
 2. Outputs sent back from the plugin to the engine, as the return values from plugin operations.
 
-3. Exception messages and call stacks thrown by plugin code. For example, the `message` field within [User Visible Errors](/Best_Practices/User_Visible_Errors.md).
+3. Exception messages and call stacks thrown by plugin code. For example, the `message` field within [User Visible Errors](User_Visible_Errors.md).
 
-4. Inputs sent from the plugin to the engine, as arguments to a [Platform library](/References/Platform_Libraries.md) function. For example, the `message` field that is passed to `logger.debug`.
+4. Inputs sent from the plugin to the engine, as arguments to a [Platform library](../References/Platform_Libraries.md) function. For example, the `message` field that is passed to `logger.debug`.
 
 5. Outputs sent back from the engine to the plugin, as the return values from Platform Library functions. For example, the `stdout` resulting from a call to `libs.run_bash`.
 

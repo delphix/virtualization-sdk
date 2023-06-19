@@ -7,10 +7,10 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/VERSION')) as version_fi
     version = version_file.read().strip()
 
 install_requires = [
-  "dvp-common == {}".format(version),
-  "dvp-libs == {}".format(version),
-  "dvp-platform == {}".format(version),
-  "dvp-tools == {}".format(version)
+    "dvp-common == {}".format(version),
+    "dvp-libs == {}".format(version),
+    "dvp-platform == {}".format(version),
+    "dvp-tools == {}".format(version)
 ]
 
 setuptools.setup(name='dvp',
@@ -19,4 +19,4 @@ setuptools.setup(name='dvp',
                  package_dir={'': PYTHON_SRC},
                  packages=setuptools.find_packages(PYTHON_SRC),
                  python_requires='>=3.8, <3.9',
-)
+                 )
