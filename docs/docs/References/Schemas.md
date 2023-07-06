@@ -374,6 +374,42 @@ The `matches` keyword is used to map an [environment user](Glossary.md#environme
 
 In the example above, environment user `envUser` maps to environment `env`.
 
+#### `dxFormProperties`
+
+| Summary | |
+| ------- | |
+| Required or Optional? | Optional|
+| Where? | In any property subschema, at the same level as `type`.|
+
+The `dxFormProperties` keyword is used to generate [dynamic UI](Dynamic_UI_Schema_Configuration/Overview.md) and better show the configuration details to user on Delphix Engine UI.
+
+```json
+"properties": {
+  "textAreaField": {
+    "type": "string",
+    "dxFormProperties": {
+      "rows": 5 
+    }
+  },
+  "userName": {
+    "type": "string",
+    "minLength": 8,
+    "pattern": "postgre.*",
+    "dxFormProperties": {
+      "validationMessages": {
+        "minLength": "The minimum length for userName should be 8.",
+        "pattern": "The userName should start with \"postgre\"."
+      }
+    }
+  }
+}
+```
+
+In the example above, 
+
+* providing `rows` to `textAreaField` of type `string` convert it to a Text Area in UI. 
+* For `userName` providing `custom validation message` for inputs helps user better understand the input requirements.
+
 ### Delphix-specific Pre-defined Types
 
 Plugins can also take advantage of pre-defined object types offered by Delphix. Currently, these object types let users supply credentials to plugins directly or via password vaults. Password vaults have [a number of benefits for securing and managing secrets](../Best_Practices/Sensitive_Data.md#protecting-sensitive-data-with-password-vaults).
