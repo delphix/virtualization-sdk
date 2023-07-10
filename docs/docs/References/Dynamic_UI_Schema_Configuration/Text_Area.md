@@ -45,7 +45,6 @@ All `string` type properties can be converted to `Text Area` properties by provi
         }
         ```
         ![Example1](images/Dynamic_UI_Simple_String.png)
-    
     === "Example 2"
         `textAreaField` is a string property which will be shown in the UI as a Text Area with 20 visible lines.
         ```json

@@ -6,18 +6,20 @@ showing only the required properties at first and show the remaining properties 
 The `hideExpression` accepts an expression that evaluates to a boolean value. The expression can access values from 
 other properties. Access values from other properties as below:
 
-=== "Same Level"
-    1. Expression - `model.<property_name>`
-    2. Example
-        - `userName` and `paasword` are on same level.
-        - use `!model.userName` in `password`.
+=== "Common Root Object"
+    | Expression                                                 | JSON Structure                                                     | Description                                              |
+    |:-----------------------------------------------------------|:-------------------------------------------------------------------|:---------------------------------------------------------|
+    | `model.<property_name>`                                    | <pre>{<br>  "X": "", <br>  "Y": ""<br>}</pre>                      | To hide Y based on X, use `model.X`                      |
+    | `field.parent.<N>.parent.model?.<property_name>`<br/><br/> | <pre>{<br>  "X": "", <br>  "Y": {<br>    "Z": ""<br>  }<br>}</pre> | To hide Z based on X, use `field.parent.parent.model?.X` |
+    
+=== "Different Root Object"
+    | Expression                                                               | JSON Structure                                                                                                   | Description                                                    |
+    |:-------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------|
+    | `field.parent.<N>.parent.model?.<root_names>?.<property_name>`<br/><br/> | <pre>{<br>  "A": {<br>    "B": ""<br>  }, <br>  "X": {<br>    "Y": ""<br>  }<br>}</pre>                          | To hide Y based on B, use `field.parent.parent.model?.A?.B`    |
+    |                                                                          | <pre>{<br>  "A": {<br>    "B": {<br>      "C": ""<br>    }<br>  }, <br>  "X": {<br>    "Y": ""<br>  }<br>}</pre> | To hide Y based on C, use `field.parent.parent.model?.A?.B?.C` |
 
-=== "One Level up"
-    1. Expression - `field.parent.parent.model.<property_name>`
-    2. Example
-        - `userName` is at `userDetails.userName`.
-        - `password` is at`userDetails.security.password`.
-        - use `!field.parent.parent.model.userName` in `password`.
+!!! info 
+    `parent.<N>.parent` - Parent repeated N times as per JSON structure
 
 ## Schema Configuration
 
@@ -59,8 +61,7 @@ other properties. Access values from other properties as below:
         |                `model.booleanFlag`                  |     Returns true or false based on the booleanFlag property     |
         |          `model.backupType === 'PRIMARY'`           |       Returns true if the backupType property is PRIMARY.       |
         | `model.backupType !== 'PRIMARY' && !model.userName` | Return true if backupType is not primary and userName is empty. |
-
-    === "Single Level"
+    === "Common Root Object"
         `password` is a string property which will be shown in the UI if `userName` is present and not empty.
         ```json
         {
@@ -75,31 +76,30 @@ other properties. Access values from other properties as below:
           }
         }
         ```
-        ![Single Level](images/Dynamic_UI_Same_Level.gif)
-
-    === "Multi Level"
+        ![Common Root](images/Dynamic_UI_Common_Root.gif)
+    === "Different Root Object"
         `password` is a string property which will be shown in the UI if `userName` is present and not empty.
         ```json
         {
-          "userName": {
-            "type": "string"
-          },
-          "security": {
+          "userDetails": {
             "type": "object",
             "properties": {
-              "details": {
-                "type": "object",
-                "properties": {
-                  "password": {
-                    "type": "string",
-                    "dxFormProperties": {
-                      "hideExpression": "!field.parent.parent.model.userName"
-                    }
-                  }
+              "userName": {
+                "type": "string"
+              }
+            }
+          },
+          "securityDetails": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "dxFormProperties": {
+                  "hideExpression": "!field.parent.parent.model?.userDetails?.userName"
                 }
               }
             }
           }
         }
         ```
-        ![Multi Level - TBD]()
+        ![Different Root](images/Dynamic_UI_Different_Root.gif)

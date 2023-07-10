@@ -71,7 +71,6 @@ will be shown for the first failed validation check.
         }
         ```
         ![Example1](images/Dynamic_UI_No_Message.gif)
-    
     === "Example 2"
         Only `minLength` validation error message will be shown in case of length constraint failure.
         ```json
@@ -89,7 +88,6 @@ will be shown for the first failed validation check.
         }
         ```
         ![Example2](images/Dynamic_UI_Some_Messages.gif)
-
     === "Example 3"
         Both `minLength` and `pattern` validation error message will be shown based on input validation check failure.
         ```json
