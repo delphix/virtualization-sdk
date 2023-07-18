@@ -61,7 +61,7 @@ and `object` type.
         ```
         ![Example1](images/Dynamic_UI_Collapse_Object.gif)
     === "Example 2"
-        `addressDetails` is an array property which is allowed to collapse and is expanded by default. Each array item with `pinCode` and `number` is allowed to collapsed and is collapsed by default.
+        `addressDetails` is an array property which is allowed to collapse and is expanded by default. Each array item with `pinCode` and `number` is allowed to collapse and is collapsed by default.
         ```json
         {
           "addressDetails": {
