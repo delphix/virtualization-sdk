@@ -17,7 +17,7 @@ other properties. Access values from other properties as below:
     - Use the `model.<property_name>` when the properties are `string`, `boolean`, `number` or `integer`.
     - To hide Y based on X, use `model.X` or `model?.X`
 ??? abstract "field.parent.<N\>.parent.model?.<property_name\>"
-    Use the `field.parent.<N\>.parent.model?.<property_name\>` when the properties are `object` or `array`.
+    Use the `field.parent.<N>.parent.model?.<property_name>` when the properties are `object` or `array`.
     === "Object Schema"
         !!! example inline ""
             ```json
