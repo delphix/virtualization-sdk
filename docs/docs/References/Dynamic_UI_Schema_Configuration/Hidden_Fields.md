@@ -14,10 +14,10 @@ other properties. Access values from other properties as below:
           "Y": ""
         }
         ```
-    - Use the `model.<property_name>` when the properties are string, boolean, number or integer.
+    - Use the `model.<property_name>` when the properties are `string`, `boolean`, `number` or `integer`.
     - To hide Y based on X, use `model.X` or `model?.X`
 ??? abstract "field.parent.<N\>.parent.model?.<property_name\>"
-    Use the `model.<property_name>` when the properties are object and array.
+    Use the `field.parent.<N\>.parent.model?.<property_name\>` when the properties are `object` or `array`.
     === "Object Schema"
         !!! example inline ""
             ```json
@@ -101,12 +101,12 @@ other properties. Access values from other properties as below:
 
 ???+ example "Examples"
     === "Expressions"
-        |                     Expression                      |                           Description                           |
-        |:---------------------------------------------------:|:---------------------------------------------------------------:|
-        |                 `!model.userName`                   |         Returns true if the userName property is empty.         |
-        |                `model.booleanFlag`                  |     Returns true or false based on the booleanFlag property     |
-        |          `model.backupType === 'PRIMARY'`           |       Returns true if the backupType property is PRIMARY.       |
-        | `model.backupType !== 'PRIMARY' && !model.userName` | Return true if backupType is not primary and userName is empty. |
+        |                     Expression                      |                                    Description                                    |
+        |:---------------------------------------------------:|:---------------------------------------------------------------------------------:|
+        |                  `!model.userName`                  |                  Returns true if the userName property is EMPTY.                  |
+        |                 `model.booleanFlag`                 |              Returns true or false based on the booleanFlag property              |
+        |          `model.backupType === 'PRIMARY'`           |                Returns true if the backupType property is PRIMARY.                |
+        | `model.backupType !== 'PRIMARY' && !model.userName` | Return true if backupType property is not PRIMARY and userName property is EMPTY. |
     === "Common Root Object"
         `password` is a string property which will be shown in the UI if `userName` is present and not empty.
         ```json
