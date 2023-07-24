@@ -49,12 +49,16 @@ markdown_extensions:
   - admonition
   - meta
   - attr_list
+  - md_in_html
   - tables
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
 
 plugins:
   - search
