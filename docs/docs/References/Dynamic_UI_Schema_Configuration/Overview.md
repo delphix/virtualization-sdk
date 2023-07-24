@@ -26,10 +26,10 @@ Table below lists all the allowed attributes within [dxFormProperties](../Schema
 
 # Version Compatibility
 
-|              Dynamic UI Schema Configuration               |       Earliest Supported vSDK Version        |          Latest Supported vSDK Version          | Earliest Supported DE Version |                              Latest Supported DE Version                               |
-|:----------------------------------------------------------:|:--------------------------------------------:|:-----------------------------------------------:|:-----------------------------:|:--------------------------------------------------------------------------------------:|
-|       [Collapsible Section](Collapsible_Section.md)        | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://documentation.delphix.com/continuous-data/docs/new-features/) |
-|             [Hidden Fields](Hidden_Fields.md)              | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://documentation.delphix.com/continuous-data/docs/new-features/) |
-|                 [Text Area](Text_Area.md)                  | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://documentation.delphix.com/continuous-data/docs/new-features/) |
-|       [Validation Messages](Validation_Messages.md)        | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://documentation.delphix.com/continuous-data/docs/new-features/) |
+|        Dynamic UI Schema Configuration        |       Earliest Supported vSDK Version        |          Latest Supported vSDK Version          | Earliest Supported DE Version |                    Latest Supported DE Version                    |
+|:---------------------------------------------:|:--------------------------------------------:|:-----------------------------------------------:|:-----------------------------:|:-----------------------------------------------------------------:|
+| [Collapsible Section](Collapsible_Section.md) | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
+|       [Hidden Fields](Hidden_Fields.md)       | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
+|           [Text Area](Text_Area.md)           | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
+| [Validation Messages](Validation_Messages.md) | [4.0.2](https://pypi.org/project/dvp/4.0.2/) | [Latest Release](https://pypi.org/project/dvp/) |           14.0.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 
