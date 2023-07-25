@@ -374,6 +374,42 @@ The `matches` keyword is used to map an [environment user](Glossary.md#environme
 
 In the example above, environment user `envUser` maps to environment `env`.
 
+#### `dxFormProperties`
+
+| Summary | |
+| ------- | |
+| Required or Optional? | Optional|
+| Where? | In any property subschema, at the same level as `type`.|
+
+The `dxFormProperties` keyword is used to generate [dynamic UI](Dynamic_UI_Schema_Configuration/Overview.md) and better show the configuration details to user on Delphix Engine UI.
+
+```json
+"properties": {
+  "textAreaField": {
+    "type": "string",
+    "dxFormProperties": {
+      "rows": 5 
+    }
+  },
+  "userName": {
+    "type": "string",
+    "minLength": 8,
+    "pattern": "postgre.*",
+    "dxFormProperties": {
+      "validationMessages": {
+        "minLength": "The minimum length for userName should be 8.",
+        "pattern": "The userName should start with \"postgre\"."
+      }
+    }
+  }
+}
+```
+
+In the example above, 
+
+* providing `rows` to `textAreaField` of type `string` convert it to a Text Area in UI. 
+* For `userName` providing `custom validation message` for inputs helps user better understand the input requirements.
+
 ### Delphix-specific Pre-defined Types
 
 Plugins can also take advantage of pre-defined object types offered by Delphix. Currently, these object types let users supply credentials to plugins directly or via password vaults. Password vaults have [a number of benefits for securing and managing secrets](../Best_Practices/Sensitive_Data.md#protecting-sensitive-data-with-password-vaults).
@@ -504,7 +540,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://documentation.delphix.com/continuous-data/docs/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
@@ -556,7 +592,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://documentation.delphix.com/continuous-data/docs/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
