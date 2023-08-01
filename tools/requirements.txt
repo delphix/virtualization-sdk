@@ -9,7 +9,7 @@ httpretty==1.0.5
 isort==5.11.1
 mccabe==0.7.0
 mock==4.0.3
-more-itertools==9.0.0
+more-itertools==10.0.0
 packaging==22.0
 pluggy==1.0.0
 pycodestyle==2.10.0
