@@ -11,6 +11,8 @@
 | [3.0.0](../Release_Notes/3.0.0/3.0.0.md) |            6.0.6.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 | [2.1.0](../Release_Notes/2.1.0/2.1.0.md) |            6.0.3.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 | [2.0.0](../Release_Notes/2.0.0/2.0.0.md) |            6.0.2.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
+| [1.0.0](../Release_Notes/1.0.0/1.0.0.md) |            6.0.2.0            |                             14.0.0.0                              |
+| [0.4.0](../Release_Notes/0.4.0/0.4.0.md) |            5.3.5.0            |                              6.0.1.0                              |
 
 ## Virtualization SDK and Python Compatibility Map
 
@@ -23,4 +25,6 @@
 | [3.0.0](../Release_Notes/3.0.0/3.0.0.md) |      2.7       |
 | [2.1.0](../Release_Notes/2.1.0/2.1.0.md) |      2.7       |
 | [2.0.0](../Release_Notes/2.0.0/2.0.0.md) |      2.7       |
+| [1.0.0](../Release_Notes/1.0.0/1.0.0.md) |      2.7       |
+| [0.4.0](../Release_Notes/0.4.0/0.4.0.md) |      2.7       |
 
