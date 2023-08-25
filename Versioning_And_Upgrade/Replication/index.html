@@ -868,6 +868,110 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+          Dynamic UI Schema Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5_7">
+          <span class="md-nav__icon md-icon"></span>
+          Dynamic UI Schema Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../References/Dynamic_UI_Schema_Configuration/Overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../References/Dynamic_UI_Schema_Configuration/Text_Area/" class="md-nav__link">
+        Text Area
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../References/Dynamic_UI_Schema_Configuration/Hidden_Fields/" class="md-nav__link">
+        Hidden Properties
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../References/Dynamic_UI_Schema_Configuration/Collapsible_Section/" class="md-nav__link">
+        Collapsible Section
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../References/Dynamic_UI_Schema_Configuration/Validation_Messages/" class="md-nav__link">
+        Validation Messages
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../References/Platform_Libraries/" class="md-nav__link">
         Platform Libraries
@@ -1725,14 +1829,14 @@
 
 <h1 id="replication">Replication<a class="headerlink" href="#replication" title="Permanent link">&para;</a></h1>
 <p>A Delphix Engine (source) can be setup to replicate data objects to another Delphix Engine (target). Plugins built using the Virtualization SDK work seamlessly with Delphix Engine replication with no additional development required from plugin developers.</p>
-<p>Only a single version of a plugin can be active on a Delphix Engine at a time. We discuss some basic scenarios below. For more detailed information refer to the <a href="https://documentation.delphix.com/continuous-data/docs/">Delphix Engine Documentation</a>.</p>
+<p>Only a single version of a plugin can be active on a Delphix Engine at a time. We discuss some basic scenarios below. For more detailed information refer to the <a href="https://cd.delphix.com/docs/latest/">Delphix Engine Documentation</a>.</p>
 <h2 id="replica-provisioning">Replica Provisioning<a class="headerlink" href="#replica-provisioning" title="Permanent link">&para;</a></h2>
 <p>Replicated dSource or VDB snapshots can be used to provision new VDBs onto a target Delphix Engine, without failing over any of the objects. When provisioning a VDB from a replicated snapshot:</p>
 <ul>
 <li>A version of the plugin has to be installed on the target Delphix Engine.</li>
 <li>The versions of the plugins installed on the source and target Delphix Engines have to be <a href="../Compatibility/">compatible</a>.</li>
 </ul>
-<p>Once provisioned, the VDB on the target Delphix Engine will be associated with the version of the plugin installed on the target Delphix Engine, any required data migrations will be run as part of the provisioning process. For more details refer to the <a href="https://documentation.delphix.com/continuous-data/docs/">Delphix Engine Documentation</a>.</p>
+<p>Once provisioned, the VDB on the target Delphix Engine will be associated with the version of the plugin installed on the target Delphix Engine, any required data migrations will be run as part of the provisioning process. For more details refer to the <a href="https://cd.delphix.com/docs/latest/">Delphix Engine Documentation</a>.</p>
 <h2 id="replication-failover">Replication Failover<a class="headerlink" href="#replication-failover" title="Permanent link">&para;</a></h2>
 <p>On failover, there are three scenarios for each plugin:</p>
 <table>
@@ -1753,7 +1857,7 @@
 </tr>
 <tr>
 <td>Source plugin version <strong>is not equal to</strong> the target plugin version</td>
-<td>The plugin from the source will be marked <code>inactive</code> on the target Delphix Engine. An <code>inactive</code> plugin can be subsequently activated, after failover, if it is <a href="../Compatibility/">compatible</a> with the existing <code>active</code> plugin. Activating a plugin will do an upgrade and merge the <code>inactive</code> plugin, and all its associated objects, with the <code>active</code> plugin. For more details refer to the <a href="https://documentation.delphix.com/continuous-data/docs/">Delphix Engine Documentation</a>.</td>
+<td>The plugin from the source will be marked <code>inactive</code> on the target Delphix Engine. An <code>inactive</code> plugin can be subsequently activated, after failover, if it is <a href="../Compatibility/">compatible</a> with the existing <code>active</code> plugin. Activating a plugin will do an upgrade and merge the <code>inactive</code> plugin, and all its associated objects, with the <code>active</code> plugin. For more details refer to the <a href="https://cd.delphix.com/docs/latest/">Delphix Engine Documentation</a>.</td>
 </tr>
 </tbody>
 </table>
