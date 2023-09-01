@@ -2,7 +2,7 @@
 ./../libs
 ./../platform
 bump2version==1.0.1
-coverage==6.5.0
+coverage==7.3.0
 entrypoints==0.4
 flake8==6.0.0
 httpretty==1.0.5
