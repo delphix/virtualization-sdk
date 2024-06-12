@@ -236,6 +236,38 @@ class TestLibsRunBash:
                 " class 'str' but should be of class 'bool' if defined.")
 
 
+class TestLibsConstructBashCommand:
+    @staticmethod
+    def test_no_args():
+        result = libs.construct_bash_command_string("/path/to/executable")
+        assert result == "'/path/to/executable'"
+
+    @staticmethod
+    def test_single_arg():
+        result = libs.construct_bash_command_string("foo", "bar")
+        assert result == "'foo' 'bar'"
+
+    @staticmethod
+    def test_many_args():
+        result = libs.construct_bash_command_string("a", "b", "c", "d", "e")
+        assert result == "'a' 'b' 'c' 'd' 'e'"
+
+    @staticmethod
+    def test_single_quote_escaping():
+        result = libs.construct_bash_command_string("a'b'c", "e'f'g")
+        assert result == "'a'\"'\"'b'\"'\"'c' 'e'\"'\"'f'\"'\"'g'"
+
+    @staticmethod
+    def test_double_quote_escaping():
+        result = libs.construct_bash_command_string("a\"b\"c", "e\"f\"g")
+        assert result == "'a\"b\"c' 'e\"f\"g'"
+
+    @staticmethod
+    def test_combined_escaping():
+        result = libs.construct_bash_command_string("a'b\"c$f$o$o")
+        assert result == "'a'\"'\"'b\"c$f$o$o'"
+
+
 class TestLibsRunSync:
     @staticmethod
     def test_run_sync(remote_connection):
