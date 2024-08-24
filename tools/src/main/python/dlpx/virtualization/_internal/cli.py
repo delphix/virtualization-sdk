@@ -95,10 +95,10 @@ def delphix_sdk(verbose, quiet):
     # will be printed to the console until this is executed.
     #
     logging_util.add_console_handler(console_logging_level)
-    if sys.version_info[:2] != (3, 8):
+    if sys.version_info[:2] != (3, 11):
         raise exceptions.UserError(
             'Python version check failed.'
-            'Supported versions are 2.7.x and 3.8.x, found {}'
+            'Supported versions are 2.7.x, 3.8.x, and 3.11.x, found {}'
             .format(sys.version_info))
 
 

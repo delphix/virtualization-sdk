@@ -131,7 +131,7 @@ class PluginValidator:
         schemaFile:     the file containing defined schemas in the plugin
         manualDiscovery whether or not manual discovery is supported
         pluginType      whether the plugin is DIRECT or STAGED
-        language        language of the source code(ex: PYTHON38 for python3.8)
+        language        language of the source code(ex: PYTHON311 for python3.11)
 
         Args:
             plugin_config_content (dict): A dictionary representing a plugin
