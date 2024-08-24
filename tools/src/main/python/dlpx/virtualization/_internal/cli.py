@@ -98,7 +98,7 @@ def delphix_sdk(verbose, quiet):
     if sys.version_info[:2] != (3, 11):
         raise exceptions.UserError(
             'Python version check failed.'
-            'Supported versions are 2.7.x, 3.8.x, and 3.11.x, found {}'
+            'Supported version is 3.11.x, found {}'
             .format(sys.version_info))
 
 
