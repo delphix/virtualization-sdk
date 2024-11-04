@@ -237,7 +237,7 @@ def _get_default_plugin_config(plugin_id, ingestion_strategy, name,
         default_build_number = to_bytes(default_build_number)
     config = OrderedDict([('id', plugin_id),
                           ('name', name),
-                          ('language', 'PYTHON38'), ('hostTypes', ['UNIX']),
+                          ('language', 'PYTHON311'), ('hostTypes', ['UNIX']),
                           ('pluginType', ingestion_strategy),
                           ('entryPoint', entry_point),
                           ('srcDir', src_dir_path),

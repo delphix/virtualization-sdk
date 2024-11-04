@@ -254,7 +254,7 @@ def external_version():
 
 @pytest.fixture
 def language():
-    return 'PYTHON38'
+    return 'PYTHON311'
 
 
 @pytest.fixture
@@ -663,7 +663,7 @@ def artifact_content(engine_api, virtual_source_definition,
         'name': 'python_vfiles',
         'externalVersion': '2.0.0',
         'defaultLocale': 'en-us',
-        'language': 'PYTHON38',
+        'language': 'PYTHON311',
         'hostTypes': ['UNIX'],
         'entryPoint': 'python_vfiles:vfiles',
         'buildApi': package_util.get_build_api_version(),

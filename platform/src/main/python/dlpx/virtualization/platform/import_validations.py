@@ -161,7 +161,10 @@ def _check_upgrade_args(upgrade_operations, expected_upgrade_args):
             # that we can iterate on.
             #
             for migration_func in attribute.values():
-                actual = inspect.getargspec(migration_func).args
+                if six.PY2:
+                    actual = inspect.getargspec(migration_func).args
+                else:
+                    actual = inspect.getfullargspec(migration_func).args
                 expected = expected_upgrade_args[attribute_name]
                 warnings.extend(
                     _check_args(method_name=migration_func.__name__,

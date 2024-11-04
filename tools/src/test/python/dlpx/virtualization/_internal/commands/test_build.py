@@ -554,7 +554,7 @@ class TestPluginUtil:
             build.build(plugin_config_file, artifact_file, False, False)
 
         message = err_info.value.message
-        assert "'BAD_LANGUAGE' is not one of ['PYTHON38']" in message
+        assert "'BAD_LANGUAGE' is not one of ['PYTHON311']" in message
 
         assert not mock_generate_python.called
 
