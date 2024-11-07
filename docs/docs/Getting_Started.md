@@ -40,7 +40,7 @@ $ pip install dvp
 
 	 This is configured when creating the virtualenv:
 
-	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV or ```$ virtualenv -p /path/to/python3.11/binary ENV```
+	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV``` or ```$ virtualenv -p /path/to/python3.11/binary ENV```
 
 To install a specific version of the SDK run:
 
