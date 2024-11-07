@@ -4,7 +4,7 @@ To execute a PowerShell or Bash script or Expect script on a remote host, you mu
 
 [pkgutil](https://docs.python.org/2/library/pkgutil.html) is part of the standard Python library. The method that is applicable to resources is [pkgutil.get_data](https://docs.python.org/2/library/pkgutil.html#pkgutil.get_data).
 
-When developing a plugin in Python3, it is instead suggested to use the newer `importlib.resources`. This package is part of the standard Python 3 library. The method that is applicable to resources is [resources.read_text](https://docs.python.org/3.8/library/importlib.html#importlib.resources.read_text), which accepts the same arguments as `pkgutil.get_data`.
+When developing a plugin in Python3, it is instead suggested to use the newer `importlib.resources`. This package is part of the standard Python 3 library. The method that is applicable to resources is [resources.read_text](https://docs.python.org/3.11/library/importlib.resources.html#importlib.resources.read_text), which accepts the same arguments as `pkgutil.get_data`.
 
 ### Basic Usage
 
@@ -106,7 +106,7 @@ The contents of `src/resources/platform/get_date.sh` can be retrieved with:
 script_content = pkgutil.get_data('resources.platform', 'get_date.sh')
 ```
 
-In a Python 3.8 plugin, the suggested approach is:
+In a Python 3.8 and Python 3.11 plugin, the suggested approach is:
 
 ```python
 script_content = resources.read_text('resources.platform', 'get_date.sh')

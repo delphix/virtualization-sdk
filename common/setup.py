@@ -4,7 +4,7 @@ import setuptools
 PYTHON_SRC = 'src/main/python'
 
 install_requires = [
-    "dvp-api == 2.0.0.dev0",
+    "dvp-api == 2.0.0",
     "six >= 1.16, < 1.17",
 ]
 

@@ -111,7 +111,7 @@ response = libs.run_bash(connection, command)
  # Execute script on remote host
  response = libs.run_bash(direct_source.connection, script_content)
 ```
-###### Python 3.8 recommended approach
+###### Python 3.8 and Python 3.11 recommended approach
 ```python
 
  from importlib import resources

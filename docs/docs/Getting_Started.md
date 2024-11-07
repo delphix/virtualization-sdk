@@ -13,7 +13,8 @@ The platform and libs modules expose objects and methods needed to develop a plu
 
 - macOS 10.14+, Ubuntu 16.04+, or Windows 10
 - Python 2.7 (vSDK 3.1.0 and earlier)
-- Python 3.8 (vSDK 4.0.0 and later)
+- Python 3.8 (vSDK 4.1.0 and earlier)
+- Python 3.11 (vSDK 5.0.0 and later)
 - Java 7+
 - A Delphix Engine of an [appropriate version](References/Version_Compatibility.md)
 - An active internet connection to download packages from [PyPI](https://pypi.org/)
@@ -33,11 +34,13 @@ $ pip install dvp
 
      If using vSDK 3.1.0 or earlier, the virtual environment needs to use Python 2.7.
 
-     If using vSDK 4.0.0 or earlier, the virtual environment needs to use Python 3.8.
+     If using vSDK 4.1.0 or earlier, the virtual environment needs to use Python 3.8.
+
+     If using vSDK 5.0.0 or later, the virtual environment needs to use Python 3.11.
 
 	 This is configured when creating the virtualenv:
 
-	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV```
+	 ```$ virtualenv -p /path/to/python2.7/binary ENV``` or ```$ virtualenv -p /path/to/python3.8/binary ENV or ```$ virtualenv -p /path/to/python3.11/binary ENV```
 
 To install a specific version of the SDK run:
 
