@@ -6,10 +6,10 @@ The Virtualization Platform keeps plugin-specific log files. A plugin can, at an
 
 ## Overview
 
-The Virtualization Platform integrates with Python's built-in [logging framework](https://docs.python.org/3.8/library/logging.html). A special [Handler](https://docs.python.org/3.8/library/logging.html#handler-objects) is exposed by the platform at `dlpx.virtualization.libs.PlatformHandler`. This handler needs to be added to the Python logger your plugin creates. Logging statements made through Python's logging framework will then be routed to the platform.
+The Virtualization Platform integrates with Python's built-in [logging framework](https://docs.python.org/3.11/library/logging.html). A special [Handler](https://docs.python.org/3.11/library/logging.html#handler-objects) is exposed by the platform at `dlpx.virtualization.libs.PlatformHandler`. This handler needs to be added to the Python logger your plugin creates. Logging statements made through Python's logging framework will then be routed to the platform.
 
 ## Basic Setup
- Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's [logging documentation](https://docs.python.org/3.8/library/logging.html) and the [example below](#example) to better understand how it can be customized.
+ Below is the absolute minimum needed to setup logging for the platform. Please refer to Python's [logging documentation](https://docs.python.org/3.11/library/logging.html) and the [example below](#example) to better understand how it can be customized.
 
 ```python
 import logging
@@ -40,7 +40,7 @@ logger.setLevel(logging.DEBUG)
     There is a limit to how much data can be stored within a log message. See [Message Limits](../Best_Practices/Message_Limits.md) for details.
 	
 ## Usage
-Once the `PlatformHandler` has been added to the logger, logging is done with Python's [Logger](https://docs.python.org/3.8/library/logging.html#logger-objects) object. Below is a simple example including the basic setup code used above:
+Once the `PlatformHandler` has been added to the logger, logging is done with Python's [Logger](https://docs.python.org/3.11/library/logging.html#logger-objects) object. Below is a simple example including the basic setup code used above:
 
 ```python
 import logging
@@ -181,7 +181,7 @@ Download a support bundle by going to **Help** > **Support Logs**  and select **
 
 ## Logging Levels
 
-Python has a number of [preset logging levels](https://docs.python.org/3.8/library/logging.html#logging-levels) and allows for custom ones as well. Since logging on the Virtualization Platform uses the `logging` framework, log statements of all levels are supported.
+Python has a number of [preset logging levels](https://docs.python.org/3.11/library/logging.html#logging-levels) and allows for custom ones as well. Since logging on the Virtualization Platform uses the `logging` framework, log statements of all levels are supported.
 
 However, the Virtualization Platform will map all logging levels into three files: `debug.log`, `info.log`, and `error.log` in the following way:
 

@@ -233,7 +233,7 @@ class TestPluginImporter:
                                    plugin_module_content):
         plugin_config_content = OrderedDict([
             ('id', str(uuid.uuid4())), ('name', 'staged'),
-            ('version', '0.1.0'), ('language', 'PYTHON38'),
+            ('version', '0.1.0'), ('language', 'PYTHON311'),
             ('hostTypes', ['UNIX']), ('pluginType', 'STAGED'),
             ('manualDiscovery', True),
             ('entryPoint', 'staged_plugin:staged'),
@@ -287,7 +287,7 @@ class TestPluginImporter:
     @staticmethod
     @pytest.mark.parametrize(
         'entry_point,expected_error',
-        [('bad_syntax:plugin', "SDK Error: invalid syntax")])
+        [('bad_syntax:plugin', "SDK Error: expected ':'")])
     @mock.patch('dlpx.virtualization._internal.file_util.get_src_dir_path')
     def test_bad_syntax(mock_file_util, plugin_config_file,
                         fake_src_dir, expected_error):
