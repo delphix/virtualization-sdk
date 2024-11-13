@@ -221,7 +221,7 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         # set default value of locale to en-us
         'defaultLocale':
         plugin_config_content.get('defaultLocale', LOCALE_DEFAULT),
-        # set default value of language to PYTHON38
+        # set default value of language to PYTHON311
         'language':
         plugin_config_content['language'],
         'hostTypes':
