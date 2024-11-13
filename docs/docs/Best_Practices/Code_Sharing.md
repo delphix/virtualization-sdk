@@ -2,7 +2,7 @@
 
 All Python modules inside of `srcDir` can be imported just as they would be if the plugin was executing locally. When a plugin operation is executed `srcDir` is the current working directory so all imports need to be relative to `srcDir` regardless of the path of the module doing the import.
 
-Please refer to Python's [documentation on modules](https://docs.python.org/3.8/tutorial/modules.html#modules) to learn more about modules and imports.
+Please refer to Python's [documentation on modules](https://docs.python.org/3.11/tutorial/modules.html#modules) to learn more about modules and imports.
 
 ## Example
 
