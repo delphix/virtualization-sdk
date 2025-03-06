@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 mkdocs = "==1.4.3"
-mkdocs-material = "==9.1.7"
+mkdocs-material = "==9.1.8"
 markdown-include = "==0.8.1"
 mkdocs-awesome-pages-plugin = "==2.9.1"
 
