@@ -122,7 +122,7 @@ Defines properties used to identify [linked sources](Glossary.md#linked-source).
 }
 ```
 
-To set [record size](Glossary.md#record-size) for the datafiles of the linked source, pass the property "recordSizeInKB" in the [LinkedSourceDefinition Schema](#linkedsourcedefinition-schema). The value of the recordSizeInKB property has to be in integer ranging from 1 to 16384. It will set the value of record size in KB. If this parameter is not passed, then default 8K record size will be set.
+To set [record size](Glossary.md#record-size) for the datafiles of the linked source, pass the property "recordSizeInKB" in the [LinkedSourceDefinition Schema](#linkedsourcedefinition-schema). The value of the recordSizeInKB property must be an integer and power of 2 ranging from 1 to 16384. It will set the value of record size in KB. If this parameter is not passed, then default 8K record size will be set.
 ```json
 {
   "type": "object",
@@ -178,7 +178,7 @@ Defines properties used to identify [virtual sources](Glossary.md#virtual-source
 }
 ```
 
-To set [record size](Glossary.md#record-size) for the datafiles of the empty VDB, pass the property "recordSizeInKB" in the [VirtualSourceDefinition Schema](#virtualsourcedefinition-schema). The value of the recordSizeInKB property has to be in integer ranging from 1 to 16384. It will set the value of record size in KB. If this parameter is not passed, then default 8K record size will be set. VDB with parent source will inherit the record size value from its parent dSource or VDB.
+To set [record size](Glossary.md#record-size) for the datafiles of the empty VDB, pass the property "recordSizeInKB" in the [VirtualSourceDefinition Schema](#virtualsourcedefinition-schema). The value of the recordSizeInKB property must be an integer and power of 2 ranging from 1 to 16384. It will set the value of record size in KB. If this parameter is not passed, then default 8K record size will be set. VDB with parent source will inherit the record size value from its parent dSource or VDB.
 ```json
 {
   "type": "object",
