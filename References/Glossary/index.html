@@ -1183,6 +1183,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#record-size" class="md-nav__link">
+    Record Size
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#replication" class="md-nav__link">
     Replication
   </a>
@@ -2306,6 +2313,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#record-size" class="md-nav__link">
+    Record Size
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#replication" class="md-nav__link">
     Replication
   </a>
@@ -2501,6 +2515,8 @@
 For example, a MySQL plugin might provide an operation called "stop" which knows how to stop a MySQL database.</p>
 <h2 id="provisioning">Provisioning<a class="headerlink" href="#provisioning" title="Permanent link">&para;</a></h2>
 <p>The process of making a virtual copy of a dataset and making it available for use on a target environment.</p>
+<h2 id="record-size">Record Size<a class="headerlink" href="#record-size" title="Permanent link">&para;</a></h2>
+<p>Delphix allows plugins to override the default record size for the linked source and virtual source datafiles. If the “recordSizeInKB” parameter is passed, it will be used to override the default record size and set the new record size for the respective dSources and empty VDBs. VDBs with parent will be inheriting the record size from their parent dSource or VDB. If the parameter is not passed, then default 8K record size will be set for the datafiles.</p>
 <h2 id="replication">Replication<a class="headerlink" href="#replication" title="Permanent link">&para;</a></h2>
 <p>Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the <a href="https://cd.delphix.com/docs/latest/">Delphix Engine Documentation</a> for more details.</p>
 <h2 id="repository">Repository<a class="headerlink" href="#repository" title="Permanent link">&para;</a></h2>
