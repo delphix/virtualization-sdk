@@ -4,7 +4,7 @@
 
 | vSDK Version                             |  Earliest Supported DE Version  |                    Latest Supported DE Version                    |
 |------------------------------------------|:-------------------------------:|:-----------------------------------------------------------------:|
-| [5.0.1](../Release_Notes/5.0.0/5.0.0.md) |           2025.2.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
+| [5.0.1](../Release_Notes/5.0.1/5.0.1.md) |           2025.2.0.0            | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 | [5.0.0](../Release_Notes/5.0.0/5.0.0.md) |            29.0.0.0             | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 | [4.1.0](../Release_Notes/4.1.0/4.1.0.md) |            12.0.0.0             | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
 | [4.0.5](../Release_Notes/4.0.5/4.0.5.md) |            6.0.16.0             | [Latest Release](https://cd.delphix.com/docs/latest/new-features) |
@@ -20,7 +20,7 @@
 
 | vSDK Version                             | Python Version |
 |------------------------------------------|:--------------:|
-| [5.0.1](../Release_Notes/5.0.0/5.0.0.md) |      3.11      |
+| [5.0.1](../Release_Notes/5.0.1/5.0.1.md) |      3.11      |
 | [5.0.0](../Release_Notes/5.0.0/5.0.0.md) |      3.11      |
 | [4.1.0](../Release_Notes/4.1.0/4.1.0.md) |      3.8       |
 | [4.0.5](../Release_Notes/4.0.5/4.0.5.md) |      3.8       |
