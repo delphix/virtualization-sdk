@@ -1,4 +1,4 @@
-site_name: Delphix Virtualization SDK 5.0.0
+site_name: Delphix Virtualization SDK 5.0.1
 
 repo_name: Delphix Virtualization SDK
 repo_url: https://github.com/delphix/virtualization-sdk/
@@ -20,7 +20,7 @@ theme:
     - content.code.copy
     - content.code.annotate
 
-copyright: Copyright &copy; 2024 Delphix Corp.
+copyright: Copyright &copy; 2025 Delphix Corp.
 
 extra:
   analytics:
