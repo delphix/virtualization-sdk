@@ -166,6 +166,15 @@
        "required": ["nameField", "identityFields"],
        "nameField": { "type": "string" },
        "identityFields": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+    },
+    "recordSizeObject": {
+      "type": "object",
+      "properties": {
+          "properties": {
+              "properties": {
+              "recordSizeInKB" : {"properties": {"type": {"enum" : ["integer"]}}}}
+          }
+      }
     }
   },
   "type": "object",
@@ -200,10 +209,24 @@
       ]
     },
     "virtualSourceDefinition": {
-      "$ref": "#/definitions/jsonSchema"
+      "allOf": [
+        {
+          "$ref": "#/definitions/jsonSchema"
+        },
+        {
+          "$ref": "#/definitions/recordSizeObject"
+        }
+      ]
     },
     "linkedSourceDefinition": {
-      "$ref": "#/definitions/jsonSchema"
+      "allOf": [
+        {
+          "$ref": "#/definitions/jsonSchema"
+        },
+        {
+          "$ref": "#/definitions/recordSizeObject"
+        }
+      ]
     },
     "snapshotDefinition": {
       "$ref": "#/definitions/jsonSchema"
