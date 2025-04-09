@@ -356,3 +356,56 @@ class TestSchemaValidator:
         message = err_info.value.message
         assert ("'strings' is not valid under any of the given schemas"
                 in message)
+
+    @staticmethod
+    @pytest.mark.parametrize('linked_source_definition',
+                             [{
+                                 'type': 'object',
+                                 'additionalProperties': False,
+                                 'properties': {
+                                     'recordSizeInKB': {
+                                         'type': 'string'
+                                     }
+                                 }
+                             }])
+    def test_bad_recordSizeInKB_type_string(schema_file):
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
+            validator.validate()
+
+        message = err_info.value.message
+        assert "'string' is not one of ['integer']" in message
+
+    @staticmethod
+    @pytest.mark.parametrize('virtual_source_definition',
+                             [{
+                                 'type': 'object',
+                                 'additionalProperties': False,
+                                 'properties': {
+                                     'recordSizeInKB': {
+                                         'type': 'array'
+                                     }
+                                 }
+                             }])
+    def test_bad_recordSizeInKB_type_array_virtual(schema_file):
+        with pytest.raises(exceptions.SchemaValidationError) as err_info:
+            validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
+            validator.validate()
+
+        message = err_info.value.message
+        assert "'array' is not one of ['integer']" in message
+
+    @staticmethod
+    @pytest.mark.parametrize('virtual_source_definition',
+                             [{
+                                 'type': 'object',
+                                 'additionalProperties': False,
+                                 'properties': {
+                                     'recordSizeInKB': {
+                                         'type': 'integer'
+                                     }
+                                 }
+                             }])
+    def test_recordSizeInKB_type_virtual(schema_file):
+        validator = SchemaValidator(schema_file, const.PLUGIN_SCHEMA)
+        validator.validate()
