@@ -88,12 +88,13 @@ print response.stderr
 
 ##### Using parameters to construct a bash command.
 
+Note: see the helper function [construct_bash_command_string](#construct_bash_command_string)
 ```python
 from dlpx.virtualization import libs
 
 name = virtual_source.parameters.username
 port = virtual_source.parameters.port
-command = "mysqldump -u {} -p {}".format(name,port)
+command = libs.construct_bash_command_string("mysqldump", "-u", name, "-p", port)
 
 response = libs.run_bash(connection, command)
 ```
@@ -124,6 +125,34 @@ response = libs.run_bash(connection, command)
 ```
 For more information please go to [Managing Scripts for Remote Execution](../Best_Practices/Managing_Scripts_For_Remote_Execution.md) section.
 
+## construct_bash_command_string
+
+Constructs a full Bash command string from an executable name and list of args.
+
+This helper function is intended to help with the simple case of running a remote
+command with a set of arguments. By using this function, you won't have to worry
+about the details of escaping/quoting special characters.
+
+### Signature
+`def construct_bash_command_string(executable, args)`
+
+### Arguments
+Argument | Type | Description
+-------- | ---- | -----------
+executable | String | Name of the command. This can be the full path to the command, the name of a command that is found on the path, or a shell builtin.
+args | List of Strings | Arguments to the command
+
+### Returns
+A string representing a full Bash command line, that can be passed to run_bash.
+
+### Example
+```python
+old_name = "A filename with spaces in it"
+new_name = "The file's new $100 name" # <-- note special characters!
+move_command = libs.construct_bash_command_string("mv", old_name, new_name)
+libs.run_bash(cx, move_command)
+```
+
 ## run_expect
 
 Executes a tcl command or script on a remote Unix host.
@@ -151,7 +180,7 @@ stderr | String | Stderr from the command.
 
 ### Example
 
-Calling expect  with an inline command.
+Calling expect with an inline command.
 
 ```python
 from dlpx.virtualization import libs
