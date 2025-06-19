@@ -3,7 +3,7 @@ The Virtualization SDK is a Python package on [PyPI](https://pypi.org/project/dv
 
 The SDK consists of three parts:
 
-- The `dlpx.virtulization.platform` module
+- The `dlpx.virtualization.platform` module
 - The `dlpx.virtualization.libs` module
 - A CLI
 
