@@ -141,17 +141,21 @@ class TestInitialize:
 
     @staticmethod
     def test_init_with_relative_path(tmpdir):
-        os.chdir(tmpdir.strpath)
-        init.init(".", const.DIRECT_TYPE, "", const.UNIX_HOST_TYPE)
+        current_dir = os.getcwd()
+        try:
+            os.chdir(tmpdir.strpath)
+            init.init(".", const.DIRECT_TYPE, "", const.UNIX_HOST_TYPE)
 
-        result = plugin_util.validate_plugin_config_file(
-            os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
-            True)
+            result = plugin_util.validate_plugin_config_file(
+                os.path.join(tmpdir.strpath, init.DEFAULT_PLUGIN_CONFIG_FILE),
+                True)
 
-        config = result.plugin_config_content
+            config = result.plugin_config_content
 
-        # Validate that the plugin name is equal to plugin id
-        assert config['name'] == config['id']
+            # Validate that the plugin name is equal to plugin id
+            assert config['name'] == config['id']
+        finally:
+            os.chdir(current_dir)
 
     @staticmethod
     def test_init_without_plugin_name(tmpdir):
