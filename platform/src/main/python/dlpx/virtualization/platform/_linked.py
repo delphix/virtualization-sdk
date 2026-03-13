@@ -343,12 +343,12 @@ class LinkedOperations(object):
         Run virtual_to_physical operation for a direct source.
 
         Args:
-           request (DirectSourceSizeRequest): Virtual to Physical Request
+           request (DirectSourceToPhysicalRequest): Virtual to Physical Request
            arguments.
 
         Returns:
-           DirectSourceSizeResponse: A response containing the return value -
-           DirectSourceSizeResult. In case of errors, response object will
+           DirectSourceToPhysicalResponse: A response containing the return value -
+           DirectSourceToPhysicalResult. In case of errors, response object will
            contain PluginErrorResult.
         """
         # Reasoning for method imports are in this file's docstring.
@@ -925,12 +925,12 @@ class LinkedOperations(object):
         Run virtual_to_physical operation for a staged source.
 
         Args:
-           request (StagedSourceSizeRequest): Virtual to Physical Request
+           request (StagedSourceToPhysicalRequest): Virtual to Physical Request
            arguments.
 
         Returns:
-           StagedSourceSizeResponse: A response containing the return value -
-           StagedSourceSizeResult. In case of errors, response object will
+           StagedSourceToPhysicalResponse: A response containing the return value -
+           StagedSourceToPhysicalResult. In case of errors, response object will
            contain PluginErrorResult.
         """
         # Reasoning for method imports are in this file's docstring.

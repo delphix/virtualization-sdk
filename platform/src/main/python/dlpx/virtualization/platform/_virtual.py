@@ -870,12 +870,12 @@ class VirtualOperations(object):
         Run virtual_to_physical operation for a virtual source.
 
         Args:
-           request (VirtualSourceSizeRequest): Virtual to Physical Request
+           request (VirtualSourceToPhysicalRequest): Virtual to Physical Request
            arguments.
 
         Returns:
-           VirtualSourceSizeResponse: A response containing the return value -
-           VirtualSourceSizeResult. In case of errors, response object will
+           VirtualSourceToPhysicalResponse: A response containing the return value -
+           VirtualSourceToPhysicalResult. In case of errors, response object will
            contain PluginErrorResult.
         """
         # Reasoning for method imports are in this file's docstring.
