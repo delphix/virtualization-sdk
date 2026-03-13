@@ -35,6 +35,7 @@ class VirtualOperations(object):
         self.initialize_impl = None
         self.mount_specification_impl = None
         self.source_size_impl = None
+        self.virtual_to_physical_impl = None
 
     def configure(self):
         def configure_decorator(configure_impl):
@@ -152,6 +153,17 @@ class VirtualOperations(object):
             return source_size_impl
 
         return source_size_decorator
+
+    def virtual_to_physical(self):
+        def virtual_to_physical_decorator(virtual_to_physical_impl):
+            if self.virtual_to_physical_impl:
+                raise OperationAlreadyDefinedError(
+                    Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+            self.virtual_to_physical_impl = v.check_function(
+                virtual_to_physical_impl, Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+            return virtual_to_physical_impl
+
+        return virtual_to_physical_decorator
 
     @staticmethod
     def _from_protobuf_single_subset_mount(single_subset_mount):
@@ -848,3 +860,60 @@ class VirtualOperations(object):
         virtual_source_size_response.return_value.database_size = source_size
 
         return virtual_source_size_response
+
+    def _internal_virtual_to_physical(self, request):
+        """Virtual to Physical Wrapper.
+
+        Executed as part of several operations to convert a virtual source
+        to a physical source.
+
+        Run virtual_to_physical operation for a virtual source.
+
+        Args:
+           request (VirtualSourceSizeRequest): Virtual to Physical Request
+           arguments.
+
+        Returns:
+           VirtualSourceSizeResponse: A response containing the return value -
+           VirtualSourceSizeResult. In case of errors, response object will
+           contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+
+        #
+        # While virtual.virtual_to_physical() is not a required operation,
+        # this should not be called if it wasn't implemented.
+        #
+        if not self.virtual_to_physical_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+
+        virtual_to_physical = self.virtual_to_physical_impl(
+            virtual_source=virtual_source,
+            repository=repository,
+            source_config=source_config)
+
+        virtual_to_physical_response = platform_pb2.VirtualSourceToPhysicalResponse()
+        virtual_to_physical_response.return_value.database_size = (
+            virtual_to_physical)
+
+        return virtual_to_physical_response
+
