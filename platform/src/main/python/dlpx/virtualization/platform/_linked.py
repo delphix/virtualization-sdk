@@ -13,7 +13,7 @@ from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
 from dlpx.virtualization.common.exceptions import PluginRuntimeError
 from dlpx.virtualization.platform import (DirectSource, Mount,
                                           MountSpecification, StagedSource,
-                                          Status)
+                                          Status, PhysicalSource)
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationAlreadyDefinedError,
@@ -33,7 +33,7 @@ class LinkedOperations(object):
         self.worker_impl = None
         self.mount_specification_impl = None
         self.source_size_impl = None
-        self.virtual_to_physical_impl = None
+        self.source_to_physical_impl = None
 
     def pre_snapshot(self):
         def pre_snapshot_decorator(pre_snapshot_impl):
@@ -113,15 +113,15 @@ class LinkedOperations(object):
 
         return source_size_decorator
 
-    def virtual_to_physical(self):
-        def virtual_to_physical_decorator(virtual_to_physical_impl):
-            if self.virtual_to_physical_impl:
+    def source_to_physical(self):
+        def source_to_physical_decorator(source_to_physical_impl):
+            if self.source_to_physical_impl:
                 raise OperationAlreadyDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
-            self.virtual_to_physical_impl = v.check_function(virtual_to_physical_impl,
+            self.source_to_physical_impl = v.check_function(source_to_physical_impl,
                                                      Op.LINKED_SOURCE_TO_PHYSICAL)
-            return virtual_to_physical_impl
+            return source_to_physical_impl
 
-        return virtual_to_physical_decorator
+        return source_to_physical_decorator
 
     @staticmethod
     def _from_protobuf_remote_mount(remote_mount):
@@ -355,12 +355,14 @@ class LinkedOperations(object):
         from generated.definitions import RepositoryDefinition
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import PhysicalSourceDefinition
 
         #
         # While linked.virtual_to_physical() is not a required operation,
         # this should not be called if it wasn't implemented.
         #
-        if not self.virtual_to_physical_impl:
+        if not self.source_to_physical_impl:
             raise OperationNotDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
 
         direct_source_definition = LinkedSourceDefinition.from_dict(
@@ -370,16 +372,25 @@ class LinkedOperations(object):
             connection=RemoteConnection.from_proto(
                 request.direct_source.connection),
             parameters=direct_source_definition)
+        physical_source = PhysicalSource(guid=request.physical_source.guid,
+                                         connection=RemoteConnection.from_proto(
+                                             request.physical_source.connection),
+                                         target_directory=request.physical_source.target_directory,
+                                         parameters=request.physical_source.parameters)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
 
-        virtual_to_physical = self.virtual_to_physical_impl(
+        virtual_to_physical = self.source_to_physical_impl(
             direct_source=direct_source,
             repository=repository,
-            source_config=source_config)
+            source_config=source_config,
+            snapshot = snapshot,
+            physical_source = physical_source)
 
         direct_source_to_physical_response = platform_pb2.DirectSourceToPhysicalResponse()
         direct_source_to_physical_response.return_value.database_size = virtual_to_physical
@@ -937,12 +948,14 @@ class LinkedOperations(object):
         from generated.definitions import RepositoryDefinition
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import PhysicalSourceDefinition
 
         #
         # While linked.virtual_to_physical() is not a required operation,
         # this should not be called if it wasn't implemented.
         #
-        if not self.virtual_to_physical_impl:
+        if not self.source_to_physical_impl:
             raise OperationNotDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
 
         staged_source_definition = LinkedSourceDefinition.from_dict(
@@ -957,16 +970,26 @@ class LinkedOperations(object):
             staged_connection=RemoteConnection.from_proto(
                 request.staged_source.staged_connection),
             mounts=mounts)
+        physical_source = PhysicalSource(guid=request.physical_source.guid,
+                                         connection=RemoteConnection.from_proto(
+                                             request.physical_source.connection),
+                                         target_directory=request.physical_source.target_directory,
+                                         parameters=request.physical_source.parameters)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
             json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
 
-        virtual_to_physical = self.virtual_to_physical_impl(
+        virtual_to_physical = self.source_to_physical_impl(
             staged_source=staged_source,
             repository=repository,
-            source_config=source_config)
+            source_config=source_config,
+            snapshot=snapshot,
+            physical_source=physical_source
+        )
 
         staged_source_to_physical_response = platform_pb2.StagedSourceToPhysicalResponse()
         staged_source_to_physical_response.return_value.database_size = virtual_to_physical

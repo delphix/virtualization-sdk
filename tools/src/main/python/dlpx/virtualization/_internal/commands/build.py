@@ -25,6 +25,7 @@ DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
 STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
 SNAPSHOT_PARAMETERS_DEFINITION_TYPE = 'PluginSnapshotParametersDefinition'
+VIRTUAL_TO_PHYSICAL_DEFINITION_TYPE = 'PluginVirtualToPhysicalDefinition'
 
 BUILD_DIR_NAME = 'build'
 
@@ -242,6 +243,10 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'virtualSourceDefinition': {
             'type': VIRTUAL_SOURCE_TYPE,
             'parameters': schemas['virtualSourceDefinition']
+        },
+        'virtualToPhysicalDefinition': {
+            'type': VIRTUAL_TO_PHYSICAL_DEFINITION_TYPE,
+            'parameters': schemas['virtualToPhysicalDefinition']
         },
         'linkedSourceDefinition': {
             'type': get_linked_source_definition_type(plugin_config_content),
