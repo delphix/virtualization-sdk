@@ -882,7 +882,7 @@ class VirtualOperations(object):
         from generated.definitions import RepositoryDefinition
         from generated.definitions import SourceConfigDefinition
         from generated.definitions import SnapshotDefinition
-        from generated.definitions import PhysicalSourceDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
 
         #
         # While virtual.virtual_to_physical() is not a required operation,
@@ -902,11 +902,13 @@ class VirtualOperations(object):
                                            request.virtual_source.connection),
                                        parameters=virtual_source_definition,
                                        mounts=mounts)
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
         physical_source = PhysicalSource(guid=request.physical_source.guid,
                                          connection=RemoteConnection.from_proto(
                                              request.physical_source.connection),
-                                         target_directory=request.physical_source.target_directory,
-                                         parameters=request.physical_source.parameters)
+                                         target_directory=request.physical_source.targetDirectory,
+                                         parameters=virtual_to_physical_source_definition)
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
         source_config = SourceConfigDefinition.from_dict(
@@ -922,8 +924,5 @@ class VirtualOperations(object):
             physical_source=physical_source)
 
         virtual_to_physical_response = platform_pb2.VirtualSourceToPhysicalResponse()
-        virtual_to_physical_response.return_value.database_size = (
-            virtual_to_physical)
-
         return virtual_to_physical_response
 

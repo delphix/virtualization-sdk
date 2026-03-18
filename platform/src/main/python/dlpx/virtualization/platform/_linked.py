@@ -356,7 +356,7 @@ class LinkedOperations(object):
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
         from generated.definitions import SnapshotDefinition
-        from generated.definitions import PhysicalSourceDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
 
         #
         # While linked.virtual_to_physical() is not a required operation,
@@ -372,11 +372,13 @@ class LinkedOperations(object):
             connection=RemoteConnection.from_proto(
                 request.direct_source.connection),
             parameters=direct_source_definition)
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
         physical_source = PhysicalSource(guid=request.physical_source.guid,
                                          connection=RemoteConnection.from_proto(
                                              request.physical_source.connection),
                                          target_directory=request.physical_source.target_directory,
-                                         parameters=request.physical_source.parameters)
+                                         parameters=virtual_to_physical_source_definition)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -393,8 +395,6 @@ class LinkedOperations(object):
             physical_source = physical_source)
 
         direct_source_to_physical_response = platform_pb2.DirectSourceToPhysicalResponse()
-        direct_source_to_physical_response.return_value.database_size = virtual_to_physical
-
         return direct_source_to_physical_response
 
     def _internal_staged_pre_snapshot(self, request):
@@ -949,7 +949,7 @@ class LinkedOperations(object):
         from generated.definitions import LinkedSourceDefinition
         from generated.definitions import SourceConfigDefinition
         from generated.definitions import SnapshotDefinition
-        from generated.definitions import PhysicalSourceDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
 
         #
         # While linked.virtual_to_physical() is not a required operation,
@@ -970,11 +970,14 @@ class LinkedOperations(object):
             staged_connection=RemoteConnection.from_proto(
                 request.staged_source.staged_connection),
             mounts=mounts)
+
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
         physical_source = PhysicalSource(guid=request.physical_source.guid,
                                          connection=RemoteConnection.from_proto(
                                              request.physical_source.connection),
                                          target_directory=request.physical_source.target_directory,
-                                         parameters=request.physical_source.parameters)
+                                         parameters=virtual_to_physical_source_definition)
 
         repository = RepositoryDefinition.from_dict(
             json.loads(request.repository.parameters.json))
@@ -992,6 +995,4 @@ class LinkedOperations(object):
         )
 
         staged_source_to_physical_response = platform_pb2.StagedSourceToPhysicalResponse()
-        staged_source_to_physical_response.return_value.database_size = virtual_to_physical
-
         return staged_source_to_physical_response
