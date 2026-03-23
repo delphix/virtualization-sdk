@@ -62,7 +62,7 @@ def get_external_version_string(version_string):
     :param version_string: version string in either internal or external format
     :return: version string in external format
     """
-    return re.search(r'([0-9]\.[0-9]\.[0-9])', version_string).group(0)
+    return re.search(r'([0-9]\.[0-9]{1,2}\.[0-9])', version_string).group(0)
 
 
 @_run_once
