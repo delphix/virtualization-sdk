@@ -22,6 +22,11 @@
         "additionalProperties" : false,
         "properties" : {}
     },
+    "virtualToPhysicalDefinition": {
+        "type": "object",
+        "additionalProperties" : false,
+        "properties" : {}
+    },
     "linkedSourceDefinition": {
         "type": "object",
         "additionalProperties" : false,

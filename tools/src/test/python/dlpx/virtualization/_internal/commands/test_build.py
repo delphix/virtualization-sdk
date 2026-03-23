@@ -680,6 +680,19 @@ class TestPluginUtil:
         assert not mock_generate_python.called
 
     @staticmethod
+    @pytest.mark.parametrize('virtual_to_physical_definition', [None])
+    @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
+    def test_plugin_missing_virtual_to_physical_schema_def(
+            mock_generate_python, plugin_config_file, artifact_file):
+        with pytest.raises(exceptions.UserError) as err_info:
+            build.build(plugin_config_file, artifact_file, False, False)
+
+        message = err_info.value.message
+        assert "'virtualToPhysicalDefinition' is a required property" in message
+
+        assert not mock_generate_python.called
+
+    @staticmethod
     @mock.patch('dlpx.virtualization._internal.codegen.generate_python')
     @pytest.mark.parametrize('additional_definition', [{
         'type': 'objectxxx',

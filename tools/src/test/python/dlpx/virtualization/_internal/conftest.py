@@ -371,6 +371,7 @@ def linked_operation():
     linked.worker_impl = None
     linked.mount_specification_impl = None
     linked.source_size_impl = None
+    linked.source_to_physical_impl = None
 
     return linked
 
@@ -412,6 +413,7 @@ def virtual_operation():
     virtual.initialize_impl = None
     virtual.cleanup_impl = None
     virtual.source_size_impl = None
+    virtual.source_to_physical_impl = None
 
     return virtual
 
@@ -446,6 +448,7 @@ def plugin_manifest(upgrade_operation):
         'hasLinkedWorker': False,
         'hasLinkedMountSpecification': False,
         'hasLinkedSourceSize': False,
+        'hasLinkedSourceToPhysical': False,
         'hasVirtualConfigure': True,
         'hasVirtualUnconfigure': False,
         'hasVirtualReconfigure': True,
@@ -459,13 +462,15 @@ def plugin_manifest(upgrade_operation):
         'hasInitialize': False,
         'migrationIdList': upgrade_operation.migration_id_list,
         'hasVirtualCleanup': False,
+        'hasVirtualSourceToPhysical': False,
     }
     return manifest
 
 
 @pytest.fixture
 def schema_content(repository_definition, source_config_definition,
-                   virtual_source_definition, linked_source_definition,
+                   virtual_source_definition, virtual_to_physical_definition,
+                   linked_source_definition,
                    snapshot_definition, snapshot_parameters_definition,
                    additional_definition):
 
@@ -479,6 +484,9 @@ def schema_content(repository_definition, source_config_definition,
 
     if virtual_source_definition:
         schema['virtualSourceDefinition'] = virtual_source_definition
+
+    if virtual_to_physical_definition:
+        schema['virtualToPhysicalDefinition'] = virtual_to_physical_definition
 
     if linked_source_definition:
         schema['linkedSourceDefinition'] = linked_source_definition
@@ -530,6 +538,19 @@ def source_config_definition():
 
 @pytest.fixture
 def virtual_source_definition():
+    return {
+        'type': 'object',
+        'additionalProperties': True,
+        'properties': {
+            'path': {
+                'type': 'string'
+            }
+        }
+    }
+
+
+@pytest.fixture
+def virtual_to_physical_definition():
     return {
         'type': 'object',
         'additionalProperties': True,
@@ -649,7 +670,8 @@ def add_symlink_folder_to_src_dir(tmpdir, src_dir):
 
 @pytest.fixture
 def artifact_content(engine_api, virtual_source_definition,
-                     linked_source_definition, discovery_definition,
+                     virtual_to_physical_definition, linked_source_definition,
+                     discovery_definition,
                      snapshot_definition, snapshot_parameters_definition):
     """
     This fixture creates base artifact that was generated from build and
@@ -683,6 +705,12 @@ def artifact_content(engine_api, virtual_source_definition,
         artifact['virtualSourceDefinition'] = {
             'type': 'PluginVirtualSourceDefinition',
             'parameters': virtual_source_definition,
+        }
+
+    if virtual_to_physical_definition:
+        artifact['virtualToPhysicalDefinition'] = {
+            'type': 'PluginVirtualToPhysicalDefinition',
+            'parameters': virtual_to_physical_definition,
         }
 
     if linked_source_definition:
