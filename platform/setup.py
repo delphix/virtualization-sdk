@@ -7,7 +7,7 @@ with open(os.path.join(PYTHON_SRC, 'dlpx/virtualization/platform/VERSION')) as v
     version = version_file.read().strip()
 
 install_requires = [
-    "dvp-api == 1.10.0.dev0",
+    "dvp-api == 1.9.0",
     "dvp-common == {}".format(version),
     "six >= 1.17, < 1.18",
 ]
