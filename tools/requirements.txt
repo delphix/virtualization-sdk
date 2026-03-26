@@ -2,7 +2,7 @@
 ./../libs
 ./../platform
 bump2version==1.0.1
-coverage==7.13.4
+coverage==7.13.5
 entrypoints==0.4
 flake8==7.3.0
 httpretty==1.0.5
@@ -15,7 +15,7 @@ pluggy==1.6.0
 pycodestyle==2.14.0
 pyflakes==3.4.0
 pyparsing==3.3.2
-pytest-cov==7.0.0
+pytest-cov==7.1.0
 pytest==9.0.2
 six==1.17.0
 yapf==0.43.0
