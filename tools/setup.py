@@ -30,7 +30,7 @@ install_requires = [
     "pkgutil_resolve_name == 1.3.10",
     "pyyaml >= 6, < 7",
     "requests >= 2.32, < 2.33",
-    "six >= 1.16, < 1.17",
+    "six >= 1.17, < 1.18",
     "zipp >= 3.23, < 3.24",
 ]
 
