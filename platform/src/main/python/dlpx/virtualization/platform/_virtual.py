@@ -11,7 +11,7 @@ import json
 from dlpx.virtualization.api import common_pb2, platform_pb2
 from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
 from dlpx.virtualization.platform import (Mount, MountSpecification, Status,
-                                          VirtualSource)
+                                          VirtualSource, PhysicalSource)
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationAlreadyDefinedError,
@@ -35,6 +35,7 @@ class VirtualOperations(object):
         self.initialize_impl = None
         self.mount_specification_impl = None
         self.source_size_impl = None
+        self.source_to_physical_impl = None
 
     def configure(self):
         def configure_decorator(configure_impl):
@@ -152,6 +153,17 @@ class VirtualOperations(object):
             return source_size_impl
 
         return source_size_decorator
+
+    def source_to_physical(self):
+        def source_to_physical_decorator(source_to_physical_impl):
+            if self.source_to_physical_impl:
+                raise OperationAlreadyDefinedError(
+                    Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+            self.source_to_physical_impl = v.check_function(
+                source_to_physical_impl, Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+            return source_to_physical_impl
+
+        return source_to_physical_decorator
 
     @staticmethod
     def _from_protobuf_single_subset_mount(single_subset_mount):
@@ -848,3 +860,72 @@ class VirtualOperations(object):
         virtual_source_size_response.return_value.database_size = source_size
 
         return virtual_source_size_response
+
+    def _internal_virtual_source_to_physical(self, request):
+        """Virtual to Physical Wrapper.
+
+        Executed as part of several operations to convert a virtual source
+        to a physical source.
+
+        Run virtual_to_physical operation for a virtual source.
+
+        Args:
+           request (VirtualSourceToPhysicalRequest): Virtual to Physical Request
+           arguments.
+
+        Returns:
+           VirtualSourceToPhysicalResponse: A response containing the return value -
+           VirtualSourceToPhysicalResult. In case of errors, response object will
+           contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
+
+        #
+        # While virtual.virtual_to_physical() is not a required operation,
+        # this should not be called if it wasn't implemented.
+        #
+        if not self.source_to_physical_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_SOURCE_TO_PHYSICAL)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
+        physical_source = PhysicalSource(
+            guid=request.physical_source.guid,
+            connection=RemoteConnection.from_proto(request.physical_source.connection),
+            target_directory=request.physical_source.target_directory,
+            parameters=virtual_to_physical_source_definition)
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
+
+        self.source_to_physical_impl(
+            virtual_source=virtual_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot=snapshot,
+            physical_source=physical_source)
+
+        virtual_to_physical_response = (
+            platform_pb2.VirtualSourceToPhysicalResponse())
+        virtual_to_physical_response.return_value.CopyFrom(
+            platform_pb2.VirtualSourceToPhysicalResult())
+        return virtual_to_physical_response

@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 TYPE = 'Plugin'
 LOCALE_DEFAULT = 'en-us'
 VIRTUAL_SOURCE_TYPE = 'PluginVirtualSourceDefinition'
+VIRTUAL_TO_PHYSICAL_TYPE = 'PluginVirtualToPhysicalDefinition'
 DISCOVERY_DEFINITION_TYPE = 'PluginDiscoveryDefinition'
 STAGED_LINKED_SOURCE_TYPE = 'PluginLinkedStagedSourceDefinition'
 DIRECT_LINKED_SOURCE_TYPE = 'PluginLinkedDirectSourceDefinition'
@@ -242,6 +243,10 @@ def prepare_upload_artifact(plugin_config_content, src_dir, schemas, manifest):
         'virtualSourceDefinition': {
             'type': VIRTUAL_SOURCE_TYPE,
             'parameters': schemas['virtualSourceDefinition']
+        },
+        'virtualToPhysicalDefinition': {
+            'type': VIRTUAL_TO_PHYSICAL_TYPE,
+            'parameters': schemas['virtualToPhysicalDefinition']
         },
         'linkedSourceDefinition': {
             'type': get_linked_source_definition_type(plugin_config_content),

@@ -270,11 +270,12 @@ class TestInitialize:
         ]
 
         #
-        # Validate the linked source, virtual source, and snapshot definitions
-        # have no properties.
+        # Validate the linked source, virtual source, virtual to physical, and
+        # snapshot definitions have no properties.
         #
         assert schema_template['linkedSourceDefinition']['properties'] == {}
         assert schema_template['virtualSourceDefinition']['properties'] == {}
+        assert schema_template['virtualToPhysicalDefinition']['properties'] == {}
         assert schema_template['snapshotDefinition']['properties'] == {}
 
     @staticmethod

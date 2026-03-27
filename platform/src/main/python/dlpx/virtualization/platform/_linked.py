@@ -13,7 +13,7 @@ from dlpx.virtualization.common import RemoteConnection, RemoteEnvironment
 from dlpx.virtualization.common.exceptions import PluginRuntimeError
 from dlpx.virtualization.platform import (DirectSource, Mount,
                                           MountSpecification, StagedSource,
-                                          Status)
+                                          Status, PhysicalSource)
 from dlpx.virtualization.platform import validation_util as v
 from dlpx.virtualization.platform.exceptions import (
     IncorrectReturnTypeError, OperationAlreadyDefinedError,
@@ -33,6 +33,7 @@ class LinkedOperations(object):
         self.worker_impl = None
         self.mount_specification_impl = None
         self.source_size_impl = None
+        self.source_to_physical_impl = None
 
     def pre_snapshot(self):
         def pre_snapshot_decorator(pre_snapshot_impl):
@@ -111,6 +112,16 @@ class LinkedOperations(object):
             return source_size_impl
 
         return source_size_decorator
+
+    def source_to_physical(self):
+        def source_to_physical_decorator(source_to_physical_impl):
+            if self.source_to_physical_impl:
+                raise OperationAlreadyDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
+            self.source_to_physical_impl = v.check_function(
+                source_to_physical_impl, Op.LINKED_SOURCE_TO_PHYSICAL)
+            return source_to_physical_impl
+
+        return source_to_physical_decorator
 
     @staticmethod
     def _from_protobuf_remote_mount(remote_mount):
@@ -322,6 +333,72 @@ class LinkedOperations(object):
         direct_source_size_response.return_value.database_size = source_size
 
         return direct_source_size_response
+
+    def _internal_direct_source_to_physical(self, request):
+        """Direct Source to Physical Wrapper for direct plugins.
+
+        Executed as part of several operations to convert a virtual source
+        to a physical source for a direct source.
+
+        Run virtual_to_physical operation for a direct source.
+
+        Args:
+           request (DirectSourceToPhysicalRequest): Virtual to Physical Request
+           arguments.
+
+        Returns:
+           DirectSourceToPhysicalResponse: A response containing the return value -
+           DirectSourceToPhysicalResult. In case of errors, response object will
+           contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
+
+        #
+        # While linked.virtual_to_physical() is not a required operation,
+        # this should not be called if it wasn't implemented.
+        #
+        if not self.source_to_physical_impl:
+            raise OperationNotDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
+
+        direct_source_definition = LinkedSourceDefinition.from_dict(
+            json.loads(request.direct_source.linked_source.parameters.json))
+        direct_source = DirectSource(
+            guid=request.direct_source.linked_source.guid,
+            connection=RemoteConnection.from_proto(
+                request.direct_source.connection),
+            parameters=direct_source_definition)
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
+        physical_source = PhysicalSource(
+            guid=request.physical_source.guid,
+            connection=RemoteConnection.from_proto(request.physical_source.connection),
+            target_directory=request.physical_source.target_directory,
+            parameters=virtual_to_physical_source_definition)
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
+
+        self.source_to_physical_impl(
+            direct_source=direct_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot=snapshot,
+            physical_source=physical_source)
+
+        direct_source_to_physical_response = (
+            platform_pb2.DirectSourceToPhysicalResponse())
+        direct_source_to_physical_response.return_value.CopyFrom(
+            platform_pb2.DirectSourceToPhysicalResult())
+        return direct_source_to_physical_response
 
     def _internal_staged_pre_snapshot(self, request):
         """Pre Snapshot Wrapper for staged plugins.
@@ -852,3 +929,76 @@ class LinkedOperations(object):
         staged_source_size_response.return_value.database_size = source_size
 
         return staged_source_size_response
+
+    def _internal_staged_source_to_physical(self, request):
+        """Staged Source to Physical Wrapper for staged plugins.
+
+        Executed as part of several operations to convert a virtual source
+        to a physical source for a staged source.
+
+        Run virtual_to_physical operation for a staged source.
+
+        Args:
+           request (StagedSourceToPhysicalRequest): Virtual to Physical Request
+           arguments.
+
+        Returns:
+           StagedSourceToPhysicalResponse: A response containing the return value -
+           StagedSourceToPhysicalResult. In case of errors, response object will
+           contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import LinkedSourceDefinition
+        from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
+
+        #
+        # While linked.virtual_to_physical() is not a required operation,
+        # this should not be called if it wasn't implemented.
+        #
+        if not self.source_to_physical_impl:
+            raise OperationNotDefinedError(Op.LINKED_SOURCE_TO_PHYSICAL)
+
+        staged_source_definition = LinkedSourceDefinition.from_dict(
+            json.loads(request.staged_source.linked_source.parameters.json))
+        staged_mount, mounts = LinkedOperations._get_mounts_from_request(request)
+        staged_source = StagedSource(
+            guid=request.staged_source.linked_source.guid,
+            source_connection=RemoteConnection.from_proto(
+                request.staged_source.source_connection),
+            parameters=staged_source_definition,
+            mount=staged_mount,
+            staged_connection=RemoteConnection.from_proto(
+                request.staged_source.staged_connection),
+            mounts=mounts)
+
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
+        physical_source = PhysicalSource(
+            guid=request.physical_source.guid,
+            connection=RemoteConnection.from_proto(request.physical_source.connection),
+            target_directory=request.physical_source.target_directory,
+            parameters=virtual_to_physical_source_definition)
+
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
+
+        self.source_to_physical_impl(
+            staged_source=staged_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot=snapshot,
+            physical_source=physical_source
+        )
+
+        staged_source_to_physical_response = (
+            platform_pb2.StagedSourceToPhysicalResponse())
+        staged_source_to_physical_response.return_value.CopyFrom(
+            platform_pb2.StagedSourceToPhysicalResult())
+        return staged_source_to_physical_response
