@@ -135,7 +135,7 @@ class VirtualToPhysicalDefinition(Model):
 
     @staticmethod
     def from_dict(input_dict):
-        return VirtualSourceDefinition(input_dict['name'])
+        return VirtualToPhysicalDefinition(input_dict['name'])
 
     def to_dict(self):
         return {"name": self._name}

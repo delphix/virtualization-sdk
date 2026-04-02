@@ -553,7 +553,7 @@ def virtual_source_definition():
 def virtual_to_physical_definition():
     return {
         'type': 'object',
-        'additionalProperties': True,
+        'additionalProperties': False,
         'properties': {
             'path': {
                 'type': 'string'
