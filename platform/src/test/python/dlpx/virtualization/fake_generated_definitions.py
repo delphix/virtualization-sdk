@@ -120,3 +120,22 @@ class SnapshotParametersDefinition(Model):
 
     def to_dict(self):
         return {"resync": self._resync}
+
+
+class VirtualToPhysicalDefinition(Model):
+    def __init__(self, name):
+        self.swagger_types = {'name': six.string_types[0]}
+
+        self.attribute_map = {'name': 'name'}
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @staticmethod
+    def from_dict(input_dict):
+        return VirtualToPhysicalDefinition(input_dict['name'])
+
+    def to_dict(self):
+        return {"name": self._name}
