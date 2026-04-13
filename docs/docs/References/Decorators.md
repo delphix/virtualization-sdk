@@ -48,6 +48,9 @@ Plugin Operation | Decorator
 [Virtual Source Mount Specification](Plugin_Operations.md#virtual-source-mount-specification) | `@plugin.virtual.mount_specification()`
 [Virtual Source Status](Plugin_Operations.md#virtual-source-status) | `@plugin.virtual.status()`
 [Virtual Source Size](Plugin_Operations.md#virtual-source-size) | `@plugin.virtual.source_size()`
+[Virtual Source to Physical](Plugin_Operations.md#virtual-source-to-physical) | `@plugin.virtual.source_to_physical()`
+[Direct Linked Source to Physical](Plugin_Operations.md#direct-linked-source-to-physical) | `@plugin.linked.source_to_physical()`
+[Staged Linked Source to Physical](Plugin_Operations.md#staged-linked-source-to-physical) | `@plugin.linked.source_to_physical()`
 [Repository Data Migration](Plugin_Operations.md#repository-data-migration) | `@plugin.upgrade.repository(migration_id)`
 [Source Config Data Migration](Plugin_Operations.md#source-config-data-migration) | `@plugin.upgrade.source_config(migration_id)`
 [Linked Source Data Migration](Plugin_Operations.md#linked-source-data-migration) | `@plugin.upgrade.linked_source(migration_id)`
