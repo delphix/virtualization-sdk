@@ -15,7 +15,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Direct Linked Source<br/>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Post-Snapshot](#direct-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Source Size](#direct-linked-source-size) | **No** | `linked.source_size()` | N/A
-[Direct Linked Source<br/>to Physical](#direct-linked-source-to-physical) | **No** | `linked.source_to_physical()` | N/A
+[Direct Linked Source<br/>to Physical](#direct-linked-source-to-physical) | **No** | `linked.source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Staged Linked Source<br/>Pre-Snapshot](#staged-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Post-Snapshot](#staged-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Start-Staging](#staged-linked-source-start-staging) | **No** | `linked.start_staging()` | [Linked Source Enable](Workflows.md#linked-source-enable)
@@ -24,7 +24,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Staged Linked Source<br/>Worker](#staged-linked-source-worker) | **No** |`linked.worker()` | N/A
 [Staged Linked Source<br/>Mount Specification](#staged-linked-source-mount-specification) | **Yes** | `linked.mount_specification()` | [Linked Source Sync](Workflows.md#linked-source-sync)<br/>[Linked Source Enable](Workflows.md#linked-source-enable)
 [Staged Linked Source<br/>Source Size](#staged-linked-source-size) | **No** | `linked.source_size()` | N/A
-[Staged Linked Source<br/>to Physical](#staged-linked-source-to-physical) | **No** | `linked.source_to_physical()` | N/A
+[Staged Linked Source<br/>to Physical](#staged-linked-source-to-physical) | **No** | `linked.source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Virtual Source<br/>Initialize](#virtual-source-initialize) | **No** | `virtual.initialize()` | [Virtual Source Create Empty VDB](Workflows.md#virtual-source-create-empty-vdb)
 [Virtual Source<br/>Configure](#virtual-source-configure) | **Yes** | `virtual.configure()` | [Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)
 [Virtual Source<br/>Unconfigure](#virtual-source-unconfigure) | **No** | `virtual.unconfigure()` | [Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Delete](Workflows.md#virtual-source-delete)
@@ -37,7 +37,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Virtual Source<br>Mount Specification](#virtual-source-mount-specification) | **Yes** | `virtual.mount_specification()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)<br/>[Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Rollback](Workflows.md#virtual-source-rollback)<br/>[Virtual Source Start](Workflows.md#virtual-source-start)
 [Virtual Source<br/>Status](#virtual-source-status) | **No** | `virtual.status()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)
 [Virtual Source<br/>Source Size](#virtual-source-size) | **No** | `virtual.source_size()` | N/A
-[Virtual Source<br/>to Physical](#virtual-source-to-physical) | **No** | `virtual.source_to_physical()` | N/A
+[Virtual Source<br/>to Physical](#virtual-source-to-physical) | **No** | `virtual.source_to_physical()` | [Virtual Source to Physical](Workflows.md#virtual-source-to-physical)
 [Repository Data Migration](#repository-data-migration) | **No** | `upgrade.repository(migration_id)` | [Upgrade](Workflows.md#upgrade)
 [Source Config Data Migration](#source-config-data-migration) | **No** | `upgrade.source_config(migration_id)` | [Upgrade](Workflows.md#upgrade)
 [Linked Source Data Migration](#linked-source-data-migration) | **No** | `upgrade.linked_source(migration_id)` | [Upgrade](Workflows.md#upgrade)
@@ -325,7 +325,7 @@ Converts a [Direct Linked Source](Glossary.md#direct-linking) to a physical sour
 
 ### Delphix Engine Operations
 
-* N/A
+* [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 
 ### Signature
 
@@ -745,7 +745,7 @@ Converts a [Staged Linked Source](Glossary.md#staged-linking) to a physical sour
 
 ### Delphix Engine Operations
 
-* N/A
+* [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 
 ### Signature
 
@@ -1393,7 +1393,7 @@ Converts a [Virtual Source](Glossary.md#virtual-source) to a physical source.  O
 
 ### Delphix Engine Operations
 
-* N/A
+* [Virtual Source to Physical](Workflows.md#virtual-source-to-physical)
 
 ### Signature
 

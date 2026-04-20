@@ -24,6 +24,10 @@
 
 ![Screenshot](images/LinkedSourceDelete.png)
 
+## Linked Source to Physical
+
+![Screenshot](images/LinkedSourceToPhysical.png)
+
 ## Virtual Source Provision
 
 ![Screenshot](images/VirtualSourceProvision.png)
@@ -67,6 +71,10 @@ Note: pre- and post-start hooks are only run if `extendedStartStopHooks` is set 
 ![Screenshot](images/VirtualSourceDisable.png)
 
 Note: pre- and post-stop hooks are only run if `extendedStartStopHooks` is set to `true` in the [plugin config](Plugin_Config.md).
+
+## Virtual Source to Physical
+
+![Screenshot](images/VirtualSourceToPhysical.png)
 
 ## Upgrade
 
