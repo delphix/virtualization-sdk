@@ -65,6 +65,12 @@ A collection of information, provided by the plugin, which give all the details 
 ## Password Properties
 In [schemas](#schema), any string property can be tagged with `"format": "password"`. This will let the Delphix Engine know that the property contains sensitive information. Any such values will only be stored in encrypted format, and the UI will not display the values on screen.
 
+## Physical Dataset
+A real, non-virtualized, physical copy of data that has been exported from the Delphix Engine to a target environment. Unlike a [virtual dataset](#virtual-dataset), a physical dataset is stored directly on the target host outside Delphix storage.
+
+## Physical Source
+An object on the Delphix Engine that holds information related to a [physical dataset](#physical-dataset).
+
 ## Platform Libraries
 A set of Python functions that are provided by the Virtualization Platform. Plugins use these library functions to request that the Virtualization Platform do some task on behalf of the plugin. For example, running a Bash command on an environment, or making an log entry.
 
