@@ -16,7 +16,7 @@ pycodestyle==2.14.0
 pyflakes==3.4.0
 pyparsing==3.3.2
 pytest-cov==7.1.0
-pytest==9.0.2
+pytest==9.0.3
 six==1.17.0
 yapf==0.43.0
 zipp==3.23.0
