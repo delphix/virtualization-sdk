@@ -39,6 +39,7 @@ TEST_SOURCE_CONFIG = 'TestSourceConfig'
 TEST_DIRECT_SOURCE = 'TestDirectSource'
 TEST_STAGED_SOURCE = 'TestStagedSource'
 TEST_VIRTUAL_SOURCE = 'TestVirtualSource'
+TEST_PHYSICAL_SOURCE = 'TestPhysicalSource'
 
 # This is a simple JSON object that has only "name" property defined.
 SIMPLE_JSON = '{{"name": "{0}"}}'
@@ -49,6 +50,7 @@ TEST_SOURCE_CONFIG_JSON = SIMPLE_JSON.format(TEST_SOURCE_CONFIG)
 TEST_DIRECT_SOURCE_JSON = SIMPLE_JSON.format(TEST_DIRECT_SOURCE)
 TEST_STAGED_SOURCE_JSON = SIMPLE_JSON.format(TEST_STAGED_SOURCE)
 TEST_VIRTUAL_SOURCE_JSON = SIMPLE_JSON.format(TEST_VIRTUAL_SOURCE)
+TEST_PHYSICAL_SOURCE_JSON = SIMPLE_JSON.format(TEST_PHYSICAL_SOURCE)
 TEST_SNAPSHOT_PARAMS_JSON = '{"resync": false}'
 TEST_PRE_UPGRADE_PARAMS = {'obj': json.dumps({'name': 'upgrade'})}
 TEST_POST_MIGRATION_METADATA_1 = (json.dumps(
@@ -158,6 +160,10 @@ class TestPlugin:
         TestPlugin.assert_mount(mounts[0])
 
     @staticmethod
+    def assert_target_directory(target_directory):
+        assert target_directory == TEST_BINARY_PATH
+
+    @staticmethod
     def assert_virtual_source(virtual_source):
         assert virtual_source.guid == TEST_GUID
         TestPlugin.assert_connection(virtual_source.connection)
@@ -205,6 +211,13 @@ class TestPlugin:
         assert not snapshot_parameters.resync
 
     @staticmethod
+    def assert_physical_source(physical_source):
+        assert physical_source.guid == TEST_GUID
+        TestPlugin.assert_connection(physical_source.connection)
+        TestPlugin.assert_target_directory(physical_source.target_directory)
+        assert physical_source.parameters.name == TEST_PHYSICAL_SOURCE
+
+    @staticmethod
     @pytest.fixture
     def host():
         host = common_pb2.RemoteHost()
@@ -231,6 +244,11 @@ class TestPlugin:
         mount.mount_path = TEST_MOUNT_PATH
         mount.shared_path = TEST_SHARED_PATH
         return mount
+
+    @staticmethod
+    @pytest.fixture
+    def target_directory():
+        return TEST_BINARY_PATH
 
     @staticmethod
     @pytest.fixture
@@ -265,6 +283,16 @@ class TestPlugin:
         virtual_source.parameters.json = TEST_VIRTUAL_SOURCE_JSON
         virtual_source.mounts.extend([mount])
         return virtual_source
+
+    @staticmethod
+    @pytest.fixture
+    def physical_source(connection, target_directory):
+        physical_source = common_pb2.PhysicalSource()
+        physical_source.guid = TEST_GUID
+        physical_source.connection.CopyFrom(connection)
+        physical_source.parameters.json = TEST_PHYSICAL_SOURCE_JSON
+        physical_source.target_directory = target_directory
+        return physical_source
 
     @staticmethod
     @pytest.fixture
@@ -342,7 +370,8 @@ class TestPlugin:
                       repository=None,
                       source_config=None,
                       snapshot=None,
-                      snapshot_parameters=None):
+                      snapshot_parameters=None,
+                      physical_source=None):
         if virtual_source:
             request.virtual_source.CopyFrom(virtual_source)
 
@@ -363,6 +392,9 @@ class TestPlugin:
 
         if snapshot_parameters:
             request.snapshot_parameters.CopyFrom(snapshot_parameters)
+
+        if physical_source:
+            request.physical_source.CopyFrom(physical_source)
 
     @staticmethod
     def assert_plugin_args(**kwargs):
@@ -390,6 +422,9 @@ class TestPlugin:
         if 'snapshot_parameters' in kwargs:
             TestPlugin.assert_snapshot_parameters(
                 kwargs['snapshot_parameters'])
+
+        if 'physical_source' in kwargs:
+            TestPlugin.assert_physical_source(kwargs['physical_source'])
 
     @staticmethod
     def test_virtual_configure(my_plugin, virtual_source, repository,
@@ -793,6 +828,35 @@ class TestPlugin:
         assert virtual_source_size_response.return_value.database_size == 100
 
     @staticmethod
+    def test_virtual_source_to_physical(my_plugin, virtual_source, repository,
+                                        source_config, snapshot, physical_source):
+
+        @my_plugin.virtual.source_to_physical()
+        def virtual_source_to_physical_impl(virtual_source, repository,
+                                            source_config, snapshot, physical_source):
+            TestPlugin.assert_plugin_args(virtual_source=virtual_source,
+                                          repository=repository,
+                                          source_config=source_config,
+                                          snapshot=snapshot,
+                                          physical_source=physical_source)
+
+        virtual_to_physical_request = platform_pb2.VirtualSourceToPhysicalRequest()
+        TestPlugin.setup_request(request=virtual_to_physical_request,
+                                 virtual_source=virtual_source,
+                                 repository=repository,
+                                 source_config=source_config,
+                                 snapshot=snapshot,
+                                 physical_source=physical_source)
+
+        virtual_to_physical_response = my_plugin.virtual. \
+            _internal_virtual_source_to_physical(virtual_to_physical_request)
+        expected_result = platform_pb2.VirtualSourceToPhysicalResult()
+        # Check that the response's oneof is set to return_value and not error
+        assert virtual_to_physical_response.WhichOneof(
+            'result') == 'return_value'
+        assert virtual_to_physical_response.return_value == expected_result
+
+    @staticmethod
     def test_repository_discovery(my_plugin, connection):
         @my_plugin.discovery.repository()
         def repository_discovery_impl(source_connection):
@@ -1008,6 +1072,35 @@ class TestPlugin:
             direct_source_size_request)
 
         assert direct_source_size_response.return_value.database_size == 100
+
+    @staticmethod
+    def test_direct_source_to_physical(my_plugin, direct_source, repository,
+                                       source_config, snapshot, physical_source):
+
+        @my_plugin.linked.source_to_physical()
+        def direct_source_to_physical_impl(direct_source, repository,
+                                           source_config, snapshot, physical_source):
+            TestPlugin.assert_plugin_args(direct_source=direct_source,
+                                          repository=repository,
+                                          source_config=source_config,
+                                          snapshot=snapshot,
+                                          physical_source=physical_source)
+
+        direct_to_physical_request = platform_pb2.DirectSourceToPhysicalRequest()
+        TestPlugin.setup_request(request=direct_to_physical_request,
+                                 direct_source=direct_source,
+                                 repository=repository,
+                                 source_config=source_config,
+                                 snapshot=snapshot,
+                                 physical_source=physical_source)
+
+        direct_to_physical_response = my_plugin.linked. \
+            _internal_direct_source_to_physical(direct_to_physical_request)
+        expected_result = platform_pb2.DirectSourceToPhysicalResult()
+        # Check that the response's oneof is set to return_value and not error
+        assert direct_to_physical_response.WhichOneof(
+            'result') == 'return_value'
+        assert direct_to_physical_response.return_value == expected_result
 
     @staticmethod
     @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
@@ -1248,6 +1341,40 @@ class TestPlugin:
             TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
         if staged_source_size_response:
             assert staged_source_size_response.return_value.database_size == 0
+
+    @staticmethod
+    @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],
+                             indirect=["staged_source"])
+    def test_staged_source_to_physical(my_plugin, staged_source, repository,
+                                       source_config, snapshot, physical_source):
+
+        @my_plugin.linked.source_to_physical()
+        def staged_source_to_physical_impl(staged_source, repository,
+                                           source_config, snapshot, physical_source):
+            TestPlugin.assert_plugin_args(staged_source=staged_source,
+                                          repository=repository,
+                                          source_config=source_config,
+                                          snapshot=snapshot,
+                                          physical_source=physical_source)
+
+        staged_to_physical_request = platform_pb2.StagedSourceToPhysicalRequest()
+        TestPlugin.setup_request(request=staged_to_physical_request,
+                                 staged_source=staged_source,
+                                 repository=repository,
+                                 source_config=source_config,
+                                 snapshot=snapshot,
+                                 physical_source=physical_source)
+
+        staged_to_physical_response = TestPlugin._call_stage_methods(
+            my_plugin.linked._internal_staged_source_to_physical,
+            staged_to_physical_request,
+            TestPlugin._raise_staged_source_both_mounts_exception(staged_source))
+        expected_result = platform_pb2.StagedSourceToPhysicalResult()
+        # Check that the response's oneof is set to return_value and not error
+        if staged_to_physical_response:
+            assert staged_to_physical_response.WhichOneof(
+                'result') == 'return_value'
+            assert staged_to_physical_response.return_value == expected_result
 
     @staticmethod
     @pytest.mark.parametrize("staged_source", ["mount", "mounts", "Both"],

@@ -50,7 +50,6 @@ class TestPluginDependencyUtil:
             dist_path = wheel_dir / os.path.basename(package)
             dist_path.touch()
 
-            global packages
             packages.add(str(dist_path))
 
         def clean_up(a, b, c):

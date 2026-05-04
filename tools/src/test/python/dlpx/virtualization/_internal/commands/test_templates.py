@@ -799,7 +799,7 @@ class TestTemplateObjectProperty:
             "\n\tExpected:\t{}(One possible permutation of types)"
             "\n\tActual:\t{}")
         message = err_info.value.message
-        assert message in possible_messages,\
+        assert message in possible_messages, \
             assertion_error_message.format(possible_messages[0], message)
 
     @staticmethod
@@ -826,7 +826,7 @@ class TestTemplateObjectProperty:
             "\n\tExpected (One possible permutation of types):\t{}"
             "\n\tActual:\t{}")
         message = err_info.value.message
-        assert message in possible_messages,\
+        assert message in possible_messages, \
             assertion_error_message.format(possible_messages[0], message)
 
     @staticmethod
