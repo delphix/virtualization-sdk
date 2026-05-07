@@ -541,7 +541,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
@@ -593,7 +593,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
@@ -644,7 +644,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to an Azure Vault configured in the system, and `azureVaultName`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using Azure vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to an Azure Vault configured in the system, and `azureVaultName`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using Azure vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
