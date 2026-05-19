@@ -1,0 +1,52 @@
+#
+# Copyright (c) 2026 by Delphix. All rights reserved.
+#
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dvp-platform"
+version = "5.1.0"
+description = "Delphix Virtualization Platform APIs"
+readme = "README.md"
+requires-python = ">=3.11, <3.12"
+authors = [
+    {name = "Delphix", email = "virtualization-plugins@delphix.com"},
+]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+# dvp-common pin is kept in sync with [project].version via .bumpversion.cfg.
+dependencies = [
+    "dvp-api == 1.10.0.dev3",
+    "dvp-common == 5.1.0",
+    "six >= 1.17, < 1.18",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bump2version == 1.0.1",
+    "mock == 5.2.0",
+    "packaging == 26.0",
+    "pluggy == 1.6.0",
+    "pyparsing == 3.3.2",
+    "pytest == 9.0.2",
+    "six == 1.17.0",
+    "zipp == 3.23.0",
+]
+
+[project.urls]
+Homepage = "https://developer.delphix.com"
+
+[tool.setuptools]
+package-dir = {"" = "src/main/python"}
+
+[tool.setuptools.packages.find]
+where = ["src/main/python"]

@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2026 by Delphix. All rights reserved.
+#
+
 name: Publish Python packages to Test PyPi
 
 on:

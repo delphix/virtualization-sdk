@@ -6,6 +6,7 @@ import functools
 import logging
 import os
 import re
+from importlib.metadata import version as _pkg_version
 
 from dlpx.virtualization import _internal as virtualization_internal
 from dlpx.virtualization.platform import util
@@ -45,11 +46,8 @@ def _get_settings():
 
 @_run_once
 def get_version():
-    """Returns the version of the dlpx.virtualization._internal package."""
-    with open(os.path.join(get_internal_package_root(),
-                           'VERSION')) as version_file:
-        version = version_file.read().strip()
-    return version
+    """Returns the version of the installed dvp-tools package."""
+    return _pkg_version("dvp-tools")
 
 
 def get_external_version_string(version_string):

@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Copyright (c) 2026 by Delphix. All rights reserved.
+#
 
 git fetch
 pipenv run mkdocs build --clean
