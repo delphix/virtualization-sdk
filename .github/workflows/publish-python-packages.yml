@@ -12,7 +12,6 @@ on:
       - develop
       - release
     paths:
-      - 'dvp/src/main/python/dlpx/virtualization/VERSION'
       - '.github/workflows/publish-python-packages.yml'
 
 jobs:
@@ -25,15 +24,15 @@ jobs:
         package: [common, dvp, libs, platform, tools]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       # Install dependencies necessary for building and publishing the package.
       - name: Install dependencies
         run: |
-          pip install setuptools wheel twine
+          pip install build twine
       # Build each Python package and publish it to Test PyPi.
       - name: Build and publish ${{ matrix.package }} package
         working-directory: ${{ matrix.package }}
@@ -42,5 +41,5 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.VSDK_PYPI_TOKEN }}
           TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
         run: |
-          python setup.py sdist bdist_wheel
+          python -m build
           twine upload dist/*
