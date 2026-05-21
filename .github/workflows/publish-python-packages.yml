@@ -5,13 +5,15 @@
 name: Publish Python packages to Test PyPi
 
 on:
-  # Run on push when the version file has changed on selected branches.
+  # Run on push when a package version (declared in pyproject.toml) has
+  # changed on selected branches, or when this workflow itself changes.
   push:
     branches:
       - master
       - develop
       - release
     paths:
+      - '**/pyproject.toml'
       - '.github/workflows/publish-python-packages.yml'
 
 jobs:
