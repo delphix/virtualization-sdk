@@ -1,3 +1,5 @@
+# Copyright (c) 2026 by Delphix. All rights reserved.
+
 # Delphix Virtualization SDK Tools
 
 ## Purpose
@@ -9,7 +11,7 @@ and upload virtualization plugins.
 ### Development Environment
 To setup the development environment, follow the instructions in [README-dev.md](https://github.com/delphix/virtualization-sdk/blob/develop/README-dev.md)
 
-For quick iterations, install the `tools` package in editable mode (`pip install -e .`). This means that changes to the
+For quick iterations, install the `tools` package and its development dependencies in editable mode (`pip install -e ".[dev]"`). This means that changes to the
 code will automatically be reflected in your environment. You will not need to reinstall the tools module each time
 a change is made.
 
