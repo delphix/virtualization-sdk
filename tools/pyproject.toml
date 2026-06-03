@@ -42,7 +42,7 @@ dependencies = [
     "pyyaml >= 6, < 7",
     "requests >= 2.32, < 2.33",
     "six >= 1.17, < 1.18",
-    "zipp >= 3.23, < 3.24",
+    "zipp >= 3.23, < 4.2",
 ]
 
 [project.optional-dependencies]
@@ -65,7 +65,7 @@ dev = [
     "pytest-cov == 7.1.0",
     "six == 1.17.0",
     "yapf == 0.43.0",
-    "zipp == 3.23.0",
+    "zipp == 4.1.0",
 ]
 
 [project.urls]
