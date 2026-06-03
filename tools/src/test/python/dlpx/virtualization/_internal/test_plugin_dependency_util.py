@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2020 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2020, 2026 by Delphix. All rights reserved.
 #
 
 import os
@@ -114,8 +114,8 @@ class TestPluginDependencyUtil:
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')
     def test_build_wheel(mock_popen, tmp_path):
-        setup_file = tmp_path / 'setup.py'
-        setup_file.touch()
+        pyproject_file = tmp_path / 'pyproject.toml'
+        pyproject_file.touch()
 
         mock_popen.return_value.communicate.return_value = ('output', '')
         mock_popen.return_value.wait.return_value = 0
@@ -123,24 +123,25 @@ class TestPluginDependencyUtil:
         pdu._build_wheel(tmp_path.as_posix())
 
         mock_popen.assert_called_once_with(
-            [sys.executable, 'setup.py', 'bdist_wheel'],
+            [sys.executable, '-m', 'pip', 'wheel', '--no-deps', '.'],
             cwd=tmp_path.as_posix(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
 
     @staticmethod
-    def test_build_wheel_fails_with_no_setup_file(tmp_path):
+    def test_build_wheel_fails_with_no_pyproject_file(tmp_path):
         with pytest.raises(RuntimeError) as excinfo:
             pdu._build_wheel(tmp_path.as_posix())
 
-        assert str(excinfo.value) == ('No setup.py file exists in directory '
-                                      '{}'.format(tmp_path.as_posix()))
+        assert str(excinfo.value) == ('No pyproject.toml file exists in '
+                                      'directory {}'.format(
+                                          tmp_path.as_posix()))
 
     @staticmethod
     @mock.patch.object(subprocess, 'Popen')
     def test_build_wheel_non_zero_exit(mock_popen, tmp_path):
-        setup_file = tmp_path / 'setup.py'
-        setup_file.touch()
+        pyproject_file = tmp_path / 'pyproject.toml'
+        pyproject_file.touch()
 
         mock_popen.return_value.communicate.return_value = ('output', '')
         mock_popen.return_value.wait.return_value = 1
@@ -150,8 +151,10 @@ class TestPluginDependencyUtil:
 
         e = excinfo.value
 
-        expected_args = [sys.executable, 'setup.py', 'bdist_wheel']
-        mock_popen.asesrt_called_once_with(expected_args,
+        expected_args = [
+            sys.executable, '-m', 'pip', 'wheel', '--no-deps', '.'
+        ]
+        mock_popen.assert_called_once_with(expected_args,
                                            cwd=tmp_path.as_posix(),
                                            stdout=subprocess.PIPE,
                                            stderr=subprocess.STDOUT)
@@ -164,10 +167,10 @@ class TestPluginDependencyUtil:
     @mock.patch.object(subprocess, 'Popen')
     def test_build_wheel_target_dir(mock_popen, tmp_path):
         package_dir = tmp_path / 'pkg'
-        setup_file = package_dir / 'setup.py'
+        pyproject_file = package_dir / 'pyproject.toml'
         target_dir = tmp_path / 'tgt'
         package_dir.mkdir()
-        setup_file.touch()
+        pyproject_file.touch()
         target_dir.mkdir()
 
         mock_popen.return_value.communicate.return_value = ('output', '')
@@ -177,7 +180,7 @@ class TestPluginDependencyUtil:
                          target_dir=target_dir.as_posix())
 
         expected_args = [
-            sys.executable, 'setup.py', 'bdist_wheel', '-d',
+            sys.executable, '-m', 'pip', 'wheel', '--no-deps', '.', '-w',
             target_dir.as_posix()
         ]
         mock_popen.assert_called_once_with(expected_args,

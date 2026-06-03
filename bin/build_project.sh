@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2022 by Delphix. All rights reserved.
+# Copyright (c) 2026 by Delphix. All rights reserved.
 #
 
 # This script provides functionality to build and run test cases for all python packages. The same script can be used
@@ -15,13 +15,23 @@ should_test=false
 verbose=false
 coverage=false
 flake8=false
-screenSize=$(tput cols)
 equalFiller="="
-greenColor=$(tput setaf 10)
-orangeColor=$(tput setaf 208)
-noColor=$(tput sgr0)
-blackColor=$(tput setaf 0)
-blueColor=$(tput setaf 31)
+failed_steps=()
+if [ -t 1 ]; then
+  screenSize=$(tput cols)
+  greenColor=$(tput setaf 10)
+  orangeColor=$(tput setaf 208)
+  noColor=$(tput sgr0)
+  blackColor=$(tput setaf 0)
+  blueColor=$(tput setaf 31)
+else
+  screenSize=100
+  greenColor=""
+  orangeColor=""
+  noColor=""
+  blackColor=""
+  blueColor=""
+fi
 
 ############################################################
 # Help                                                     #
@@ -86,23 +96,23 @@ run_operations() {
   if [ "$should_build" = true ]; then
     echo
     print_as_per_screen_size " $module_name build starts " "${orangeColor}" ${equalFiller} "${screenSize}"
-    build_module
+    build_module || failed_steps+=("$module_name build")
     print_as_per_screen_size " $module_name build complete " "${greenColor}" ${equalFiller} "${screenSize}"
   fi
   if [ "$flake8" = true ]; then
     echo
     print_as_per_screen_size " $module_name Flake8 Main starts " "${orangeColor}" ${equalFiller} "${screenSize}"
-    python -m flake8 "$module_path/src/test/python" --max-line-length 88
+    python -m flake8 "$module_path/src/test/python" --max-line-length 88 || failed_steps+=("$module_name flake8 (test)")
     print_as_per_screen_size " $module_name Flake8 Main complete " "${greenColor}" ${equalFiller} "${screenSize}"
     echo
     print_as_per_screen_size " $module_name Flake8 Test starts " "${orangeColor}" ${equalFiller} "${screenSize}"
-    python -m flake8 "$module_path/src/main/python" --max-line-length 88
+    python -m flake8 "$module_path/src/main/python" --max-line-length 88 || failed_steps+=("$module_name flake8 (main)")
     print_as_per_screen_size " $module_name Flake8 Test complete " "${greenColor}" ${equalFiller} "${screenSize}"
   fi
   if [ "$should_test" = true ]; then
     echo
     print_as_per_screen_size " $module_name tests starts " "${orangeColor}" ${equalFiller} "${screenSize}"
-    test_module
+    test_module || failed_steps+=("$module_name tests")
     print_as_per_screen_size " $module_name tests complete " "${greenColor}" ${equalFiller} "${screenSize}"
   fi
   cd "$current_path" || exit
@@ -118,13 +128,11 @@ get_project_path() {
 
 # Build the module
 build_module() {
-  python setup.py clean --all
+  rm -rf build/ ./*.egg-info src/main/python/*.egg-info
   if [ "$verbose" = true ]; then
-    pip install -r requirements.txt -v
-    pip install -e . -v
+    pip install -e ".[dev]" -v
   else
-    pip install -r requirements.txt -q
-    pip install -e . -q
+    pip install -e ".[dev]" -q
   fi
 }
 
@@ -209,7 +217,16 @@ if [ "$should_build" = true ] || [ "$should_test" = true ] || [ "$flake8" = true
 
   if [ "$coverage" = true ]; then
     echo "Paths to combine for coverage are [${paths[*]}]."
-    coverage combine ${paths[@]}
-    coverage report -m -i
+    coverage combine ${paths[@]} || failed_steps+=("coverage combine")
+    coverage report -m || failed_steps+=("coverage report")
+  fi
+
+  if [ ${#failed_steps[@]} -gt 0 ]; then
+    echo
+    echo "${#failed_steps[@]} step(s) FAILED:"
+    for step in "${failed_steps[@]}"; do
+      echo "  - $step"
+    done
+    exit 1
   fi
 fi
