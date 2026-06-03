@@ -25,7 +25,7 @@ classifiers = [
 ]
 # Sibling-package pins (dvp-libs, dvp-platform) are kept in sync via .bumpversion.cfg.
 dependencies = [
-    "attrs >= 25.3, < 25.4",
+    "attrs >= 25.3, < 26.2",
     "certifi >= 2024, < 2025",
     "click == 7.1.2",
     "click-configfile == 0.2.3",
