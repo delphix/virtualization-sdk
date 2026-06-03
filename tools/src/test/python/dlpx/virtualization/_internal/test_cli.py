@@ -198,12 +198,17 @@ class TestInitCli:
         assert "Invalid value for '-r'" in result.output
 
     @staticmethod
-    def test_name_required():
+    @mock.patch('dlpx.virtualization._internal.commands.initialize.init')
+    def test_name_optional(mock_init):
+        # --plugin-name is optional (PYT-536); when omitted, the plugin id
+        # (auto-generated UUID) is used as the display name.
         runner = click_testing.CliRunner()
 
         result = runner.invoke(cli.delphix_sdk, ['init'])
 
-        assert result.exit_code != 0
+        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        mock_init.assert_called_once_with(os.getcwd(), const.DIRECT_TYPE,
+                                          None, const.UNIX_HOST_TYPE)
 
     @staticmethod
     def test_multiple_host_types():

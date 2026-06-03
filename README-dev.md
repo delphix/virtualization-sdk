@@ -1,4 +1,4 @@
-# Copyright (c) 2019, 2022 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2026 by Delphix. All rights reserved.
 
 # Delphix Virtualization SDK
 
@@ -45,7 +45,7 @@ These steps are described in more detail below.
 ### Development environment
 Development should be done in a personal virtualenv. To setup the virtual environment:
 
-1. `virtualenv /path/to/env/root`. This should be a Python 2.7 virtualenv.
+1. `virtualenv /path/to/env/root`. This should be a Python 3.11 virtualenv.
 2. `source ~/path/to/env/root/bin/activate`.
 
 ### Installing the SDK from source
@@ -65,6 +65,10 @@ To install the SDK, follow these steps:
    configure pip to search an additional package repository - test.pypi.org.
 2. To build the project, run `sh bin/build_project.sh -b`.
 3. For more information on the script options, use `sh bin/build_project.sh -h`.
+
+To work on a single package in editable mode, install it together with its development
+dependencies via the `dev` extra, e.g. `pip install -e ".[dev]"` from the package directory.
+This replaces the old `requirements.txt`-based dev install.
 
 
 ### CLI changes
