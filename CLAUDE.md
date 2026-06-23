@@ -30,6 +30,9 @@ This is the API the wrappers expose and what `platform`/`libs` code must keep st
 - A plugin instantiates `Plugin()` (`from dlpx.virtualization.platform import Plugin`), composed of four operation groups (`platform/_plugin.py`): **`discovery`** (`_discovery.py`), **`linked`** (direct/staged linking, `_linked.py`), **`virtual`** (provisioning virtual datasets, `_virtual.py`), and **`upgrade`** (`_upgrade.py`).
 - Authors implement an operation by decorating a method with the plugin object's group, e.g. `@my_plugin.virtual.configure()`, `@my_plugin.discovery.repository()`. The decorator name must start with the plugin variable's name.
 - At runtime, plugin code calls the **`libs`** API (`from dlpx.virtualization.libs import ...`) to do remote work on the host: `run_bash` / `run_powershell` / `run_expect`, `run_sync` (rsync), and `retrieve_credentials` / `upgrade_password`.
+- **Namespace packages:** all five packages share the `dlpx.virtualization` namespace via `pkgutil.extend_path` in each `__init__.py`, so the separately-installed packages import under one namespace. `platform/__init__.py` re-exports the public symbols — **only symbols exported there are part of the plugin-author API surface.**
+- **Proto conversion:** authors never touch protobuf directly. Wrapper data classes implement `to_proto()` / `from_proto()` (operation classes also have `to_protobuf*` helpers); the operation groups' `_internal_*` methods do the protobuf conversion + input validation on the engine side.
+- **Adding an operation:** define the constant in `platform/operation.py`, add the decorator + `_internal_*` wrapper to the relevant operations class, export any new public symbols from `platform/__init__.py`, add tests under `platform/src/test/python/`, and update `plugin_validator.py` if the operation should be required for a valid plugin.
 
 ## Repository Layout
 
@@ -91,6 +94,22 @@ python -m pytest src/test/python
   vsdk_root = /path/to/virtualization-sdk
   ```
 - Manually exercise the CLI with `dvp <command>` after an editable install of `tools`.
+- User config `~/.dvp/config`: `[defaults]` (engine/user/password) and `[dev]` (`vsdk_root` for local wrapper builds). Global flags `-v`/`--verbose`, `-q`/`--quiet`.
+
+Key modules under `tools/src/main/python/dlpx/virtualization/_internal/` (verified to exist; purposes summarized):
+
+| Module | Purpose |
+| --- | --- |
+| `cli.py` | Click group + subcommands (declarations only) |
+| `commands/build.py` | Build: config validation, codegen, dependency packaging |
+| `commands/upload.py` | Upload artifact to the engine + job polling |
+| `commands/initialize.py` | Plugin scaffold generation (`dvp init`) |
+| `commands/download_logs.py` | Log retrieval from the engine |
+| `codegen.py` | Generates Python classes from the plugin's JSON schemas |
+| `plugin_util.py` / `plugin_validator.py` / `plugin_importer.py` | Plugin config parsing, decorator/validation, dynamic import |
+| `delphix_client.py` | HTTP client for the Delphix Engine REST API |
+
+**Adding a CLI command:** add a `@delphix_sdk.command()` function in `cli.py`, put the logic in a new `commands/<cmd>.py`, add tests under `tools/src/test/python/.../commands/`.
 
 ## Conventions
 
@@ -101,6 +120,15 @@ python -m pytest src/test/python
 - **Packaging**: `setuptools` build backend; metadata in each `pyproject.toml`. License is Apache-2.0; sibling-package version pins (e.g. `dvp-tools` → `dvp-libs`/`dvp-platform`) are kept in sync via `.bumpversion.cfg`.
 - **Copyright header**: every source file carries `Copyright (c) <year> by Delphix. All rights reserved.` Use `<first_year>, <current_year>` for files edited across years.
 - **Lint/format config**: `flake8`/`isort`/`yapf` run on **tool defaults** — there are no repo-level `[tool.flake8]`/`[tool.isort]`/`.flake8` overrides (only `[tool.coverage.run]` in `tools/pyproject.toml`).
+
+## Exception Hierarchy
+
+Each package defines its own exceptions (verified in each package's `exceptions.py` / classes):
+
+- **`common`** — base types reused elsewhere: `PluginRuntimeError`, `IncorrectTypeError`, `PlatformError`.
+- **`libs`** — remote-execution failures: `LibraryError`, `PluginScriptError`, `IncorrectArgumentTypeError`.
+- **`platform`** — `UserError` plus operation-validation errors: `IncorrectReturnTypeError`, `OperationNotDefinedError`, `OperationAlreadyDefinedError`, `DecoratorNotFunctionError`, `IncorrectUpgradeObjectTypeError`, the `MigrationId*` errors, etc.
+- **`tools`** — `SDKToolingError` (internal) and `UserError` (user-facing/actionable), plus CLI-specific errors (`BuildFailedError`, `SchemaValidationError`, `HttpError`, `PluginUploadJobFailed`, `PluginUploadWaitTimedOut`, …).
 
 ## Versioning
 
@@ -124,11 +152,12 @@ python -m pytest src/test/python
    ```
    **Minimum per PR**: `appdata_python_samples` and `appdata_basic` (direct or staged plugin). CLI-focused changes also run the `virtualization_sdk` suite. A non-dev version bump requires QA to create a matching `sdk-x-y-z` toolkit branch first.
 
-## CI & Gate
+## CI, Gate & Release
 
 - **CI (GitHub Actions):** the PR check `.github/workflows/pre-commit.yml` runs the **full `pytest` suite across Python 3.11 on Ubuntu, macOS, and Windows** for PRs targeting `master`/`develop`/`release`. It installs the five packages in dependency order (`common` → `libs` → `platform` → `tools`/`dvp`) with `--find-links` to TestPyPI for `dvp-api`. Keep tests green on all three OSes. (Despite its name, this workflow runs cross-OS pytest, not the pre-commit framework.)
 - Other workflows: `publish-python-packages.yml` (publishes the five packages), `publish-docs.yml` (publishes docs); `dependabot.yml` manages dependency bumps.
 - **Push gate:** `.hooksconfig` defines the Delphix gate for this repo — gatekeeper approval group, Slack push notifications, allowed Jira issue types per branch, and review/comment checks.
+- **Manual release (Artifactory):** `sh bin/upload.sh` publishes to the internal dev PyPI (`dvp-local-pypi`); `sh bin/upload.sh --prod` to production (`delphix-local`). Requires `ARTIFACTORY_PYPI_USER` / `ARTIFACTORY_PYPI_PASS`; it reads the version from `.bumpversion.cfg` and uploads with `twine`.
 
 ## Contributing / Posting Code for Review
 
@@ -142,3 +171,58 @@ python -m pytest src/test/python
 ## Relationship to app-gate
 
 The Virtualization API protobuf messages (`dvp-api`) are **defined and published by the app-gate repo** (`appliance/server/virtualizationApi`); the wrappers here abstract them for plugin authors. Blackbox tests for this repo are driven from app-gate. Keep wrapper changes compatible with the `dvp-api` version they target.
+
+## Plugin Operations Reference
+
+> ⚠ **Verification note:** the decorator names and their operation groups below are **verified against the code** (`platform/_discovery.py` / `_linked.py` / `_virtual.py` / `_upgrade.py`). The **Required / Arguments / Returns** columns are taken from the public plugin-operations docs (https://developer.delphix.com/References/Plugin_Operations/) and were **not** re-verified line-by-line against the operation signatures in this pass — confirm there before relying on exact argument names/return types. Argument names are contractual (must match exactly). Also present in code but omitted from the tables: `linked.source_to_physical()` and `virtual.source_to_physical()`.
+
+### Discovery
+| Decorator | Required | Arguments | Returns |
+|---|---|---|---|
+| `discovery.repository()` | Yes | `source_connection` | `list[RepositoryDefinition]` |
+| `discovery.source_config()` | Yes | `source_connection`, `repository` | `list[SourceConfigDefinition]` |
+
+### Linked source (dSource)
+| Decorator | Required | Arguments | Returns |
+|---|---|---|---|
+| `linked.pre_snapshot()` | No | `direct_source`\|`staged_source`, `repository`, `source_config`, `optional_snapshot_parameters` | None |
+| `linked.post_snapshot()` | Yes | `direct_source`\|`staged_source`, `repository`, `source_config`, `optional_snapshot_parameters` | `SnapshotDefinition` |
+| `linked.start_staging()` | No | `staged_source`, `repository`, `source_config` | None |
+| `linked.stop_staging()` | No | `staged_source`, `repository`, `source_config` | None |
+| `linked.status()` | No | `staged_source`, `repository`, `source_config` | `Status` (defaults `ACTIVE`) |
+| `linked.worker()` | No | `staged_source`, `repository`, `source_config` | None |
+| `linked.mount_specification()` | Yes (staged) | `staged_source`, `repository` | `MountSpecification` |
+| `linked.source_size()` | No | `direct_source`\|`staged_source`, `repository`, `source_config` | numeric |
+
+### Virtual source (VDB)
+| Decorator | Required | Arguments | Returns |
+|---|---|---|---|
+| `virtual.initialize()` | No | `virtual_source`, `repository` | `SourceConfigDefinition` |
+| `virtual.configure()` | Yes | `virtual_source`, `snapshot`, `repository` | `SourceConfigDefinition` |
+| `virtual.unconfigure()` | No | `virtual_source`, `repository`, `source_config` | None |
+| `virtual.reconfigure()` | Yes | `virtual_source`, `repository`, `source_config`, `snapshot` | `SourceConfigDefinition` |
+| `virtual.cleanup()` | No | `virtual_source`, `repository`, `source_config` | None |
+| `virtual.start()` / `virtual.stop()` | No | `virtual_source`, `repository`, `source_config` | None |
+| `virtual.pre_snapshot()` | No | `virtual_source`, `repository`, `source_config` | None |
+| `virtual.post_snapshot()` | Yes | `virtual_source`, `repository`, `source_config` | `SnapshotDefinition` |
+| `virtual.mount_specification()` | Yes | `virtual_source`, `repository` | `MountSpecification` |
+| `virtual.status()` | No | `virtual_source`, `repository`, `source_config` | `Status` (defaults `ACTIVE`) |
+| `virtual.source_size()` | No | `virtual_source`, `repository`, `source_config` | numeric |
+
+### Data migration (upgrade)
+`upgrade.repository(migration_id)`, `upgrade.source_config(...)`, `upgrade.linked_source(...)`, `upgrade.virtual_source(...)`, `upgrade.snapshot(...)` — all optional; each takes the old object **as a plain dict** (property names match the previous schema verbatim) and returns a dict. Migrations run in `migration_id` order.
+
+Behavioral notes (from the docs): `optional_snapshot_parameters` is `None` for scheduled-policy snapshots (set only on user-triggered syncs); `virtual.unconfigure()` runs on Refresh/Delete/Disable (not just Delete); `virtual.cleanup()` runs after `unconfigure()` in the Delete flow; `virtual.mount_specification()` is the most-triggered required op (Enable/Provision/Refresh/Rollback/Start); `MountSpecification.ownership_specification` is Unix-only and optional.
+
+## Engine ↔ Plugin Data Flows
+
+> ⚠ **Verification note:** these describe **engine-side orchestration** (app-gate / Delphix Engine) — the *order* in which the engine invokes plugin operations and how it stores results. They are **not** code in this repo and were **not** verified here; they're carried over from prior documentation. Confirm against the engine docs / SDD before relying on exact ordering or storage details. Useful as a starting map for "trace the full data flow before deciding where a change belongs."
+
+- **dSource link:** `linked.mount_specification` → `linked.start_staging` → `linked.pre_snapshot` → engine ingests (DIRECT: engine pulls; STAGED: plugin controls transfer) → `linked.post_snapshot` returns a `SnapshotDefinition` the engine persists as snapshot metadata.
+- **dSource sync:** `linked.pre_snapshot` (optional) → ingest → `linked.post_snapshot` (new snapshot on the timeflow).
+- **VDB provision:** `virtual.mount_specification` → engine clones+mounts → `virtual.configure(virtual_source, snapshot, repository)` → returns `SourceConfigDefinition`.
+- **VDB refresh:** `virtual.unconfigure` → `virtual.mount_specification` → `virtual.configure` (newer snapshot).
+- **VDB rollback / enable:** `virtual.mount_specification` → `virtual.reconfigure(...)` (+ `virtual.status` to verify on enable).
+- **VDB snapshot:** `virtual.pre_snapshot` (optional) → engine snapshots → `virtual.post_snapshot` → `SnapshotDefinition`.
+- **VDB delete:** `virtual.stop` (if running) → `virtual.unconfigure` → `virtual.cleanup` → engine unmounts/destroys the clone.
+- **Plugin upgrade:** for each stored object the engine calls the matching `upgrade.*` migration (old dict in → new dict out) in `migration_id` order.
