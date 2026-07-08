@@ -159,6 +159,10 @@ Each package defines its own exceptions (verified in each package's `exceptions.
 - **Push gate:** `.hooksconfig` defines the Delphix gate for this repo — gatekeeper approval group, Slack push notifications, allowed Jira issue types per branch, and review/comment checks.
 - **Manual release (Artifactory):** `sh bin/upload.sh` publishes to the internal dev PyPI (`dvp-local-pypi`); `sh bin/upload.sh --prod` to production (`delphix-local`). Requires `ARTIFACTORY_PYPI_USER` / `ARTIFACTORY_PYPI_PASS`; it reads the version from `.bumpversion.cfg` and uploads with `twine`.
 
+## Auto-invoked Skills
+
+When the user asks to raise a review, run `git review`, submit a PR, or open a pull request for code in this repo, automatically invoke the `vsdk-code-review` skill first — do not wait for the user to type `/vsdk-code-review`. If the skill finds any issues, summarize them and ask the user "Proceed with `git review` anyway?" before raising the review. Only proceed if the user confirms.
+
 ## Contributing / Posting Code for Review
 
 - Fork-based workflow: fork → clone → change → test → bump version → push to a branch on your fork → open a PR to `delphix/virtualization-sdk`.
