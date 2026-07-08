@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2021, 2026 by Delphix. All rights reserved.
 #
 
 import compileall
@@ -45,12 +45,12 @@ def install_deps(target_dir, local_vsdk_root=None):
         #
         # Build the wheels for each package in a temporary directory.
         #
-        # Pip supports installing directly from a setup.py file but this
+        # Pip supports installing directly from a package source tree but this
         # proved to be incredibly slow due to how it copies source files.
         # If that issue is resolved, it would likely be better to use pip to
-        # install directly from the setup.py file instead of needing to build
-        # the wheels first. This would remove the need for a temp directory
-        # as well.
+        # install directly from the package directory instead of needing to
+        # build the wheels first. This would remove the need for a temp
+        # directory as well.
         #
         with file_util.tmpdir() as wheel_dir:
             for package in package_names:
@@ -147,22 +147,23 @@ def _pip_install_to_dir(dependencies, target_dir):
 
 def _build_wheel(package_root, target_dir=None):
     """
-    Uses the 'setup.py' file in package_root to build a wheel distribution. If
-    target_dir is present, the wheel is built into it. Raises a
-    SubprocessFailedError if it fails.
+    Uses the 'pyproject.toml' file in package_root to build a wheel
+    distribution via pip (PEP 517). If target_dir is present, the wheel is
+    built into it. Raises a SubprocessFailedError if it fails.
 
     Args:
         package_root: The path to the root of the package to build. It is
-            assumed there is a setup.py file in this directory.
+            assumed there is a pyproject.toml file in this directory.
         target_dir: The directory to build the wheel into.
     """
-    if not os.path.exists(os.path.join(package_root, 'setup.py')):
+    if not os.path.exists(os.path.join(package_root, 'pyproject.toml')):
         raise RuntimeError(
-            'No setup.py file exists in directory {}'.format(package_root))
+            'No pyproject.toml file exists in directory {}'.format(
+                package_root))
 
-    args = [sys.executable, 'setup.py', 'bdist_wheel']
+    args = [sys.executable, '-m', 'pip', 'wheel', '--no-deps', '.']
     if target_dir:
-        args.extend(['-d', target_dir])
+        args.extend(['-w', target_dir])
 
     logger.debug('Executing %s', ' '.join(args))
     proc = subprocess.Popen(args,

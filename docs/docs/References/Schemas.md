@@ -434,7 +434,7 @@ An example of a JSON schema using this type is:
 ```
 where `credentialsSupplier` is a definition in the external schema `https://delphix.com/platform/api`.
 
-When providing data for a property of this type, the user has the following four options.
+When providing data for a property of this type, the user has the following five options.
 
 ##### Option 1: Username and password
 
@@ -541,7 +541,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a CyberArk vault configured in the system, and `queryString` is a parameter for locating the credentials in the vault. For details on configuring and using CyberArk vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
@@ -593,7 +593,7 @@ For this option, the user must provide data that satisfies this definition:
   }
 }
 ```
-where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://cd.delphix.com/docs/latest/password-vault-support).
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to a HashiCorp vault configured in the system, and `engine`, `path`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using HashiCorp vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
 
 Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
 
@@ -610,13 +610,64 @@ For example, the user, or the user interface on behalf of the user, can provide:
 }
 ```
 
+##### Option 5: Azure Vault credentials
+
+For this option, the user must provide data that satisfies this definition:
+```json
+{
+  "type": "object",
+  "required": ["type", "vault", "azureVaultName", "usernameKey", "secretKey"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "AzureVaultCredential"
+    },
+    "vault": {
+      "type": "string",
+      "format": "reference",
+      "referenceType": "AzureVault"
+    },
+    "azureVaultName": {
+      "type": "string"
+    },
+    "usernameKey": {
+      "type": "string"
+    },
+    "secretKey": {
+      "type": "string"
+    },
+    "expectedSecretType": {
+      "type": "string",
+      "enum": ["any", "password", "keyPair"],
+      "default": "any"
+    }
+  }
+}
+```
+where `type` is a constant that the user interface will submit automatically on behalf of the user, `vault` is a reference to an Azure Vault configured in the system, and `azureVaultName`, `usernameKey` and `secretKey` are parameters for locating the credentials in the vault. For details on configuring and using Azure vaults, see the [password-vaults documentation for the Delphix engine](https://help.delphix.com/cd/current/content/password_vault_support.htm).
+
+Optionally, `expectedSecretType` lets the user constrain the secret returned by the vault to passwords or keys (the default is to allow `any` of those two types of secret). An unexpected type of secret returned by the vault will result in a runtime exception.
+
+For example, the user, or the user interface on behalf of the user, can provide:
+```json
+"properties": {
+  "myCredentials": {
+    "type": "AzureVaultCredential",
+    "vault": "AZURE_VAULT-1",
+    "azureVaultName": "my-azure-vault",
+    "usernameKey": "username",
+    "secretKey": "password"
+  }
+}
+```
+
 #### `keyCredentialsSupplier`
 
-This object type is identical to `credentialsSupplier` but requires the secrets to be keys. The available options are [keys](#option-2-username-and-keys), [CyberArk vaults](#option-3-cyberark-vault-credentials) and [HashiCorp vaults](#option-4-hashicorp-vault-credentials). The property `expectedSecretType` is required in all cases and must have the value `keyPair`.
+This object type is identical to `credentialsSupplier` but requires the secrets to be keys. The available options are [keys](#option-2-username-and-keys), [CyberArk vaults](#option-3-cyberark-vault-credentials), [HashiCorp vaults](#option-4-hashicorp-vault-credentials) and [Azure vaults](#option-5-azure-vault-credentials). The property `expectedSecretType` is required in all cases and must have the value `keyPair`.
 
 #### `passwordCredentialsSupplier`
 
-This object type is identical to `credentialsSupplier` but requires the secrets to be passwords. The available options are [passwords](#option-1-username-and-password), [CyberArk vaults](#option-3-cyberark-vault-credentials) and [HashiCorp vaults](#option-4-hashicorp-vault-credentials). The property `expectedSecretType` is required in all cases and must have the value `keyPair`.
+This object type is identical to `credentialsSupplier` but requires the secrets to be passwords. The available options are [passwords](#option-1-username-and-password), [CyberArk vaults](#option-3-cyberark-vault-credentials), [HashiCorp vaults](#option-4-hashicorp-vault-credentials) and [Azure vaults](#option-5-azure-vault-credentials). The property `expectedSecretType` is required in all cases and must have the value `keyPair`.
 
 ## JSON Schema Limitations
 

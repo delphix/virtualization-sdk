@@ -88,7 +88,7 @@ The process of making a virtual copy of a dataset and making it available for us
 Delphix allows plugins to override the default record size for the linked source and virtual source datafiles. If the “recordSizeInKB” parameter is passed, it will be used to override the default record size and set the new record size for the respective dSources and empty VDBs. VDBs with parent will be inheriting the record size from their parent dSource or VDB. If the parameter is not passed, then default 8K record size will be set for the datafiles.
 
 ## Replication
-Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the [Delphix Engine Documentation](https://cd.delphix.com/docs/latest/) for more details.
+Delphix allows end users to replicate data objects between Delphix Engines by creating a replication profile. Data objects that belong to a plugin can also be part of the replication profile. Refer to the [Delphix Engine Documentation](https://help.delphix.com/cd/current/content/home.htm) for more details.
 
 ## Repository
 Information that represents a set of dependencies that a dataset requires in order to be functional. For example, a particular Postgres database might require an installed Postgres 9.6 DBMS, and so its associated repository would contain all the information required to interact with that DBMS.

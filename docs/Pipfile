@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2026 by Delphix. All rights reserved.
+#
+
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true

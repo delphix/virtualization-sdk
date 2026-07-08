@@ -1,3 +1,6 @@
+#
+# Copyright (c) 2026 by Delphix. All rights reserved.
+#
 # URLs to skip when running linkcheck (https://github.com/filiph/linkcheck)
 # Skip certain external links
 fonts.gstatic.com
