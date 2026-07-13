@@ -320,6 +320,9 @@ def linked_source_size(direct_source, repository, source_config):
 
 Converts a [Direct Linked Source](Glossary.md#direct-linking) to a physical source. Only applies when a physical export is requested on a dSource using a [Direct Linking](Glossary.md#direct-linking) strategy.
 
+!!! info
+    Can be implemented by any plugin, but the Delphix Engine currently only invokes this operation for UNIX-based environments.
+
 ### Required / Optional
 **Optional.**
 
@@ -739,6 +742,9 @@ def linked_source_size(staged_source, repository, source_config):
 ## Staged Linked Source to Physical
 
 Converts a [Staged Linked Source](Glossary.md#staged-linking) to a physical source. Only applies when a physical export is requested on a dSource using a [Staged Linking](Glossary.md#staged-linking) strategy.
+
+!!! info
+    Can be implemented by any plugin, but the Delphix Engine currently only invokes this operation for UNIX-based environments.
 
 ### Required / Optional
 **Optional.**
@@ -1387,6 +1393,9 @@ def virtual_source_size(virtual_source, repository, source_config):
 ## Virtual Source to Physical
 
 Converts a [Virtual Source](Glossary.md#virtual-source) to a physical source.  Only applies when a physical export is requested on a VDB.
+
+!!! info
+    Can be implemented by any plugin, but the Delphix Engine currently only invokes this operation for UNIX-based environments.
 
 ### Required / Optional
 **Optional.**
