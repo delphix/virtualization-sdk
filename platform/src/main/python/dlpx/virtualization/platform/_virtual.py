@@ -35,6 +35,7 @@ class VirtualOperations(object):
         self.initialize_impl = None
         self.mount_specification_impl = None
         self.source_size_impl = None
+        self.pre_source_to_physical_impl = None
         self.source_to_physical_impl = None
 
     def configure(self):
@@ -153,6 +154,17 @@ class VirtualOperations(object):
             return source_size_impl
 
         return source_size_decorator
+
+    def pre_source_to_physical(self):
+        def pre_source_to_physical_decorator(pre_source_to_physical_impl):
+            if self.pre_source_to_physical_impl:
+                raise OperationAlreadyDefinedError(
+                    Op.VIRTUAL_PRE_SOURCE_TO_PHYSICAL)
+            self.pre_source_to_physical_impl = v.check_function(
+                pre_source_to_physical_impl, Op.VIRTUAL_PRE_SOURCE_TO_PHYSICAL)
+            return pre_source_to_physical_impl
+
+        return pre_source_to_physical_decorator
 
     def source_to_physical(self):
         def source_to_physical_decorator(source_to_physical_impl):
@@ -860,6 +872,76 @@ class VirtualOperations(object):
         virtual_source_size_response.return_value.database_size = source_size
 
         return virtual_source_size_response
+
+    def _internal_virtual_pre_source_to_physical(self, request):
+        """Pre Virtual to Physical Wrapper.
+
+        Executed immediately before the file-copy subtask begins, giving
+        the plugin a chance to reject an unsuitable target before any data
+        moves.
+
+        Run pre_source_to_physical operation for a virtual source.
+
+        Args:
+           request (VirtualPreSourceToPhysicalRequest): Pre Virtual to Physical
+           Request arguments.
+
+        Returns:
+           VirtualPreSourceToPhysicalResponse: A response containing the return
+           value - VirtualPreSourceToPhysicalResult. In case of errors, response
+           object will contain PluginErrorResult.
+        """
+        # Reasoning for method imports are in this file's docstring.
+        from generated.definitions import VirtualSourceDefinition
+        from generated.definitions import RepositoryDefinition
+        from generated.definitions import SourceConfigDefinition
+        from generated.definitions import SnapshotDefinition
+        from generated.definitions import VirtualToPhysicalDefinition
+
+        #
+        # While virtual.pre_source_to_physical() is not a required operation,
+        # this should not be called if it wasn't implemented.
+        #
+        if not self.pre_source_to_physical_impl:
+            raise OperationNotDefinedError(Op.VIRTUAL_PRE_SOURCE_TO_PHYSICAL)
+
+        virtual_source_definition = VirtualSourceDefinition.from_dict(
+            json.loads(request.virtual_source.parameters.json))
+        mounts = [
+            VirtualOperations._from_protobuf_single_subset_mount(m)
+            for m in request.virtual_source.mounts
+        ]
+        virtual_source = VirtualSource(guid=request.virtual_source.guid,
+                                       connection=RemoteConnection.from_proto(
+                                           request.virtual_source.connection),
+                                       parameters=virtual_source_definition,
+                                       mounts=mounts)
+        virtual_to_physical_source_definition = VirtualToPhysicalDefinition.from_dict(
+            json.loads(request.physical_source.parameters.json))
+        physical_source = PhysicalSource(
+            guid=request.physical_source.guid,
+            connection=RemoteConnection.from_proto(request.physical_source.connection),
+            target_directory=request.physical_source.target_directory,
+            parameters=virtual_to_physical_source_definition)
+        repository = RepositoryDefinition.from_dict(
+            json.loads(request.repository.parameters.json))
+        source_config = SourceConfigDefinition.from_dict(
+            json.loads(request.source_config.parameters.json))
+        snapshot = SnapshotDefinition.from_dict(
+            json.loads(request.snapshot.parameters.json))
+
+        self.pre_source_to_physical_impl(
+            virtual_source=virtual_source,
+            repository=repository,
+            source_config=source_config,
+            snapshot=snapshot,
+            physical_source=physical_source)
+
+        virtual_pre_to_physical_response = (
+            platform_pb2.VirtualPreSourceToPhysicalResponse())
+        virtual_pre_to_physical_response.return_value.CopyFrom(
+            platform_pb2.VirtualPreSourceToPhysicalResult())
+        return virtual_pre_to_physical_response
 
     def _internal_virtual_source_to_physical(self, request):
         """Virtual to Physical Wrapper.
