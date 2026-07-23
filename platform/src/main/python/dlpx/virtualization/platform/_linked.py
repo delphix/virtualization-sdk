@@ -355,8 +355,8 @@ class LinkedOperations(object):
         Run pre_source_to_physical operation for a direct source.
 
         Args:
-           request (DirectPreSourceToPhysicalRequest): Pre Virtual to Physical
-           Request arguments.
+           request (DirectPreSourceToPhysicalRequest): Pre Direct Source to
+           Physical Request arguments.
 
         Returns:
            DirectPreSourceToPhysicalResponse: A response containing the return
@@ -1018,8 +1018,8 @@ class LinkedOperations(object):
         Run pre_source_to_physical operation for a staged source.
 
         Args:
-           request (StagedPreSourceToPhysicalRequest): Pre Virtual to Physical
-           Request arguments.
+           request (StagedPreSourceToPhysicalRequest): Pre Staged Source to
+           Physical Request arguments.
 
         Returns:
            StagedPreSourceToPhysicalResponse: A response containing the return

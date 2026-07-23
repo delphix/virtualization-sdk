@@ -321,7 +321,7 @@ def linked_source_size(direct_source, repository, source_config):
 
 ## Direct Linked Source Pre-Source-to-Physical
 
-Executed immediately before the file-copy for a [Virtual Source to Physical](Workflows.md#virtual-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Direct Linked Source to Physical](#direct-linked-source-to-physical).
+Executed immediately before the file-copy for a [Linked Source to Physical](Workflows.md#linked-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Direct Linked Source to Physical](#direct-linked-source-to-physical).
 
 ### Required / Optional
 **Optional.**
@@ -790,7 +790,7 @@ def linked_source_size(staged_source, repository, source_config):
 
 ## Staged Linked Source Pre-Source-to-Physical
 
-Executed immediately before the file-copy for a [Virtual Source to Physical](Workflows.md#virtual-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Staged Linked Source to Physical](#staged-linked-source-to-physical).
+Executed immediately before the file-copy for a [Linked Source to Physical](Workflows.md#linked-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Staged Linked Source to Physical](#staged-linked-source-to-physical).
 
 ### Required / Optional
 **Optional.**
