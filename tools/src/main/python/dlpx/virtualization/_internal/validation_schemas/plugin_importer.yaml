@@ -42,6 +42,12 @@ EXPECTED_STAGED_ARGS_BY_OP:
       - staged_source
       - repository
       - source_config
+    pre_source_to_physical_impl:
+      - staged_source
+      - repository
+      - source_config
+      - snapshot
+      - physical_source
     source_to_physical_impl:
       - staged_source
       - repository
@@ -96,6 +102,12 @@ EXPECTED_STAGED_ARGS_BY_OP:
       - virtual_source
       - repository
       - source_config
+    pre_source_to_physical_impl:
+      - virtual_source
+      - repository
+      - source_config
+      - snapshot
+      - physical_source
     source_to_physical_impl:
       - virtual_source
       - repository
@@ -126,6 +138,12 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - direct_source
       - repository
       - source_config
+    pre_source_to_physical_impl:
+      - direct_source
+      - repository
+      - source_config
+      - snapshot
+      - physical_source
     source_to_physical_impl:
       - direct_source
       - repository
@@ -180,6 +198,12 @@ EXPECTED_DIRECT_ARGS_BY_OP:
       - virtual_source
       - repository
       - source_config
+    pre_source_to_physical_impl:
+      - virtual_source
+      - repository
+      - source_config
+      - snapshot
+      - physical_source
     source_to_physical_impl:
       - virtual_source
       - repository

@@ -4,6 +4,7 @@
 
 | vSDK Version                             | Earliest Supported DE Version |                    Latest Supported DE Version                    |
 |------------------------------------------|:-----------------------------:|:-----------------------------------------------------------------:|
+| [5.2.0](../Release_Notes/5.2.0/5.2.0.md) |          2026.5.0.0           | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
 | [5.1.0](../Release_Notes/5.1.0/5.1.0.md) |          2026.4.0.0           | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
 | [5.0.1](../Release_Notes/5.0.1/5.0.1.md) |          2025.2.0.0           | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
 | [5.0.0](../Release_Notes/5.0.0/5.0.0.md) |           29.0.0.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
@@ -21,6 +22,7 @@
 
 | vSDK Version                             | Python Version |
 |------------------------------------------|:--------------:|
+| [5.2.0](../Release_Notes/5.2.0/5.2.0.md) |      3.11      |
 | [5.1.0](../Release_Notes/5.1.0/5.1.0.md) |      3.11      |
 | [5.0.1](../Release_Notes/5.0.1/5.0.1.md) |      3.11      |
 | [5.0.0](../Release_Notes/5.0.0/5.0.0.md) |      3.11      |

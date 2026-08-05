@@ -7,8 +7,8 @@ import pytest
 
 from dlpx.virtualization._internal import package_util
 
-DVP_VERSION = '5.1.0'
-DVP_API_VERSION = '1.10.0'
+DVP_VERSION = '5.2.0'
+DVP_API_VERSION = '1.11.0'
 
 
 class TestPackageUtil:

@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dvp-platform"
-version = "5.1.0"
+version = "5.2.0"
 description = "Delphix Virtualization Platform APIs"
 readme = "README.md"
 requires-python = ">=3.11, <3.12"
@@ -25,8 +25,8 @@ classifiers = [
 ]
 # dvp-common pin is kept in sync with [project].version via .bumpversion.cfg.
 dependencies = [
-    "dvp-api == 1.10.0",
-    "dvp-common == 5.1.0",
+    "dvp-api == 1.11.0.dev0",
+    "dvp-common == 5.2.0",
     "six >= 1.17, < 1.18",
 ]
 

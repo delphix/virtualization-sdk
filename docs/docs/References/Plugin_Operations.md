@@ -15,6 +15,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Direct Linked Source<br/>Pre-Snapshot](#direct-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Post-Snapshot](#direct-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Direct Linked Source<br/>Source Size](#direct-linked-source-size) | **No** | `linked.source_size()` | N/A
+[Direct Linked Source<br/>Pre-Source-to-Physical](#direct-linked-source-pre-source-to-physical) | **No** | `linked.pre_source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Direct Linked Source<br/>to Physical](#direct-linked-source-to-physical) | **No** | `linked.source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Staged Linked Source<br/>Pre-Snapshot](#staged-linked-source-pre-snapshot) | **No** | `linked.pre_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
 [Staged Linked Source<br/>Post-Snapshot](#staged-linked-source-post-snapshot) | **Yes** | `linked.post_snapshot()` | [Linked Source Sync](Workflows.md#linked-source-sync)
@@ -24,6 +25,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Staged Linked Source<br/>Worker](#staged-linked-source-worker) | **No** |`linked.worker()` | N/A
 [Staged Linked Source<br/>Mount Specification](#staged-linked-source-mount-specification) | **Yes** | `linked.mount_specification()` | [Linked Source Sync](Workflows.md#linked-source-sync)<br/>[Linked Source Enable](Workflows.md#linked-source-enable)
 [Staged Linked Source<br/>Source Size](#staged-linked-source-size) | **No** | `linked.source_size()` | N/A
+[Staged Linked Source<br/>Pre-Source-to-Physical](#staged-linked-source-pre-source-to-physical) | **No** | `linked.pre_source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Staged Linked Source<br/>to Physical](#staged-linked-source-to-physical) | **No** | `linked.source_to_physical()` | [Linked Source to Physical](Workflows.md#linked-source-to-physical)
 [Virtual Source<br/>Initialize](#virtual-source-initialize) | **No** | `virtual.initialize()` | [Virtual Source Create Empty VDB](Workflows.md#virtual-source-create-empty-vdb)
 [Virtual Source<br/>Configure](#virtual-source-configure) | **Yes** | `virtual.configure()` | [Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)
@@ -37,6 +39,7 @@ Plugin Operation | **Required** | Decorator | Delphix Engine Operations
 [Virtual Source<br>Mount Specification](#virtual-source-mount-specification) | **Yes** | `virtual.mount_specification()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)<br/>[Virtual Source Provision](Workflows.md#virtual-source-provision)<br/>[Virtual Source Refresh](Workflows.md#virtual-source-refresh)<br/>[Virtual Source Rollback](Workflows.md#virtual-source-rollback)<br/>[Virtual Source Start](Workflows.md#virtual-source-start)
 [Virtual Source<br/>Status](#virtual-source-status) | **No** | `virtual.status()` | [Virtual Source Enable](Workflows.md#virtual-source-enable)
 [Virtual Source<br/>Source Size](#virtual-source-size) | **No** | `virtual.source_size()` | N/A
+[Virtual Source<br/>Pre-Source-to-Physical](#virtual-source-pre-source-to-physical) | **No** | `virtual.pre_source_to_physical()` | [Virtual Source to Physical](Workflows.md#virtual-source-to-physical)
 [Virtual Source<br/>to Physical](#virtual-source-to-physical) | **No** | `virtual.source_to_physical()` | [Virtual Source to Physical](Workflows.md#virtual-source-to-physical)
 [Repository Data Migration](#repository-data-migration) | **No** | `upgrade.repository(migration_id)` | [Upgrade](Workflows.md#upgrade)
 [Source Config Data Migration](#source-config-data-migration) | **No** | `upgrade.source_config(migration_id)` | [Upgrade](Workflows.md#upgrade)
@@ -314,6 +317,52 @@ def linked_source_size(direct_source, repository, source_config):
   database_size = 0
   # Implementation to fetch the database size.
   return database_size
+```
+
+## Direct Linked Source Pre-Source-to-Physical
+
+Executed immediately before the file-copy for a [Linked Source to Physical](Workflows.md#linked-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Direct Linked Source to Physical](#direct-linked-source-to-physical).
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* [Linked Source to Physical](Workflows.md#linked-source-to-physical)
+
+### Signature
+
+`def direct_pre_source_to_physical(direct_source, repository, source_config, snapshot, physical_source)`
+
+### Decorator
+
+`linked.pre_source_to_physical()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+direct_source | [DirectSource](Classes.md#directsource) | The direct linked source being exported.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+snapshot | [SnapshotDefinition](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-class) | The snapshot being exported.
+physical_source | [PhysicalSource](Classes.md#physicalsource) | The target physical source, including connection, target directory, and user-defined parameters from the [VirtualToPhysicalDefinition](Schemas_and_Autogenerated_Classes.md#virtualtophysicaldefinition-class).
+
+### Returns
+None
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.linked.pre_source_to_physical()
+def direct_pre_source_to_physical(direct_source, repository, source_config, snapshot, physical_source):
+  target_dir = physical_source.target_directory
+  # Validate target_dir is suitable before the copy begins; raise to abort the copy.
+  pass
 ```
 
 ## Direct Linked Source to Physical
@@ -737,6 +786,52 @@ def linked_source_size(staged_source, repository, source_config):
   database_size = 0
   # Implementation to fetch the database size.
   return database_size
+```
+
+## Staged Linked Source Pre-Source-to-Physical
+
+Executed immediately before the file-copy for a [Linked Source to Physical](Workflows.md#linked-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Staged Linked Source to Physical](#staged-linked-source-to-physical).
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* [Linked Source to Physical](Workflows.md#linked-source-to-physical)
+
+### Signature
+
+`def staged_pre_source_to_physical(staged_source, repository, source_config, snapshot, physical_source)`
+
+### Decorator
+
+`linked.pre_source_to_physical()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+staged_source | [StagedSource](Classes.md#stagedsource) | The staged linked source being exported.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+snapshot | [SnapshotDefinition](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-class) | The snapshot being exported.
+physical_source | [PhysicalSource](Classes.md#physicalsource) | The target physical source, including connection, target directory, and user-defined parameters from the [VirtualToPhysicalDefinition](Schemas_and_Autogenerated_Classes.md#virtualtophysicaldefinition-class).
+
+### Returns
+None
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.linked.pre_source_to_physical()
+def staged_pre_source_to_physical(staged_source, repository, source_config, snapshot, physical_source):
+  target_dir = physical_source.target_directory
+  # Validate target_dir is suitable before the copy begins; raise to abort the copy.
+  pass
 ```
 
 ## Staged Linked Source to Physical
@@ -1389,6 +1484,52 @@ def virtual_source_size(virtual_source, repository, source_config):
   return database_size
 ```
 
+
+## Virtual Source Pre-Source-to-Physical
+
+Executed immediately before the file-copy for a [Virtual Source to Physical](Workflows.md#virtual-source-to-physical) workflow begins, giving a plugin the chance to reject an unsuitable target before any data moves. Its post-copy counterpart is [Virtual Source to Physical](#virtual-source-to-physical).
+
+### Required / Optional
+**Optional.**
+
+### Delphix Engine Operations
+
+* [Virtual Source to Physical](Workflows.md#virtual-source-to-physical)
+
+### Signature
+
+`def virtual_pre_source_to_physical(virtual_source, repository, source_config, snapshot, physical_source)`
+
+### Decorator
+
+`virtual.pre_source_to_physical()`
+
+### Arguments
+
+Argument | Type | Description
+-------- | ---- | -----------
+virtual_source | [VirtualSource](Classes.md#virtualsource) | The virtual source being exported.
+repository | [RepositoryDefinition](Schemas_and_Autogenerated_Classes.md#repositorydefinition-class) | The repository associated with this source.
+source_config | [SourceConfigDefinition](Schemas_and_Autogenerated_Classes.md#sourceconfigdefinition-class) | The source config associated with this source.
+snapshot | [SnapshotDefinition](Schemas_and_Autogenerated_Classes.md#snapshotdefinition-class) | The snapshot being exported.
+physical_source | [PhysicalSource](Classes.md#physicalsource) | The target physical source, including connection, target directory, and user-defined parameters from the [VirtualToPhysicalDefinition](Schemas_and_Autogenerated_Classes.md#virtualtophysicaldefinition-class).
+
+### Returns
+None
+
+### Example
+
+```python
+from dlpx.virtualization.platform import Plugin
+
+plugin = Plugin()
+
+@plugin.virtual.pre_source_to_physical()
+def virtual_pre_source_to_physical(virtual_source, repository, source_config, snapshot, physical_source):
+  target_dir = physical_source.target_directory
+  # Validate target_dir is suitable before the copy begins; raise to abort the copy.
+  pass
+```
 
 ## Virtual Source to Physical
 
