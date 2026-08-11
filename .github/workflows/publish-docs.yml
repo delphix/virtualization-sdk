@@ -77,7 +77,7 @@ jobs:
           fi
 
       - name: Install Pipenv
-        run: pip install pipenv
+        run: python -m pip install --upgrade pip pipenv
 
       - name: Install dependencies for building documenation
         working-directory: ${{ matrix.package }}
