@@ -128,7 +128,7 @@ id: ea009cb4-f76b-46dc-bbb6-689e7acecce4
 name: DelphixDB
 luaName: delphixdb
 minimumLuaVersion: "1.0"
-language: PYTHON27
+language: PYTHON311
 hostTypes:
 - UNIX
 pluginType: STAGED
