@@ -23,7 +23,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "dvp-api == 1.11.0.dev1",
+    "dvp-api == 1.11.0",
     "six >= 1.17, < 1.18",
 ]
 
