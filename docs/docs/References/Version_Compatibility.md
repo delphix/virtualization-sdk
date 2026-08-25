@@ -8,13 +8,13 @@
 | [5.1.0](../Release_Notes/5.1.0/5.1.0.md) |          2026.4.0.0           | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
 | [5.0.1](../Release_Notes/5.0.1/5.0.1.md) |          2025.2.0.0           | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
 | [5.0.0](../Release_Notes/5.0.0/5.0.0.md) |           29.0.0.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [4.1.0](../Release_Notes/4.1.0/4.1.0.md) |           12.0.0.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [4.0.5](../Release_Notes/4.0.5/4.0.5.md) |           6.0.16.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [4.0.2](../Release_Notes/4.0.2/4.0.2.md) |           6.0.12.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [3.1.0](../Release_Notes/3.1.0/3.1.0.md) |            6.0.7.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [3.0.0](../Release_Notes/3.0.0/3.0.0.md) |            6.0.6.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [2.1.0](../Release_Notes/2.1.0/2.1.0.md) |            6.0.3.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
-| [2.0.0](../Release_Notes/2.0.0/2.0.0.md) |            6.0.2.0            | [Latest Release](https://help.delphix.com/cd/current/content/release_notes.htm) |
+| [4.1.0](../Release_Notes/4.1.0/4.1.0.md) |           12.0.0.0            |                             2026.4.0.0                             |
+| [4.0.5](../Release_Notes/4.0.5/4.0.5.md) |           6.0.16.0            |                             2026.4.0.0                             |
+| [4.0.2](../Release_Notes/4.0.2/4.0.2.md) |           6.0.12.0            |                             2026.4.0.0                             |
+| [3.1.0](../Release_Notes/3.1.0/3.1.0.md) |            6.0.7.0            |                             2026.4.0.0                             |
+| [3.0.0](../Release_Notes/3.0.0/3.0.0.md) |            6.0.6.0            |                             2026.4.0.0                             |
+| [2.1.0](../Release_Notes/2.1.0/2.1.0.md) |            6.0.3.0            |                             2026.4.0.0                             |
+| [2.0.0](../Release_Notes/2.0.0/2.0.0.md) |            6.0.2.0            |                             2026.4.0.0                             |
 | [1.0.0](../Release_Notes/1.0.0/1.0.0.md) |            6.0.2.0            |                             14.0.0.0                              |
 | [0.4.0](../Release_Notes/0.4.0/0.4.0.md) |            5.3.5.0            |                              6.0.1.0                              |
 
