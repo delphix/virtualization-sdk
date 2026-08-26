@@ -371,6 +371,7 @@ def linked_operation():
     linked.worker_impl = None
     linked.mount_specification_impl = None
     linked.source_size_impl = None
+    linked.pre_source_to_physical_impl = None
     linked.source_to_physical_impl = None
 
     return linked
@@ -413,6 +414,7 @@ def virtual_operation():
     virtual.initialize_impl = None
     virtual.cleanup_impl = None
     virtual.source_size_impl = None
+    virtual.pre_source_to_physical_impl = None
     virtual.source_to_physical_impl = None
 
     return virtual
@@ -448,6 +450,7 @@ def plugin_manifest(upgrade_operation):
         'hasLinkedWorker': False,
         'hasLinkedMountSpecification': False,
         'hasLinkedSourceSize': False,
+        'hasLinkedPreSourceToPhysical': False,
         'hasLinkedSourceToPhysical': False,
         'hasVirtualConfigure': True,
         'hasVirtualUnconfigure': False,
@@ -462,6 +465,7 @@ def plugin_manifest(upgrade_operation):
         'hasInitialize': False,
         'migrationIdList': upgrade_operation.migration_id_list,
         'hasVirtualCleanup': False,
+        'hasVirtualPreSourceToPhysical': False,
         'hasVirtualSourceToPhysical': False,
     }
     return manifest

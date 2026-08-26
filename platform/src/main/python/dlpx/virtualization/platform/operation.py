@@ -18,6 +18,7 @@ class Operation(Enum):
     LINKED_WORKER = 'linked.worker()'
     LINKED_MOUNT_SPEC = 'linked.mount_specification()'
     LINKED_SOURCE_SIZE = 'linked.source_size()'
+    LINKED_PRE_SOURCE_TO_PHYSICAL = 'linked.pre_source_to_physical()'
     LINKED_SOURCE_TO_PHYSICAL = 'linked.source_to_physical()'
 
     VIRTUAL_CONFIGURE = 'virtual.configure()'
@@ -32,6 +33,7 @@ class Operation(Enum):
     VIRTUAL_INITIALIZE = 'virtual.initialize()'
     VIRTUAL_MOUNT_SPEC = 'virtual.mount_specification()'
     VIRTUAL_SOURCE_SIZE = 'virtual.source_size()'
+    VIRTUAL_PRE_SOURCE_TO_PHYSICAL = 'virtual.pre_source_to_physical()'
     VIRTUAL_SOURCE_TO_PHYSICAL = 'virtual.source_to_physical()'
 
     UPGRADE_REPOSITORY = 'upgrade.repository()'

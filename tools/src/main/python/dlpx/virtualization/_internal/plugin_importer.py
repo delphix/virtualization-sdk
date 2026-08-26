@@ -360,6 +360,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.linked.mount_specification_impl),
         'hasLinkedSourceSize':
         bool(plugin_object.linked.source_size_impl),
+        'hasLinkedPreSourceToPhysical':
+        bool(plugin_object.linked.pre_source_to_physical_impl),
         'hasLinkedSourceToPhysical':
         bool(plugin_object.linked.source_to_physical_impl),
         'hasVirtualConfigure':
@@ -386,6 +388,8 @@ def _prepare_manifest(entry_point, module_content):
         bool(plugin_object.virtual.initialize_impl),
         'hasVirtualSourceSize':
         bool(plugin_object.virtual.source_size_impl),
+        'hasVirtualPreSourceToPhysical':
+        bool(plugin_object.virtual.pre_source_to_physical_impl),
         'hasVirtualSourceToPhysical':
         bool(plugin_object.virtual.source_to_physical_impl),
         'migrationIdList':
