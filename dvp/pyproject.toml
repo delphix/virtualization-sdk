@@ -35,7 +35,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "bump2version == 1.0.1",
-    "packaging == 26.0",
+    "packaging == 26.3",
     "pluggy == 1.6.0",
     "pyparsing == 3.3.2",
     "pytest == 9.0.3",
