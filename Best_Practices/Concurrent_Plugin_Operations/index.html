@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../Working_with_Powershell/">
+        <link rel="prev" href="../Message_Limits/">
       
       
-        <link rel="next" href="../Message_Limits/">
+        <link rel="next" href="../../Release_Notes/5.1.0/5.1.0/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Scratch Paths - Delphix Virtualization SDK 5.1.0</title>
+        <title>Concurrent Plugin Operations - Delphix Virtualization SDK 5.1.0</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#scratch-paths" class="md-skip">
+        <a href="#concurrent-plugin-operations" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Scratch Paths
+              Concurrent Plugin Operations
             
           </span>
         </div>
@@ -1942,19 +1942,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../Scratch_Paths/" class="md-nav__link">
         
   
   
@@ -1970,7 +1961,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2008,10 +1998,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../Concurrent_Plugin_Operations/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrent Plugin Operations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2027,6 +2044,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency-limit-by-cpu-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency limit by CPU count
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3344,6 +3414,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency-limit-by-cpu-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency limit by CPU count
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3362,22 +3473,47 @@
   
 
 
-<h1 id="scratch-paths">Scratch Paths<a class="headerlink" href="#scratch-paths" title="Permanent link">&para;</a></h1>
-<p>A scratch path is a directory reserved for plugin use on each remote host. This is intended for uses such as:</p>
+<h1 id="concurrent-plugin-operations">Concurrent Plugin Operations<a class="headerlink" href="#concurrent-plugin-operations" title="Permanent link">&para;</a></h1>
+<p>The Delphix Engine limits how many <a href="../../References/Plugin_Operations/">Plugin Operations</a> it will run concurrently against a given plugin's toolkit container. This limit scales with the number of CPUs available to the Delphix Engine. Any operations requested beyond this limit are queued and run once a slot frees up — they are not run in parallel and do not fail.</p>
+<h2 id="concurrency-limit-by-cpu-count">Concurrency limit by CPU count<a class="headerlink" href="#concurrency-limit-by-cpu-count" title="Permanent link">&para;</a></h2>
+<p>The number of plugin operations the engine will run concurrently for a plugin is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>min(32, &lt;Engine CPUs&gt; + 4)
+</code></pre></div>
+<p>For example:</p>
+<table>
+<thead>
+<tr>
+<th>Engine CPUs</th>
+<th>Max concurrent plugin operations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>8</td>
+</tr>
+<tr>
+<td>8</td>
+<td>12</td>
+</tr>
+<tr>
+<td>28+</td>
+<td>32 (capped)</td>
+</tr>
+</tbody>
+</table>
+<p>This reflects the current default sizing of the engine's callback thread pool and may change in future Delphix Engine releases.</p>
+<h2 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">&para;</a></h2>
+<p>When more plugin operations are triggered at once than the engine can run concurrently — for example, many dSources or VDBs backed by the same plugin syncing or snapshotting around the same time — the extra operations sit in a queue rather than starting immediately. This can look like a single operation is hanging (for example, a <code>Staged Linked Source Mount Specification</code> call that appears to take hours) when it is actually waiting for a thread to free up, not stuck in plugin code.</p>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Storage of small amounts of persistent data</li>
-<li>A place to mount VDB data</li>
-<li>Temporary logs for debugging (Be careful that you don't use too much space though!)</li>
-</ul>
-<p>The location of this scratch area is given by the <code>scratch_path</code> property on the <a href="../../References/Classes/#remotehost">RemoteHost</a> object.</p>
-<p>Things to note about the scratch path:</p>
-<ul>
-<li>No guarantees are made about where the path is located on the system.</li>
-<li>No guarantees are made about how much space might be available in this directory. It is strongly advised that you use only a small amount of disk space here.</li>
-<li>The directory will be owned by the "primary user" associated with the remote host. This might be a completely different user from the one that is associated with a particular dsource or VDB.</li>
-<li>If you need to store dSource- or VDB-specific data, it is highly recommended that you create a separate subdirectory for each dSource/VDB inside this scratch area. It's also recommended to name this subdirectory using the GUID of the dSource/VDB, so that you avoid accidental name collisions.</li>
-<li>The Delphix Engine will not do any cleanup for you, so be sure to delete anything you're no longer using. For example, any VDB-specific information must be deleted in your <a href="../../References/Plugin_Operations/#virtual-source-unconfigure">unconfigure</a> operation (and dSource data gets deleted in your <a href="../../References/Plugin_Operations/#staged-linked-source-stop-staging">stopStaging</a> operation.)</li>
-<li>Do not store any <a href="../Sensitive_Data/">sensitive information</a> here!</li>
+<li>When sizing an environment with many objects sharing a single plugin, account for this limit, especially on lower-CPU Delphix Engines.</li>
+<li>Stagger sync/snapshot schedules across objects using the same plugin where possible, rather than scheduling them all at the same time.</li>
+<li>If a plugin operation appears to hang for an unusually long time, first check whether the engine is already running the maximum number of concurrent operations for that plugin before assuming the plugin itself is stuck.</li>
 </ul>
 
 
@@ -3410,7 +3546,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../Working_with_Powershell/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Working with Powershell">
+          <a href="../Message_Limits/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Message Limits">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3420,20 +3556,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Working with Powershell
+                Message Limits
               </div>
             </div>
           </a>
         
         
           
-          <a href="../Message_Limits/" class="md-footer__link md-footer__link--next" aria-label="Next: Message Limits">
+          <a href="../../Release_Notes/5.1.0/5.1.0/" class="md-footer__link md-footer__link--next" aria-label="Next: Release - v5.1.0">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Message Limits
+                Release - v5.1.0
               </div>
             </div>
             <div class="md-footer__button md-icon">
