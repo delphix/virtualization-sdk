@@ -9,3 +9,4 @@ arrange:
   - Working_with_Powershell.md
   - Scratch_Paths.md
   - Message_Limits.md
+  - Concurrent_Plugin_Operations.md
