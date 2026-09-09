@@ -34,12 +34,12 @@ dependencies = [
 dev = [
     "bump2version == 1.0.1",
     "mock == 5.2.0",
-    "packaging == 26.0",
+    "packaging == 26.3",
     "pluggy == 1.6.0",
     "pyparsing == 3.3.2",
-    "pytest == 9.0.3",
+    "pytest == 9.1.1",
     "six == 1.17.0",
-    "zipp == 3.23.0",
+    "zipp == 4.1.0",
 ]
 
 [project.urls]

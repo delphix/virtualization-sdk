@@ -24,6 +24,19 @@ class TestDelphixClient:
         yield
         httpretty.disable()
 
+    @staticmethod
+    def _request_history():
+        """Return deduplicated request history.
+
+        httpretty 1.1.x records some requests twice due to urllib3
+        connection-pool behavior. Deduplicate consecutive duplicates so tests
+        verify the logical sequence of requests, not connection-pool recording
+        duplicates.
+        """
+        reqs = httpretty.HTTPretty.latest_requests
+        return [r for i, r in enumerate(reqs)
+                if i == 0 or r.path != reqs[i - 1].path]
+
     SES_RESP_SUCCESS = ((
         '{"type":"OKResult","status":"OK","result":{'
         '"type":"APISession","version":{'
@@ -317,7 +330,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
         dc.upload_plugin('plugin name', artifact_content, False)
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/data/upload'
         assert (history[-2].path ==
                 u'/resources/json/delphix/toolkit/requestUploadToken')
@@ -384,7 +397,7 @@ class TestDelphixClient:
                            ' Delphix Engine version to determine which'
                            ' API version is supported.')
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/session'
 
     @staticmethod
@@ -409,7 +422,7 @@ class TestDelphixClient:
         assert err_info.value.message == (
             'Received an unexpected error with HTTP Status 404,\nDumping full'
             ' response:\n{\n  "blob": "Unknown",\n  "status": "UNKNOWN"\n}')
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/session'
 
     @staticmethod
@@ -444,7 +457,7 @@ class TestDelphixClient:
             '\nDetails: Invalid username or password.'
             '\nAction: Try with a different set of credentials.')
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/login'
         assert history[-2].path == u'/resources/json/delphix/session'
 
@@ -485,7 +498,7 @@ class TestDelphixClient:
                             '\n}')
         assert message == expected_message
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/login'
         assert history[-2].path == u'/resources/json/delphix/session'
 
@@ -525,7 +538,7 @@ class TestDelphixClient:
             'Received an unexpected error with HTTP Status 403,\nDumping full'
             ' response:\n{}'.format(token_body))
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert (history[-1].path ==
                 u'/resources/json/delphix/toolkit/requestUploadToken')
         assert history[-2].path == u'/resources/json/delphix/login'
@@ -586,7 +599,7 @@ class TestDelphixClient:
                            ' again: db_centos75_157_2,db_centos75_157_1,'
                            'db_centos75_157_0')
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert history[-1].path == u'/resources/json/delphix/data/upload'
         assert (history[-2].path ==
                 u'/resources/json/delphix/toolkit/requestUploadToken')
@@ -633,7 +646,7 @@ class TestDelphixClient:
         assert err_info.value.message == ('Failed trying to upload plugin '
                                           'nix_direct_python.')
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert (history[-1].path ==
                 u'/resources/json/delphix/action/ACTION-161/getJob')
         assert history[-2].path == u'/resources/json/delphix/login'
@@ -680,7 +693,7 @@ class TestDelphixClient:
                                           'plugin nix_direct_python to '
                                           'complete.')
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         assert (history[-1].path ==
                 u'/resources/json/delphix/action/ACTION-161/getJob')
         assert history[-2].path == u'/resources/json/delphix/login'
@@ -727,7 +740,7 @@ class TestDelphixClient:
         dc.login(engine_api, 'admin', 'delphix')
         dc.download_plugin_logs(src_dir, plugin_config_file)
 
-        history = httpretty.HTTPretty.latest_requests
+        history = TestDelphixClient._request_history()
         to_str(history[-1].__dict__)
 
         assert (to_str(history[-1].path) ==
