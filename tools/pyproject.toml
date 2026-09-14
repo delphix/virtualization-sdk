@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "attrs >= 25.3, < 26.2",
     "certifi >= 2024, < 2027",
-    "click == 7.1.2",
+    "click == 8.5.0",
     "click-configfile == 0.2.3",
     "configparser >= 7.2, < 7.3",
     "dvp-libs == 5.2.0",
