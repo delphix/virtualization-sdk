@@ -18,9 +18,11 @@ class TestCli:
     def test_default_verbosity():
         runner = click_testing.CliRunner()
 
+        # Click >= 8.1 exits 2 (usage error) when a group is invoked with no
+        # subcommand, instead of 0 as in Click 7.x.
         result = runner.invoke(cli.delphix_sdk)
 
-        assert result.exit_code == 0, 'Output: {}'.format(result.output)
+        assert result.exit_code == 2, 'Output: {}'.format(result.output)
 
     @staticmethod
     def test_verbose():
@@ -337,7 +339,7 @@ class TestBuildCli:
 
         assert result.exit_code == 2
         assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
-                                 u"\nTry 'delphix-sdk build -h' for help."
+                                 u"\nTry 'delphix-sdk build --help' for help."
                                  u"\n"
                                  u"\nError: Invalid value for '-c' /"
                                  u" '--plugin-config': File"
@@ -517,7 +519,7 @@ class TestUploadCli:
 
         assert result.exit_code == 2
         assert result.output == (u"Usage: delphix-sdk upload [OPTIONS]"
-                                 u"\nTry 'delphix-sdk upload -h' for help."
+                                 u"\nTry 'delphix-sdk upload --help' for help."
                                  u"\n"
                                  u"\nError: Invalid value for '-a' /"
                                  u" '--upload-artifact': File"
@@ -698,7 +700,7 @@ class TestDownloadCli:
         assert result.exit_code == 2
         assert result.output == (
             u"Usage: delphix-sdk download-logs [OPTIONS]"
-            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\nTry 'delphix-sdk download-logs --help' for help."
             u"\n"
             u"\nError: Invalid value for '-d' /"
             u" '--directory': Directory"
@@ -724,7 +726,7 @@ class TestDownloadCli:
         assert result.exit_code == 2
         assert result.output == (
             u"Usage: delphix-sdk download-logs [OPTIONS]"
-            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\nTry 'delphix-sdk download-logs --help' for help."
             u"\n"
             u"\nError: Invalid value for '-c' /"
             u" '--plugin-config': File"
