@@ -72,6 +72,22 @@ def validate_option_exists(ctx, param, value):
     return value
 
 
+class NonEmptyPath(click.Path):
+    """
+    A click.Path that rejects an empty string outright. Click >= 8.0
+    resolves an empty string to the current working directory before
+    running its exists/writable checks (via os.path.realpath('')), so an
+    empty value for a Path option with resolve_path=True silently passes
+    instead of failing as it did on Click 7.x.
+    """
+    def convert(self, value, param, ctx):
+        if value == '':
+            self.fail(
+                '{} {!r} does not exist.'.format(self.name.title(), value),
+                param, ctx)
+        return super(NonEmptyPath, self).convert(value, param, ctx)
+
+
 class MutuallyExclusiveOption(click.Option):
     """
     A Click Option type that is mutually exclusive with another option. Click
