@@ -58,7 +58,7 @@ dev = [
     "more-itertools == 11.1.0",
     "packaging == 26.3",
     "pluggy == 1.6.0",
-    "pycodestyle == 2.14.0",
+    "pycodestyle == 2.15.0",
     "pyflakes == 3.4.0",
     "pyparsing == 3.3.2",
     "pytest == 9.1.1",
