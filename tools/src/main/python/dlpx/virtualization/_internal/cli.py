@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2026 by Delphix. All rights reserved.
 #
 
 import logging
@@ -64,7 +64,7 @@ def command_error_handler():
         exit(2)
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
+@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
 @click.version_option(__version__)
 @click.option(
     '-v',
@@ -84,7 +84,8 @@ def command_error_handler():
     type=click.IntRange(0, 3),
     help=('Enable quiet mode. '
           'Can be repeated up to three times for increased suppression.'))
-def delphix_sdk(verbose, quiet):
+@click.pass_context
+def delphix_sdk(ctx, verbose, quiet):
     """
     The tools of the Delphix Virtualization SDK that help develop, build, and
     upload a plugin.
@@ -100,6 +101,16 @@ def delphix_sdk(verbose, quiet):
             'Python version check failed.'
             'Supported version is 3.11.x, found {}'
             .format(sys.version_info))
+    #
+    # Click >= 8.1 treats a group invoked with no subcommand as a usage
+    # error (exit code 2) instead of printing help and exiting 0 as Click
+    # 7.x did. invoke_without_command=True skips that check, so replicate
+    # the old exit-0/help behavior explicitly here to keep it unchanged
+    # for anything scripting around a bare `dvp` invocation.
+    #
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
+        ctx.exit()
 
 
 @delphix_sdk.command(context_settings=CONTEXT_SETTINGS_INIT)
@@ -108,11 +119,11 @@ def delphix_sdk(verbose, quiet):
               'root',
               default=os.getcwd(),
               show_default=True,
-              type=click.Path(exists=True,
-                              file_okay=False,
-                              dir_okay=True,
-                              writable=True,
-                              resolve_path=True),
+              type=click_util.NonEmptyPath(exists=True,
+                                           file_okay=False,
+                                           dir_okay=True,
+                                           writable=True,
+                                           resolve_path=True),
               callback=click_util.validate_option_exists,
               help='Set the plugin root directory.')
 @click.option('-n',
@@ -297,11 +308,11 @@ def upload(engine, user, upload_artifact, password, wait):
     '--directory',
     default=os.getcwd(),
     show_default=True,
-    type=click.Path(exists=True,
-                    file_okay=False,
-                    dir_okay=True,
-                    writable=True,
-                    resolve_path=True),
+    type=click_util.NonEmptyPath(exists=True,
+                                 file_okay=False,
+                                 dir_okay=True,
+                                 writable=True,
+                                 resolve_path=True),
     callback=click_util.validate_option_exists,
     help='Specify the directory of where to download the plugin logs.')
 @click.password_option(cls=click_util.PasswordPromptIf,

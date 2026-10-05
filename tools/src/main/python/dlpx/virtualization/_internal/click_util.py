@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2026 by Delphix. All rights reserved.
 #
 
 import os
@@ -70,6 +70,22 @@ def validate_option_exists(ctx, param, value):
             raise click.BadParameter(('Option is required and must be '
                                       'specified via the command line.'))
     return value
+
+
+class NonEmptyPath(click.Path):
+    """
+    A click.Path that rejects an empty string outright. Click >= 8.0
+    resolves an empty string to the current working directory before
+    running its exists/writable checks (via os.path.realpath('')), so an
+    empty value for a Path option with resolve_path=True silently passes
+    instead of failing as it did on Click 7.x.
+    """
+    def convert(self, value, param, ctx):
+        if value == '':
+            self.fail(
+                '{} {!r} does not exist.'.format(self.name.title(), value),
+                param, ctx)
+        return super(NonEmptyPath, self).convert(value, param, ctx)
 
 
 class MutuallyExclusiveOption(click.Option):

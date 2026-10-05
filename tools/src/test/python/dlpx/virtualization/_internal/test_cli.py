@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, 2021 by Delphix. All rights reserved.
+# Copyright (c) 2019, 2026 by Delphix. All rights reserved.
 #
 
 import os
@@ -18,6 +18,9 @@ class TestCli:
     def test_default_verbosity():
         runner = click_testing.CliRunner()
 
+        # Click >= 8.1 would otherwise exit 2 (usage error) here instead of
+        # 0 as in Click 7.x; delphix_sdk explicitly restores the old
+        # help/exit-0 behavior for a bare invocation with no subcommand.
         result = runner.invoke(cli.delphix_sdk)
 
         assert result.exit_code == 0, 'Output: {}'.format(result.output)
@@ -337,7 +340,7 @@ class TestBuildCli:
 
         assert result.exit_code == 2
         assert result.output == (u"Usage: delphix-sdk build [OPTIONS]"
-                                 u"\nTry 'delphix-sdk build -h' for help."
+                                 u"\nTry 'delphix-sdk build --help' for help."
                                  u"\n"
                                  u"\nError: Invalid value for '-c' /"
                                  u" '--plugin-config': File"
@@ -517,7 +520,7 @@ class TestUploadCli:
 
         assert result.exit_code == 2
         assert result.output == (u"Usage: delphix-sdk upload [OPTIONS]"
-                                 u"\nTry 'delphix-sdk upload -h' for help."
+                                 u"\nTry 'delphix-sdk upload --help' for help."
                                  u"\n"
                                  u"\nError: Invalid value for '-a' /"
                                  u" '--upload-artifact': File"
@@ -698,13 +701,32 @@ class TestDownloadCli:
         assert result.exit_code == 2
         assert result.output == (
             u"Usage: delphix-sdk download-logs [OPTIONS]"
-            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\nTry 'delphix-sdk download-logs --help' for help."
             u"\n"
             u"\nError: Invalid value for '-d' /"
             u" '--directory': Directory"
             u" '/not/a/real/directory'"
             u" does not exist."
             u"\n")
+
+    @staticmethod
+    def test_empty_directory():
+        # Click >= 8.0 resolves an empty string to the current working
+        # directory before running its exists/writable checks, so this
+        # would otherwise silently pass instead of erroring as it did on
+        # Click 7.x; NonEmptyPath (click_util.py) restores that rejection.
+        engine = 'engine'
+        user = 'admin'
+        password = 'delphix'
+
+        runner = click_testing.CliRunner()
+        result = runner.invoke(cli.delphix_sdk, [
+            'download-logs', '-e', engine, '-u', user, '--password', password,
+            '-d', ''
+        ])
+
+        assert result.exit_code != 0
+        assert "Invalid value for '-d'" in result.output
 
     @staticmethod
     @pytest.mark.parametrize('plugin_config_file',
@@ -724,7 +746,7 @@ class TestDownloadCli:
         assert result.exit_code == 2
         assert result.output == (
             u"Usage: delphix-sdk download-logs [OPTIONS]"
-            u"\nTry 'delphix-sdk download-logs -h' for help."
+            u"\nTry 'delphix-sdk download-logs --help' for help."
             u"\n"
             u"\nError: Invalid value for '-c' /"
             u" '--plugin-config': File"

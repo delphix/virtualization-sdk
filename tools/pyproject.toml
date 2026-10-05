@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "attrs >= 25.3, < 26.2",
     "certifi >= 2024, < 2027",
-    "click == 7.1.2",
+    "click == 8.5.0",
     "click-configfile == 0.2.3",
     "configparser >= 7.2, < 7.3",
     "dvp-libs == 5.2.0",
@@ -52,7 +52,7 @@ dev = [
     "entrypoints == 0.4",
     "flake8 == 7.3.0",
     "httpretty == 1.1.4",
-    "isort == 8.0.1",
+    "isort == 9.0.2",
     "mccabe == 0.7.0",
     "mock == 5.2.0",
     "more-itertools == 11.1.0",
