@@ -59,7 +59,7 @@ dev = [
     "packaging == 26.3",
     "pluggy == 1.6.0",
     "pycodestyle == 2.15.0",
-    "pyflakes == 4.0.2",
+    "pyflakes == 4.0.3",
     "pyparsing == 3.3.3",
     "pytest == 9.1.1",
     "pytest-cov == 7.1.0",
