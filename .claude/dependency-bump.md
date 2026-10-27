@@ -72,6 +72,8 @@ dependency-bump creates a tracking ticket BEFORE the commit, uses its ID in the 
 - Issue type: `Bug`
 - Product group: `Virtualization Platform - vSDK`
 - Story points: 1
+- Labels: `vsdk-dep-bump`
+- Board: `2934`
 
 Commit message format: `<JIRA-ID> <JIRA-SUMMARY>` (single line). Example:
 
