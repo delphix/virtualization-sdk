@@ -61,7 +61,7 @@ dev = [
     "pycodestyle == 2.15.0",
     "pyflakes == 4.0.3",
     "pyparsing == 3.3.3",
-    "pytest == 9.1.1",
+    "pytest == 9.2.0",
     "pytest-cov == 7.1.0",
     "six == 1.17.0",
     "yapf == 0.43.0",
