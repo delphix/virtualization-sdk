@@ -29,7 +29,7 @@ dependencies = [
     "certifi >= 2024, < 2027",
     "click == 8.5.0",
     "click-configfile == 0.2.3",
-    "configparser >= 7.2, < 7.3",
+    "configparser >= 7.2, < 7.4",
     "dvp-libs == 5.2.0",
     "dvp-platform == 5.2.0",
     "flake8 >= 7.3, < 7.5",
