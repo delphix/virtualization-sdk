@@ -55,7 +55,7 @@ dev = [
     "isort == 9.0.2",
     "mccabe == 0.7.0",
     "mock == 5.2.0",
-    "more-itertools == 11.1.0",
+    "more-itertools == 11.2.1",
     "packaging == 26.3",
     "pluggy == 1.6.0",
     "pycodestyle == 2.15.0",
